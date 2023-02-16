@@ -1,0 +1,37 @@
+Molecular calculations with Gaussian basis frequently require the following
+definite integral known as the Boys function (named after S. Francis. Boys):
+
+           1
+          /       
+          |          2 
+          |  2m   -xt
+F_m(x) =  | t    e     dt
+          /    
+          0
+
+The header file boys_functions.h contains CUDA code that provides for the 
+double-precision computation of the Boys function for orders m = 0 ... 50.
+Results are generally accurate to about 15 decimal digits. Please see the
+file boys_functions_accuracy.txt for more detailed information.
+
+The following functions are provided by the header file:
+
+double boys0 (double a);        // computes the Boys function of order 0
+double boys1 (double a);        // computes the Boys function of order 1
+double boys2 (double a);        // computes the Boys function of order 2
+double boys3 (double a);        // computes the Boys function of order 3
+double boys (int m, double a);  // computes the Boys function, orders 0 ... 50
+
+For orders 0 through 3, the order-specific functions provide somewhat higher 
+performance than the generic function.
+
+This CUDA implementation requires compute capability 2.0 or higher and CUDA
+6.0 or later, as it relies on version-specific features that are important
+for a high-performance implementation.
+
+A small sample application demonstrating function usage is provided in the 
+file boys_functions_example.cu; a Makefile for the sample application is 
+likewise included.
+
+
+
