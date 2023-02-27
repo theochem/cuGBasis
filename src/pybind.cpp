@@ -31,6 +31,18 @@ PYBIND11_MODULE(gbasis_cuda, m) {
            &gbasis::Molecule::compute_electron_density_gradient,
            "Compute gradient of electron density."
       )
+      .def("compute_laplacian_electron_density",
+           &gbasis::Molecule::compute_laplacian,
+           "Compute the Laplacian of the electron density."
+      )
+      .def("compute_positive_definite_kinetic_energy_density",
+           &gbasis::Molecule::compute_positive_definite_kinetic_energy,
+           "Compute the positive definite kinetic energy density."
+      )
+      .def("compute_general_kinetic_energy_density",
+           &gbasis::Molecule::compute_positive_definite_kinetic_energy,
+           "Compute the general kinetic energy density."
+      )
       .def("compute_electrostatic_potential",
            &gbasis::Molecule::compute_electrostatic_potential,
            "Compute electrostatic potential. "

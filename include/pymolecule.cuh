@@ -43,6 +43,9 @@ class Molecule {
   Vector compute_electron_density(const Eigen::Ref<MatrixX3R>&  points);
   Vector compute_electron_density_cubic(
       const Vector3D& klower_bnd, const Matrix33R& kaxes, const IntVector3D& knumb_points, const bool disp = false);
+  Vector compute_laplacian(const Eigen::Ref<MatrixX3R>&  points);
+  Vector compute_positive_definite_kinetic_energy(const Eigen::Ref<MatrixX3R>&  points);
+  Vector compute_general_kinetic_energy(const Eigen::Ref<MatrixX3R>&  points, const double alpha);
   MatrixX3R compute_electron_density_gradient(const Eigen::Ref<MatrixX3R>&  points);
   Vector compute_electrostatic_potential(const Eigen::Ref<MatrixX3R>&  points);
 };

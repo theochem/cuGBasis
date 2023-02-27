@@ -7,6 +7,8 @@
 #include "../include/basis_to_gpu.cuh"
 #include "../include/evaluate_density.cuh"
 #include "../include/evaluate_gradient.cuh"
+#include "../include/evaluate_laplacian.cuh"
+#include "../include/evaluate_kinetic_dens.cuh"
 #include "../include/evaluate_electrostatic.cuh"
 
 namespace py = pybind11;
@@ -65,6 +67,39 @@ MatrixX3R gbasis::Molecule::compute_electron_density_gradient(const Eigen::Ref<M
   return v2;
 }
 
+Vector gbasis::Molecule::compute_laplacian(const Eigen::Ref<MatrixX3R>&  points) {
+  // Accept in row-major order because it is numpy default
+  // Conver tto column major order since it works better with the GPU code
+  MatrixX3C pts_col_order = points;
+  size_t nrows = points.rows();
+  std::vector<double> laplacian = gbasis::evaluate_laplacian(
+      *iodata_, pts_col_order.data(), nrows
+  );
+  Vector v2 = Eigen::Map<Vector>(laplacian.data(), nrows);
+  return v2;
+}
+
+Vector gbasis::Molecule::compute_positive_definite_kinetic_energy(const Eigen::Ref<MatrixX3R>&  points) {
+  // Accept in row-major order because it is numpy default
+  // Conver tto column major order since it works better with the GPU code
+  MatrixX3C pts_col_order = points;
+  size_t nrows = points.rows();
+  std::vector<double> kinetic_dens = gbasis::evaluate_positive_definite_kinetic_density(
+      *iodata_, pts_col_order.data(), nrows
+  );
+  Vector v2 = Eigen::Map<Vector>(kinetic_dens.data(), nrows);
+  return v2;
+}
+
+Vector gbasis::Molecule::compute_general_kinetic_energy(const Eigen::Ref<MatrixX3R>&  points, const double alpha) {
+  MatrixX3C pts_col_order = points;
+  size_t nrows = points.rows();
+  std::vector<double> kinetic_dens = gbasis::evaluate_general_kinetic_energy_density(
+      *iodata_, alpha, pts_col_order.data(), nrows
+  );
+  Vector v2 = Eigen::Map<Vector>(kinetic_dens.data(), nrows);
+  return v2;
+}
 
 Vector gbasis::Molecule::compute_electrostatic_potential(const Eigen::Ref<MatrixX3R>&  points) {
   // Accept in row-major order because it is numpy default
