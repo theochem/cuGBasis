@@ -38,6 +38,9 @@ mol.basis_set_to_constant_memory(False)
 density =  mol.compute_electron_density_on_cubic_grid( CUBIC INFO HERE)
 density = mol.compute_electron_density( POINTS )
 gradient = mol.compute_electron_density_gradient( POINTS )
+laplacian = mol.compute_laplacian_electron_density( POINTS )
+kinetic_dens = mol.compute_positive_definite_kinetic_energy_density( POINTS )
+general_kin = mol.compute_general_kinetic_energy_density(POINTS, alpha)
 
 # Parameter True needs to be set to use ESP, this will hold true for any integrals
 mol.basis_set_to_constant_memory(True)
