@@ -14,7 +14,7 @@
 
 
 __global__ void gbasis::evaluate_derivatives_contractions_from_constant_memory(
-    double* d_contractions_array, const double* const d_points, const int knumb_points, const int knumb_contractions
+    double* d_deriv_contracs, const double* const d_points, const int knumb_points, const int knumb_contractions
 ) {
   int global_index = blockIdx.x * blockDim.x + threadIdx.x;  // map thread index to the index of hte points
   if (global_index < knumb_points){
@@ -52,17 +52,17 @@ __global__ void gbasis::evaluate_derivatives_contractions_from_constant_memory(
             // d_contractions_array is stored as shape (3, M, N) where 3 is the three derivatives, M number of
             // contractions and N is the number of points, this conversion in row-major order is
             // N(M i_x + i_y) + i_z, where i_x=0,1,2,   i_y=0,...,M-1,   i_z=0,...,N-1.
-            d_contractions_array[knumb_points * icontractions + global_index] +=
+            d_deriv_contracs[knumb_points * icontractions + global_index] +=
                 gbasis::normalization_primitive_s(g_constant_basis[iconst + i_prim]) *
                     coeff_prim *
                     (-2.0 * alpha * r_A_x) *  // d e^{-a x^2} / dx
                     exponential;
-            d_contractions_array[knumb_points * (knumb_contractions + icontractions) + global_index] +=
+            d_deriv_contracs[knumb_points * (knumb_contractions + icontractions) + global_index] +=
                 gbasis::normalization_primitive_s(g_constant_basis[iconst + i_prim]) *
                     coeff_prim *
                     (-2.0 * alpha * r_A_y) *  // d e^{-a y^2} / dy
                     exponential;
-            d_contractions_array[knumb_points * (knumb_contractions * 2 + icontractions) + global_index] +=
+            d_deriv_contracs[knumb_points * (knumb_contractions * 2 + icontractions) + global_index] +=
                 gbasis::normalization_primitive_s(g_constant_basis[iconst + i_prim]) *
                     coeff_prim *
                     (-2.0 * alpha * r_A_z) *  // d e^{-a z^2} / dz
@@ -70,49 +70,49 @@ __global__ void gbasis::evaluate_derivatives_contractions_from_constant_memory(
           }
           else if (angmom == 1) {
             // First, second and third derivative of x_A e^{-a r_A^2}
-            d_contractions_array[knumb_points * icontractions + global_index] +=
+            d_deriv_contracs[knumb_points * icontractions + global_index] +=
                 gbasis::normalization_primitive_p(g_constant_basis[iconst + i_prim]) *
                     coeff_prim *
                     (1.0 - 2.0 * alpha * r_A_x * r_A_x) *
                     exponential;
-            d_contractions_array[knumb_points * (knumb_contractions + icontractions) + global_index] +=
+            d_deriv_contracs[knumb_points * (knumb_contractions + icontractions) + global_index] +=
                 gbasis::normalization_primitive_p(g_constant_basis[iconst + i_prim]) *
                     coeff_prim *
                     r_A_x * (-2.0 * alpha * r_A_y) *
                     exponential;
-            d_contractions_array[knumb_points * (knumb_contractions * 2 + icontractions) + global_index] +=
+            d_deriv_contracs[knumb_points * (knumb_contractions * 2 + icontractions) + global_index] +=
                 gbasis::normalization_primitive_p(g_constant_basis[iconst + i_prim]) *
                     coeff_prim *
                     r_A_x * (-2.0 * alpha * r_A_z) *
                     exponential;
             // First, second and third derivative of y_A e^{-a r_A^2}
-            d_contractions_array[knumb_points * (icontractions + 1) + global_index] +=
+            d_deriv_contracs[knumb_points * (icontractions + 1) + global_index] +=
                 gbasis::normalization_primitive_p(g_constant_basis[iconst + i_prim]) *
                     coeff_prim *
                     r_A_y * (-2.0 * alpha * r_A_x) *
                     exponential;
-            d_contractions_array[knumb_points * (knumb_contractions + (icontractions + 1)) + global_index] +=
+            d_deriv_contracs[knumb_points * (knumb_contractions + (icontractions + 1)) + global_index] +=
                 gbasis::normalization_primitive_p(g_constant_basis[iconst + i_prim]) *
                     coeff_prim *
                     (1.0 - 2.0 * alpha * r_A_y * r_A_y) *
                     exponential;
-            d_contractions_array[knumb_points * (knumb_contractions * 2 + (icontractions + 1)) + global_index] +=
+            d_deriv_contracs[knumb_points * (knumb_contractions * 2 + (icontractions + 1)) + global_index] +=
                 gbasis::normalization_primitive_p(g_constant_basis[iconst + i_prim]) *
                     coeff_prim *
                     r_A_y * (-2.0 * alpha * r_A_z) *
                     exponential;
             // First, second and third derivative of z_A e^{-a r_A^2}
-            d_contractions_array[knumb_points * (icontractions + 2) + global_index] +=
+            d_deriv_contracs[knumb_points * (icontractions + 2) + global_index] +=
                 gbasis::normalization_primitive_p(g_constant_basis[iconst + i_prim]) *
                     coeff_prim *
                     r_A_z * (-2.0 * alpha * r_A_x) *
                     exponential;
-            d_contractions_array[knumb_points * (knumb_contractions + (icontractions + 2)) + global_index] +=
+            d_deriv_contracs[knumb_points * (knumb_contractions + (icontractions + 2)) + global_index] +=
                 gbasis::normalization_primitive_p(g_constant_basis[iconst + i_prim]) *
                     coeff_prim *
                     r_A_z * (-2.0 * alpha * r_A_y) *
                     exponential;
-            d_contractions_array[knumb_points * (knumb_contractions * 2 + (icontractions + 2)) + global_index] +=
+            d_deriv_contracs[knumb_points * (knumb_contractions * 2 + (icontractions + 2)) + global_index] +=
                 gbasis::normalization_primitive_p(g_constant_basis[iconst + i_prim]) *
                     coeff_prim *
                     (1.0 - 2.0 * alpha * r_A_z * r_A_z) *
@@ -121,98 +121,98 @@ __global__ void gbasis::evaluate_derivatives_contractions_from_constant_memory(
           else if (angmom == 2) {
             // The ordering is xx, xy, xz, yy, yz, zz
             // Take the first, second, third derivative of x_a^2 e^{-a r_a^2}
-            d_contractions_array[knumb_points * icontractions + global_index] +=
+            d_deriv_contracs[knumb_points * icontractions + global_index] +=
                 gbasis::normalization_primitive_d(g_constant_basis[iconst + i_prim], 2, 0, 0) *
                     coeff_prim *
                     r_A_x * (2.0 - 2.0 * alpha * r_A_x * r_A_x) *
                     exponential;
-            d_contractions_array[knumb_points * (knumb_contractions + icontractions) + global_index] +=
+            d_deriv_contracs[knumb_points * (knumb_contractions + icontractions) + global_index] +=
                 gbasis::normalization_primitive_d(g_constant_basis[iconst + i_prim], 2, 0, 0) *
                     coeff_prim *
                     r_A_x * r_A_x * (-2.0 * alpha * r_A_y) *  // x_a^2 deriv e^{-a r^2} / dy
                     exponential;
-            d_contractions_array[knumb_points * (knumb_contractions * 2 + icontractions) + global_index] +=
+            d_deriv_contracs[knumb_points * (knumb_contractions * 2 + icontractions) + global_index] +=
                 gbasis::normalization_primitive_d(g_constant_basis[iconst + i_prim], 2, 0, 0) *
                     coeff_prim *
                     r_A_x * r_A_x * (-2.0 * alpha * r_A_z) *  // x_a^2 deriv e^{-a r^2} / dz
                     exponential;
 
             // Take the first, second, third derivative of x_a y_a e^{-a r_a^2}
-            d_contractions_array[knumb_points * (icontractions + 1) + global_index] +=
+            d_deriv_contracs[knumb_points * (icontractions + 1) + global_index] +=
                 gbasis::normalization_primitive_d(g_constant_basis[iconst + i_prim], 1, 1, 0) *
                     coeff_prim *
                     (1.0 - 2.0 * alpha * r_A_x * r_A_x) * r_A_y *   // deriv x_a e^{-x} /dx
                     exponential;
-            d_contractions_array[knumb_points * (knumb_contractions + icontractions + 1) + global_index] +=
+            d_deriv_contracs[knumb_points * (knumb_contractions + icontractions + 1) + global_index] +=
                 gbasis::normalization_primitive_d(g_constant_basis[iconst + i_prim], 1, 1, 0) *
                     coeff_prim *
                     r_A_x * (1.0 - 2.0 * alpha * r_A_y * r_A_y) *  // deriv y_a e^{-y} /dy
                     exponential;
-            d_contractions_array[knumb_points * (knumb_contractions * 2 + icontractions + 1) + global_index] +=
+            d_deriv_contracs[knumb_points * (knumb_contractions * 2 + icontractions + 1) + global_index] +=
                 gbasis::normalization_primitive_d(g_constant_basis[iconst + i_prim], 1, 1, 0) *
                     coeff_prim *
                     r_A_x * r_A_y * (-2.0 * alpha * r_A_z) *  // deriv e^{-z} /dz
                     exponential;
             // Take the first, second, third derivative of x_a z_a e^{-a r_a^2}
-            d_contractions_array[knumb_points * (icontractions + 2) + global_index] +=
+            d_deriv_contracs[knumb_points * (icontractions + 2) + global_index] +=
                 gbasis::normalization_primitive_d(g_constant_basis[iconst + i_prim], 1, 0, 1) *
                     coeff_prim *
                     (1.0 - 2.0 * alpha * r_A_x * r_A_x) * r_A_z *  // deriv x_a e^{-a x^2} / dx
                     exponential;
-            d_contractions_array[knumb_points * (knumb_contractions + icontractions + 2) + global_index] +=
+            d_deriv_contracs[knumb_points * (knumb_contractions + icontractions + 2) + global_index] +=
                 gbasis::normalization_primitive_d(g_constant_basis[iconst + i_prim], 1, 0, 1) *
                     coeff_prim *
                     r_A_x * r_A_z * (-2.0 * alpha * r_A_y) *   // deriv e^{-a y^2} / dy
                     exponential;
-            d_contractions_array[knumb_points * (knumb_contractions * 2 + icontractions + 2) + global_index] +=
+            d_deriv_contracs[knumb_points * (knumb_contractions * 2 + icontractions + 2) + global_index] +=
                 gbasis::normalization_primitive_d(g_constant_basis[iconst + i_prim], 1, 0, 1) *
                     coeff_prim *
                     r_A_x * (1.0 - 2.0 * alpha * r_A_z * r_A_z) *  // deriv z_a e^{-a z^2} / dz
                     exponential;
             // Take the first, second, third derivative of y_a^2 e^{-a r_a^2}
-            d_contractions_array[knumb_points * (icontractions + 3) + global_index] +=
+            d_deriv_contracs[knumb_points * (icontractions + 3) + global_index] +=
                 gbasis::normalization_primitive_d(g_constant_basis[iconst + i_prim], 0, 2, 0) *
                     coeff_prim *
                     r_A_y * r_A_y * (-2.0 * alpha * r_A_x) *   // deriv e^{-a x^2} / dx
                     exponential;
-            d_contractions_array[knumb_points * (knumb_contractions + icontractions + 3) + global_index] +=
+            d_deriv_contracs[knumb_points * (knumb_contractions + icontractions + 3) + global_index] +=
                 gbasis::normalization_primitive_d(g_constant_basis[iconst + i_prim], 0, 2, 0) *
                     coeff_prim *
                     r_A_y * (2.0 - 2.0 * alpha * r_A_y * r_A_y) *  // deriv y_A^2 e^{-a y^2} / dy
                     exponential;
-            d_contractions_array[knumb_points * (knumb_contractions * 2 + icontractions + 3) + global_index] +=
+            d_deriv_contracs[knumb_points * (knumb_contractions * 2 + icontractions + 3) + global_index] +=
                 gbasis::normalization_primitive_d(g_constant_basis[iconst + i_prim], 0, 2, 0) *
                     coeff_prim *
                     r_A_y * r_A_y * (-2.0 * alpha * r_A_z) *  // deriv e^{-a z^2} / dz
                     exponential;
             // Take the first, second, third derivative of y_a z_a e^{-a r_a^2}
-            d_contractions_array[knumb_points * (icontractions + 4) + global_index] +=
+            d_deriv_contracs[knumb_points * (icontractions + 4) + global_index] +=
                 gbasis::normalization_primitive_d(g_constant_basis[iconst + i_prim], 0, 1, 1) *
                     coeff_prim *
                     r_A_y * r_A_z * (-2.0 * alpha * r_A_x) *   // deriv e^{-a r^2} / dx
                     exponential;
-            d_contractions_array[knumb_points * (knumb_contractions + icontractions + 4) + global_index] +=
+            d_deriv_contracs[knumb_points * (knumb_contractions + icontractions + 4) + global_index] +=
                 gbasis::normalization_primitive_d(g_constant_basis[iconst + i_prim], 0, 1, 1) *
                     coeff_prim *
                     (1.0 - 2.0 * alpha * r_A_y * r_A_y) * r_A_z *  // deriv y_a e^{-a r^2} / dy
                     exponential;
-            d_contractions_array[knumb_points * (knumb_contractions * 2 + icontractions + 4) + global_index] +=
+            d_deriv_contracs[knumb_points * (knumb_contractions * 2 + icontractions + 4) + global_index] +=
                 gbasis::normalization_primitive_d(g_constant_basis[iconst + i_prim], 0, 1, 1) *
                     coeff_prim *
                     r_A_y * (1.0 - 2.0 * alpha * r_A_z * r_A_z) *  // deriv z_a e^{-a r^2} / dz
                     exponential;
             // Take the first, second, third derivative of z_a^2 e^{-a r_a^2}
-            d_contractions_array[knumb_points * (icontractions + 5) + global_index] +=
+            d_deriv_contracs[knumb_points * (icontractions + 5) + global_index] +=
                 gbasis::normalization_primitive_d(g_constant_basis[iconst + i_prim], 0, 0, 2) *
                     coeff_prim *
                     r_A_z * r_A_z * (-2.0 * alpha * r_A_x) *
                     exponential;
-            d_contractions_array[knumb_points * (knumb_contractions + icontractions + 5) + global_index] +=
+            d_deriv_contracs[knumb_points * (knumb_contractions + icontractions + 5) + global_index] +=
                 gbasis::normalization_primitive_d(g_constant_basis[iconst + i_prim], 0, 0, 2) *
                     coeff_prim *
                     r_A_z * r_A_z * (-2.0 * alpha * r_A_y) *
                     exponential;
-            d_contractions_array[knumb_points * (knumb_contractions * 2 + icontractions + 5) + global_index] +=
+            d_deriv_contracs[knumb_points * (knumb_contractions * 2 + icontractions + 5) + global_index] +=
                 gbasis::normalization_primitive_d(g_constant_basis[iconst + i_prim], 0, 0, 2) *
                     coeff_prim *
                     r_A_z * (2.0 - 2.0 * alpha * r_A_z * r_A_z) *
@@ -223,81 +223,81 @@ __global__ void gbasis::evaluate_derivatives_contractions_from_constant_memory(
             // Fchk ordering is  ['c0', 'c1', 's1', 'c2', 's2'] which is m=[0, 1, -1, 2, -2]
             double norm_const = gbasis::normalization_primitive_pure_d(g_constant_basis[iconst + i_prim]);
             // (x, y, z) derivative of ((2 z_A^2 - x_A^2 - y_A^2) / 2.0) e^{-a r^2}
-            d_contractions_array[knumb_points * icontractions + global_index] +=
+            d_deriv_contracs[knumb_points * icontractions + global_index] +=
                 norm_const *
                     coeff_prim *
                     r_A_x * (-1 - alpha * ( 2.0 * r_A_z * r_A_z - r_A_x * r_A_x - r_A_y * r_A_y)) *
                     exponential;
-            d_contractions_array[knumb_points * (knumb_contractions + icontractions) + global_index] +=
+            d_deriv_contracs[knumb_points * (knumb_contractions + icontractions) + global_index] +=
                 norm_const *
                     coeff_prim *
                     r_A_y * (-1 - alpha * ( 2.0 * r_A_z * r_A_z - r_A_x * r_A_x - r_A_y * r_A_y)) *
                     exponential;
-            d_contractions_array[knumb_points * (knumb_contractions * 2 + icontractions) + global_index] +=
+            d_deriv_contracs[knumb_points * (knumb_contractions * 2 + icontractions) + global_index] +=
                 norm_const *
                     coeff_prim *
                     r_A_z * (2.0 - alpha * ( 2.0 * r_A_z * r_A_z - r_A_x * r_A_x - r_A_y * r_A_y)) *
                     exponential;
             // Derivataive of sqrt(3) x_A * z_A e^{-a r^2}
-            d_contractions_array[knumb_points * (icontractions + 1) + global_index] +=
+            d_deriv_contracs[knumb_points * (icontractions + 1) + global_index] +=
                 norm_const *
                     coeff_prim *
                     sqrt(3.0) * (1.0 - 2.0 * alpha * r_A_x * r_A_x) * r_A_z *
                     exponential;
-            d_contractions_array[knumb_points * (knumb_contractions + icontractions + 1) + global_index] +=
+            d_deriv_contracs[knumb_points * (knumb_contractions + icontractions + 1) + global_index] +=
                 norm_const *
                   coeff_prim *
                   sqrt(3.0) * r_A_x * r_A_z * (-2.0 * alpha * r_A_y) *
                   exponential;
-            d_contractions_array[knumb_points * (knumb_contractions * 2 + icontractions + 1) + global_index] +=
+            d_deriv_contracs[knumb_points * (knumb_contractions * 2 + icontractions + 1) + global_index] +=
                 norm_const *
                     coeff_prim *
                     sqrt(3.0) * r_A_x * (1.0 - 2.0 * alpha * r_A_z * r_A_z) *
                     exponential;
             // Derivative of sqrt(3) y_A * z_A e^{-a r^2}
-            d_contractions_array[knumb_points * (icontractions + 2) + global_index] +=
+            d_deriv_contracs[knumb_points * (icontractions + 2) + global_index] +=
                 norm_const *
                   coeff_prim *
                   sqrt(3.0) * r_A_y * r_A_z * (-2.0 * alpha * r_A_x) *
                   exponential;
-            d_contractions_array[knumb_points * (knumb_contractions + icontractions + 2) + global_index] +=
+            d_deriv_contracs[knumb_points * (knumb_contractions + icontractions + 2) + global_index] +=
                 norm_const *
                     coeff_prim *
                     sqrt(3.0) * (1.0 - 2.0 * alpha * r_A_y * r_A_y) * r_A_z *
                     exponential;
-            d_contractions_array[knumb_points * (knumb_contractions * 2 + icontractions + 2) + global_index] +=
+            d_deriv_contracs[knumb_points * (knumb_contractions * 2 + icontractions + 2) + global_index] +=
                 norm_const *
                     coeff_prim *
                     sqrt(3.0) * r_A_y * (1.0 - 2.0 * alpha * r_A_z * r_A_z) *
                     exponential;
             // Derivative of sqrt(3) (x_A^2 - y_A^2) / 2.0  e^{-a r^2}
-            d_contractions_array[knumb_points * (icontractions + 3) + global_index] +=
+            d_deriv_contracs[knumb_points * (icontractions + 3) + global_index] +=
                 norm_const *
                     coeff_prim *
                     sqrt(3.0) * r_A_x * (1.0 - alpha * (r_A_x * r_A_x - r_A_y * r_A_y)) *
                     exponential;
-            d_contractions_array[knumb_points * (knumb_contractions + icontractions + 3) + global_index] +=
+            d_deriv_contracs[knumb_points * (knumb_contractions + icontractions + 3) + global_index] +=
                 norm_const *
                     coeff_prim *
                     sqrt(3.0) * r_A_y * (-1.0 - alpha * (r_A_x * r_A_x - r_A_y * r_A_y)) *
                     exponential;
-            d_contractions_array[knumb_points * (knumb_contractions * 2 + icontractions + 3) + global_index] +=
+            d_deriv_contracs[knumb_points * (knumb_contractions * 2 + icontractions + 3) + global_index] +=
                 norm_const *
                     coeff_prim *
                     sqrt(3.0) * (r_A_x * r_A_x - r_A_y * r_A_y) * (-alpha * r_A_z) *
                     exponential;;
             // (x, y, z) derivative respectively of sqrt(3) * x_A * y_A e^{-a r^2}
-            d_contractions_array[knumb_points * (icontractions + 4) + global_index] +=
+            d_deriv_contracs[knumb_points * (icontractions + 4) + global_index] +=
                 norm_const *
                     coeff_prim *
                     sqrt(3.0) * (1.0 - 2.0 * alpha * r_A_x * r_A_x) * r_A_y *
                     exponential;
-            d_contractions_array[knumb_points * (knumb_contractions + icontractions + 4) + global_index] +=
+            d_deriv_contracs[knumb_points * (knumb_contractions + icontractions + 4) + global_index] +=
                 norm_const *
                     coeff_prim *
                     sqrt(3.0) * r_A_x * (1.0 - 2.0 * alpha * r_A_y * r_A_y) *
                     exponential;
-            d_contractions_array[knumb_points * (knumb_contractions * 2 + icontractions + 4) + global_index] +=
+            d_deriv_contracs[knumb_points * (knumb_contractions * 2 + icontractions + 4) + global_index] +=
                 norm_const *
                     coeff_prim *
                     sqrt(3.0) * r_A_x * r_A_y * (-2.0 * alpha * r_A_z) *
@@ -313,17 +313,17 @@ __global__ void gbasis::evaluate_derivatives_contractions_from_constant_memory(
             // This was done using wolframalpha for the formulas
             double norm_const = gbasis::normalization_primitive_pure_f(g_constant_basis[iconst + i_prim]);
             // (x, y, z) derivative of ((2 z_A^2 - 3 x_A^2 - 3 y_A^2) / 2.0) e^{-a r^2}
-            d_contractions_array[knumb_points * icontractions + global_index] +=
+            d_deriv_contracs[knumb_points * icontractions + global_index] +=
                 norm_const *
                     coeff_prim *
                     r_A_x*r_A_z*(alpha*(3*r_A_x*r_A_x + 3*r_A_y*r_A_y - 2*r_A_z*r_A_z) - 3) *
                     exponential;
-            d_contractions_array[knumb_points * (knumb_contractions + icontractions) + global_index] +=
+            d_deriv_contracs[knumb_points * (knumb_contractions + icontractions) + global_index] +=
                 norm_const *
                     coeff_prim *
                     r_A_y*r_A_z*(alpha*(3*r_A_x*r_A_x + 3*r_A_y*r_A_y - 2*r_A_z*r_A_z) - 3) *
                     exponential;
-            d_contractions_array[knumb_points * (knumb_contractions * 2 + icontractions) + global_index] +=
+            d_deriv_contracs[knumb_points * (knumb_contractions * 2 + icontractions) + global_index] +=
                 norm_const *
                     coeff_prim *
                     (
@@ -331,7 +331,7 @@ __global__ void gbasis::evaluate_derivatives_contractions_from_constant_memory(
                     ) *
                     exponential;
             // Derivataive of sqrt(1.5) (4 z_a^2 x_A   - x_A^3  - y_A^2 x_A ) / 2.0 e^{-a r^2} , m=1
-            d_contractions_array[knumb_points * (icontractions + 1) + global_index] +=
+            d_deriv_contracs[knumb_points * (icontractions + 1) + global_index] +=
                 norm_const *
                     coeff_prim *
                     sqrt(1.5) *
@@ -339,32 +339,32 @@ __global__ void gbasis::evaluate_derivatives_contractions_from_constant_memory(
                         (2*alpha*r_A_x*r_A_x*(r_A_x*r_A_x + r_A_y*r_A_y - 4*r_A_z*r_A_z) - 3*r_A_x*r_A_x - r_A_y*r_A_y + 4*r_A_z*r_A_z)/2
                     ) *
                     exponential;
-            d_contractions_array[knumb_points * (knumb_contractions + icontractions + 1) + global_index] +=
+            d_deriv_contracs[knumb_points * (knumb_contractions + icontractions + 1) + global_index] +=
                 norm_const *
                     coeff_prim *
                     sqrt(1.5) * r_A_x*r_A_y*(alpha*(r_A_x*r_A_x + r_A_y*r_A_y - 4*r_A_z*r_A_z) - 1) *
                     exponential;
-            d_contractions_array[knumb_points * (knumb_contractions * 2 + icontractions + 1) + global_index] +=
+            d_deriv_contracs[knumb_points * (knumb_contractions * 2 + icontractions + 1) + global_index] +=
                 norm_const *
                     coeff_prim *
                     sqrt(1.5) * r_A_x*r_A_z*(alpha*(r_A_x*r_A_x + r_A_y*r_A_y - 4*r_A_z*r_A_z) + 4) *
                     exponential;
             // Derivative of  sqrt(1.5) (4 z_a^2 y_A   - x_A^2 y_A  - y_A^3 ) / 2.0 e^{-a r^2}  m = -1
-            d_contractions_array[knumb_points * (icontractions + 2) + global_index] +=
+            d_deriv_contracs[knumb_points * (icontractions + 2) + global_index] +=
                 norm_const *
                     coeff_prim *
                     sqrt(1.5) * (
                      r_A_x*r_A_y*(alpha*(r_A_x*r_A_x + r_A_y*r_A_y - 4*r_A_z*r_A_z) - 1)
                      ) *
                     exponential;
-            d_contractions_array[knumb_points * (knumb_contractions + icontractions + 2) + global_index] +=
+            d_deriv_contracs[knumb_points * (knumb_contractions + icontractions + 2) + global_index] +=
                 norm_const *
                     coeff_prim *
                     sqrt(1.5) * (
                       (2*alpha*r_A_y*r_A_y*(r_A_x*r_A_x + r_A_y*r_A_y - 4*r_A_z*r_A_z) - r_A_x*r_A_x - 3*r_A_y*r_A_y + 4*r_A_z*r_A_z)/2
                      ) *
                     exponential;
-            d_contractions_array[knumb_points * (knumb_contractions * 2 + icontractions + 2) + global_index] +=
+            d_deriv_contracs[knumb_points * (knumb_contractions * 2 + icontractions + 2) + global_index] +=
                 norm_const *
                     coeff_prim *
                     sqrt(1.5) *  (
@@ -372,69 +372,69 @@ __global__ void gbasis::evaluate_derivatives_contractions_from_constant_memory(
                     ) *
                     exponential;
             //  Derivative of  sqrt(15) (x_A^2  - y_A^2) z / 2.0 e^{-a r^2}  m = 2
-            d_contractions_array[knumb_points * (icontractions + 3) + global_index] +=
+            d_deriv_contracs[knumb_points * (icontractions + 3) + global_index] +=
                 norm_const *
                     coeff_prim *
                     sqrt(15.0) * r_A_x*r_A_z*(-alpha*(r_A_x*r_A_x - r_A_y*r_A_y) + 1) *
                     exponential;
-            d_contractions_array[knumb_points * (knumb_contractions + icontractions + 3) + global_index] +=
+            d_deriv_contracs[knumb_points * (knumb_contractions + icontractions + 3) + global_index] +=
                 norm_const *
                     coeff_prim *
                     sqrt(15.0) * r_A_y*r_A_z*(-alpha*(r_A_x*r_A_x - r_A_y*r_A_y) - 1) *
                     exponential;
-            d_contractions_array[knumb_points * (knumb_contractions * 2 + icontractions + 3) + global_index] +=
+            d_deriv_contracs[knumb_points * (knumb_contractions * 2 + icontractions + 3) + global_index] +=
                 norm_const *
                     coeff_prim *
                     sqrt(15.0) * (-2*alpha*r_A_z*r_A_z*(r_A_x*r_A_x - r_A_y*r_A_y) + r_A_x*r_A_x - r_A_y*r_A_y)/2 *
                     exponential;
             //  Derivative of  sqrt(15) x y z         m = -2
-            d_contractions_array[knumb_points * (icontractions + 4) + global_index] +=
+            d_deriv_contracs[knumb_points * (icontractions + 4) + global_index] +=
                 norm_const *
                     coeff_prim *
                     sqrt(15.0) * r_A_y*r_A_z*(-2*alpha*r_A_x*r_A_x + 1) *
                     exponential;
-            d_contractions_array[knumb_points * (knumb_contractions + icontractions + 4) + global_index] +=
+            d_deriv_contracs[knumb_points * (knumb_contractions + icontractions + 4) + global_index] +=
                 norm_const *
                     coeff_prim *
                     sqrt(15.0) * r_A_x*r_A_z*(-2*alpha*r_A_y*r_A_y + 1) *
                     exponential;
-            d_contractions_array[knumb_points * (knumb_contractions * 2 + icontractions + 4) + global_index] +=
+            d_deriv_contracs[knumb_points * (knumb_contractions * 2 + icontractions + 4) + global_index] +=
                 norm_const *
                     coeff_prim *
                     sqrt(15.0) * r_A_x*r_A_y*(-2*alpha*r_A_z*r_A_z + 1) *
                     exponential;
             //  Derivative of  sqrt(2.5) * (x^2 - 3 y^2) x / 2         m = 3
-            d_contractions_array[knumb_points * (icontractions + 5) + global_index] +=
+            d_deriv_contracs[knumb_points * (icontractions + 5) + global_index] +=
                 norm_const *
                     coeff_prim *
                     sqrt(2.5) * (
                     (-2*alpha*r_A_x*r_A_x*(r_A_x*r_A_x - 3*r_A_y*r_A_y) + 3*r_A_x*r_A_x - 3*r_A_y*r_A_y)/2
                 )  *
                     exponential;
-            d_contractions_array[knumb_points * (knumb_contractions + icontractions + 5) + global_index] +=
+            d_deriv_contracs[knumb_points * (knumb_contractions + icontractions + 5) + global_index] +=
                 norm_const *
                     coeff_prim *
                     sqrt(2.5) * r_A_x*r_A_y*(-alpha*(r_A_x*r_A_x - 3*r_A_y*r_A_y) - 3) *
                     exponential;
-            d_contractions_array[knumb_points * (knumb_contractions * 2 + icontractions + 5) + global_index] +=
+            d_deriv_contracs[knumb_points * (knumb_contractions * 2 + icontractions + 5) + global_index] +=
                 norm_const *
                     coeff_prim *
                     sqrt(2.5) * -alpha*r_A_x*r_A_z*(r_A_x*r_A_x - 3*r_A_y*r_A_y) *
                     exponential;
             //  Derivative of  sqrt(2.5) (3x^2 - y^2) y / 2        m = -3
-            d_contractions_array[knumb_points * (icontractions + 6) + global_index] +=
+            d_deriv_contracs[knumb_points * (icontractions + 6) + global_index] +=
                 norm_const *
                     coeff_prim *
                     sqrt(2.5) * r_A_x*r_A_y*(-alpha*(3*r_A_x*r_A_x - r_A_y*r_A_y) + 3) *
                     exponential;
-            d_contractions_array[knumb_points * (knumb_contractions + icontractions + 6) + global_index] +=
+            d_deriv_contracs[knumb_points * (knumb_contractions + icontractions + 6) + global_index] +=
                 norm_const *
                     coeff_prim *
                     sqrt(2.5) * (
                     (-2*alpha*r_A_y*r_A_y*(3*r_A_x*r_A_x - r_A_y*r_A_y) + 3*r_A_x*r_A_x - 3*r_A_y*r_A_y)/2
                 ) *
                     exponential;
-            d_contractions_array[knumb_points * (knumb_contractions * 2 + icontractions + 6) + global_index] +=
+            d_deriv_contracs[knumb_points * (knumb_contractions * 2 + icontractions + 6) + global_index] +=
                 norm_const *
                     coeff_prim *
                     sqrt(2.5) * -alpha*r_A_y*r_A_z*(3*r_A_x*r_A_x - r_A_y*r_A_y) *
@@ -449,7 +449,7 @@ __global__ void gbasis::evaluate_derivatives_contractions_from_constant_memory(
             // This was done using wolframalpha for the formulas
             double norm_const = gbasis::normalization_primitive_pure_g(g_constant_basis[iconst + i_prim]);
             // (x, y, z) derivative of e^{-a r^2}
-            d_contractions_array[knumb_points * icontractions + global_index] +=
+            d_deriv_contracs[knumb_points * icontractions + global_index] +=
                 norm_const *
                     coeff_prim *
                     (
@@ -458,7 +458,7 @@ __global__ void gbasis::evaluate_derivatives_contractions_from_constant_memory(
                         24*r_A_z*r_A_z)/4
                     ) *
                     exponential;
-            d_contractions_array[knumb_points * (knumb_contractions + icontractions) + global_index] +=
+            d_deriv_contracs[knumb_points * (knumb_contractions + icontractions) + global_index] +=
                 norm_const *
                     coeff_prim *
                     (
@@ -467,7 +467,7 @@ __global__ void gbasis::evaluate_derivatives_contractions_from_constant_memory(
                         6*r_A_x*r_A_x + 6*r_A_y*r_A_y - 24*r_A_z*r_A_z)/4
                     ) *
                     exponential;
-            d_contractions_array[knumb_points * (knumb_contractions * 2 + icontractions) + global_index] +=
+            d_deriv_contracs[knumb_points * (knumb_contractions * 2 + icontractions) + global_index] +=
                 norm_const *
                     coeff_prim *
                     (
@@ -478,7 +478,7 @@ __global__ void gbasis::evaluate_derivatives_contractions_from_constant_memory(
                     ) *
                     exponential;
             // Derivataive of sqrt(2.5) (7z^2 - 3 (x^2 + y^2 + z^2)) xz / 2.0 , m=1
-            d_contractions_array[knumb_points * (icontractions + 1) + global_index] +=
+            d_deriv_contracs[knumb_points * (icontractions + 1) + global_index] +=
                 norm_const *
                     coeff_prim *
                     sqrt(2.5) *
@@ -487,7 +487,7 @@ __global__ void gbasis::evaluate_derivatives_contractions_from_constant_memory(
                         9*r_A_x*r_A_x - 3*r_A_y*r_A_y + 4*r_A_z*r_A_z)/2
                     ) *
                     exponential;
-            d_contractions_array[knumb_points * (knumb_contractions + icontractions + 1) + global_index] +=
+            d_deriv_contracs[knumb_points * (knumb_contractions + icontractions + 1) + global_index] +=
                 norm_const *
                     coeff_prim *
                     sqrt(2.5) *
@@ -495,7 +495,7 @@ __global__ void gbasis::evaluate_derivatives_contractions_from_constant_memory(
                         r_A_x*r_A_y*r_A_z*(alpha*(3*r_A_x*r_A_x + 3*r_A_y*r_A_y - 4*r_A_z*r_A_z) - 3)
                     ) *
                     exponential;
-            d_contractions_array[knumb_points * (knumb_contractions * 2 + icontractions + 1) + global_index] +=
+            d_deriv_contracs[knumb_points * (knumb_contractions * 2 + icontractions + 1) + global_index] +=
                 norm_const *
                     coeff_prim *
                     sqrt(2.5) *
@@ -505,7 +505,7 @@ __global__ void gbasis::evaluate_derivatives_contractions_from_constant_memory(
                     )*
                     exponential;
             // Derivataive of sqrt(2.5) (7z^2 - 3 (x^2 + y^2 + z^2)) xz / 2.0 , m= -1
-            d_contractions_array[knumb_points * (icontractions + 2) + global_index] +=
+            d_deriv_contracs[knumb_points * (icontractions + 2) + global_index] +=
                 norm_const *
                     coeff_prim *
                     sqrt(2.5) *
@@ -513,7 +513,7 @@ __global__ void gbasis::evaluate_derivatives_contractions_from_constant_memory(
                         r_A_x*r_A_y*r_A_z*(alpha*(3*r_A_x*r_A_x + 3*r_A_y*r_A_y - 4*r_A_z*r_A_z) - 3)
                     ) *
                     exponential;
-            d_contractions_array[knumb_points * (knumb_contractions + icontractions + 2) + global_index] +=
+            d_deriv_contracs[knumb_points * (knumb_contractions + icontractions + 2) + global_index] +=
                 norm_const *
                     coeff_prim *
                     sqrt(2.5) *
@@ -521,7 +521,7 @@ __global__ void gbasis::evaluate_derivatives_contractions_from_constant_memory(
                         r_A_z*(2*alpha*r_A_y*r_A_y*(3*r_A_x*r_A_x + 3*r_A_y*r_A_y - 4*r_A_z*r_A_z) - 3*r_A_x*r_A_x - 9*r_A_y*r_A_y + 4*r_A_z*r_A_z)/2
                     ) *
                     exponential;
-            d_contractions_array[knumb_points * (knumb_contractions * 2 + icontractions + 2) + global_index] +=
+            d_deriv_contracs[knumb_points * (knumb_contractions * 2 + icontractions + 2) + global_index] +=
                 norm_const *
                     coeff_prim *
                     sqrt(2.5) *
@@ -531,7 +531,7 @@ __global__ void gbasis::evaluate_derivatives_contractions_from_constant_memory(
                     ) *
                     exponential;
             // Derivative  of sqrt(5)  (7 * z**2 + r2) * (x**2 - y**2) * exp / 4,  m= 2
-            d_contractions_array[knumb_points * (icontractions + 3) + global_index] +=
+            d_deriv_contracs[knumb_points * (icontractions + 3) + global_index] +=
                 norm_const *
                     coeff_prim *
                     sqrt(5.0) *
@@ -540,7 +540,7 @@ __global__ void gbasis::evaluate_derivatives_contractions_from_constant_memory(
                         2*r_A_x*r_A_x + 6*r_A_z*r_A_z)/2
                     ) *
                     exponential;
-            d_contractions_array[knumb_points * (knumb_contractions + icontractions + 3) + global_index] +=
+            d_deriv_contracs[knumb_points * (knumb_contractions + icontractions + 3) + global_index] +=
                 norm_const *
                     coeff_prim *
                     sqrt(5.0) *
@@ -549,7 +549,7 @@ __global__ void gbasis::evaluate_derivatives_contractions_from_constant_memory(
                         2*r_A_y*r_A_y - 6*r_A_z*r_A_z)/2
                     ) *
                     exponential;
-            d_contractions_array[knumb_points * (knumb_contractions * 2 + icontractions + 3) + global_index] +=
+            d_deriv_contracs[knumb_points * (knumb_contractions * 2 + icontractions + 3) + global_index] +=
                 norm_const *
                     coeff_prim *
                     sqrt(5.0) *
@@ -558,7 +558,7 @@ __global__ void gbasis::evaluate_derivatives_contractions_from_constant_memory(
                     ) *
                     exponential;
             // Derivataive of sqrt(5)     (7 * z**2 - r2) * x * y * exp / 2,        m= -2
-            d_contractions_array[knumb_points * (icontractions + 4) + global_index] +=
+            d_deriv_contracs[knumb_points * (icontractions + 4) + global_index] +=
                 norm_const *
                     coeff_prim *
                     sqrt(5.0) *
@@ -567,7 +567,7 @@ __global__ void gbasis::evaluate_derivatives_contractions_from_constant_memory(
                         3*r_A_x*r_A_x - r_A_y*r_A_y + 6*r_A_z*r_A_z)/2
                     ) *
                     exponential;
-            d_contractions_array[knumb_points * (knumb_contractions + icontractions + 4) + global_index] +=
+            d_deriv_contracs[knumb_points * (knumb_contractions + icontractions + 4) + global_index] +=
                 norm_const *
                     coeff_prim *
                     sqrt(5.0) *
@@ -576,7 +576,7 @@ __global__ void gbasis::evaluate_derivatives_contractions_from_constant_memory(
                         r_A_x*r_A_x - 3*r_A_y*r_A_y + 6*r_A_z*r_A_z)/2
                     ) *
                     exponential;
-            d_contractions_array[knumb_points * (knumb_contractions * 2 + icontractions + 4) + global_index] +=
+            d_deriv_contracs[knumb_points * (knumb_contractions * 2 + icontractions + 4) + global_index] +=
                 norm_const *
                     coeff_prim *
                     sqrt(5.0) *
@@ -585,7 +585,7 @@ __global__ void gbasis::evaluate_derivatives_contractions_from_constant_memory(
                     ) *
                     exponential;
             // Derivataive of sqrt(35 / 2)      (x**2 - 3 * y**2) * x * z * exp / 2,       m= 3
-            d_contractions_array[knumb_points * (icontractions + 5) + global_index] +=
+            d_deriv_contracs[knumb_points * (icontractions + 5) + global_index] +=
                 norm_const *
                     coeff_prim *
                     sqrt(35.0 / 2.0) *
@@ -593,7 +593,7 @@ __global__ void gbasis::evaluate_derivatives_contractions_from_constant_memory(
                         r_A_z*(-2*alpha*r_A_x*r_A_x*(r_A_x*r_A_x - 3*r_A_y*r_A_y) + 3*r_A_x*r_A_x - 3*r_A_y*r_A_y)/2
                     ) *
                     exponential;
-            d_contractions_array[knumb_points * (knumb_contractions + icontractions + 5) + global_index] +=
+            d_deriv_contracs[knumb_points * (knumb_contractions + icontractions + 5) + global_index] +=
                 norm_const *
                     coeff_prim *
                     sqrt(35.0 / 2.0) *
@@ -601,7 +601,7 @@ __global__ void gbasis::evaluate_derivatives_contractions_from_constant_memory(
                         r_A_x*r_A_y*r_A_z*(-alpha*(r_A_x*r_A_x - 3*r_A_y*r_A_y) - 3)
                     ) *
                     exponential;
-            d_contractions_array[knumb_points * (knumb_contractions * 2 + icontractions + 5) + global_index] +=
+            d_deriv_contracs[knumb_points * (knumb_contractions * 2 + icontractions + 5) + global_index] +=
                 norm_const *
                     coeff_prim *
                     sqrt(35.0 / 2.0) *
@@ -610,7 +610,7 @@ __global__ void gbasis::evaluate_derivatives_contractions_from_constant_memory(
                     ) *
                     exponential;
             // Derivataive of sqrt(35 / 2)    (3 * x**2 - y**2) * y * z * exp / 2,       m= -3
-            d_contractions_array[knumb_points * (icontractions + 6) + global_index] +=
+            d_deriv_contracs[knumb_points * (icontractions + 6) + global_index] +=
                 norm_const *
                     coeff_prim *
                     sqrt(35.0 / 2.0) *
@@ -618,7 +618,7 @@ __global__ void gbasis::evaluate_derivatives_contractions_from_constant_memory(
                         r_A_x*r_A_y*r_A_z*(-alpha*(3*r_A_x*r_A_x - r_A_y*r_A_y) + 3)
                     ) *
                     exponential;
-            d_contractions_array[knumb_points * (knumb_contractions + icontractions + 6) + global_index] +=
+            d_deriv_contracs[knumb_points * (knumb_contractions + icontractions + 6) + global_index] +=
                 norm_const *
                     coeff_prim *
                     sqrt(35.0 / 2.0) *
@@ -626,7 +626,7 @@ __global__ void gbasis::evaluate_derivatives_contractions_from_constant_memory(
                         r_A_z*(-2*alpha*r_A_y*r_A_y*(3*r_A_x*r_A_x - r_A_y*r_A_y) + 3*r_A_x*r_A_x - 3*r_A_y*r_A_y)/2
                     ) *
                     exponential;
-            d_contractions_array[knumb_points * (knumb_contractions * 2 + icontractions + 6) + global_index] +=
+            d_deriv_contracs[knumb_points * (knumb_contractions * 2 + icontractions + 6) + global_index] +=
                 norm_const *
                     coeff_prim *
                     sqrt(35.0 / 2.0) *
@@ -635,7 +635,7 @@ __global__ void gbasis::evaluate_derivatives_contractions_from_constant_memory(
                     ) *
                     exponential;
             // Derivataive of sqrt(35)     (x**4 - 6 * x**2 * y**2 + y**4) * exp / 8,,       m= 4
-            d_contractions_array[knumb_points * (icontractions + 7) + global_index] +=
+            d_deriv_contracs[knumb_points * (icontractions + 7) + global_index] +=
                 norm_const *
                     coeff_prim *
                     sqrt(35.0) *
@@ -644,7 +644,7 @@ __global__ void gbasis::evaluate_derivatives_contractions_from_constant_memory(
                         6*r_A_y*r_A_y)/4
                     ) *
                     exponential;
-            d_contractions_array[knumb_points * (knumb_contractions + icontractions + 7) + global_index] +=
+            d_deriv_contracs[knumb_points * (knumb_contractions + icontractions + 7) + global_index] +=
                 norm_const *
                     coeff_prim *
                     sqrt(35.0) *
@@ -653,7 +653,7 @@ __global__ void gbasis::evaluate_derivatives_contractions_from_constant_memory(
                         2*r_A_y*r_A_y)/4
                     ) *
                     exponential;
-            d_contractions_array[knumb_points * (knumb_contractions * 2 + icontractions + 7) + global_index] +=
+            d_deriv_contracs[knumb_points * (knumb_contractions * 2 + icontractions + 7) + global_index] +=
                 norm_const *
                     coeff_prim *
                     sqrt(35) *
@@ -663,7 +663,7 @@ __global__ void gbasis::evaluate_derivatives_contractions_from_constant_memory(
                     exponential;
 
             // Derivataive of sqrt(35)      (x**2 - y**2) * x * y * exp / 2 ,       m= -4
-            d_contractions_array[knumb_points * (icontractions + 8) + global_index] +=
+            d_deriv_contracs[knumb_points * (icontractions + 8) + global_index] +=
                 norm_const *
                     coeff_prim *
                     sqrt(35) *
@@ -671,7 +671,7 @@ __global__ void gbasis::evaluate_derivatives_contractions_from_constant_memory(
                         r_A_y*(-2*alpha*r_A_x*r_A_x*(r_A_x*r_A_x - r_A_y*r_A_y) + 3*r_A_x*r_A_x - r_A_y*r_A_y)/2
                     ) *
                     exponential;
-            d_contractions_array[knumb_points * (knumb_contractions + icontractions + 8) + global_index] +=
+            d_deriv_contracs[knumb_points * (knumb_contractions + icontractions + 8) + global_index] +=
                 norm_const *
                     coeff_prim *
                     sqrt(35) *
@@ -679,7 +679,7 @@ __global__ void gbasis::evaluate_derivatives_contractions_from_constant_memory(
                         r_A_x*(-2*alpha*r_A_y*r_A_y*(r_A_x*r_A_x - r_A_y*r_A_y) + r_A_x*r_A_x - 3*r_A_y*r_A_y)/2
                     ) *
                     exponential;
-            d_contractions_array[knumb_points * (knumb_contractions * 2 + icontractions + 8) + global_index] +=
+            d_deriv_contracs[knumb_points * (knumb_contractions * 2 + icontractions + 8) + global_index] +=
                 norm_const *
                     coeff_prim *
                     sqrt(35) *
@@ -877,8 +877,7 @@ __host__ std::vector<double> gbasis::evaluate_electron_density_gradient_handle(
     dim3 threadsPerBlock2(320);
     dim3 grid2((knumb_points * knbasisfuncs + threadsPerBlock.x - 1) / (threadsPerBlock.x));
     gbasis::hadamard_product<<<grid2, threadsPerBlock2>>>(
-        d_temp_rdm_derivs, d_contractions,
-            knbasisfuncs, knumb_points
+        d_temp_rdm_derivs, d_contractions, knbasisfuncs, knumb_points
     );
 //    if (i_deriv == 0) {
 //      printf("Do Hadamard product with one-rdm \n");
@@ -911,6 +910,11 @@ __host__ std::vector<double> gbasis::evaluate_electron_density_gradient_handle(
     all_ones.shrink_to_fit();
   }
 
+  cudaFree(d_temp_rdm_derivs);
+  cudaFree(d_one_rdm);
+  cudaFree(d_deriv_contractions);
+  cudaFree(d_contractions);
+
   // Multiply the derivative by two since electron density = sum | mo-contractions |^2
   dim3 threadsPerBlock3(320);
   dim3 grid3((3 * knumb_points + threadsPerBlock.x - 1) / (threadsPerBlock.x));
@@ -939,9 +943,5 @@ __host__ std::vector<double> gbasis::evaluate_electron_density_gradient_handle(
   cudaFree(d_gradient_clone);
 
   // Free-One Rdm and d_deriv contractions and destroy the cublas handle
-  cudaFree(d_temp_rdm_derivs);
-  cudaFree(d_one_rdm);
-  cudaFree(d_deriv_contractions);
-  cudaFree(d_contractions);
   return h_grad_electron_density;
 }

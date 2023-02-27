@@ -19,14 +19,15 @@ namespace gbasis {
  * and that the derivative of this is \frac{\partial G_i}{\partial x} = i G_{i - 1}(a, x_A) - 2 a G_{i+1}(a, x_A)
  *
  * @param[in,out] g_d_constant_basis Pointer to the the output.
- * @param[out] d_contractions_array  The device pointer to the contractions array of size (3, M, N) where M is
+ * @param[out] d_deriv_contracs  The device pointer to the contractions array of size (3, M, N) where M is
  *                  the number of contractions and N is the number of points. This is in row-major order, i.e.
  *                  Derivatives first, then contractions then points.
+ *                  Values should be set to zero before using.
  * @param[in] d_points The device pointer to the grid points of size (N, 3) stored in column-major order.
  * @param[in] d_knumb_points The number of points in the grid.
  */
 __global__ void evaluate_derivatives_contractions_from_constant_memory(
-    double* d_contractions_array, const double* const d_points, const int knumb_points, const int knumb_contractions
+    double* d_deriv_contracs, const double* const d_points, const int knumb_points, const int knumb_contractions
 );
 
 /**

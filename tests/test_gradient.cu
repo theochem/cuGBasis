@@ -77,7 +77,7 @@ from gbasis.wrappers import from_iodata
 #print(true_result.shape)
 
 #print(true_result[:10])
-true_result = true_result.reshape((3, nbasis, numb_pts), order="C")  # column-major order
+true_result = true_result.reshape((3, nbasis, numb_pts), order="C")  # row-major order
 iodata = load_one(fchk_path)
 basis, type = from_iodata(iodata)
 
@@ -85,40 +85,16 @@ points = points.reshape((numb_pts, 3), order="F")
 points = np.array(points, dtype=np.float64)
 
 # Derivative in X-coordinate
-derivative =  evaluate_deriv_basis(
-            basis, points, np.array([1, 0, 0]), coord_type=type
-        )
-error = np.abs(derivative - true_result[0, :, :])
-#print( true_result[0, :, :])
-#print(derivative)
-#print(error)
-#counter = 0
-#for i in range(0, len(basis)):
-#  shell = basis[i]
-#  types = type[i]
-#  angmom = shell.angmom
-#  print("Angmom ", angmom)
-  #print(shell.__dict__)
+for i, deriv in enumerate([[1, 0, 0], [0, 1, 0], [0, 0, 1]]):
 
-#  for k in range(0, shell.num_sph):
-#    #print(true_result[0, counter, :], derivative[counter, :])
-#    print(counter, true_result[0, counter, :], derivative[counter, :], np.abs(true_result[0, counter, :] - derivative[counter, :]))
-#    counter += 1
-#  print("")
-print(np.max(error), np.mean(error), np.std(error))
-assert np.all(error < 1e-10), "Gradient on electron density on GPU doesn't match gbasis."
+  derivative =  evaluate_deriv_basis(
+              basis, points, np.array(deriv), coord_type=type
+          )
+  error = np.abs(derivative - true_result[i, :, :])
 
+  print(deriv, np.max(error), np.mean(error), np.std(error))
+  assert np.all(error < 1e-10), "Gradient on electron density on GPU doesn't match gbasis."
 
-# # Test using finite-difference.
-#density = evaluate_basis(basis, points, coord_type=type)
-#for i in [0, 1, 2]:
-#  step = np.array([0., 0., 0.])
-#  step[i] = 1e-8
-#  density_2 = evaluate_basis(basis, points + step, coord_type=type)
-#  finite_diff = (density_2 - density) / 1e-8
-#  err = np.abs(finite_diff - true_result[i, :, :])
-#  print(np.max(err), np.mean(err), np.min(err))
-#  assert np.all(err < 1e-4), f"Gradient on electron density on GPU doesn't match finite difference in {i}th index."
     )", py::globals(), locals);
   } // Need this so that the python object doesn't outline the interpretor when we close it up.
   //py::finalize_interpreter(); // Close up the python interpretor for this test.

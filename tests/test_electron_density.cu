@@ -96,7 +96,7 @@ TEST_CASE( "Test Electron Density Against gbasis on random grid", "[evaluate_ele
     // Evaluate the electron density of this example.
     std::string fchk_file = GENERATE(
         "/home/ali-tehrani/SoftwareProjects/spec_database/tests/data/atom_01_H_N01_M2_ub3lyp_ccpvtz_g09.fchk",
-        "/home/ali-tehrani/SoftwareProjects/spec_database/tests/data/atom_he.fchk"
+        "/home/ali-tehrani/SoftwareProjects/spec_database/tests/data/atom_he.fchk",
         "/home/ali-tehrani/SoftwareProjects/spec_database/tests/data/atom_be.fchk",
         "/home/ali-tehrani/SoftwareProjects/spec_database/tests/data/atom_be_f_pure_orbital.fchk",
         "/home/ali-tehrani/SoftwareProjects/spec_database/tests/data/atom_kr.fchk",

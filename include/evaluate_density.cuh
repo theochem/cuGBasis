@@ -34,6 +34,7 @@ __device__ void evaluate_contractions(
  * @param[in,out] g_d_constant_basis Global pointer to the baiss set information stored in constant memory.
  * @param[out] d_contractions_array  The device pointer to the contractions array of size (M, N) where M is
  *                  the number of contractions and N is the number of points. This is in row-major order.
+ *                  Values should be set to zero before using.
  * @param[in] d_klower_bnd The lower bound (bottom, left-most, down-most point) of the grid.
  * @param[in] d_axes_array_col1 The first column of axes of the grid defining the directions of the coordinate system
  * @param[in] d_axes_array_col2 The second column of axes of the grid defining the direction of the coordinate system
