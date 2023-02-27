@@ -36,6 +36,9 @@ __host__ double* sum_rows_of_matrix(cublasHandle_t& handle, double* d_matrix, do
                                     double* all_ones_ptr, int numb_rows, int numb_cols, const double alpha,
                                     const std::string order = "col");
 
+/// Sum of two matrices to array1
+__global__ void sum_two_arrays_inplace(double* d_array1, double* d_array2, int numb_elements);
+
 
 /// Printing device memory for debugging.
 __global__ void print_first_ten_elements(double* arr);

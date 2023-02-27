@@ -106,8 +106,16 @@ __host__ double* gbasis::sum_rows_of_matrix(cublasHandle_t& handle, double* d_ma
 }
 
 
+__global__ void gbasis::sum_two_arrays_inplace(double* d_array1, double* d_array2, int numb_elements) {
+  int global_index = blockIdx.x * blockDim.x + threadIdx.x;
+  if(global_index < numb_elements) {
+    d_array1[global_index] = d_array1[global_index] + d_array2[global_index];
+  }
+}
+
+
 __global__ void gbasis::print_first_ten_elements(double* arr) {
-  printf("%.6f %.6f %.6f %.6f  %.6f %.6f \n", arr[0], arr[1], arr[2], arr[3], arr[4], arr[5]);
+  printf("%E %E %E %E  %E %E \n", arr[0], arr[1], arr[2], arr[3], arr[4], arr[5]);
 }
 __global__ void gbasis::print_all(double* arr, int number) {
   for(int i =0; i < number; i++) {
@@ -120,9 +128,7 @@ __global__ void gbasis::print_matrix(double* arr, int row, int column) {\
   for(int i =0; i < row; i++) {
     printf("ith row %d \n", i);
     for (int j = 0; j < column; j++) {
-      if (j == 0){
-        printf("%E    ", arr[k]);
-      }
+      printf("%E    ", arr[k]);
       k += 1;
     }
     printf("\n\n\n");
