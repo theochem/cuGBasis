@@ -23,9 +23,15 @@ find_package(gbasis_cuda_lib)
 #target_link_libraries(test_lib PRIVATE pybind11::embed) # Used to be able to do python
 #target_link_libraries(test_lib PRIVATE gbasis_cuda_lib)
 
-set(TEST_SOURCES test_electron_density.cu test_gradient.cu test_electrostatic_potential.cu)
+set(TEST_SOURCES
+        test_gradient.cu
+        test_kinetic_density.cu
+        test_laplacian.cu
+        test_electron_density.cu
+        test_electrostatic_potential.cu
+        )
 # Add test executable
-add_executable (tests main_test.cu catch.hpp ${TEST_SOURCES})  #
+add_executable (tests main_test.cu catch.hpp ${TEST_SOURCES})
 target_link_libraries(tests PRIVATE pybind11::embed)
 target_link_libraries(tests PRIVATE gbasis_cuda_lib)
 #target_link_libraries(tests PRIVATE Catch2::Catch2)
