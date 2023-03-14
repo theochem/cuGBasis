@@ -487,6 +487,11 @@ __host__ void gbasis::compute_first_term(
       d_sum_second_contractions, d_points, knumb_points
   );
   cudaDeviceSynchronize();
+  cudaError_t error = cudaGetLastError();
+  if (error != cudaSuccess) {
+    printf("CUDA error: %s \n", cudaGetErrorString(error));
+    exit(-1);
+  }
 
   // Allocate device memory for contractions array, and set all elements to zero via cudaMemset.
   //    The contraction array rows are the atomic orbitals and columns are grid points and is stored in row-major order.
@@ -499,6 +504,11 @@ __host__ void gbasis::compute_first_term(
       d_contractions, d_points, knumb_points
   );
   cudaDeviceSynchronize();
+  error = cudaGetLastError();
+  if (error != cudaSuccess) {
+    printf("CUDA error: %s \n", cudaGetErrorString(error));
+    exit(-1);
+  }
 
   cudaFree(d_points);
 
