@@ -125,7 +125,7 @@ TEST_CASE( "Test Gradient of Electron Density Against gbasis", "[evaluate_electr
     gbasis::IOData iodata = gbasis::get_molecular_basis_from_fchk(fchk_file);
 
     // Gemerate random grid.
-    int numb_pts = 1000;
+    int numb_pts = 700000;
     std::vector<double> points(3 * numb_pts);
     std::random_device rnd_device;
     std::mt19937  merseene_engine {rnd_device()};
@@ -163,22 +163,14 @@ rdm = (iodata.mo.coeffs * iodata.mo.occs).dot(iodata.mo.coeffs.T)
 points = points.reshape((numb_pts, 3), order="F")
 points = np.array(points, dtype=np.float64)
 
+indices_to_compute = np.random.choice(np.arange(len(points)), size=10000)
+true_result = true_result[indices_to_compute, :]
+points = points[indices_to_compute, :]
+
 gradient = evaluate_density_gradient(rdm, basis, points, coord_type=type)
 error = np.abs(gradient - true_result)
 print("Max, Mean, STD , Min error ", np.max(error), np.mean(error), np.std(error), np.min(error))
 assert np.all(error < 1e-10), "Gradient on electron density on GPU doesn't match gbasis."
-
-
-# # Test using finite-difference.
-#density = evaluate_density(rdm, basis, points, coord_type=type)
-#for i in [0, 1, 2]:
-#  step = np.array([0., 0., 0.])
-#  step[i] = 1e-8
-#  density_2 = evaluate_density(rdm, basis, points + step, coord_type=type)
-#  finite_diff = (density_2 - density) / 1e-8
-#  err = np.abs(finite_diff - true_result[:, i])
-#  print(np.max(err), np.mean(err), np.min(err))
-#  assert np.all(np.abs(finite_diff - true_result[:, i]) < 1e-4), f"Gradient on electron density on GPU doesn't match finite difference in {i}th index."
     )", py::globals(), locals);
   } // Need this so that the python object doesn't outline the interpretor when we close it up.
   //py::finalize_interpreter(); // Close up the python interpretor for this test.
