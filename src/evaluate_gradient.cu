@@ -792,156 +792,200 @@ __host__ std::vector<double> gbasis::evaluate_electron_density_gradient_handle(
   int knbasisfuncs = molecular_basis.numb_basis_functions();
   //printf("Number of basis-functions %d \n", knbasisfuncs);
 
-  // The output of the electron density in row-major and column-major order, respectively, with shape (N, 3).
-  std::vector<double> h_grad_electron_density(3 * knumb_points);
 
   /**
-   * Note that the maximum memory requirement is 5NM + M^2 + N + M doubles that this uses.
+   * Note that the maximum memory requirement is 5NM + M^2 + NM doubles that this uses.
    * So if you want to split based on points, then since gradient is stored in column-order it is bit tricky.
    * Solving for 11Gb we have (5NM + M^2 + N + M)8 bytes = 11Gb 1e9 (since 1e9 bytes = 1GB) Solve for N to get
    * N = (11 * 10^9 - M - M^2) / (5M + M).  This is the optimal number of points that it can do.
    */
-
-  // Transfer grid points to GPU, this is in column order with shape (N, 3)
-  double* d_points;
-  gbasis::cuda_check_errors(cudaMalloc((double **) &d_points, sizeof(double) * 3 * knumb_points));
-  gbasis::cuda_check_errors(cudaMemcpy(d_points, h_points,sizeof(double) * 3 * knumb_points, cudaMemcpyHostToDevice));
-
-  // Evaluate derivatives of each contraction this is in row-order (3, M, N), where M =number of basis-functions.
-  double* d_deriv_contractions;
-  gbasis::cuda_check_errors(cudaMalloc((double **) &d_deriv_contractions, sizeof(double) * 3 * knumb_points * knbasisfuncs));
-  dim3 threadsPerBlock(128);
-  dim3 grid((knumb_points + threadsPerBlock.x - 1) / (threadsPerBlock.x));
-  gbasis::evaluate_derivatives_contractions_from_constant_memory<<<grid, threadsPerBlock>>>(
-      d_deriv_contractions, d_points, knumb_points, knbasisfuncs
-  );
-  //gbasis::print_first_ten_elements<<<1, 1>>>(d_deriv_contractions);
-//  printf("Print the contractions \n");
-  //cudaDeviceSynchronize();
-  //gbasis::print_matrix<<<1, 1>>>(d_deriv_contractions, knbasisfuncs, knumb_points);
-  //cudaDeviceSynchronize();
-
-  // Allocate memory and calculate the contractions (without derivatives)
-  double *d_contractions;
-  gbasis::cuda_check_errors(cudaMalloc((double **) &d_contractions, sizeof(double) * knumb_points * knbasisfuncs));
-  dim3 threadsPerBlock2(320);
-  dim3 grid2((knumb_points + threadsPerBlock2.x - 1) / (threadsPerBlock2.x));
-  gbasis::evaluate_contractions_from_constant_memory_on_any_grid<<<grid2, threadsPerBlock2>>>(
-      d_contractions, d_points, knumb_points
-  );
-
-  // Free up points memory in device/gpu memory.
-  cudaFree(d_points);
-
-  // Transfer one-rdm from host/cpu memory to device/gpu memory.
-  double *d_one_rdm;
-  gbasis::cuda_check_errors(cudaMalloc((double **) &d_one_rdm, knbasisfuncs * knbasisfuncs * sizeof(double)));
-  gbasis::cublas_check_errors(cublasSetMatrix(iodata.GetOneRdmShape(), iodata.GetOneRdmShape(),
-                                              sizeof(double), iodata.GetMOOneRDM(),
-                                              iodata.GetOneRdmShape(), d_one_rdm,iodata.GetOneRdmShape()));
-
-  // Allocate memory to hold the matrix-multiplcation between d_one_rdm and each `i`th derivative (i_deriv, M, N)
-  double *d_temp_rdm_derivs;
-  gbasis::cuda_check_errors(cudaMalloc((double **) &d_temp_rdm_derivs, sizeof(double) * knumb_points * knbasisfuncs));
-  // Allocate device memory for gradient of electron density in column-major order.
-  double *d_gradient_electron_density;
-  gbasis::cuda_check_errors(cudaMalloc((double **) &d_gradient_electron_density, sizeof(double) * 3 * knumb_points));
-  // For each derivative, calculate the derivative of electron density seperately.
-  for(int i_deriv = 0; i_deriv < 3; i_deriv++) {
-    // Get the ith derivative of the contractions with shape (M, N) in row-major order, N=numb pts, M=numb basis funcs
-    double* d_ith_deriv = &d_deriv_contractions[i_deriv * knumb_points * knbasisfuncs];
-//    if (i_deriv == 0) {
-//      printf("Get the ith derivative %d \n", i_deriv);
-//      cudaDeviceSynchronize();
-//      gbasis::print_all<<<1, 1>>>(d_ith_deriv, 4 * 5);
-//      cudaDeviceSynchronize();
-//      printf("\n");
-//    }
-    // Matrix multiple one-rdm with the ith derivative of contractions
-    double alpha = 1.0;
-    double beta = 0.0;
-    gbasis::cublas_check_errors(cublasDgemm(handle, CUBLAS_OP_N, CUBLAS_OP_N,
-                                            knumb_points, knbasisfuncs, knbasisfuncs,
-                                            &alpha, d_ith_deriv, knumb_points,
-                                            d_one_rdm, knbasisfuncs, &beta,
-                                            d_temp_rdm_derivs, knumb_points));
-//    if (i_deriv == 0) {
-//      printf("Matrix multiply with one_rdm %d \n", i_deriv);
-//      cudaDeviceSynchronize();
-//      gbasis::print_all<<<1, 1>>>(d_temp_rdm_derivs, 4 * 5);
-//      cudaDeviceSynchronize();
-//      printf("\n");
-//    }
-
-    // Do a hadamard product with the original contractions.
-    dim3 threadsPerBlock2(320);
-    dim3 grid2((knumb_points * knbasisfuncs + threadsPerBlock.x - 1) / (threadsPerBlock.x));
-    gbasis::hadamard_product<<<grid2, threadsPerBlock2>>>(
-        d_temp_rdm_derivs, d_contractions, knbasisfuncs, knumb_points
-    );
-//    if (i_deriv == 0) {
-//      printf("Do Hadamard product with one-rdm \n");
-//      cudaDeviceSynchronize();
-//      gbasis::print_all<<<1, 1>>>(&d_temp_rdm_derivs[0], 4 * 5);
-//      printf("\n");
-//    }
-    // Take the sum to get the ith derivative of the electron density. This is done via matrix-vector multiplcaiton
-    // of ones
-    thrust::device_vector<double> all_ones(sizeof(double) * knbasisfuncs, 1.0);
-    double *deviceVecPtr = thrust::raw_pointer_cast(all_ones.data());
-    gbasis::cublas_check_errors(cublasDgemv(handle, CUBLAS_OP_N, knumb_points, knbasisfuncs,
-                                            &alpha, d_temp_rdm_derivs, knumb_points, deviceVecPtr, 1, &beta,
-                                            &d_gradient_electron_density[i_deriv * knumb_points], 1));
-//    if(i_deriv == 0) {
-//      printf("ith derivative %d \n", i_deriv);
-//      cudaDeviceSynchronize();
-//      gbasis::print_all<<<1, 1>>>(&d_gradient_electron_density[i_deriv * knumb_points], 4 * 5);
-//      printf("\n");
-//    }
-//    if(i_deriv == 0) {
-//      printf("Actual ith derivative %d \n", i_deriv);
-//      cudaDeviceSynchronize();
-//      gbasis::print_all<<<1, 1>>>(d_ith_deriv_electron_density, 4 * 5);
-//      printf("\n");
-//    }
-
-    // Free up memory in this iteration for the next calculation of the derivative.
-    all_ones.clear();
-    all_ones.shrink_to_fit();
+  size_t t_numb_pts = knumb_points;
+  size_t t_nbasis = knbasisfuncs;
+  size_t t_highest_number_of_bytes = sizeof(double) * (5 * t_numb_pts * t_nbasis + t_nbasis * t_nbasis + 3 *  t_numb_pts);
+  size_t free_mem = 0;  // in bytes
+  size_t total_mem = 0;  // in bytes
+  cudaError_t error_id = cudaMemGetInfo(&free_mem, &total_mem);
+  printf("Total Free Memory Avaiable in GPU is %zu \n", free_mem);
+  // Calculate how much memory can fit inside the GPU memory.
+  size_t t_numb_chunks = t_highest_number_of_bytes / free_mem;
+  // Calculate how many points we can compute with free memory minus one gigabyte for safe measures:
+  //    This is calculated by solving (5 * N M + M^2 + 3N) * 8 bytes = Free memory (in bytes)  for N to get:
+  size_t t_numb_pts_of_each_chunk = (((free_mem - 1000000000) / (sizeof(double)))  - t_nbasis * t_nbasis) /
+      (5 * t_nbasis + 3);
+  if (t_numb_pts_of_each_chunk == 0 and t_numb_chunks > 1.0) {
+    // Haven't handle this case yet
+    assert(0);
   }
 
-  cudaFree(d_temp_rdm_derivs);
-  cudaFree(d_one_rdm);
-  cudaFree(d_deriv_contractions);
-  cudaFree(d_contractions);
+  // Iterate through each chunk of the data set.
+  size_t index_to_copy = 0;  // Index on where to start copying to h_electron_density (start of sub-grid)
+  size_t i_iter = 0;
+  // The output of the electron density in row-major with shape (N, 3).
+  std::vector<double> h_grad_electron_density_row(3 * knumb_points);
 
-  // Multiply the derivative by two since electron density = sum | mo-contractions |^2
-  dim3 threadsPerBlock3(320);
-  dim3 grid3((3 * knumb_points + threadsPerBlock.x - 1) / (threadsPerBlock.x));
-  gbasis::multiply_scalar<<< grid3, threadsPerBlock3>>>(d_gradient_electron_density, 2.0, 3 * knumb_points);
+  while(index_to_copy < knumb_points) {
+  // For each iteration, calculate number of points it should do, number of bytes it corresponds to.
+    // At the last chunk,need to do the remaining number of points, hence a minimum is used here.
+    size_t number_pts_iter = std::min(
+        t_numb_pts - i_iter * t_numb_pts_of_each_chunk, t_numb_pts_of_each_chunk
+    );
+//    printf("Number of points %zu \n", number_pts_iter);
+//    printf("Maximal number of points in x-axis to do each chunk %zu \n", number_pts_iter);
 
-  // Transfer from column-major to row-major order
-  double *d_gradient_clone;
-  gbasis::cuda_check_errors(cudaMalloc((double **) &d_gradient_clone, sizeof(double) * 3 * knumb_points));
-  gbasis::cuda_check_errors(
-      cudaMemcpy(d_gradient_clone, d_gradient_electron_density,
-                 sizeof(double) * 3 * knumb_points, cudaMemcpyDeviceToDevice)
-  );
-  const double alpha = 1.0;
-  const double beta = 0.0;
-  gbasis::cublas_check_errors(cublasDgeam(handle, CUBLAS_OP_T, CUBLAS_OP_N,
-                                          3, knumb_points,
-                                          &alpha, d_gradient_electron_density, knumb_points,
-                                          &beta, d_gradient_electron_density, 3,
-                                          d_gradient_clone, 3));
-  cudaFree(d_gradient_electron_density);
+    // Transfer grid points to GPU, this is in column order with shape (N, 3)
+    //  Becasue h_points is in column-order and we're slicing based on the number of points that can fit in memory.
+    //  Need to slice each (x,y,z) coordinate seperately.
+    double *d_points;
+    gbasis::cuda_check_errors(cudaMalloc((double **) &d_points, sizeof(double) * 3 * number_pts_iter));
+    for(int i_slice = 0; i_slice < 3; i_slice++) {
+      gbasis::cuda_check_errors(cudaMemcpy(&d_points[i_slice * number_pts_iter],
+                                           &h_points[i_slice * knumb_points + index_to_copy],
+                                           sizeof(double) * number_pts_iter,
+                                           cudaMemcpyHostToDevice));
+    }
 
-  // Transfer the gradient  of device memory to host memory in row-major order.
-  gbasis::cuda_check_errors(cudaMemcpy(h_grad_electron_density.data(),
-                                       d_gradient_clone,
-                                       sizeof(double) * 3 * knumb_points, cudaMemcpyDeviceToHost));
-  cudaFree(d_gradient_clone);
 
-  // Free-One Rdm and d_deriv contractions and destroy the cublas handle
-  return h_grad_electron_density;
+    // Evaluate derivatives of each contraction this is in row-order (3, M, N), where M =number of basis-functions.
+    double *d_deriv_contractions;
+    gbasis::cuda_check_errors(cudaMalloc((double **) &d_deriv_contractions,
+                                         sizeof(double) * 3 * number_pts_iter * knbasisfuncs));
+    dim3 threadsPerBlock(128);
+    dim3 grid((number_pts_iter + threadsPerBlock.x - 1) / (threadsPerBlock.x));
+    gbasis::evaluate_derivatives_contractions_from_constant_memory<<<grid, threadsPerBlock>>>(
+        d_deriv_contractions, d_points, number_pts_iter, knbasisfuncs
+    );
+    //gbasis::print_first_ten_elements<<<1, 1>>>(d_deriv_contractions);
+    //gbasis::print_matrix<<<1, 1>>>(d_deriv_contractions, knbasisfuncs, knumb_points);
+    //cudaDeviceSynchronize();
+
+    // Allocate memory and calculate the contractions (without derivatives)
+    double *d_contractions;
+    gbasis::cuda_check_errors(cudaMalloc((double **) &d_contractions, sizeof(double) * t_nbasis * number_pts_iter));
+    dim3 threadsPerBlock2(320);
+    dim3 grid2((number_pts_iter + threadsPerBlock2.x - 1) / (threadsPerBlock2.x));
+    gbasis::evaluate_contractions_from_constant_memory_on_any_grid<<<grid2, threadsPerBlock2>>>(
+        d_contractions, d_points, number_pts_iter
+    );
+
+    // Free up points memory in device/gpu memory.
+    cudaFree(d_points);
+
+
+    // Allocate memory to hold the matrix-multiplcation between d_one_rdm and each `i`th derivative (i_deriv, M, N)
+    double *d_temp_rdm_derivs;
+    gbasis::cuda_check_errors(cudaMalloc((double **) &d_temp_rdm_derivs, sizeof(double) * number_pts_iter * knbasisfuncs));
+    // Allocate device memory for gradient of electron density in column-major order.
+    double *d_gradient_electron_density;
+    gbasis::cuda_check_errors(cudaMalloc((double **) &d_gradient_electron_density, sizeof(double) * 3 * number_pts_iter));
+    // For each derivative, calculate the derivative of electron density seperately.
+    for (int i_deriv = 0; i_deriv < 3; i_deriv++) {
+      // Get the ith derivative of the contractions with shape (M, N) in row-major order, N=numb pts, M=numb basis funcs
+      double *d_ith_deriv = &d_deriv_contractions[i_deriv * number_pts_iter * knbasisfuncs];
+      //    if (i_deriv == 0) {
+      //      printf("Get the ith derivative %d \n", i_deriv);
+      //      cudaDeviceSynchronize();
+      //      gbasis::print_all<<<1, 1>>>(d_ith_deriv, 4 * 5);
+      //      cudaDeviceSynchronize();
+      //      printf("\n");
+      //    }
+
+      // Transfer one-rdm from host/cpu memory to device/gpu memory.
+      double *d_one_rdm;
+      gbasis::cuda_check_errors(cudaMalloc((double **) &d_one_rdm, knbasisfuncs * knbasisfuncs * sizeof(double)));
+      gbasis::cublas_check_errors(cublasSetMatrix(iodata.GetOneRdmShape(), iodata.GetOneRdmShape(),
+                                                  sizeof(double), iodata.GetMOOneRDM(),
+                                                  iodata.GetOneRdmShape(), d_one_rdm, iodata.GetOneRdmShape()));
+
+      // Matrix multiple one-rdm with the ith derivative of contractions
+      double alpha = 1.0;
+      double beta = 0.0;
+      gbasis::cublas_check_errors(cublasDgemm(handle, CUBLAS_OP_N, CUBLAS_OP_N,
+                                              number_pts_iter, knbasisfuncs, knbasisfuncs,
+                                              &alpha, d_ith_deriv, number_pts_iter,
+                                              d_one_rdm, knbasisfuncs, &beta,
+                                              d_temp_rdm_derivs, number_pts_iter));
+      cudaFree(d_one_rdm);
+
+      //    if (i_deriv == 0) {
+      //      printf("Matrix multiply with one_rdm %d \n", i_deriv);
+      //      cudaDeviceSynchronize();
+      //      gbasis::print_all<<<1, 1>>>(d_temp_rdm_derivs, 4 * 5);
+      //      cudaDeviceSynchronize();
+      //      printf("\n");
+      //    }
+
+      // Do a hadamard product with the original contractions.
+      dim3 threadsPerBlock2(320);
+      dim3 grid2((number_pts_iter * knbasisfuncs + threadsPerBlock.x - 1) / (threadsPerBlock.x));
+      gbasis::hadamard_product<<<grid2, threadsPerBlock2>>>(
+          d_temp_rdm_derivs, d_contractions, knbasisfuncs, number_pts_iter
+      );
+      //    if (i_deriv == 0) {
+      //      printf("Do Hadamard product with one-rdm \n");
+      //      cudaDeviceSynchronize();
+      //      gbasis::print_all<<<1, 1>>>(&d_temp_rdm_derivs[0], 4 * 5);
+      //      printf("\n");
+      //    }
+      // Take the sum to get the ith derivative of the electron density. This is done via matrix-vector multiplcaiton
+      // of ones
+      thrust::device_vector<double> all_ones(sizeof(double) * knbasisfuncs, 1.0);
+      double *deviceVecPtr = thrust::raw_pointer_cast(all_ones.data());
+      gbasis::cublas_check_errors(cublasDgemv(handle, CUBLAS_OP_N, number_pts_iter, knbasisfuncs,
+                                              &alpha, d_temp_rdm_derivs, number_pts_iter, deviceVecPtr, 1, &beta,
+                                              &d_gradient_electron_density[i_deriv * number_pts_iter], 1));
+      //    if(i_deriv == 0) {
+      //      printf("ith derivative %d \n", i_deriv);
+      //      cudaDeviceSynchronize();
+      //      gbasis::print_all<<<1, 1>>>(&d_gradient_electron_density[i_deriv * knumb_points], 4 * 5);
+      //      printf("\n");
+      //    }
+      //    if(i_deriv == 0) {
+      //      printf("Actual ith derivative %d \n", i_deriv);
+      //      cudaDeviceSynchronize();
+      //      gbasis::print_all<<<1, 1>>>(d_ith_deriv_electron_density, 4 * 5);
+      //      printf("\n");
+      //    }
+
+      // Free up memory in this iteration for the next calculation of the derivative.
+      all_ones.clear();
+      all_ones.shrink_to_fit();
+    }
+
+    cudaFree(d_temp_rdm_derivs);
+    cudaFree(d_deriv_contractions);
+    cudaFree(d_contractions);
+
+    // Multiply the derivative by two since electron density = sum | mo-contractions |^2
+    dim3 threadsPerBlock3(320);
+    dim3 grid3((3 * number_pts_iter + threadsPerBlock.x - 1) / (threadsPerBlock.x));
+    gbasis::multiply_scalar<<< grid3, threadsPerBlock3>>>(d_gradient_electron_density, 2.0, 3 * number_pts_iter);
+
+    // Transfer from column-major to row-major order
+    double *d_gradient_clone;
+    gbasis::cuda_check_errors(cudaMalloc((double **) &d_gradient_clone, sizeof(double) * 3 * number_pts_iter));
+    gbasis::cuda_check_errors(
+        cudaMemcpy(d_gradient_clone, d_gradient_electron_density,
+                   sizeof(double) * 3 * number_pts_iter, cudaMemcpyDeviceToDevice)
+    );
+    const double alpha = 1.0;
+    const double beta = 0.0;
+    gbasis::cublas_check_errors(cublasDgeam(handle, CUBLAS_OP_T, CUBLAS_OP_N,
+                                            3, number_pts_iter,
+                                            &alpha, d_gradient_electron_density, number_pts_iter,
+                                            &beta, d_gradient_electron_density, 3,
+                                            d_gradient_clone, 3));
+    cudaFree(d_gradient_electron_density);
+
+    // Transfer the gradient  of device memory to host memory in row-major order.
+    gbasis::cuda_check_errors(cudaMemcpy(&h_grad_electron_density_row[3 * index_to_copy],
+                                         d_gradient_clone,
+                                         sizeof(double) * 3 * number_pts_iter, cudaMemcpyDeviceToHost));
+    cudaFree(d_gradient_clone);
+
+    // Update lower-bound of the grid for the next iteration
+    index_to_copy += number_pts_iter;
+    i_iter += 1;  // Update the index for each iteration.
+  } // end while loop
+
+  return h_grad_electron_density_row;
 }

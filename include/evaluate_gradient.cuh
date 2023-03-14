@@ -69,7 +69,7 @@ __host__ std::vector<double> evaluate_contraction_derivatives(
  * @param[in] iodata  The IOData object that stores the molecules basis.
  * @param[in] h_points Array in column-major order that stores the three-dimensional points.
  * @param[in] knumb_points Number of points in d_points.
- * @return Return the gradient of electron density of size (knumb_points, 3) in column-major order.
+ * @return Return the gradient of electron density of size (knumb_points, 3) in row-major order.
  */
 __host__ std::vector<double> evaluate_electron_density_gradient(
     gbasis::IOData& iodata, const double* h_points, const int knumb_points
