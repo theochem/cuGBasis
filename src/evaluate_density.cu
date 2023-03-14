@@ -729,11 +729,16 @@ __host__ std::vector<double> gbasis::evaluate_electron_density_on_any_grid_handl
     gbasis::cuda_check_errors(cudaMemset(d_contractions, 0, total_contraction_arr_iter_bytes));
 
     // Transfer grid points to GPU, this is in column order with shape (N, 3)
-    double* d_points;
+    //  Becasue h_points is in column-order and we're slicing based on the number of points that can fit in memory.
+    //  Need to slice each (x,y,z) coordinate seperately.
+    double *d_points;
     gbasis::cuda_check_errors(cudaMalloc((double **) &d_points, sizeof(double) * 3 * number_pts_iter));
-    gbasis::cuda_check_errors(
-        cudaMemcpy(d_points, &h_points[3 * index_to_copy], sizeof(double) * 3 * number_pts_iter, cudaMemcpyHostToDevice)
-    );
+    for(int i_slice = 0; i_slice < 3; i_slice++) {
+      gbasis::cuda_check_errors(cudaMemcpy(&d_points[i_slice * number_pts_iter],
+                                           &h_points[i_slice * knumb_points + index_to_copy],
+                                           sizeof(double) * number_pts_iter,
+                                           cudaMemcpyHostToDevice));
+    }
 
     // Evaluate contractions. The number of threads is maximal and the number of thread blocks is calculated.
     // Produces a matrix of size (N, M) where N is the number of points
