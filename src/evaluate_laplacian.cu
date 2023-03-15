@@ -1,4 +1,5 @@
 #include <thrust/device_vector.h>
+#include <algorithm>
 
 #include "../include/evaluate_laplacian.cuh"
 #include "../include/basis_to_gpu.cuh"
@@ -468,103 +469,149 @@ __host__ void gbasis::compute_first_term(
       gbasis::evaluate_contractions_from_constant_memory_on_any_grid, cudaFuncCachePreferL1
   );
 
-  double* d_points;
-  gbasis::cuda_check_errors(cudaMalloc((double **) &d_points, sizeof(double) * 3 * knumb_points));
-  gbasis::cuda_check_errors(cudaMemcpy(d_points, h_points, sizeof(double) * 3 * knumb_points, cudaMemcpyHostToDevice));
-
-  // Allocate device memory for sum of second derivatives of contractions array,
-  //    This array has shape (M, N) and is stored in row-major order.
-  double *d_sum_second_contractions;
-  size_t second_derivs_number_bytes = sizeof(double) * knumb_points * knbasisfuncs;
-  gbasis::cuda_check_errors(cudaMalloc((double **) &d_sum_second_contractions, second_derivs_number_bytes));
-  gbasis::cuda_check_errors(cudaMemset(d_sum_second_contractions, 0, second_derivs_number_bytes));
-  // Evaluate sum of second derivatives contractions. The number of threads is maximal and the number
-  // of thread blocks is calculated. Produces a matrix of size (N, M) where N is the number of points
-  int ilen = 128;  // 128 320 1024
-  dim3 threadsPerBlock(ilen);
-  dim3 grid((knumb_points + threadsPerBlock.x - 1) / (threadsPerBlock.x));
-  gbasis::evaluate_sum_of_second_contractions_from_constant_memory_on_any_grid<<<grid, threadsPerBlock>>>(
-      d_sum_second_contractions, d_points, knumb_points
-  );
-  cudaDeviceSynchronize();
-  cudaError_t error = cudaGetLastError();
-  if (error != cudaSuccess) {
-    printf("CUDA error: %s \n", cudaGetErrorString(error));
-    exit(-1);
+  /**
+   * Note that the maximum memory requirement is 3NM + M^2, where N=numb points and M=numb basis funcs.
+   * Solving for 11Gb we have (3NM + M^2)8 bytes = 11Gb 1e9 (since 1e9 bytes = 1GB) Solve for N to get
+   * N = (11 * 10^9 - M^2) / 3M.  This is the optimal number of points that it can do.
+   */
+  size_t t_numb_pts = knumb_points;
+  size_t t_nbasis = knbasisfuncs;
+  size_t t_highest_number_of_bytes = sizeof(double) * (3 * t_numb_pts * t_nbasis + t_nbasis * t_nbasis);
+  size_t free_mem = 0;  // in bytes
+  size_t total_mem = 0;  // in bytes
+  cudaError_t error_id = cudaMemGetInfo(&free_mem, &total_mem);
+  // printf("Total Free Memory Avaiable in GPU is %zu \n", free_mem);
+  // Calculate how much memory can fit inside the GPU memory.
+  size_t t_numb_chunks = t_highest_number_of_bytes / free_mem;
+  // Calculate how many points we can compute with free memory minus 0.5 gigabyte for safe measures:
+  //    This is calculated by solving (5 * N M + M^2 + 3N) * 8 bytes = Free memory (in bytes)  for N to get:
+  size_t t_numb_pts_of_each_chunk = (((free_mem - 500000000) / (sizeof(double)))  - t_nbasis * t_nbasis) / (3 * t_nbasis);
+  if (t_numb_pts_of_each_chunk == 0 and t_numb_chunks > 1.0) {
+    // Haven't handle this case yet
+    assert(0);
   }
 
-  // Allocate device memory for contractions array, and set all elements to zero via cudaMemset.
-  //    The contraction array rows are the atomic orbitals and columns are grid points and is stored in row-major order.
-  double *d_contractions;
-  gbasis::cuda_check_errors(cudaMalloc((double **) &d_contractions, second_derivs_number_bytes));
-  gbasis::cuda_check_errors(cudaMemset(d_contractions, 0, second_derivs_number_bytes));
-  // Evaluate contractions. The number of threads is maximal and the number of thread blocks is calculated.
-  // Produces a matrix of size (N, M) where N is the number of points
-  gbasis::evaluate_contractions_from_constant_memory_on_any_grid<<<grid, threadsPerBlock>>>(
-      d_contractions, d_points, knumb_points
-  );
-  cudaDeviceSynchronize();
-  error = cudaGetLastError();
-  if (error != cudaSuccess) {
-    printf("CUDA error: %s \n", cudaGetErrorString(error));
-    exit(-1);
+  // Iterate through each chunk of the data set.
+  size_t index_to_copy = 0;  // Index on where to start copying to h_electron_density (start of sub-grid)
+  size_t i_iter = 0;
+  while(index_to_copy < knumb_points) {
+    // For each iteration, calculate number of points it should do, number of bytes it corresponds to.
+    // At the last chunk,need to do the remaining number of points, hence a minimum is used here.
+    size_t number_pts_iter = std::min(
+        t_numb_pts - i_iter * t_numb_pts_of_each_chunk, t_numb_pts_of_each_chunk
+    );
+
+    // Transfer grid points to GPU, this is in column order with shape (N, 3)
+    //  Becasue h_points is in column-order and we're slicing based on the number of points that can fit in memory.
+    //  Need to slice each (x,y,z) coordinate seperately.
+    double *d_points;
+    gbasis::cuda_check_errors(cudaMalloc((double **) &d_points, sizeof(double) * 3 * number_pts_iter));
+    for(int i_slice = 0; i_slice < 3; i_slice++) {
+      gbasis::cuda_check_errors(cudaMemcpy(&d_points[i_slice * number_pts_iter],
+                                           &h_points[i_slice * knumb_points + index_to_copy],
+                                           sizeof(double) * number_pts_iter,
+                                           cudaMemcpyHostToDevice));
+    }
+
+
+    // Allocate device memory for sum of second derivatives of contractions array,
+    //    This array has shape (M, N) and is stored in row-major order.
+    double *d_sum_second_contractions;
+    size_t second_derivs_number_bytes = sizeof(double) * number_pts_iter * knbasisfuncs;
+    gbasis::cuda_check_errors(cudaMalloc((double **) &d_sum_second_contractions, second_derivs_number_bytes));
+    gbasis::cuda_check_errors(cudaMemset(d_sum_second_contractions, 0, second_derivs_number_bytes));
+    // Evaluate sum of second derivatives contractions. The number of threads is maximal and the number
+    // of thread blocks is calculated. Produces a matrix of size (N, M) where N is the number of points
+    int ilen = 128;  // 128 320 1024
+    dim3 threadsPerBlock(ilen);
+    dim3 grid((number_pts_iter + threadsPerBlock.x - 1) / (threadsPerBlock.x));
+    gbasis::evaluate_sum_of_second_contractions_from_constant_memory_on_any_grid<<<grid, threadsPerBlock>>>(
+        d_sum_second_contractions, d_points, number_pts_iter
+    );
+    cudaDeviceSynchronize();
+    cudaError_t error = cudaGetLastError();
+    if (error != cudaSuccess) {
+      printf("CUDA error: %s \n", cudaGetErrorString(error));
+      exit(-1);
+    }
+
+    // Allocate device memory for contractions array, and set all elements to zero via cudaMemset.
+    //    The contraction array rows are the atomic orbitals and columns are grid points and is stored in row-major order.
+    double *d_contractions;
+    gbasis::cuda_check_errors(cudaMalloc((double **) &d_contractions, second_derivs_number_bytes));
+    gbasis::cuda_check_errors(cudaMemset(d_contractions, 0, second_derivs_number_bytes));
+    // Evaluate contractions. The number of threads is maximal and the number of thread blocks is calculated.
+    // Produces a matrix of size (N, M) where N is the number of points
+    gbasis::evaluate_contractions_from_constant_memory_on_any_grid<<<grid, threadsPerBlock>>>(
+        d_contractions, d_points, number_pts_iter
+    );
+    cudaDeviceSynchronize();
+    error = cudaGetLastError();
+    if (error != cudaSuccess) {
+      printf("CUDA error: %s \n", cudaGetErrorString(error));
+      exit(-1);
+    }
+
+    cudaFree(d_points);
+
+    // Transfer one-rdm from host/cpu memory to device/gpu memory.
+    double *d_one_rdm;
+    gbasis::cuda_check_errors(cudaMalloc((double **) &d_one_rdm, knbasisfuncs * knbasisfuncs * sizeof(double)));
+    gbasis::cublas_check_errors(cublasSetMatrix(iodata.GetOneRdmShape(), iodata.GetOneRdmShape(),
+                                                sizeof(double), iodata.GetMOOneRDM(),
+                                                iodata.GetOneRdmShape(), d_one_rdm, iodata.GetOneRdmShape()));
+
+    // Matrix-Multiplication of the One-RDM with the sum of second derivatives
+    double *d_first_term_helper;
+    gbasis::cuda_check_errors(cudaMalloc((double **) &d_first_term_helper, second_derivs_number_bytes));
+    double alpha = 1.;
+    double beta = 0.;
+    gbasis::cublas_check_errors(cublasDgemm(handle, CUBLAS_OP_N, CUBLAS_OP_N,
+                                            number_pts_iter, iodata.GetOneRdmShape(), iodata.GetOneRdmShape(),
+                                            &alpha, d_sum_second_contractions, number_pts_iter,
+                                            d_one_rdm, iodata.GetOneRdmShape(), &beta,
+                                            d_first_term_helper, number_pts_iter));
+    cudaFree(d_sum_second_contractions);
+    cudaFree(d_one_rdm);
+
+    // Hadamard Product with the Contractions Array
+    dim3 threadsPerBlock2(320);
+    dim3 grid2((knumb_points * knbasisfuncs + threadsPerBlock.x - 1) / (threadsPerBlock.x));
+    gbasis::hadamard_product<<<grid2, threadsPerBlock2>>>(d_first_term_helper, d_contractions, knbasisfuncs, number_pts_iter);
+
+    cudaFree(d_contractions);
+
+    // Allocate device memory for electron density.
+    double *d_first_term;
+    gbasis::cuda_check_errors(cudaMalloc((double **) &d_first_term, sizeof(double) * number_pts_iter));
+
+    // Sum up the columns of d_first_term_helper to get the first term. This is done by doing a matrix multiplication of
+    //    all ones of the transpose of d_final. Here I'm using the fact that d_final is in row major order.
+    thrust::device_vector<double> all_ones(sizeof(double) * knbasisfuncs, 1.0);
+    double *deviceVecPtr = thrust::raw_pointer_cast(all_ones.data());
+    gbasis::cublas_check_errors(cublasDgemv(handle, CUBLAS_OP_N, number_pts_iter, knbasisfuncs,
+                                            &alpha, d_first_term_helper, number_pts_iter, deviceVecPtr, 1, &beta,
+                                            d_first_term, 1));
+    cudaFree(d_first_term_helper);
+
+    dim3 threadsPerBlock3(320);
+    dim3 grid3((knumb_points + threadsPerBlock.x - 1) / (threadsPerBlock.x));
+    gbasis::multiply_scalar<<< grid3, threadsPerBlock3>>>(d_first_term, 2.0, number_pts_iter);
+
+
+    // Transfer first term from device memory to host memory.
+    gbasis::cuda_check_errors(cudaMemcpy(&h_laplacian[index_to_copy], d_first_term,
+                                         sizeof(double) * number_pts_iter, cudaMemcpyDeviceToHost));
+    cudaFree(d_first_term);
+
+    all_ones.clear();
+    all_ones.shrink_to_fit();
+
+
+    // Update lower-bound of the grid for the next iteration
+    index_to_copy += number_pts_iter;
+    i_iter += 1;  // Update the index for each iteration.
   }
-
-  cudaFree(d_points);
-
-  // Transfer one-rdm from host/cpu memory to device/gpu memory.
-  double *d_one_rdm;
-  gbasis::cuda_check_errors(cudaMalloc((double **) &d_one_rdm, knbasisfuncs * knbasisfuncs * sizeof(double)));
-  gbasis::cublas_check_errors(cublasSetMatrix(iodata.GetOneRdmShape(), iodata.GetOneRdmShape(),
-                                              sizeof(double), iodata.GetMOOneRDM(),
-                                              iodata.GetOneRdmShape(), d_one_rdm,iodata.GetOneRdmShape()));
-
-  // Matrix-Multiplication of the One-RDM with the sum of second derivatives
-  double *d_first_term_helper;
-  gbasis::cuda_check_errors(cudaMalloc((double **) &d_first_term_helper, second_derivs_number_bytes));
-  double alpha = 1.;
-  double beta = 0.;
-  gbasis::cublas_check_errors(cublasDgemm(handle, CUBLAS_OP_N, CUBLAS_OP_N,
-                                          knumb_points, iodata.GetOneRdmShape(), iodata.GetOneRdmShape(),
-                                          &alpha, d_sum_second_contractions, knumb_points,
-                                          d_one_rdm, iodata.GetOneRdmShape(), &beta,
-                                          d_first_term_helper, knumb_points));
-  cudaFree(d_sum_second_contractions);
-  cudaFree(d_one_rdm);
-
-  // Hadamard Product with the Contractions Array
-  dim3 threadsPerBlock2(320);
-  dim3 grid2((knumb_points * knbasisfuncs + threadsPerBlock.x - 1) / (threadsPerBlock.x));
-  gbasis::hadamard_product<<<grid2, threadsPerBlock2>>>(d_first_term_helper, d_contractions, knbasisfuncs, knumb_points);
-
-  cudaFree(d_contractions);
-
-  // Allocate device memory for electron density.
-  double *d_first_term;
-  gbasis::cuda_check_errors(cudaMalloc((double **) &d_first_term, sizeof(double) * knumb_points));
-
-  // Sum up the columns of d_first_term_helper to get the first term. This is done by doing a matrix multiplication of
-  //    all ones of the transpose of d_final. Here I'm using the fact that d_final is in row major order.
-  thrust::device_vector<double> all_ones(sizeof(double) * knbasisfuncs, 1.0);
-  double *deviceVecPtr = thrust::raw_pointer_cast(all_ones.data());
-  gbasis::cublas_check_errors(cublasDgemv(handle, CUBLAS_OP_N, knumb_points, knbasisfuncs,
-                                          &alpha, d_first_term_helper, knumb_points, deviceVecPtr, 1, &beta,
-                                          d_first_term, 1));
-  cudaFree(d_first_term_helper);
-
-
-  dim3 threadsPerBlock3(320);
-  dim3 grid3((knumb_points + threadsPerBlock.x - 1) / (threadsPerBlock.x));
-  gbasis::multiply_scalar<<< grid3, threadsPerBlock3>>>(d_first_term, 2.0, knumb_points);
-
-
-  // Transfer first term from device memory to host memory.
-  gbasis::cuda_check_errors(cudaMemcpy(&h_laplacian[0], d_first_term,
-                                       sizeof(double) * knumb_points, cudaMemcpyDeviceToHost));
-  cudaFree(d_first_term);
-
-  all_ones.clear();
-  all_ones.shrink_to_fit();
 }
 
 __host__ std::vector<double> gbasis::evaluate_laplacian_on_any_grid_handle(
@@ -602,91 +649,141 @@ __host__ std::vector<double> gbasis::evaluate_laplacian_on_any_grid_handle(
    * Compute second term:
    *        2 \sum_{k in {x,y,z}} \sum_{i, j}  c_{i, j}  [d \phi_i \ dx_k] [d\phi_j \ dx_k]
    */
-  double* d_points2;
-  gbasis::cuda_check_errors(cudaMalloc((double **) &d_points2, sizeof(double) * 3 * knumb_points));
-  gbasis::cuda_check_errors(cudaMemcpy(d_points2, h_points, sizeof(double) * 3 * knumb_points, cudaMemcpyHostToDevice));
+  /**
+   * Note that the maximum memory requirement is 3NM + M^2 + NM + M, where N=numb points and M=numb basis funcs.
+   * Solving for 11Gb we have (3NM + M^2 + NM + M)8 bytes = 11Gb 1e9 (since 1e9 bytes = 1GB) Solve for N to get
+   * N = (11 * 10^9 - M^2 - M) / (3M + M).  This is the optimal number of points that it can do.
+   */
+  size_t t_numb_pts = knumb_points;
+  size_t t_nbasis = knbasisfuncs;
+  size_t t_highest_number_of_bytes = sizeof(double) * (
+      3 * t_numb_pts * t_nbasis + t_nbasis * t_numb_pts + t_nbasis * t_nbasis + t_nbasis
+      );
+  size_t free_mem = 0;  // in bytes
+  size_t total_mem = 0;  // in bytes
+  cudaError_t error_id = cudaMemGetInfo(&free_mem, &total_mem);
+  //  printf("Total Free Memory Avaiable in GPU is %zu \n", free_mem);
+  // Calculate how much memory can fit inside the GPU memory.
+  size_t t_numb_chunks = t_highest_number_of_bytes / free_mem;
+  // Calculate how many points we can compute with free memory minus 0.5 gigabyte for safe measures:
+  //    This is calculated by solving (5 * N M + M^2 + 3N) * 8 bytes = Free memory (in bytes)  for N to get:
+  size_t t_numb_pts_of_each_chunk = (
+      ((free_mem - 500000000) / (sizeof(double)))  - t_nbasis * t_nbasis - t_nbasis) / (3 * t_nbasis + t_nbasis);
+  if (t_numb_pts_of_each_chunk == 0 and t_numb_chunks > 1.0) {
+    // Haven't handle this case yet
+    assert(0);
+  }
 
-  // Evaluate derivatives of each contraction this is in row-order (3, M, N), where M =number of basis-functions.
-  double* d_deriv_contractions;
-  gbasis::cuda_check_errors(cudaMalloc((double **) &d_deriv_contractions, sizeof(double) * 3 * knumb_points * knbasisfuncs));
-  gbasis::cuda_check_errors(cudaMemset(d_deriv_contractions, 0, sizeof(double) * 3 * knumb_points * knbasisfuncs));
-  dim3 threadsPerBlock4(128);
-  dim3 grid4((knumb_points + threadsPerBlock4.x - 1) / (threadsPerBlock4.x));
-  gbasis::evaluate_derivatives_contractions_from_constant_memory<<<grid4, threadsPerBlock4>>>(
-      d_deriv_contractions, d_points2, knumb_points, knbasisfuncs
-  );
-
-  cudaFree(d_points2);
-
-  // Transfer one-rdm from host/cpu memory to device/gpu memory.
-  double* d_one_rdm;
-  gbasis::cuda_check_errors(cudaMalloc((double **) &d_one_rdm, knbasisfuncs * knbasisfuncs * sizeof(double)));
-  gbasis::cublas_check_errors(cublasSetMatrix(iodata.GetOneRdmShape(), iodata.GetOneRdmShape(),
-                                              sizeof(double), iodata.GetMOOneRDM(),
-                                              iodata.GetOneRdmShape(), d_one_rdm, iodata.GetOneRdmShape()));
-
-  // Allocate memory to hold the matrix-multiplcation between d_one_rdm and each `i`th derivative (i_deriv, M, N)
-  ///  This is in row-major order
-  double *d_temp_rdm_derivs;
-  gbasis::cuda_check_errors(cudaMalloc((double **) &d_temp_rdm_derivs, sizeof(double) * knumb_points * knbasisfuncs));
-  // Allocate device memory for gradient of electron density in column-major order.
-  double *d_second_term;
-  gbasis::cuda_check_errors(cudaMalloc((double **) &d_second_term, sizeof(double) * knumb_points));
-  // Allocate host memory to add to the h_laplacian
-  std::vector<double> h_second_term(knumb_points);
-  double alpha = 1.0;
-  double beta = 0.0;
-  for(int i_deriv = 0; i_deriv < 3; i_deriv++) {
-    // Get the ith derivative of the contractions with shape (M, N) in row-major order, N=numb pts, M=numb basis funcs
-    double* d_ith_deriv = &d_deriv_contractions[i_deriv * knumb_points * knbasisfuncs];
-
-    // Matrix multiple one-rdm with the ith derivative of contractions
-    gbasis::cublas_check_errors(cublasDgemm(handle, CUBLAS_OP_N, CUBLAS_OP_N,
-                                            knumb_points, knbasisfuncs, knbasisfuncs,
-                                            &alpha, d_ith_deriv, knumb_points,
-                                            d_one_rdm, knbasisfuncs, &beta,
-                                            d_temp_rdm_derivs, knumb_points));
-
-    // Do a hadamard product with the ith derivative
-    dim3 threadsPerBlock5(320);
-    dim3 grid5((knumb_points * knbasisfuncs + threadsPerBlock5.x - 1) / (threadsPerBlock5.x));
-    gbasis::hadamard_product<<<grid5, threadsPerBlock5>>>(
-        d_temp_rdm_derivs, d_ith_deriv, knbasisfuncs, knumb_points
+  // Iterate through each chunk of the data set.
+  size_t index_to_copy = 0;  // Index on where to start copying to h_electron_density (start of sub-grid)
+  size_t i_iter = 0;
+  while(index_to_copy < knumb_points) {
+    // For each iteration, calculate number of points it should do, number of bytes it corresponds to.
+    // At the last chunk,need to do the remaining number of points, hence a minimum is used here.
+    size_t number_pts_iter = std::min(
+        t_numb_pts - i_iter * t_numb_pts_of_each_chunk, t_numb_pts_of_each_chunk
     );
+    //    printf("Number of points %zu \n", number_pts_iter);
+    //    printf("Maximal number of points in x-axis to do each chunk %zu \n", number_pts_iter);
 
-
-    // Take the sum.
-    thrust::device_vector<double> all_ones(sizeof(double) * knbasisfuncs, 1.0);
-    double *deviceVecPtr = thrust::raw_pointer_cast(all_ones.data());
-    gbasis::cublas_check_errors(cublasDgemv(handle, CUBLAS_OP_N,
-                                            knumb_points, knbasisfuncs,
-                                            &alpha, d_temp_rdm_derivs, knumb_points, deviceVecPtr, 1, &beta,
-                                            d_second_term, 1));
-
-    // Multiply by two
-    dim3 threadsPerBlock3(320);
-    dim3 grid3((knumb_points + threadsPerBlock5.x - 1) / (threadsPerBlock5.x));
-    gbasis::multiply_scalar<<< grid3, threadsPerBlock3>>>(d_second_term, 2.0, knumb_points);
-
-
-    gbasis::cuda_check_errors(cudaMemcpy(h_second_term.data(), d_second_term,
-                                         sizeof(double) * knumb_points, cudaMemcpyDeviceToHost));
-
-    // Add to h_laplacian
-    for(int i = 0; i < knumb_points; i++) {
-      h_laplacian[i] += h_second_term[i];
+    // Transfer grid points to GPU, this is in column order with shape (N, 3)
+    //  Becasue h_points is in column-order and we're slicing based on the number of points that can fit in memory.
+    //  Need to slice each (x,y,z) coordinate seperately.
+    double *d_points;
+    gbasis::cuda_check_errors(cudaMalloc((double **) &d_points, sizeof(double) * 3 * number_pts_iter));
+    for (int i_slice = 0; i_slice < 3; i_slice++) {
+      gbasis::cuda_check_errors(cudaMemcpy(&d_points[i_slice * number_pts_iter],
+                                           &h_points[i_slice * knumb_points + index_to_copy],
+                                           sizeof(double) * number_pts_iter,
+                                           cudaMemcpyHostToDevice));
     }
 
-    // Free up memory in this iteration for the next calculation of the derivative.
-    all_ones.clear();
-    all_ones.shrink_to_fit();
-  } // end i_deriv
+    // Evaluate derivatives of each contraction this is in row-order (3, M, N), where M =number of basis-functions.
+    double *d_deriv_contractions;
+    gbasis::cuda_check_errors(cudaMalloc((double **) &d_deriv_contractions,
+                                         sizeof(double) * 3 * number_pts_iter * knbasisfuncs));
+    gbasis::cuda_check_errors(cudaMemset(d_deriv_contractions, 0, sizeof(double) * 3 * number_pts_iter * knbasisfuncs));
+    dim3 threadsPerBlock4(128);
+    dim3 grid4((number_pts_iter + threadsPerBlock4.x - 1) / (threadsPerBlock4.x));
+    gbasis::evaluate_derivatives_contractions_from_constant_memory<<<grid4, threadsPerBlock4>>>(
+        d_deriv_contractions, d_points, number_pts_iter, knbasisfuncs
+    );
 
-  // Free Everything
-  cudaFree(d_second_term);
-  cudaFree(d_temp_rdm_derivs);
-  cudaFree(d_one_rdm);
-  cudaFree(d_deriv_contractions);
+    cudaFree(d_points);
+
+    // Transfer one-rdm from host/cpu memory to device/gpu memory.
+    double *d_one_rdm;
+    gbasis::cuda_check_errors(cudaMalloc((double **) &d_one_rdm, knbasisfuncs * knbasisfuncs * sizeof(double)));
+    gbasis::cublas_check_errors(cublasSetMatrix(iodata.GetOneRdmShape(), iodata.GetOneRdmShape(),
+                                                sizeof(double), iodata.GetMOOneRDM(),
+                                                iodata.GetOneRdmShape(), d_one_rdm, iodata.GetOneRdmShape()));
+
+    // Allocate memory to hold the matrix-multiplcation between d_one_rdm and each `i`th derivative (i_deriv, M, N)
+    ///  This is in row-major order
+    double *d_temp_rdm_derivs;
+    gbasis::cuda_check_errors(cudaMalloc((double **) &d_temp_rdm_derivs, sizeof(double) * number_pts_iter * knbasisfuncs));
+    // Allocate device memory for gradient of electron density in column-major order.
+    double *d_second_term;
+    gbasis::cuda_check_errors(cudaMalloc((double **) &d_second_term, sizeof(double) * number_pts_iter));
+    // Allocate host memory to add to the h_laplacian
+    std::vector<double> h_second_term(number_pts_iter);
+    double alpha = 1.0;
+    double beta = 0.0;
+    for (int i_deriv = 0; i_deriv < 3; i_deriv++) {
+      // Get the ith derivative of the contractions with shape (M, N) in row-major order, N=numb pts, M=numb basis funcs
+      double *d_ith_deriv = &d_deriv_contractions[i_deriv * number_pts_iter * knbasisfuncs];
+
+      // Matrix multiple one-rdm with the ith derivative of contractions
+      gbasis::cublas_check_errors(cublasDgemm(handle, CUBLAS_OP_N, CUBLAS_OP_N,
+                                              number_pts_iter, knbasisfuncs, knbasisfuncs,
+                                              &alpha, d_ith_deriv, number_pts_iter,
+                                              d_one_rdm, knbasisfuncs, &beta,
+                                              d_temp_rdm_derivs, number_pts_iter));
+
+      // Do a hadamard product with the ith derivative
+      dim3 threadsPerBlock5(320);
+      dim3 grid5((number_pts_iter * knbasisfuncs + threadsPerBlock5.x - 1) / (threadsPerBlock5.x));
+      gbasis::hadamard_product<<<grid5, threadsPerBlock5>>>(
+          d_temp_rdm_derivs, d_ith_deriv, knbasisfuncs, number_pts_iter
+      );
+
+
+      // Take the sum.
+      thrust::device_vector<double> all_ones(sizeof(double) * knbasisfuncs, 1.0);
+      double *deviceVecPtr = thrust::raw_pointer_cast(all_ones.data());
+      gbasis::cublas_check_errors(cublasDgemv(handle, CUBLAS_OP_N,
+                                              number_pts_iter, knbasisfuncs,
+                                              &alpha, d_temp_rdm_derivs, number_pts_iter, deviceVecPtr, 1, &beta,
+                                              d_second_term, 1));
+
+      // Multiply by two
+      dim3 threadsPerBlock3(320);
+      dim3 grid3((number_pts_iter + threadsPerBlock5.x - 1) / (threadsPerBlock5.x));
+      gbasis::multiply_scalar<<< grid3, threadsPerBlock3>>>(d_second_term, 2.0, number_pts_iter);
+
+      gbasis::cuda_check_errors(cudaMemcpy(h_second_term.data(), d_second_term,
+                                           sizeof(double) * number_pts_iter, cudaMemcpyDeviceToHost));
+
+      // Add to h_laplacian
+      for(size_t i = index_to_copy; i < index_to_copy + number_pts_iter; i++) {
+        h_laplacian[i] += h_second_term[i - index_to_copy];
+      }
+
+      // Free up memory in this iteration for the next calculation of the derivative.
+      all_ones.clear();
+      all_ones.shrink_to_fit();
+    } // end i_deriv
+
+    // Free Everything
+    cudaFree(d_second_term);
+    cudaFree(d_temp_rdm_derivs);
+    cudaFree(d_one_rdm);
+    cudaFree(d_deriv_contractions);
+
+    // Update lower-bound of the grid for the next iteration
+    index_to_copy += number_pts_iter;
+    i_iter += 1;  // Update the index for each iteration.
+  }
 
   return h_laplacian;
 }
