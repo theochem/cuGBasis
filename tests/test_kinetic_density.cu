@@ -40,7 +40,7 @@ TEST_CASE( "Test Positive Definite Kinetic Energy Density Against gbasis", "[eva
     gbasis::IOData iodata = gbasis::get_molecular_basis_from_fchk(fchk_file);
 
     // Gemerate random grid.
-    int numb_pts = 10000;
+    int numb_pts = 750000;
     std::vector<double> points(3 * numb_pts);
     std::random_device rnd_device;
     std::mt19937  merseene_engine {rnd_device()};
@@ -78,6 +78,10 @@ basis, type = from_iodata(iodata)
 rdm = (iodata.mo.coeffs * iodata.mo.occs).dot(iodata.mo.coeffs.T)
 points = points.reshape((numb_pts, 3), order="F")
 points = np.array(points, dtype=np.float64)
+
+indices_to_compute = np.random.choice(np.arange(len(points)), size=10000)
+true_result = true_result[indices_to_compute]
+points = points[indices_to_compute, :]
 
 kin_dens = evaluate_posdef_kinetic_energy_density(rdm, basis, points, coord_type=type)
 err = np.abs(kin_dens - true_result)
