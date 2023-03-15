@@ -805,12 +805,12 @@ __host__ std::vector<double> gbasis::evaluate_electron_density_gradient_handle(
   size_t free_mem = 0;  // in bytes
   size_t total_mem = 0;  // in bytes
   cudaError_t error_id = cudaMemGetInfo(&free_mem, &total_mem);
-  printf("Total Free Memory Avaiable in GPU is %zu \n", free_mem);
+  //printf("Total Free Memory Avaiable in GPU is %zu \n", free_mem);
   // Calculate how much memory can fit inside the GPU memory.
   size_t t_numb_chunks = t_highest_number_of_bytes / free_mem;
-  // Calculate how many points we can compute with free memory minus one gigabyte for safe measures:
+  // Calculate how many points we can compute with free memory minus 0.5 gigabyte for safe measures:
   //    This is calculated by solving (5 * N M + M^2 + 3N) * 8 bytes = Free memory (in bytes)  for N to get:
-  size_t t_numb_pts_of_each_chunk = (((free_mem - 1000000000) / (sizeof(double)))  - t_nbasis * t_nbasis) /
+  size_t t_numb_pts_of_each_chunk = (((free_mem - 500000000) / (sizeof(double)))  - t_nbasis * t_nbasis) /
       (5 * t_nbasis + 3);
   if (t_numb_pts_of_each_chunk == 0 and t_numb_chunks > 1.0) {
     // Haven't handle this case yet
