@@ -18,18 +18,18 @@ TEST_CASE( "Test Electron Density Against gbasis", "[evaluate_electron_density_o
   {  // Need this so that the python object doesn't outline the interpretor.
   // Evaluate the electron density of this example.
   std::string fchk_file = GENERATE(
-        "/home/ali-tehrani/SoftwareProjects/spec_database/tests/data/atom_01_H_N01_M2_ub3lyp_ccpvtz_g09.fchk",
-        "/home/ali-tehrani/SoftwareProjects/spec_database/tests/data/atom_he.fchk",
-        "/home/ali-tehrani/SoftwareProjects/spec_database/tests/data/atom_be.fchk",
-        "/home/ali-tehrani/SoftwareProjects/spec_database/tests/data/atom_be_f_pure_orbital.fchk",
-        "/home/ali-tehrani/SoftwareProjects/spec_database/tests/data/atom_kr.fchk",
-        "/home/ali-tehrani/SoftwareProjects/spec_database/tests/data/atom_o.fchk",
-//        "/home/ali-tehrani/SoftwareProjects/spec_database/tests/data/atom_c_g_pure_orbital.fchk",
-        "/home/ali-tehrani/SoftwareProjects/spec_database/tests/data/atom_mg.fchk",
-        "/home/ali-tehrani/SoftwareProjects/spec_database/tests/data/E948_rwB97XD_def2SVP.fchk",
-        "/home/ali-tehrani/SoftwareProjects/spec_database/tests/data/h2o.fchk",
-        "/home/ali-tehrani/SoftwareProjects/spec_database/tests/data/ch4.fchk",
-        "/home/ali-tehrani/SoftwareProjects/spec_database/tests/data/qm9_000092_HF_cc-pVDZ.fchk"
+        "/home/ali-tehrani/SoftwareProjects/gbasis_cuda/tests/data/atom_01_H_N01_M2_ub3lyp_ccpvtz_g09.fchk",
+        "/home/ali-tehrani/SoftwareProjects/gbasis_cuda/tests/data/atom_he.fchk",
+        "/home/ali-tehrani/SoftwareProjects/gbasis_cuda/tests/data/atom_be.fchk",
+        "/home/ali-tehrani/SoftwareProjects/gbasis_cuda/tests/data/atom_be_f_pure_orbital.fchk",
+        "/home/ali-tehrani/SoftwareProjects/gbasis_cuda/tests/data/atom_kr.fchk",
+        "/home/ali-tehrani/SoftwareProjects/gbasis_cuda/tests/data/atom_o.fchk",
+//        "/home/ali-tehrani/SoftwareProjects/specgbasis_cuda_database/tests/data/atom_c_g_pure_orbital.fchk",
+        "/home/ali-tehrani/SoftwareProjects/gbasis_cuda/tests/data/atom_mg.fchk",
+        "/home/ali-tehrani/SoftwareProjects/gbasis_cuda/tests/data/E948_rwB97XD_def2SVP.fchk",
+        "/home/ali-tehrani/SoftwareProjects/gbasis_cuda/tests/data/h2o.fchk",
+        "/home/ali-tehrani/SoftwareProjects/gbasis_cuda/tests/data/ch4.fchk",
+        "/home/ali-tehrani/SoftwareProjects/gbasis_cuda/tests/data/qm9_000092_HF_cc-pVDZ.fchk"
         //"/home/ali-tehrani/SoftwareProjects/spec_database/tests/data/qm9_000104_PBE1PBE_pcS-3.fchk"
     );
   printf("IODATA OB %s \n", fchk_file.c_str());
