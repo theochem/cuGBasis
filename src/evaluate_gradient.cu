@@ -600,7 +600,247 @@ __global__ void gbasis::evaluate_derivatives_contractions_from_constant_memory(
                     exponential;
           }
           else if (angmom == 4) {
-            assert(0);
+            // The ordering is xxxx, xxxy, xxxz, xxyy, xxyz, xxzz, xyyy, xyyz, xyzz, xzzz, yyyy, yyyz, yyzz, yzzz, zzzz
+            // Take the first, second, third derivative of z_a^4 e^{-a r_a^2}
+            d_deriv_contracs[knumb_points * icontractions + global_index] +=
+                gbasis::normalization_primitive_f(g_constant_basis[iconst + i_prim], 4, 0, 0) *
+                    coeff_prim *
+                    2*pow(r_A_x, 3)*(-alpha*r_A_x*r_A_x + 2) *   // d x**4*exp(-a*(x**2 + y**2 + z**2)) / dx
+                    exponential;
+            d_deriv_contracs[knumb_points * (knumb_contractions + icontractions) + global_index] +=
+                gbasis::normalization_primitive_f(g_constant_basis[iconst + i_prim], 4, 0, 0) *
+                    coeff_prim *
+                    -2*alpha*pow(r_A_x, 4)*r_A_y *   // d x**4*exp(-a*(x**2 + y**2 + z**2)) / dy
+                    exponential;
+            d_deriv_contracs[knumb_points * (knumb_contractions * 2 + icontractions) + global_index] +=
+                gbasis::normalization_primitive_f(g_constant_basis[iconst + i_prim], 4, 0, 0) *
+                    coeff_prim *
+                    -2*alpha*pow(r_A_x, 4)*r_A_z *   // d x**4*exp(-a*(x**2 + y**2 + z**2)) / dz
+                    exponential;
+            // Take the first, second, third derivative of x^3 y e^{-a r_a^2}
+            d_deriv_contracs[knumb_points * (icontractions + 1) + global_index] +=
+                gbasis::normalization_primitive_f(g_constant_basis[iconst + i_prim], 3, 1, 0) *
+                    coeff_prim *
+                    r_A_x*r_A_x*r_A_y*(-2*alpha*r_A_x*r_A_x + 3) *   // d x**3*y*exp(-a*(x**2 + y**2 + z**2)) / dx
+                    exponential;
+            d_deriv_contracs[knumb_points * (knumb_contractions + icontractions + 1) + global_index] +=
+                gbasis::normalization_primitive_f(g_constant_basis[iconst + i_prim], 3, 1, 0) *
+                    coeff_prim *
+                    pow(r_A_x, 3)*(-2*alpha*r_A_y*r_A_y + 1) *   // d x**3*y*exp(-a*(x**2 + y**2 + z**2)) / dy
+                    exponential;
+            d_deriv_contracs[knumb_points * (knumb_contractions * 2 + icontractions + 1) + global_index] +=
+                gbasis::normalization_primitive_f(g_constant_basis[iconst + i_prim], 3, 1, 0) *
+                    coeff_prim *
+                    -2*alpha*pow(r_A_x, 3)*r_A_y*r_A_z *   // d x**3*y*exp(-a*(x**2 + y**2 + z**2)) / dz
+                    exponential;
+            // Take the first, second, third derivative of x^3 z e^{-a r_a^2}
+            d_deriv_contracs[knumb_points * (icontractions + 2) + global_index] +=
+                gbasis::normalization_primitive_f(g_constant_basis[iconst + i_prim], 3, 0, 1) *
+                    coeff_prim *
+                    r_A_x*r_A_x*r_A_z*(-2*alpha*r_A_x*r_A_x + 3) *   // d x**3*z*exp(-a*(x**2 + y**2 + z**2)) / dx
+                    exponential;
+            d_deriv_contracs[knumb_points * (knumb_contractions + icontractions + 2) + global_index] +=
+                gbasis::normalization_primitive_f(g_constant_basis[iconst + i_prim], 3, 0, 1) *
+                    coeff_prim *
+                    -2*alpha*pow(r_A_x, 3)*r_A_y*r_A_z *   // d x**3*z*exp(-a*(x**2 + y**2 + z**2)) / dy
+                    exponential;
+            d_deriv_contracs[knumb_points * (knumb_contractions * 2 + icontractions + 2) + global_index] +=
+                gbasis::normalization_primitive_f(g_constant_basis[iconst + i_prim], 3, 0, 1) *
+                    coeff_prim *
+                    pow(r_A_x, 3)*(-2*alpha*r_A_z*r_A_z + 1) *   // d x**3*z*exp(-a*(x**2 + y**2 + z**2)) / dz
+                    exponential;
+            // Take the first, second, third derivative of x^2 y^2 e^{-a r_a^2}
+            d_deriv_contracs[knumb_points * (icontractions + 3) + global_index] +=
+                gbasis::normalization_primitive_f(g_constant_basis[iconst + i_prim], 2, 2, 0) *
+                    coeff_prim *
+                    2*r_A_x*r_A_y*r_A_y*(-alpha*r_A_x*r_A_x + 1) *   // d x**2*y**2*exp(-a*(x**2 + y**2 + z**2)) / dx
+                    exponential;
+            d_deriv_contracs[knumb_points * (knumb_contractions + icontractions + 3) + global_index] +=
+                gbasis::normalization_primitive_f(g_constant_basis[iconst + i_prim], 2, 2, 0) *
+                    coeff_prim *
+                    2*r_A_x*r_A_x*r_A_y*(-alpha*r_A_y*r_A_y + 1) *   // d x**2*y**2*exp(-a*(x**2 + y**2 + z**2)) / dy
+                    exponential;
+            d_deriv_contracs[knumb_points * (knumb_contractions * 2 + icontractions + 3) + global_index] +=
+                gbasis::normalization_primitive_f(g_constant_basis[iconst + i_prim], 2, 2, 0) *
+                    coeff_prim *
+                    -2*alpha*r_A_x*r_A_x*r_A_y*r_A_y*r_A_z *   // d x**2*y**2*exp(-a*(x**2 + y**2 + z**2)) / dz
+                    exponential;
+            // Take the first, second, third derivative of x^2 yz e^{-a r_a^2}
+            d_deriv_contracs[knumb_points * (icontractions + 4) + global_index] +=
+                gbasis::normalization_primitive_f(g_constant_basis[iconst + i_prim], 2, 1, 1) *
+                    coeff_prim *
+                    2*r_A_x*r_A_y*r_A_z*(-alpha*r_A_x*r_A_x + 1) *   // d x**2*y*z*exp(-a*(x**2 + y**2 + z**2)) / dx
+                    exponential;
+            d_deriv_contracs[knumb_points * (knumb_contractions + icontractions + 4) + global_index] +=
+                gbasis::normalization_primitive_f(g_constant_basis[iconst + i_prim], 2, 1, 1) *
+                    coeff_prim *
+                    r_A_x*r_A_x*r_A_z*(-2*alpha*r_A_y*r_A_y + 1) *   // d x**2*y*z*exp(-a*(x**2 + y**2 + z**2)) / dy
+                    exponential;
+            d_deriv_contracs[knumb_points * (knumb_contractions * 2 + icontractions + 4) + global_index] +=
+                gbasis::normalization_primitive_f(g_constant_basis[iconst + i_prim],  2, 1, 1) *
+                    coeff_prim *
+                    r_A_x*r_A_x*r_A_y*(-2*alpha*r_A_z*r_A_z + 1) *   // d x**2*y*z*exp(-a*(x**2 + y**2 + z**2)) / dz
+                    exponential;
+            // Take the first, second, third derivative of x^2 z^2 e^{-a r_a^2}
+            d_deriv_contracs[knumb_points * (icontractions + 5) + global_index] +=
+                gbasis::normalization_primitive_f(g_constant_basis[iconst + i_prim], 2, 0, 2) *
+                    coeff_prim *
+                    2*r_A_x*r_A_z*r_A_z*(-alpha*r_A_x*r_A_x + 1) *   // d x**2*z**2*exp(-a*(x**2 + y**2 + z**2)) / dx
+                    exponential;
+            d_deriv_contracs[knumb_points * (knumb_contractions + icontractions + 5) + global_index] +=
+                gbasis::normalization_primitive_f(g_constant_basis[iconst + i_prim], 2, 0, 2) *
+                    coeff_prim *
+                    -2*alpha*r_A_x*r_A_x*r_A_y*r_A_z*r_A_z *   // d x**2*z**2*exp(-a*(x**2 + y**2 + z**2)) / dy
+                    exponential;
+            d_deriv_contracs[knumb_points * (knumb_contractions * 2 + icontractions + 5) + global_index] +=
+                gbasis::normalization_primitive_f(g_constant_basis[iconst + i_prim],  2, 0, 2) *
+                    coeff_prim *
+                    2*r_A_x*r_A_x*r_A_z*(-alpha*r_A_z*r_A_z + 1) *   // d x**2*z**2*exp(-a*(x**2 + y**2 + z**2)) / dz
+                    exponential;
+            // Take the first, second, third derivative of x y^3 e^{-a r_a^2}
+            d_deriv_contracs[knumb_points * (icontractions + 6) + global_index] +=
+                gbasis::normalization_primitive_f(g_constant_basis[iconst + i_prim], 1, 3, 0) *
+                    coeff_prim *
+                    pow(r_A_y, 3)*(-2*alpha*r_A_x*r_A_x + 1) *   // d x*y**3*exp(-a*(x**2 + y**2 + z**2)) / dx
+                    exponential;
+            d_deriv_contracs[knumb_points * (knumb_contractions + icontractions + 6) + global_index] +=
+                gbasis::normalization_primitive_f(g_constant_basis[iconst + i_prim], 1, 3, 0) *
+                    coeff_prim *
+                    r_A_x*r_A_y*r_A_y*(-2*alpha*r_A_y*r_A_y + 3) *   // d x*y**3*exp(-a*(x**2 + y**2 + z**2)) / dy
+                    exponential;
+            d_deriv_contracs[knumb_points * (knumb_contractions * 2 + icontractions + 6) + global_index] +=
+                gbasis::normalization_primitive_f(g_constant_basis[iconst + i_prim],  1, 3, 0) *
+                    coeff_prim *
+                    -2*alpha*r_A_x*pow(r_A_y, 3)*r_A_z *   // d x*y**3*exp(-a*(x**2 + y**2 + z**2)) / dz
+                    exponential;
+            // Take the first, second, third derivative of x y^2 z e^{-a r_a^2}
+            d_deriv_contracs[knumb_points * (icontractions + 7) + global_index] +=
+                gbasis::normalization_primitive_f(g_constant_basis[iconst + i_prim], 1, 2, 1) *
+                    coeff_prim *
+                    r_A_y*r_A_y*r_A_z*(-2*alpha*r_A_x*r_A_x + 1) *   // d x*y**2*z*exp(-a*(x**2 + y**2 + z**2)) / dx
+                    exponential;
+            d_deriv_contracs[knumb_points * (knumb_contractions + icontractions + 7) + global_index] +=
+                gbasis::normalization_primitive_f(g_constant_basis[iconst + i_prim], 1, 2, 1) *
+                    coeff_prim *
+                    2*r_A_x*r_A_y*r_A_z*(-alpha*r_A_y*r_A_y + 1) *   // d x*y**2*z*exp(-a*(x**2 + y**2 + z**2)) / dy
+                    exponential;
+            d_deriv_contracs[knumb_points * (knumb_contractions * 2 + icontractions + 7) + global_index] +=
+                gbasis::normalization_primitive_f(g_constant_basis[iconst + i_prim],  1, 2, 1) *
+                    coeff_prim *
+                    r_A_x*r_A_y*r_A_y*(-2*alpha*r_A_z*r_A_z + 1) *   // d x*y**2*z*exp(-a*(x**2 + y**2 + z**2)) / dz
+                    exponential;
+            // Take the first, second, third derivative of x y z^2 e^{-a r_a^2}
+            d_deriv_contracs[knumb_points * (icontractions + 8) + global_index] +=
+                gbasis::normalization_primitive_f(g_constant_basis[iconst + i_prim], 1, 1, 2) *
+                    coeff_prim *
+                    r_A_y*r_A_z*r_A_z*(-2*alpha*r_A_x*r_A_x + 1) *   // d x*y*z**2*exp(-a*(x**2 + y**2 + z**2)) / dx
+                    exponential;
+            d_deriv_contracs[knumb_points * (knumb_contractions + icontractions + 8) + global_index] +=
+                gbasis::normalization_primitive_f(g_constant_basis[iconst + i_prim], 1, 1, 2) *
+                    coeff_prim *
+                    r_A_x*r_A_z*r_A_z*(-2*alpha*r_A_y*r_A_y + 1) *   // d x*y*z**2*exp(-a*(x**2 + y**2 + z**2)) / dy
+                    exponential;
+            d_deriv_contracs[knumb_points * (knumb_contractions * 2 + icontractions + 8) + global_index] +=
+                gbasis::normalization_primitive_f(g_constant_basis[iconst + i_prim],  1, 1, 2) *
+                    coeff_prim *
+                    2*r_A_x*r_A_y*r_A_z*(-alpha*r_A_z*r_A_z + 1) *   // d x*y*z**2*exp(-a*(x**2 + y**2 + z**2)) / dz
+                    exponential;
+            // Take the first, second, third derivative of x z^3 e^{-a r_a^2}
+            d_deriv_contracs[knumb_points * (icontractions + 9) + global_index] +=
+                gbasis::normalization_primitive_f(g_constant_basis[iconst + i_prim], 1, 0, 3) *
+                    coeff_prim *
+                    pow(r_A_z, 3)*(-2*alpha*r_A_x*r_A_x + 1) *   // d x*z**3*exp(-a*(x**2 + y**2 + z**2)) / dx
+                    exponential;
+            d_deriv_contracs[knumb_points * (knumb_contractions + icontractions + 9) + global_index] +=
+                gbasis::normalization_primitive_f(g_constant_basis[iconst + i_prim], 1, 0, 3) *
+                    coeff_prim *
+                    -2*alpha*r_A_x*r_A_y*pow(r_A_z, 3) *   // d x*z**3*exp(-a*(x**2 + y**2 + z**2)) / dy
+                    exponential;
+            d_deriv_contracs[knumb_points * (knumb_contractions * 2 + icontractions + 9) + global_index] +=
+                gbasis::normalization_primitive_f(g_constant_basis[iconst + i_prim],  1, 0, 3) *
+                    coeff_prim *
+                    r_A_x*r_A_z*r_A_z*(-2*alpha*r_A_z*r_A_z + 3) *   // d x*z**3*exp(-a*(x**2 + y**2 + z**2)) / dz
+                    exponential;
+            // Take the first, second, third derivative of y^4 e^{-a r_a^2}
+            d_deriv_contracs[knumb_points * (icontractions + 10) + global_index] +=
+                gbasis::normalization_primitive_f(g_constant_basis[iconst + i_prim], 0, 4, 0) *
+                    coeff_prim *
+                    -2*alpha*r_A_x*pow(r_A_y, 4) *   // d y**4*exp(-a*(x**2 + y**2 + z**2)) / dx
+                    exponential;
+            d_deriv_contracs[knumb_points * (knumb_contractions + icontractions + 10) + global_index] +=
+                gbasis::normalization_primitive_f(g_constant_basis[iconst + i_prim], 0, 4, 0) *
+                    coeff_prim *
+                    2*pow(r_A_y, 3)*(-alpha*r_A_y*r_A_y + 2) *   // d y**4*exp(-a*(x**2 + y**2 + z**2)) / dy
+                    exponential;
+            d_deriv_contracs[knumb_points * (knumb_contractions * 2 + icontractions + 10) + global_index] +=
+                gbasis::normalization_primitive_f(g_constant_basis[iconst + i_prim],  0, 4, 0) *
+                    coeff_prim *
+                    -2*alpha*pow(r_A_y, 4)*r_A_z *   // d y**4*exp(-a*(x**2 + y**2 + z**2)) / dz
+                    exponential;
+            // Take the first, second, third derivative of y^3 z e^{-a r_a^2}
+            d_deriv_contracs[knumb_points * (icontractions + 11) + global_index] +=
+                gbasis::normalization_primitive_f(g_constant_basis[iconst + i_prim], 0, 3, 1) *
+                    coeff_prim *
+                    -2*alpha*r_A_x*pow(r_A_y, 3)*r_A_z *   // d y**3*z*exp(-a*(x**2 + y**2 + z**2)) / dx
+                    exponential;
+            d_deriv_contracs[knumb_points * (knumb_contractions + icontractions + 11) + global_index] +=
+                gbasis::normalization_primitive_f(g_constant_basis[iconst + i_prim], 0, 3, 1) *
+                    coeff_prim *
+                    r_A_y*r_A_y*r_A_z*(-2*alpha*r_A_y*r_A_y + 3) *   // d y**3*z*exp(-a*(x**2 + y**2 + z**2)) / dy
+                    exponential;
+            d_deriv_contracs[knumb_points * (knumb_contractions * 2 + icontractions + 11) + global_index] +=
+                gbasis::normalization_primitive_f(g_constant_basis[iconst + i_prim],  0, 3, 1) *
+                    coeff_prim *
+                    pow(r_A_y, 3)*(-2*alpha*r_A_z*r_A_z + 1) *   // d y**3*z*exp(-a*(x**2 + y**2 + z**2)) / dz
+                    exponential;
+            // Take the first, second, third derivative of y^2 z^2 z e^{-a r_a^2}
+            d_deriv_contracs[knumb_points * (icontractions + 12) + global_index] +=
+                gbasis::normalization_primitive_f(g_constant_basis[iconst + i_prim], 0, 2, 2) *
+                    coeff_prim *
+                    -2*alpha*r_A_x*r_A_y*r_A_y*r_A_z*r_A_z *   // d y**2*z**2*exp(-a*(x**2 + y**2 + z**2)) / dx
+                    exponential;
+            d_deriv_contracs[knumb_points * (knumb_contractions + icontractions + 12) + global_index] +=
+                gbasis::normalization_primitive_f(g_constant_basis[iconst + i_prim], 0, 2, 2) *
+                    coeff_prim *
+                    2*r_A_y*r_A_z*r_A_z*(-alpha*r_A_y*r_A_y + 1) *   // d y**2*z**2*exp(-a*(x**2 + y**2 + z**2)) / dy
+                    exponential;
+            d_deriv_contracs[knumb_points * (knumb_contractions * 2 + icontractions + 12) + global_index] +=
+                gbasis::normalization_primitive_f(g_constant_basis[iconst + i_prim],  0, 2, 2) *
+                    coeff_prim *
+                    2*r_A_y*r_A_y*r_A_z*(-alpha*r_A_z*r_A_z + 1) *   // d y**2*z**2*exp(-a*(x**2 + y**2 + z**2)) / dz
+                    exponential;
+            // Take the first, second, third derivative of y z^3 z e^{-a r_a^2}
+            d_deriv_contracs[knumb_points * (icontractions + 13) + global_index] +=
+                gbasis::normalization_primitive_f(g_constant_basis[iconst + i_prim], 0, 1, 3) *
+                    coeff_prim *
+                    -2*alpha*r_A_x*r_A_y*pow(r_A_z, 3) *   // d y*z**3*exp(-a*(x**2 + y**2 + z**2)) / dx
+                    exponential;
+            d_deriv_contracs[knumb_points * (knumb_contractions + icontractions + 13) + global_index] +=
+                gbasis::normalization_primitive_f(g_constant_basis[iconst + i_prim], 0, 1, 3) *
+                    coeff_prim *
+                    pow(r_A_z, 3)*(-2*alpha*r_A_y*r_A_y + 1) *   // d y*z**3*exp(-a*(x**2 + y**2 + z**2)) / dy
+                    exponential;
+            d_deriv_contracs[knumb_points * (knumb_contractions * 2 + icontractions + 13) + global_index] +=
+                gbasis::normalization_primitive_f(g_constant_basis[iconst + i_prim],  0, 1, 3) *
+                    coeff_prim *
+                    r_A_y*r_A_z*r_A_z*(-2*alpha*r_A_z*r_A_z + 3) *   // d y*z**3*exp(-a*(x**2 + y**2 + z**2)) / dz
+                    exponential;
+            // Take the first, second, third derivative of z^3 z e^{-a r_a^2}
+            d_deriv_contracs[knumb_points * (icontractions + 14) + global_index] +=
+                gbasis::normalization_primitive_f(g_constant_basis[iconst + i_prim], 0, 0, 4) *
+                    coeff_prim *
+                    -2*alpha*r_A_x*pow(r_A_z, 4) *   // d z**4*exp(-a*(x**2 + y**2 + z**2)) / dx
+                    exponential;
+            d_deriv_contracs[knumb_points * (knumb_contractions + icontractions + 14) + global_index] +=
+                gbasis::normalization_primitive_f(g_constant_basis[iconst + i_prim], 0, 0, 4) *
+                    coeff_prim *
+                    -2*alpha*r_A_y*pow(r_A_z, 4) *   // d z**4*exp(-a*(x**2 + y**2 + z**2)) / dy
+                    exponential;
+            d_deriv_contracs[knumb_points * (knumb_contractions * 2 + icontractions + 14) + global_index] +=
+                gbasis::normalization_primitive_f(g_constant_basis[iconst + i_prim],  0, 0, 4) *
+                    coeff_prim *
+                    2*pow(r_A_z, 3)*(-alpha*r_A_z*r_A_z + 2) *   // d z**4*exp(-a*(x**2 + y**2 + z**2)) / dz
+                    exponential;
           }
           else if (angmom == -4) {
             // Negatives are s denoting sine and c denoting cosine.
@@ -868,8 +1108,7 @@ __global__ void gbasis::evaluate_derivatives_contractions_from_constant_memory(
           icontractions += 7;
         }
         else if (angmom == 4) {
-          // TODO
-          assert(0);
+          icontractions += 15;
         }
         else if (angmom == -4) {
           icontractions += 9;
