@@ -104,25 +104,26 @@ TEST_CASE( "Test Laplacian of Electron Density Against gbasis", "[evaluate_lapla
   {  // Need this so that the python object doesn't outline the interpretor.
     // Get the IOdata object from the fchk file.
     std::string fchk_file = GENERATE(
-        "/home/ali-tehrani/SoftwareProjects/spec_database/tests/data/atom_01_H_N01_M2_ub3lyp_ccpvtz_g09.fchk",
-        "/home/ali-tehrani/SoftwareProjects/spec_database/tests/data/atom_he.fchk",
-        "/home/ali-tehrani/SoftwareProjects/spec_database/tests/data/atom_be.fchk",
-        "/home/ali-tehrani/SoftwareProjects/spec_database/tests/data/atom_be_f_pure_orbital.fchk",
-        "/home/ali-tehrani/SoftwareProjects/spec_database/tests/data/atom_kr.fchk",
-        "/home/ali-tehrani/SoftwareProjects/spec_database/tests/data/atom_o.fchk",
-        "/home/ali-tehrani/SoftwareProjects/spec_database/tests/data/atom_c_g_pure_orbital.fchk",
-        "/home/ali-tehrani/SoftwareProjects/spec_database/tests/data/atom_mg.fchk",
-        "/home/ali-tehrani/SoftwareProjects/spec_database/tests/data/E948_rwB97XD_def2SVP.fchk",
-        "/home/ali-tehrani/SoftwareProjects/spec_database/tests/data/h2o.fchk",
-        "/home/ali-tehrani/SoftwareProjects/spec_database/tests/data/ch4.fchk",
-        "/home/ali-tehrani/SoftwareProjects/spec_database/tests/data/qm9_000092_HF_cc-pVDZ.fchk",
-        "/home/ali-tehrani/SoftwareProjects/spec_database/tests/data/qm9_000104_PBE1PBE_pcS-3.fchk"
+        "/home/ali-tehrani/SoftwareProjects/gbasis_cuda/tests/data/4141_q000_m01_k00_force_uhf_ccpvtz.fchk",
+        "/home/ali-tehrani/SoftwareProjects/gbasis_cuda/tests/data/atom_01_H_N01_M2_ub3lyp_ccpvtz_g09.fchk",
+        "/home/ali-tehrani/SoftwareProjects/gbasis_cuda/tests/data/atom_he.fchk",
+        "/home/ali-tehrani/SoftwareProjects/gbasis_cuda/tests/data/atom_be.fchk",
+        "/home/ali-tehrani/SoftwareProjects/gbasis_cuda/tests/data/atom_be_f_pure_orbital.fchk",
+        "/home/ali-tehrani/SoftwareProjects/gbasis_cuda/tests/data/atom_kr.fchk",
+        "/home/ali-tehrani/SoftwareProjects/gbasis_cuda/tests/data/atom_o.fchk",
+        "/home/ali-tehrani/SoftwareProjects/gbasis_cuda/tests/data/atom_c_g_pure_orbital.fchk",
+        "/home/ali-tehrani/SoftwareProjects/gbasis_cuda/tests/data/atom_mg.fchk",
+        "/home/ali-tehrani/SoftwareProjects/gbasis_cuda/tests/data/E948_rwB97XD_def2SVP.fchk",
+        "/home/ali-tehrani/SoftwareProjects/gbasis_cuda/tests/data/h2o.fchk",
+        "/home/ali-tehrani/SoftwareProjects/gbasis_cuda/tests/data/ch4.fchk",
+        "/home/ali-tehrani/SoftwareProjects/gbasis_cuda/tests/data/qm9_000092_HF_cc-pVDZ.fchk",
+        "/home/ali-tehrani/SoftwareProjects/gbasis_cuda/tests/data/qm9_000104_PBE1PBE_pcS-3.fchk"
     );
     std::cout << "FCHK FILE %s \n" << fchk_file << std::endl;
     gbasis::IOData iodata = gbasis::get_molecular_basis_from_fchk(fchk_file);
 
     // Gemerate random grid.
-    int numb_pts = 750000;
+    int numb_pts = 1000000;
     std::vector<double> points(3 * numb_pts);
     std::random_device rnd_device;
     std::mt19937  merseene_engine {rnd_device()};
