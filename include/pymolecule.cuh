@@ -31,6 +31,11 @@ class Molecule {
   /// cublasHandle_t handle; Couldn't figure out how to fix this, only works once,
 
  public:
+  /**
+   * Construct Molecule class
+   *
+   * @param file_path: File path of the wavefunction file.
+   */
   Molecule(const std::string &file_path);
 
   // Getters and Setters
