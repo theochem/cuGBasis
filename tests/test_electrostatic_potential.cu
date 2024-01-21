@@ -27,13 +27,16 @@ TEST_CASE( "Test Electrostatic Potential", "[evaluate_electrostatic_potential]" 
         "/home/ali-tehrani/SoftwareProjects/gbasis_cuda/tests/data/atom_he.fchk",
         "/home/ali-tehrani/SoftwareProjects/gbasis_cuda/tests/data/atom_be.fchk",
         "/home/ali-tehrani/SoftwareProjects/gbasis_cuda/tests/data/atom_be_f_pure_orbital.fchk",
-        "/home/ali-tehrani/SoftwareProjects/gbasis_cudaests/data/atom_be_f_cartesian_orbital.fchk",
+        "/home/ali-tehrani/SoftwareProjects/gbasis_cuda/tests/data/atom_be_f_cartesian_orbital.fchk",
         "/home/ali-tehrani/SoftwareProjects/gbasis_cuda/tests/data/atom_kr.fchk",
         "/home/ali-tehrani/SoftwareProjects/gbasis_cuda/tests/data/atom_o.fchk",
 //        "/home/ali-tehrani/SoftwareProjects/spec_database/tests/data/atom_c_g_pure_orbital.fchk",
         "/home/ali-tehrani/SoftwareProjects/gbasis_cuda/tests/data/atom_mg.fchk",
         "/home/ali-tehrani/SoftwareProjects/gbasis_cuda/tests/data/E948_rwB97XD_def2SVP.fchk",
+        "/home/ali-tehrani/SoftwareProjects/gbasis_cuda/tests/data/test.fchk",
+        "/home/ali-tehrani/SoftwareProjects/gbasis_cuda/tests/data/test2.fchk",
         "/home/ali-tehrani/SoftwareProjects/gbasis_cuda/tests/data/atom_08_O_N08_M3_ub3lyp_ccpvtz_g09.fchk",
+        "/home/ali-tehrani/SoftwareProjects/gbasis_cuda/tests/data/atom_08_O_N09_M2_ub3lyp_ccpvtz_g09.fchk",
         "/home/ali-tehrani/SoftwareProjects/gbasis_cuda/tests/data/4141_q000_m01_k00_force_uhf_ccpvtz.fchk",
         "/home/ali-tehrani/SoftwareProjects/gbasis_cuda/tests/data/h2o.fchk",
         "/home/ali-tehrani/SoftwareProjects/gbasis_cuda/tests/data/ch4.fchk",
@@ -77,11 +80,8 @@ from gbasis.evals.electrostatic_potential import electrostatic_potential
 from iodata import load_one
 from gbasis.wrappers import from_iodata
 
-
 iodata = load_one(fchk_path)
 basis, type = from_iodata(iodata)
-print("basis ", basis)
-print("type ", type)
 points = points.reshape((numb_pts, 3), order="C")
 points = np.array(points, dtype=np.float64)
 rdm = (iodata.mo.coeffs * iodata.mo.occs).dot(iodata.mo.coeffs.T)
@@ -90,9 +90,10 @@ from chemtools.wrappers import Molecule
 mol2 = Molecule.from_file(fchk_path)
 electro = mol2.compute_esp(points)
 #electro = electrostatic_potential(basis=basis, one_density_matrix=rdm, points=points, nuclear_coords=iodata.atcoords,
-#                                  nuclear_charges=iodata.atcorenums)
-print(np.abs(electro - true_result))
-result = np.all(np.abs(electro - true_result) < 1e-8)
+#                                  nuclear_charges=iodata.atcorenums, coord_type=type)
+err = np.abs(electro - true_result)
+print("Max error: ", np.max(err))
+result = np.all(err < 1e-8)
 assert result, "Electrostatic potential on GPU doesn't match gbasis."
     )", py::globals(), locals);
   } // Need this so that the python object doesn't outline the interpretor when we close it up.
