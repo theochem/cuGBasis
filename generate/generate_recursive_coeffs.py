@@ -5,12 +5,25 @@ The point of this is to avoid doing it by hand and saving time.
 
 These coefficients E, R can be found in Helgeker's book and from the
 Hermite expansion and Boys function recursion, respectively.
+
 """
 
-# The shells
-shells = ["s", "px", "py", "pz", "dxx", "dyy", "dzz", "dxy", "dxz", "dyz"]
+# The shells are in Gaussian order.
+shells = ["s",
+          "px", "py", "pz",
+          "dxx", "dyy", "dzz", "dxy", "dxz", "dyz",
+          'fxxx', 'fyyy', 'fzzz', 'fxyy', 'fxxy', 'fxxz', 'fxzz', 'fyzz', 'fyyz', 'fxyz',
+          'gzzzz', 'gyzzz', 'gyyzz', 'gyyyz', 'gyyyy', 'gxzzz', 'gxyzz', 'gxyyz', 'gxyyy', 'gxxzz', 'gxxyz',
+            'gxxyy', 'gxxxz', 'gxxxy', 'gxxxx'
+          ]
 # The angular momentum component, same order as above.
-angmom = [(0, 0, 0), (1, 0, 0), (0, 1, 0), (0, 0, 1), (2, 0, 0), (0, 2, 0), (0, 0, 2), (1, 1, 0), (1, 0, 1), (0, 1, 1)]
+angmom = [(0, 0, 0),
+          (1, 0, 0), (0, 1, 0), (0, 0, 1),
+          (2, 0, 0), (0, 2, 0), (0, 0, 2), (1, 1, 0), (1, 0, 1), (0, 1, 1),
+          (3, 0, 0), (0, 3, 0),  (0, 0, 3),  (1, 2, 0), (2, 1, 0), (2, 0, 1), (1, 0, 2), (0, 1, 2), (0, 2, 1), (1, 1, 1),
+          (0, 0, 4), (0, 1, 3), (0, 2, 2), (0, 3, 1), (0, 4, 0), (1, 0, 3), (1, 1, 2), (1, 2, 1), (1, 3, 0), (2, 0, 2), (2, 1, 1),
+                (2, 2, 0), (3, 0, 1), (3, 1, 0), (4, 0, 0),
+          ]
 
 function_header = lambda shell1, shell2: "__device__ double gbasis::compute_"+ shell1 + "_" + shell2 + "_nuclear_attraction_integral(const double& alpha, const double3& A_coord, const double& beta, const double3& B_coord, const double3& pt, const double3& P)"
 function_header_header = lambda shell1, shell2: "__device__ double compute_"+ shell1 + "_" + shell2 + "_nuclear_attraction_integral(const double& alpha, const double3& A_coord, const double& beta, const double3& B_coord, const double3& pt, const double3& P)"
