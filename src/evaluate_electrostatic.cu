@@ -6738,15 +6738,15 @@ __device__ void compute_row_c20_type_integral(const double3& A, const double3& p
                gbasis::normalization_primitive_pure_d(alpha) *
                gbasis::normalization_primitive_pure_f(beta) *
                (
-               -0.5*1.0 * gbasis::compute_dxx_fzzz_nuclear_attraction_integral(beta, B, alpha, A, pt, P)
-                + -0.5*-1.5 * gbasis::compute_dxx_fxxz_nuclear_attraction_integral(beta, B, alpha, A, pt, P)
-                + -0.5*-1.5 * gbasis::compute_dxx_fyyz_nuclear_attraction_integral(beta, B, alpha, A, pt, P)
-                + -0.5*1.0 * gbasis::compute_dyy_fzzz_nuclear_attraction_integral(beta, B, alpha, A, pt, P)
-                + -0.5*-1.5 * gbasis::compute_dyy_fxxz_nuclear_attraction_integral(beta, B, alpha, A, pt, P)
-                + -0.5*-1.5 * gbasis::compute_dyy_fyyz_nuclear_attraction_integral(beta, B, alpha, A, pt, P)
-                + 1*1.0 * gbasis::compute_dzz_fzzz_nuclear_attraction_integral(beta, B, alpha, A, pt, P)
-                + 1*-1.5 * gbasis::compute_dzz_fxxz_nuclear_attraction_integral(beta, B, alpha, A, pt, P)
-                + 1*-1.5 * gbasis::compute_dzz_fyyz_nuclear_attraction_integral(beta, B, alpha, A, pt, P)
+               -0.5*1.0 * gbasis::compute_dxx_fzzz_nuclear_attraction_integral(alpha, A, beta, B, pt, P)
+                + -0.5*-1.5 * gbasis::compute_dxx_fxxz_nuclear_attraction_integral(alpha, A, beta, B, pt, P)
+                + -0.5*-1.5 * gbasis::compute_dxx_fyyz_nuclear_attraction_integral(alpha, A, beta, B, pt, P)
+                + -0.5*1.0 * gbasis::compute_dyy_fzzz_nuclear_attraction_integral(alpha, A, beta, B, pt, P)
+                + -0.5*-1.5 * gbasis::compute_dyy_fxxz_nuclear_attraction_integral(alpha, A, beta, B, pt, P)
+                + -0.5*-1.5 * gbasis::compute_dyy_fyyz_nuclear_attraction_integral(alpha, A, beta, B, pt, P)
+                + 1*1.0 * gbasis::compute_dzz_fzzz_nuclear_attraction_integral(alpha, A, beta, B, pt, P)
+                + 1*-1.5 * gbasis::compute_dzz_fxxz_nuclear_attraction_integral(alpha, A, beta, B, pt, P)
+                + 1*-1.5 * gbasis::compute_dzz_fyyz_nuclear_attraction_integral(alpha, A, beta, B, pt, P)
                );
              d_point_charge[point_index + (i_integral + 1) * npoints] +=
                g_constant_basis[iconst + numb_primitives1 + i_prim1] *
@@ -6754,15 +6754,15 @@ __device__ void compute_row_c20_type_integral(const double3& A, const double3& p
                gbasis::normalization_primitive_pure_d(alpha) *
                gbasis::normalization_primitive_pure_f(beta) *
                (
-               -0.5*-0.6123724356957945 * gbasis::compute_dxx_fxxx_nuclear_attraction_integral(beta, B, alpha, A, pt, P)
-                + -0.5*-0.6123724356957945 * gbasis::compute_dxx_fxyy_nuclear_attraction_integral(beta, B, alpha, A, pt, P)
-                + -0.5*2.449489742783178 * gbasis::compute_dxx_fxzz_nuclear_attraction_integral(beta, B, alpha, A, pt, P)
-                + -0.5*-0.6123724356957945 * gbasis::compute_dyy_fxxx_nuclear_attraction_integral(beta, B, alpha, A, pt, P)
-                + -0.5*-0.6123724356957945 * gbasis::compute_dyy_fxyy_nuclear_attraction_integral(beta, B, alpha, A, pt, P)
-                + -0.5*2.449489742783178 * gbasis::compute_dyy_fxzz_nuclear_attraction_integral(beta, B, alpha, A, pt, P)
-                + 1*-0.6123724356957945 * gbasis::compute_dzz_fxxx_nuclear_attraction_integral(beta, B, alpha, A, pt, P)
-                + 1*-0.6123724356957945 * gbasis::compute_dzz_fxyy_nuclear_attraction_integral(beta, B, alpha, A, pt, P)
-                + 1*2.449489742783178 * gbasis::compute_dzz_fxzz_nuclear_attraction_integral(beta, B, alpha, A, pt, P)
+               -0.5*-0.6123724356957945 * gbasis::compute_dxx_fxxx_nuclear_attraction_integral(alpha, A, beta, B, pt, P)
+                + -0.5*-0.6123724356957945 * gbasis::compute_dxx_fxyy_nuclear_attraction_integral(alpha, A, beta, B, pt, P)
+                + -0.5*2.449489742783178 * gbasis::compute_dxx_fxzz_nuclear_attraction_integral(alpha, A, beta, B, pt, P)
+                + -0.5*-0.6123724356957945 * gbasis::compute_dyy_fxxx_nuclear_attraction_integral(alpha, A, beta, B, pt, P)
+                + -0.5*-0.6123724356957945 * gbasis::compute_dyy_fxyy_nuclear_attraction_integral(alpha, A, beta, B, pt, P)
+                + -0.5*2.449489742783178 * gbasis::compute_dyy_fxzz_nuclear_attraction_integral(alpha, A, beta, B, pt, P)
+                + 1*-0.6123724356957945 * gbasis::compute_dzz_fxxx_nuclear_attraction_integral(alpha, A, beta, B, pt, P)
+                + 1*-0.6123724356957945 * gbasis::compute_dzz_fxyy_nuclear_attraction_integral(alpha, A, beta, B, pt, P)
+                + 1*2.449489742783178 * gbasis::compute_dzz_fxzz_nuclear_attraction_integral(alpha, A, beta, B, pt, P)
                );
              d_point_charge[point_index + (i_integral + 2) * npoints] +=
                g_constant_basis[iconst + numb_primitives1 + i_prim1] *
@@ -6770,15 +6770,15 @@ __device__ void compute_row_c20_type_integral(const double3& A, const double3& p
                gbasis::normalization_primitive_pure_d(alpha) *
                gbasis::normalization_primitive_pure_f(beta) *
                (
-               -0.5*-0.6123724356957945 * gbasis::compute_dxx_fyyy_nuclear_attraction_integral(beta, B, alpha, A, pt, P)
-                + -0.5*-0.6123724356957945 * gbasis::compute_dxx_fxxy_nuclear_attraction_integral(beta, B, alpha, A, pt, P)
-                + -0.5*2.449489742783178 * gbasis::compute_dxx_fyzz_nuclear_attraction_integral(beta, B, alpha, A, pt, P)
-                + -0.5*-0.6123724356957945 * gbasis::compute_dyy_fyyy_nuclear_attraction_integral(beta, B, alpha, A, pt, P)
-                + -0.5*-0.6123724356957945 * gbasis::compute_dyy_fxxy_nuclear_attraction_integral(beta, B, alpha, A, pt, P)
-                + -0.5*2.449489742783178 * gbasis::compute_dyy_fyzz_nuclear_attraction_integral(beta, B, alpha, A, pt, P)
-                + 1*-0.6123724356957945 * gbasis::compute_dzz_fyyy_nuclear_attraction_integral(beta, B, alpha, A, pt, P)
-                + 1*-0.6123724356957945 * gbasis::compute_dzz_fxxy_nuclear_attraction_integral(beta, B, alpha, A, pt, P)
-                + 1*2.449489742783178 * gbasis::compute_dzz_fyzz_nuclear_attraction_integral(beta, B, alpha, A, pt, P)
+               -0.5*-0.6123724356957945 * gbasis::compute_dxx_fyyy_nuclear_attraction_integral(alpha, A, beta, B, pt, P)
+                + -0.5*-0.6123724356957945 * gbasis::compute_dxx_fxxy_nuclear_attraction_integral(alpha, A, beta, B, pt, P)
+                + -0.5*2.449489742783178 * gbasis::compute_dxx_fyzz_nuclear_attraction_integral(alpha, A, beta, B, pt, P)
+                + -0.5*-0.6123724356957945 * gbasis::compute_dyy_fyyy_nuclear_attraction_integral(alpha, A, beta, B, pt, P)
+                + -0.5*-0.6123724356957945 * gbasis::compute_dyy_fxxy_nuclear_attraction_integral(alpha, A, beta, B, pt, P)
+                + -0.5*2.449489742783178 * gbasis::compute_dyy_fyzz_nuclear_attraction_integral(alpha, A, beta, B, pt, P)
+                + 1*-0.6123724356957945 * gbasis::compute_dzz_fyyy_nuclear_attraction_integral(alpha, A, beta, B, pt, P)
+                + 1*-0.6123724356957945 * gbasis::compute_dzz_fxxy_nuclear_attraction_integral(alpha, A, beta, B, pt, P)
+                + 1*2.449489742783178 * gbasis::compute_dzz_fyzz_nuclear_attraction_integral(alpha, A, beta, B, pt, P)
                );
              d_point_charge[point_index + (i_integral + 3) * npoints] +=
                g_constant_basis[iconst + numb_primitives1 + i_prim1] *
@@ -6786,12 +6786,12 @@ __device__ void compute_row_c20_type_integral(const double3& A, const double3& p
                gbasis::normalization_primitive_pure_d(alpha) *
                gbasis::normalization_primitive_pure_f(beta) *
                (
-               -0.5*1.9364916731037085 * gbasis::compute_dxx_fxxz_nuclear_attraction_integral(beta, B, alpha, A, pt, P)
-                + -0.5*-1.9364916731037085 * gbasis::compute_dxx_fyyz_nuclear_attraction_integral(beta, B, alpha, A, pt, P)
-                + -0.5*1.9364916731037085 * gbasis::compute_dyy_fxxz_nuclear_attraction_integral(beta, B, alpha, A, pt, P)
-                + -0.5*-1.9364916731037085 * gbasis::compute_dyy_fyyz_nuclear_attraction_integral(beta, B, alpha, A, pt, P)
-                + 1*1.9364916731037085 * gbasis::compute_dzz_fxxz_nuclear_attraction_integral(beta, B, alpha, A, pt, P)
-                + 1*-1.9364916731037085 * gbasis::compute_dzz_fyyz_nuclear_attraction_integral(beta, B, alpha, A, pt, P)
+               -0.5*1.9364916731037085 * gbasis::compute_dxx_fxxz_nuclear_attraction_integral(alpha, A, beta, B, pt, P)
+                + -0.5*-1.9364916731037085 * gbasis::compute_dxx_fyyz_nuclear_attraction_integral(alpha, A, beta, B, pt, P)
+                + -0.5*1.9364916731037085 * gbasis::compute_dyy_fxxz_nuclear_attraction_integral(alpha, A, beta, B, pt, P)
+                + -0.5*-1.9364916731037085 * gbasis::compute_dyy_fyyz_nuclear_attraction_integral(alpha, A, beta, B, pt, P)
+                + 1*1.9364916731037085 * gbasis::compute_dzz_fxxz_nuclear_attraction_integral(alpha, A, beta, B, pt, P)
+                + 1*-1.9364916731037085 * gbasis::compute_dzz_fyyz_nuclear_attraction_integral(alpha, A, beta, B, pt, P)
                );
              d_point_charge[point_index + (i_integral + 4) * npoints] +=
                g_constant_basis[iconst + numb_primitives1 + i_prim1] *
@@ -6799,9 +6799,9 @@ __device__ void compute_row_c20_type_integral(const double3& A, const double3& p
                gbasis::normalization_primitive_pure_d(alpha) *
                gbasis::normalization_primitive_pure_f(beta) *
                (
-               -0.5*3.872983346207417 * gbasis::compute_dxx_fxyz_nuclear_attraction_integral(beta, B, alpha, A, pt, P)
-                + -0.5*3.872983346207417 * gbasis::compute_dyy_fxyz_nuclear_attraction_integral(beta, B, alpha, A, pt, P)
-                + 1*3.872983346207417 * gbasis::compute_dzz_fxyz_nuclear_attraction_integral(beta, B, alpha, A, pt, P)
+               -0.5*3.872983346207417 * gbasis::compute_dxx_fxyz_nuclear_attraction_integral(alpha, A, beta, B, pt, P)
+                + -0.5*3.872983346207417 * gbasis::compute_dyy_fxyz_nuclear_attraction_integral(alpha, A, beta, B, pt, P)
+                + 1*3.872983346207417 * gbasis::compute_dzz_fxyz_nuclear_attraction_integral(alpha, A, beta, B, pt, P)
                );
              d_point_charge[point_index + (i_integral + 5) * npoints] +=
                g_constant_basis[iconst + numb_primitives1 + i_prim1] *
@@ -6809,12 +6809,12 @@ __device__ void compute_row_c20_type_integral(const double3& A, const double3& p
                gbasis::normalization_primitive_pure_d(alpha) *
                gbasis::normalization_primitive_pure_f(beta) *
                (
-               -0.5*0.7905694150420949 * gbasis::compute_dxx_fxxx_nuclear_attraction_integral(beta, B, alpha, A, pt, P)
-                + -0.5*-2.3717082451262845 * gbasis::compute_dxx_fxyy_nuclear_attraction_integral(beta, B, alpha, A, pt, P)
-                + -0.5*0.7905694150420949 * gbasis::compute_dyy_fxxx_nuclear_attraction_integral(beta, B, alpha, A, pt, P)
-                + -0.5*-2.3717082451262845 * gbasis::compute_dyy_fxyy_nuclear_attraction_integral(beta, B, alpha, A, pt, P)
-                + 1*0.7905694150420949 * gbasis::compute_dzz_fxxx_nuclear_attraction_integral(beta, B, alpha, A, pt, P)
-                + 1*-2.3717082451262845 * gbasis::compute_dzz_fxyy_nuclear_attraction_integral(beta, B, alpha, A, pt, P)
+               -0.5*0.7905694150420949 * gbasis::compute_dxx_fxxx_nuclear_attraction_integral(alpha, A, beta, B, pt, P)
+                + -0.5*-2.3717082451262845 * gbasis::compute_dxx_fxyy_nuclear_attraction_integral(alpha, A, beta, B, pt, P)
+                + -0.5*0.7905694150420949 * gbasis::compute_dyy_fxxx_nuclear_attraction_integral(alpha, A, beta, B, pt, P)
+                + -0.5*-2.3717082451262845 * gbasis::compute_dyy_fxyy_nuclear_attraction_integral(alpha, A, beta, B, pt, P)
+                + 1*0.7905694150420949 * gbasis::compute_dzz_fxxx_nuclear_attraction_integral(alpha, A, beta, B, pt, P)
+                + 1*-2.3717082451262845 * gbasis::compute_dzz_fxyy_nuclear_attraction_integral(alpha, A, beta, B, pt, P)
                );
              d_point_charge[point_index + (i_integral + 6) * npoints] +=
                g_constant_basis[iconst + numb_primitives1 + i_prim1] *
@@ -6822,12 +6822,12 @@ __device__ void compute_row_c20_type_integral(const double3& A, const double3& p
                gbasis::normalization_primitive_pure_d(alpha) *
                gbasis::normalization_primitive_pure_f(beta) *
                (
-               -0.5*-0.7905694150420949 * gbasis::compute_dxx_fyyy_nuclear_attraction_integral(beta, B, alpha, A, pt, P)
-                + -0.5*2.3717082451262845 * gbasis::compute_dxx_fxxy_nuclear_attraction_integral(beta, B, alpha, A, pt, P)
-                + -0.5*-0.7905694150420949 * gbasis::compute_dyy_fyyy_nuclear_attraction_integral(beta, B, alpha, A, pt, P)
-                + -0.5*2.3717082451262845 * gbasis::compute_dyy_fxxy_nuclear_attraction_integral(beta, B, alpha, A, pt, P)
-                + 1*-0.7905694150420949 * gbasis::compute_dzz_fyyy_nuclear_attraction_integral(beta, B, alpha, A, pt, P)
-                + 1*2.3717082451262845 * gbasis::compute_dzz_fxxy_nuclear_attraction_integral(beta, B, alpha, A, pt, P)
+               -0.5*-0.7905694150420949 * gbasis::compute_dxx_fyyy_nuclear_attraction_integral(alpha, A, beta, B, pt, P)
+                + -0.5*2.3717082451262845 * gbasis::compute_dxx_fxxy_nuclear_attraction_integral(alpha, A, beta, B, pt, P)
+                + -0.5*-0.7905694150420949 * gbasis::compute_dyy_fyyy_nuclear_attraction_integral(alpha, A, beta, B, pt, P)
+                + -0.5*2.3717082451262845 * gbasis::compute_dyy_fxxy_nuclear_attraction_integral(alpha, A, beta, B, pt, P)
+                + 1*-0.7905694150420949 * gbasis::compute_dzz_fyyy_nuclear_attraction_integral(alpha, A, beta, B, pt, P)
+                + 1*2.3717082451262845 * gbasis::compute_dzz_fxxy_nuclear_attraction_integral(alpha, A, beta, B, pt, P)
                );
              break;
         } // End switch
@@ -7093,9 +7093,9 @@ __device__ void compute_row_c21_type_integral(const double3& A, const double3& p
                gbasis::normalization_primitive_pure_d(alpha) *
                gbasis::normalization_primitive_pure_f(beta) *
                (
-               1.7320508075688772*1.0 * gbasis::compute_dxz_fzzz_nuclear_attraction_integral(beta, B, alpha, A, pt, P)
-                + 1.7320508075688772*-1.5 * gbasis::compute_dxz_fxxz_nuclear_attraction_integral(beta, B, alpha, A, pt, P)
-                + 1.7320508075688772*-1.5 * gbasis::compute_dxz_fyyz_nuclear_attraction_integral(beta, B, alpha, A, pt, P)
+               1.7320508075688772*1.0 * gbasis::compute_dxz_fzzz_nuclear_attraction_integral(alpha, A, beta, B, pt, P)
+                + 1.7320508075688772*-1.5 * gbasis::compute_dxz_fxxz_nuclear_attraction_integral(alpha, A, beta, B, pt, P)
+                + 1.7320508075688772*-1.5 * gbasis::compute_dxz_fyyz_nuclear_attraction_integral(alpha, A, beta, B, pt, P)
                );
              d_point_charge[point_index + (i_integral + 1) * npoints] +=
                g_constant_basis[iconst + numb_primitives1 + i_prim1] *
@@ -7103,9 +7103,9 @@ __device__ void compute_row_c21_type_integral(const double3& A, const double3& p
                gbasis::normalization_primitive_pure_d(alpha) *
                gbasis::normalization_primitive_pure_f(beta) *
                (
-               1.7320508075688772*-0.6123724356957945 * gbasis::compute_dxz_fxxx_nuclear_attraction_integral(beta, B, alpha, A, pt, P)
-                + 1.7320508075688772*-0.6123724356957945 * gbasis::compute_dxz_fxyy_nuclear_attraction_integral(beta, B, alpha, A, pt, P)
-                + 1.7320508075688772*2.449489742783178 * gbasis::compute_dxz_fxzz_nuclear_attraction_integral(beta, B, alpha, A, pt, P)
+               1.7320508075688772*-0.6123724356957945 * gbasis::compute_dxz_fxxx_nuclear_attraction_integral(alpha, A, beta, B, pt, P)
+                + 1.7320508075688772*-0.6123724356957945 * gbasis::compute_dxz_fxyy_nuclear_attraction_integral(alpha, A, beta, B, pt, P)
+                + 1.7320508075688772*2.449489742783178 * gbasis::compute_dxz_fxzz_nuclear_attraction_integral(alpha, A, beta, B, pt, P)
                );
              d_point_charge[point_index + (i_integral + 2) * npoints] +=
                g_constant_basis[iconst + numb_primitives1 + i_prim1] *
@@ -7113,9 +7113,9 @@ __device__ void compute_row_c21_type_integral(const double3& A, const double3& p
                gbasis::normalization_primitive_pure_d(alpha) *
                gbasis::normalization_primitive_pure_f(beta) *
                (
-               1.7320508075688772*-0.6123724356957945 * gbasis::compute_dxz_fyyy_nuclear_attraction_integral(beta, B, alpha, A, pt, P)
-                + 1.7320508075688772*-0.6123724356957945 * gbasis::compute_dxz_fxxy_nuclear_attraction_integral(beta, B, alpha, A, pt, P)
-                + 1.7320508075688772*2.449489742783178 * gbasis::compute_dxz_fyzz_nuclear_attraction_integral(beta, B, alpha, A, pt, P)
+               1.7320508075688772*-0.6123724356957945 * gbasis::compute_dxz_fyyy_nuclear_attraction_integral(alpha, A, beta, B, pt, P)
+                + 1.7320508075688772*-0.6123724356957945 * gbasis::compute_dxz_fxxy_nuclear_attraction_integral(alpha, A, beta, B, pt, P)
+                + 1.7320508075688772*2.449489742783178 * gbasis::compute_dxz_fyzz_nuclear_attraction_integral(alpha, A, beta, B, pt, P)
                );
              d_point_charge[point_index + (i_integral + 3) * npoints] +=
                g_constant_basis[iconst + numb_primitives1 + i_prim1] *
@@ -7123,8 +7123,8 @@ __device__ void compute_row_c21_type_integral(const double3& A, const double3& p
                gbasis::normalization_primitive_pure_d(alpha) *
                gbasis::normalization_primitive_pure_f(beta) *
                (
-               1.7320508075688772*1.9364916731037085 * gbasis::compute_dxz_fxxz_nuclear_attraction_integral(beta, B, alpha, A, pt, P)
-                + 1.7320508075688772*-1.9364916731037085 * gbasis::compute_dxz_fyyz_nuclear_attraction_integral(beta, B, alpha, A, pt, P)
+               1.7320508075688772*1.9364916731037085 * gbasis::compute_dxz_fxxz_nuclear_attraction_integral(alpha, A, beta, B, pt, P)
+                + 1.7320508075688772*-1.9364916731037085 * gbasis::compute_dxz_fyyz_nuclear_attraction_integral(alpha, A, beta, B, pt, P)
                );
              d_point_charge[point_index + (i_integral + 4) * npoints] +=
                g_constant_basis[iconst + numb_primitives1 + i_prim1] *
@@ -7132,7 +7132,7 @@ __device__ void compute_row_c21_type_integral(const double3& A, const double3& p
                gbasis::normalization_primitive_pure_d(alpha) *
                gbasis::normalization_primitive_pure_f(beta) *
                (
-               1.7320508075688772*3.872983346207417 * gbasis::compute_dxz_fxyz_nuclear_attraction_integral(beta, B, alpha, A, pt, P)
+               1.7320508075688772*3.872983346207417 * gbasis::compute_dxz_fxyz_nuclear_attraction_integral(alpha, A, beta, B, pt, P)
                );
              d_point_charge[point_index + (i_integral + 5) * npoints] +=
                g_constant_basis[iconst + numb_primitives1 + i_prim1] *
@@ -7140,8 +7140,8 @@ __device__ void compute_row_c21_type_integral(const double3& A, const double3& p
                gbasis::normalization_primitive_pure_d(alpha) *
                gbasis::normalization_primitive_pure_f(beta) *
                (
-               1.7320508075688772*0.7905694150420949 * gbasis::compute_dxz_fxxx_nuclear_attraction_integral(beta, B, alpha, A, pt, P)
-                + 1.7320508075688772*-2.3717082451262845 * gbasis::compute_dxz_fxyy_nuclear_attraction_integral(beta, B, alpha, A, pt, P)
+               1.7320508075688772*0.7905694150420949 * gbasis::compute_dxz_fxxx_nuclear_attraction_integral(alpha, A, beta, B, pt, P)
+                + 1.7320508075688772*-2.3717082451262845 * gbasis::compute_dxz_fxyy_nuclear_attraction_integral(alpha, A, beta, B, pt, P)
                );
              d_point_charge[point_index + (i_integral + 6) * npoints] +=
                g_constant_basis[iconst + numb_primitives1 + i_prim1] *
@@ -7149,8 +7149,8 @@ __device__ void compute_row_c21_type_integral(const double3& A, const double3& p
                gbasis::normalization_primitive_pure_d(alpha) *
                gbasis::normalization_primitive_pure_f(beta) *
                (
-               1.7320508075688772*-0.7905694150420949 * gbasis::compute_dxz_fyyy_nuclear_attraction_integral(beta, B, alpha, A, pt, P)
-                + 1.7320508075688772*2.3717082451262845 * gbasis::compute_dxz_fxxy_nuclear_attraction_integral(beta, B, alpha, A, pt, P)
+               1.7320508075688772*-0.7905694150420949 * gbasis::compute_dxz_fyyy_nuclear_attraction_integral(alpha, A, beta, B, pt, P)
+                + 1.7320508075688772*2.3717082451262845 * gbasis::compute_dxz_fxxy_nuclear_attraction_integral(alpha, A, beta, B, pt, P)
                );
              break;
         } // End switch
@@ -7416,9 +7416,9 @@ __device__ void compute_row_s21_type_integral(const double3& A, const double3& p
                gbasis::normalization_primitive_pure_d(alpha) *
                gbasis::normalization_primitive_pure_f(beta) *
                (
-               1.7320508075688772*1.0 * gbasis::compute_dyz_fzzz_nuclear_attraction_integral(beta, B, alpha, A, pt, P)
-                + 1.7320508075688772*-1.5 * gbasis::compute_dyz_fxxz_nuclear_attraction_integral(beta, B, alpha, A, pt, P)
-                + 1.7320508075688772*-1.5 * gbasis::compute_dyz_fyyz_nuclear_attraction_integral(beta, B, alpha, A, pt, P)
+               1.7320508075688772*1.0 * gbasis::compute_dyz_fzzz_nuclear_attraction_integral(alpha, A, beta, B, pt, P)
+                + 1.7320508075688772*-1.5 * gbasis::compute_dyz_fxxz_nuclear_attraction_integral(alpha, A, beta, B, pt, P)
+                + 1.7320508075688772*-1.5 * gbasis::compute_dyz_fyyz_nuclear_attraction_integral(alpha, A, beta, B, pt, P)
                );
              d_point_charge[point_index + (i_integral + 1) * npoints] +=
                g_constant_basis[iconst + numb_primitives1 + i_prim1] *
@@ -7426,9 +7426,9 @@ __device__ void compute_row_s21_type_integral(const double3& A, const double3& p
                gbasis::normalization_primitive_pure_d(alpha) *
                gbasis::normalization_primitive_pure_f(beta) *
                (
-               1.7320508075688772*-0.6123724356957945 * gbasis::compute_dyz_fxxx_nuclear_attraction_integral(beta, B, alpha, A, pt, P)
-                + 1.7320508075688772*-0.6123724356957945 * gbasis::compute_dyz_fxyy_nuclear_attraction_integral(beta, B, alpha, A, pt, P)
-                + 1.7320508075688772*2.449489742783178 * gbasis::compute_dyz_fxzz_nuclear_attraction_integral(beta, B, alpha, A, pt, P)
+               1.7320508075688772*-0.6123724356957945 * gbasis::compute_dyz_fxxx_nuclear_attraction_integral(alpha, A, beta, B, pt, P)
+                + 1.7320508075688772*-0.6123724356957945 * gbasis::compute_dyz_fxyy_nuclear_attraction_integral(alpha, A, beta, B, pt, P)
+                + 1.7320508075688772*2.449489742783178 * gbasis::compute_dyz_fxzz_nuclear_attraction_integral(alpha, A, beta, B, pt, P)
                );
              d_point_charge[point_index + (i_integral + 2) * npoints] +=
                g_constant_basis[iconst + numb_primitives1 + i_prim1] *
@@ -7436,9 +7436,9 @@ __device__ void compute_row_s21_type_integral(const double3& A, const double3& p
                gbasis::normalization_primitive_pure_d(alpha) *
                gbasis::normalization_primitive_pure_f(beta) *
                (
-               1.7320508075688772*-0.6123724356957945 * gbasis::compute_dyz_fyyy_nuclear_attraction_integral(beta, B, alpha, A, pt, P)
-                + 1.7320508075688772*-0.6123724356957945 * gbasis::compute_dyz_fxxy_nuclear_attraction_integral(beta, B, alpha, A, pt, P)
-                + 1.7320508075688772*2.449489742783178 * gbasis::compute_dyz_fyzz_nuclear_attraction_integral(beta, B, alpha, A, pt, P)
+               1.7320508075688772*-0.6123724356957945 * gbasis::compute_dyz_fyyy_nuclear_attraction_integral(alpha, A, beta, B, pt, P)
+                + 1.7320508075688772*-0.6123724356957945 * gbasis::compute_dyz_fxxy_nuclear_attraction_integral(alpha, A, beta, B, pt, P)
+                + 1.7320508075688772*2.449489742783178 * gbasis::compute_dyz_fyzz_nuclear_attraction_integral(alpha, A, beta, B, pt, P)
                );
              d_point_charge[point_index + (i_integral + 3) * npoints] +=
                g_constant_basis[iconst + numb_primitives1 + i_prim1] *
@@ -7446,8 +7446,8 @@ __device__ void compute_row_s21_type_integral(const double3& A, const double3& p
                gbasis::normalization_primitive_pure_d(alpha) *
                gbasis::normalization_primitive_pure_f(beta) *
                (
-               1.7320508075688772*1.9364916731037085 * gbasis::compute_dyz_fxxz_nuclear_attraction_integral(beta, B, alpha, A, pt, P)
-                + 1.7320508075688772*-1.9364916731037085 * gbasis::compute_dyz_fyyz_nuclear_attraction_integral(beta, B, alpha, A, pt, P)
+               1.7320508075688772*1.9364916731037085 * gbasis::compute_dyz_fxxz_nuclear_attraction_integral(alpha, A, beta, B, pt, P)
+                + 1.7320508075688772*-1.9364916731037085 * gbasis::compute_dyz_fyyz_nuclear_attraction_integral(alpha, A, beta, B, pt, P)
                );
              d_point_charge[point_index + (i_integral + 4) * npoints] +=
                g_constant_basis[iconst + numb_primitives1 + i_prim1] *
@@ -7455,7 +7455,7 @@ __device__ void compute_row_s21_type_integral(const double3& A, const double3& p
                gbasis::normalization_primitive_pure_d(alpha) *
                gbasis::normalization_primitive_pure_f(beta) *
                (
-               1.7320508075688772*3.872983346207417 * gbasis::compute_dyz_fxyz_nuclear_attraction_integral(beta, B, alpha, A, pt, P)
+               1.7320508075688772*3.872983346207417 * gbasis::compute_dyz_fxyz_nuclear_attraction_integral(alpha, A, beta, B, pt, P)
                );
              d_point_charge[point_index + (i_integral + 5) * npoints] +=
                g_constant_basis[iconst + numb_primitives1 + i_prim1] *
@@ -7463,8 +7463,8 @@ __device__ void compute_row_s21_type_integral(const double3& A, const double3& p
                gbasis::normalization_primitive_pure_d(alpha) *
                gbasis::normalization_primitive_pure_f(beta) *
                (
-               1.7320508075688772*0.7905694150420949 * gbasis::compute_dyz_fxxx_nuclear_attraction_integral(beta, B, alpha, A, pt, P)
-                + 1.7320508075688772*-2.3717082451262845 * gbasis::compute_dyz_fxyy_nuclear_attraction_integral(beta, B, alpha, A, pt, P)
+               1.7320508075688772*0.7905694150420949 * gbasis::compute_dyz_fxxx_nuclear_attraction_integral(alpha, A, beta, B, pt, P)
+                + 1.7320508075688772*-2.3717082451262845 * gbasis::compute_dyz_fxyy_nuclear_attraction_integral(alpha, A, beta, B, pt, P)
                );
              d_point_charge[point_index + (i_integral + 6) * npoints] +=
                g_constant_basis[iconst + numb_primitives1 + i_prim1] *
@@ -7472,8 +7472,8 @@ __device__ void compute_row_s21_type_integral(const double3& A, const double3& p
                gbasis::normalization_primitive_pure_d(alpha) *
                gbasis::normalization_primitive_pure_f(beta) *
                (
-               1.7320508075688772*-0.7905694150420949 * gbasis::compute_dyz_fyyy_nuclear_attraction_integral(beta, B, alpha, A, pt, P)
-                + 1.7320508075688772*2.3717082451262845 * gbasis::compute_dyz_fxxy_nuclear_attraction_integral(beta, B, alpha, A, pt, P)
+               1.7320508075688772*-0.7905694150420949 * gbasis::compute_dyz_fyyy_nuclear_attraction_integral(alpha, A, beta, B, pt, P)
+                + 1.7320508075688772*2.3717082451262845 * gbasis::compute_dyz_fxxy_nuclear_attraction_integral(alpha, A, beta, B, pt, P)
                );
              break;
         } // End switch
@@ -7767,12 +7767,12 @@ __device__ void compute_row_c22_type_integral(const double3& A, const double3& p
                gbasis::normalization_primitive_pure_d(alpha) *
                gbasis::normalization_primitive_pure_f(beta) *
                (
-               0.8660254037844386*1.0 * gbasis::compute_dxx_fzzz_nuclear_attraction_integral(beta, B, alpha, A, pt, P)
-                + 0.8660254037844386*-1.5 * gbasis::compute_dxx_fxxz_nuclear_attraction_integral(beta, B, alpha, A, pt, P)
-                + 0.8660254037844386*-1.5 * gbasis::compute_dxx_fyyz_nuclear_attraction_integral(beta, B, alpha, A, pt, P)
-                + -0.8660254037844386*1.0 * gbasis::compute_dyy_fzzz_nuclear_attraction_integral(beta, B, alpha, A, pt, P)
-                + -0.8660254037844386*-1.5 * gbasis::compute_dyy_fxxz_nuclear_attraction_integral(beta, B, alpha, A, pt, P)
-                + -0.8660254037844386*-1.5 * gbasis::compute_dyy_fyyz_nuclear_attraction_integral(beta, B, alpha, A, pt, P)
+               0.8660254037844386*1.0 * gbasis::compute_dxx_fzzz_nuclear_attraction_integral(alpha, A, beta, B, pt, P)
+                + 0.8660254037844386*-1.5 * gbasis::compute_dxx_fxxz_nuclear_attraction_integral(alpha, A, beta, B, pt, P)
+                + 0.8660254037844386*-1.5 * gbasis::compute_dxx_fyyz_nuclear_attraction_integral(alpha, A, beta, B, pt, P)
+                + -0.8660254037844386*1.0 * gbasis::compute_dyy_fzzz_nuclear_attraction_integral(alpha, A, beta, B, pt, P)
+                + -0.8660254037844386*-1.5 * gbasis::compute_dyy_fxxz_nuclear_attraction_integral(alpha, A, beta, B, pt, P)
+                + -0.8660254037844386*-1.5 * gbasis::compute_dyy_fyyz_nuclear_attraction_integral(alpha, A, beta, B, pt, P)
                );
              d_point_charge[point_index + (i_integral + 1) * npoints] +=
                g_constant_basis[iconst + numb_primitives1 + i_prim1] *
@@ -7780,12 +7780,12 @@ __device__ void compute_row_c22_type_integral(const double3& A, const double3& p
                gbasis::normalization_primitive_pure_d(alpha) *
                gbasis::normalization_primitive_pure_f(beta) *
                (
-               0.8660254037844386*-0.6123724356957945 * gbasis::compute_dxx_fxxx_nuclear_attraction_integral(beta, B, alpha, A, pt, P)
-                + 0.8660254037844386*-0.6123724356957945 * gbasis::compute_dxx_fxyy_nuclear_attraction_integral(beta, B, alpha, A, pt, P)
-                + 0.8660254037844386*2.449489742783178 * gbasis::compute_dxx_fxzz_nuclear_attraction_integral(beta, B, alpha, A, pt, P)
-                + -0.8660254037844386*-0.6123724356957945 * gbasis::compute_dyy_fxxx_nuclear_attraction_integral(beta, B, alpha, A, pt, P)
-                + -0.8660254037844386*-0.6123724356957945 * gbasis::compute_dyy_fxyy_nuclear_attraction_integral(beta, B, alpha, A, pt, P)
-                + -0.8660254037844386*2.449489742783178 * gbasis::compute_dyy_fxzz_nuclear_attraction_integral(beta, B, alpha, A, pt, P)
+               0.8660254037844386*-0.6123724356957945 * gbasis::compute_dxx_fxxx_nuclear_attraction_integral(alpha, A, beta, B, pt, P)
+                + 0.8660254037844386*-0.6123724356957945 * gbasis::compute_dxx_fxyy_nuclear_attraction_integral(alpha, A, beta, B, pt, P)
+                + 0.8660254037844386*2.449489742783178 * gbasis::compute_dxx_fxzz_nuclear_attraction_integral(alpha, A, beta, B, pt, P)
+                + -0.8660254037844386*-0.6123724356957945 * gbasis::compute_dyy_fxxx_nuclear_attraction_integral(alpha, A, beta, B, pt, P)
+                + -0.8660254037844386*-0.6123724356957945 * gbasis::compute_dyy_fxyy_nuclear_attraction_integral(alpha, A, beta, B, pt, P)
+                + -0.8660254037844386*2.449489742783178 * gbasis::compute_dyy_fxzz_nuclear_attraction_integral(alpha, A, beta, B, pt, P)
                );
              d_point_charge[point_index + (i_integral + 2) * npoints] +=
                g_constant_basis[iconst + numb_primitives1 + i_prim1] *
@@ -7793,12 +7793,12 @@ __device__ void compute_row_c22_type_integral(const double3& A, const double3& p
                gbasis::normalization_primitive_pure_d(alpha) *
                gbasis::normalization_primitive_pure_f(beta) *
                (
-               0.8660254037844386*-0.6123724356957945 * gbasis::compute_dxx_fyyy_nuclear_attraction_integral(beta, B, alpha, A, pt, P)
-                + 0.8660254037844386*-0.6123724356957945 * gbasis::compute_dxx_fxxy_nuclear_attraction_integral(beta, B, alpha, A, pt, P)
-                + 0.8660254037844386*2.449489742783178 * gbasis::compute_dxx_fyzz_nuclear_attraction_integral(beta, B, alpha, A, pt, P)
-                + -0.8660254037844386*-0.6123724356957945 * gbasis::compute_dyy_fyyy_nuclear_attraction_integral(beta, B, alpha, A, pt, P)
-                + -0.8660254037844386*-0.6123724356957945 * gbasis::compute_dyy_fxxy_nuclear_attraction_integral(beta, B, alpha, A, pt, P)
-                + -0.8660254037844386*2.449489742783178 * gbasis::compute_dyy_fyzz_nuclear_attraction_integral(beta, B, alpha, A, pt, P)
+               0.8660254037844386*-0.6123724356957945 * gbasis::compute_dxx_fyyy_nuclear_attraction_integral(alpha, A, beta, B, pt, P)
+                + 0.8660254037844386*-0.6123724356957945 * gbasis::compute_dxx_fxxy_nuclear_attraction_integral(alpha, A, beta, B, pt, P)
+                + 0.8660254037844386*2.449489742783178 * gbasis::compute_dxx_fyzz_nuclear_attraction_integral(alpha, A, beta, B, pt, P)
+                + -0.8660254037844386*-0.6123724356957945 * gbasis::compute_dyy_fyyy_nuclear_attraction_integral(alpha, A, beta, B, pt, P)
+                + -0.8660254037844386*-0.6123724356957945 * gbasis::compute_dyy_fxxy_nuclear_attraction_integral(alpha, A, beta, B, pt, P)
+                + -0.8660254037844386*2.449489742783178 * gbasis::compute_dyy_fyzz_nuclear_attraction_integral(alpha, A, beta, B, pt, P)
                );
              d_point_charge[point_index + (i_integral + 3) * npoints] +=
                g_constant_basis[iconst + numb_primitives1 + i_prim1] *
@@ -7806,10 +7806,10 @@ __device__ void compute_row_c22_type_integral(const double3& A, const double3& p
                gbasis::normalization_primitive_pure_d(alpha) *
                gbasis::normalization_primitive_pure_f(beta) *
                (
-               0.8660254037844386*1.9364916731037085 * gbasis::compute_dxx_fxxz_nuclear_attraction_integral(beta, B, alpha, A, pt, P)
-                + 0.8660254037844386*-1.9364916731037085 * gbasis::compute_dxx_fyyz_nuclear_attraction_integral(beta, B, alpha, A, pt, P)
-                + -0.8660254037844386*1.9364916731037085 * gbasis::compute_dyy_fxxz_nuclear_attraction_integral(beta, B, alpha, A, pt, P)
-                + -0.8660254037844386*-1.9364916731037085 * gbasis::compute_dyy_fyyz_nuclear_attraction_integral(beta, B, alpha, A, pt, P)
+               0.8660254037844386*1.9364916731037085 * gbasis::compute_dxx_fxxz_nuclear_attraction_integral(alpha, A, beta, B, pt, P)
+                + 0.8660254037844386*-1.9364916731037085 * gbasis::compute_dxx_fyyz_nuclear_attraction_integral(alpha, A, beta, B, pt, P)
+                + -0.8660254037844386*1.9364916731037085 * gbasis::compute_dyy_fxxz_nuclear_attraction_integral(alpha, A, beta, B, pt, P)
+                + -0.8660254037844386*-1.9364916731037085 * gbasis::compute_dyy_fyyz_nuclear_attraction_integral(alpha, A, beta, B, pt, P)
                );
              d_point_charge[point_index + (i_integral + 4) * npoints] +=
                g_constant_basis[iconst + numb_primitives1 + i_prim1] *
@@ -7817,8 +7817,8 @@ __device__ void compute_row_c22_type_integral(const double3& A, const double3& p
                gbasis::normalization_primitive_pure_d(alpha) *
                gbasis::normalization_primitive_pure_f(beta) *
                (
-               0.8660254037844386*3.872983346207417 * gbasis::compute_dxx_fxyz_nuclear_attraction_integral(beta, B, alpha, A, pt, P)
-                + -0.8660254037844386*3.872983346207417 * gbasis::compute_dyy_fxyz_nuclear_attraction_integral(beta, B, alpha, A, pt, P)
+               0.8660254037844386*3.872983346207417 * gbasis::compute_dxx_fxyz_nuclear_attraction_integral(alpha, A, beta, B, pt, P)
+                + -0.8660254037844386*3.872983346207417 * gbasis::compute_dyy_fxyz_nuclear_attraction_integral(alpha, A, beta, B, pt, P)
                );
              d_point_charge[point_index + (i_integral + 5) * npoints] +=
                g_constant_basis[iconst + numb_primitives1 + i_prim1] *
@@ -7826,10 +7826,10 @@ __device__ void compute_row_c22_type_integral(const double3& A, const double3& p
                gbasis::normalization_primitive_pure_d(alpha) *
                gbasis::normalization_primitive_pure_f(beta) *
                (
-               0.8660254037844386*0.7905694150420949 * gbasis::compute_dxx_fxxx_nuclear_attraction_integral(beta, B, alpha, A, pt, P)
-                + 0.8660254037844386*-2.3717082451262845 * gbasis::compute_dxx_fxyy_nuclear_attraction_integral(beta, B, alpha, A, pt, P)
-                + -0.8660254037844386*0.7905694150420949 * gbasis::compute_dyy_fxxx_nuclear_attraction_integral(beta, B, alpha, A, pt, P)
-                + -0.8660254037844386*-2.3717082451262845 * gbasis::compute_dyy_fxyy_nuclear_attraction_integral(beta, B, alpha, A, pt, P)
+               0.8660254037844386*0.7905694150420949 * gbasis::compute_dxx_fxxx_nuclear_attraction_integral(alpha, A, beta, B, pt, P)
+                + 0.8660254037844386*-2.3717082451262845 * gbasis::compute_dxx_fxyy_nuclear_attraction_integral(alpha, A, beta, B, pt, P)
+                + -0.8660254037844386*0.7905694150420949 * gbasis::compute_dyy_fxxx_nuclear_attraction_integral(alpha, A, beta, B, pt, P)
+                + -0.8660254037844386*-2.3717082451262845 * gbasis::compute_dyy_fxyy_nuclear_attraction_integral(alpha, A, beta, B, pt, P)
                );
              d_point_charge[point_index + (i_integral + 6) * npoints] +=
                g_constant_basis[iconst + numb_primitives1 + i_prim1] *
@@ -7837,10 +7837,10 @@ __device__ void compute_row_c22_type_integral(const double3& A, const double3& p
                gbasis::normalization_primitive_pure_d(alpha) *
                gbasis::normalization_primitive_pure_f(beta) *
                (
-               0.8660254037844386*-0.7905694150420949 * gbasis::compute_dxx_fyyy_nuclear_attraction_integral(beta, B, alpha, A, pt, P)
-                + 0.8660254037844386*2.3717082451262845 * gbasis::compute_dxx_fxxy_nuclear_attraction_integral(beta, B, alpha, A, pt, P)
-                + -0.8660254037844386*-0.7905694150420949 * gbasis::compute_dyy_fyyy_nuclear_attraction_integral(beta, B, alpha, A, pt, P)
-                + -0.8660254037844386*2.3717082451262845 * gbasis::compute_dyy_fxxy_nuclear_attraction_integral(beta, B, alpha, A, pt, P)
+               0.8660254037844386*-0.7905694150420949 * gbasis::compute_dxx_fyyy_nuclear_attraction_integral(alpha, A, beta, B, pt, P)
+                + 0.8660254037844386*2.3717082451262845 * gbasis::compute_dxx_fxxy_nuclear_attraction_integral(alpha, A, beta, B, pt, P)
+                + -0.8660254037844386*-0.7905694150420949 * gbasis::compute_dyy_fyyy_nuclear_attraction_integral(alpha, A, beta, B, pt, P)
+                + -0.8660254037844386*2.3717082451262845 * gbasis::compute_dyy_fxxy_nuclear_attraction_integral(alpha, A, beta, B, pt, P)
                );
              break;
         } // End switch
@@ -8106,9 +8106,9 @@ __device__ void compute_row_s22_type_integral(const double3& A, const double3& p
                gbasis::normalization_primitive_pure_d(alpha) *
                gbasis::normalization_primitive_pure_f(beta) *
                (
-               1.7320508075688772*1.0 * gbasis::compute_dxy_fzzz_nuclear_attraction_integral(beta, B, alpha, A, pt, P)
-                + 1.7320508075688772*-1.5 * gbasis::compute_dxy_fxxz_nuclear_attraction_integral(beta, B, alpha, A, pt, P)
-                + 1.7320508075688772*-1.5 * gbasis::compute_dxy_fyyz_nuclear_attraction_integral(beta, B, alpha, A, pt, P)
+               1.7320508075688772*1.0 * gbasis::compute_dxy_fzzz_nuclear_attraction_integral(alpha, A, beta, B, pt, P)
+                + 1.7320508075688772*-1.5 * gbasis::compute_dxy_fxxz_nuclear_attraction_integral(alpha, A, beta, B, pt, P)
+                + 1.7320508075688772*-1.5 * gbasis::compute_dxy_fyyz_nuclear_attraction_integral(alpha, A, beta, B, pt, P)
                );
              d_point_charge[point_index + (i_integral + 1) * npoints] +=
                g_constant_basis[iconst + numb_primitives1 + i_prim1] *
@@ -8116,9 +8116,9 @@ __device__ void compute_row_s22_type_integral(const double3& A, const double3& p
                gbasis::normalization_primitive_pure_d(alpha) *
                gbasis::normalization_primitive_pure_f(beta) *
                (
-               1.7320508075688772*-0.6123724356957945 * gbasis::compute_dxy_fxxx_nuclear_attraction_integral(beta, B, alpha, A, pt, P)
-                + 1.7320508075688772*-0.6123724356957945 * gbasis::compute_dxy_fxyy_nuclear_attraction_integral(beta, B, alpha, A, pt, P)
-                + 1.7320508075688772*2.449489742783178 * gbasis::compute_dxy_fxzz_nuclear_attraction_integral(beta, B, alpha, A, pt, P)
+               1.7320508075688772*-0.6123724356957945 * gbasis::compute_dxy_fxxx_nuclear_attraction_integral(alpha, A, beta, B, pt, P)
+                + 1.7320508075688772*-0.6123724356957945 * gbasis::compute_dxy_fxyy_nuclear_attraction_integral(alpha, A, beta, B, pt, P)
+                + 1.7320508075688772*2.449489742783178 * gbasis::compute_dxy_fxzz_nuclear_attraction_integral(alpha, A, beta, B, pt, P)
                );
              d_point_charge[point_index + (i_integral + 2) * npoints] +=
                g_constant_basis[iconst + numb_primitives1 + i_prim1] *
@@ -8126,9 +8126,9 @@ __device__ void compute_row_s22_type_integral(const double3& A, const double3& p
                gbasis::normalization_primitive_pure_d(alpha) *
                gbasis::normalization_primitive_pure_f(beta) *
                (
-               1.7320508075688772*-0.6123724356957945 * gbasis::compute_dxy_fyyy_nuclear_attraction_integral(beta, B, alpha, A, pt, P)
-                + 1.7320508075688772*-0.6123724356957945 * gbasis::compute_dxy_fxxy_nuclear_attraction_integral(beta, B, alpha, A, pt, P)
-                + 1.7320508075688772*2.449489742783178 * gbasis::compute_dxy_fyzz_nuclear_attraction_integral(beta, B, alpha, A, pt, P)
+               1.7320508075688772*-0.6123724356957945 * gbasis::compute_dxy_fyyy_nuclear_attraction_integral(alpha, A, beta, B, pt, P)
+                + 1.7320508075688772*-0.6123724356957945 * gbasis::compute_dxy_fxxy_nuclear_attraction_integral(alpha, A, beta, B, pt, P)
+                + 1.7320508075688772*2.449489742783178 * gbasis::compute_dxy_fyzz_nuclear_attraction_integral(alpha, A, beta, B, pt, P)
                );
              d_point_charge[point_index + (i_integral + 3) * npoints] +=
                g_constant_basis[iconst + numb_primitives1 + i_prim1] *
@@ -8136,8 +8136,8 @@ __device__ void compute_row_s22_type_integral(const double3& A, const double3& p
                gbasis::normalization_primitive_pure_d(alpha) *
                gbasis::normalization_primitive_pure_f(beta) *
                (
-               1.7320508075688772*1.9364916731037085 * gbasis::compute_dxy_fxxz_nuclear_attraction_integral(beta, B, alpha, A, pt, P)
-                + 1.7320508075688772*-1.9364916731037085 * gbasis::compute_dxy_fyyz_nuclear_attraction_integral(beta, B, alpha, A, pt, P)
+               1.7320508075688772*1.9364916731037085 * gbasis::compute_dxy_fxxz_nuclear_attraction_integral(alpha, A, beta, B, pt, P)
+                + 1.7320508075688772*-1.9364916731037085 * gbasis::compute_dxy_fyyz_nuclear_attraction_integral(alpha, A, beta, B, pt, P)
                );
              d_point_charge[point_index + (i_integral + 4) * npoints] +=
                g_constant_basis[iconst + numb_primitives1 + i_prim1] *
@@ -8145,7 +8145,7 @@ __device__ void compute_row_s22_type_integral(const double3& A, const double3& p
                gbasis::normalization_primitive_pure_d(alpha) *
                gbasis::normalization_primitive_pure_f(beta) *
                (
-               1.7320508075688772*3.872983346207417 * gbasis::compute_dxy_fxyz_nuclear_attraction_integral(beta, B, alpha, A, pt, P)
+               1.7320508075688772*3.872983346207417 * gbasis::compute_dxy_fxyz_nuclear_attraction_integral(alpha, A, beta, B, pt, P)
                );
              d_point_charge[point_index + (i_integral + 5) * npoints] +=
                g_constant_basis[iconst + numb_primitives1 + i_prim1] *
@@ -8153,8 +8153,8 @@ __device__ void compute_row_s22_type_integral(const double3& A, const double3& p
                gbasis::normalization_primitive_pure_d(alpha) *
                gbasis::normalization_primitive_pure_f(beta) *
                (
-               1.7320508075688772*0.7905694150420949 * gbasis::compute_dxy_fxxx_nuclear_attraction_integral(beta, B, alpha, A, pt, P)
-                + 1.7320508075688772*-2.3717082451262845 * gbasis::compute_dxy_fxyy_nuclear_attraction_integral(beta, B, alpha, A, pt, P)
+               1.7320508075688772*0.7905694150420949 * gbasis::compute_dxy_fxxx_nuclear_attraction_integral(alpha, A, beta, B, pt, P)
+                + 1.7320508075688772*-2.3717082451262845 * gbasis::compute_dxy_fxyy_nuclear_attraction_integral(alpha, A, beta, B, pt, P)
                );
              d_point_charge[point_index + (i_integral + 6) * npoints] +=
                g_constant_basis[iconst + numb_primitives1 + i_prim1] *
@@ -8162,8 +8162,8 @@ __device__ void compute_row_s22_type_integral(const double3& A, const double3& p
                gbasis::normalization_primitive_pure_d(alpha) *
                gbasis::normalization_primitive_pure_f(beta) *
                (
-               1.7320508075688772*-0.7905694150420949 * gbasis::compute_dxy_fyyy_nuclear_attraction_integral(beta, B, alpha, A, pt, P)
-                + 1.7320508075688772*2.3717082451262845 * gbasis::compute_dxy_fxxy_nuclear_attraction_integral(beta, B, alpha, A, pt, P)
+               1.7320508075688772*-0.7905694150420949 * gbasis::compute_dxy_fyyy_nuclear_attraction_integral(alpha, A, beta, B, pt, P)
+                + 1.7320508075688772*2.3717082451262845 * gbasis::compute_dxy_fxxy_nuclear_attraction_integral(alpha, A, beta, B, pt, P)
                );
              break;
         } // End switch
@@ -8421,7 +8421,7 @@ __device__ void compute_row_c30_type_integral(const double3& A, const double3& p
              d_point_charge[point_index + (i_integral + 0) * npoints] +=
                g_constant_basis[iconst + numb_primitives1 + i_prim1] *
                g_constant_basis[jconst + numb_primitives2 + i_prim2] *
-               gbasis::normalization_primitive_pure_d(alpha) *
+               gbasis::normalization_primitive_pure_f(alpha) *
                gbasis::normalization_primitive_pure_d(beta) *
                (
                1.0*-0.5 * gbasis::compute_dxx_fzzz_nuclear_attraction_integral(beta, B, alpha, A, pt, P)
@@ -8437,7 +8437,7 @@ __device__ void compute_row_c30_type_integral(const double3& A, const double3& p
              d_point_charge[point_index + (i_integral + 1) * npoints] +=
                g_constant_basis[iconst + numb_primitives1 + i_prim1] *
                g_constant_basis[jconst + numb_primitives2 + i_prim2] *
-               gbasis::normalization_primitive_pure_d(alpha) *
+               gbasis::normalization_primitive_pure_f(alpha) *
                gbasis::normalization_primitive_pure_d(beta) *
                (
                1.0*1.7320508075688772 * gbasis::compute_dxz_fzzz_nuclear_attraction_integral(beta, B, alpha, A, pt, P)
@@ -8447,7 +8447,7 @@ __device__ void compute_row_c30_type_integral(const double3& A, const double3& p
              d_point_charge[point_index + (i_integral + 2) * npoints] +=
                g_constant_basis[iconst + numb_primitives1 + i_prim1] *
                g_constant_basis[jconst + numb_primitives2 + i_prim2] *
-               gbasis::normalization_primitive_pure_d(alpha) *
+               gbasis::normalization_primitive_pure_f(alpha) *
                gbasis::normalization_primitive_pure_d(beta) *
                (
                1.0*1.7320508075688772 * gbasis::compute_dyz_fzzz_nuclear_attraction_integral(beta, B, alpha, A, pt, P)
@@ -8457,7 +8457,7 @@ __device__ void compute_row_c30_type_integral(const double3& A, const double3& p
              d_point_charge[point_index + (i_integral + 3) * npoints] +=
                g_constant_basis[iconst + numb_primitives1 + i_prim1] *
                g_constant_basis[jconst + numb_primitives2 + i_prim2] *
-               gbasis::normalization_primitive_pure_d(alpha) *
+               gbasis::normalization_primitive_pure_f(alpha) *
                gbasis::normalization_primitive_pure_d(beta) *
                (
                1.0*0.8660254037844386 * gbasis::compute_dxx_fzzz_nuclear_attraction_integral(beta, B, alpha, A, pt, P)
@@ -8470,7 +8470,7 @@ __device__ void compute_row_c30_type_integral(const double3& A, const double3& p
              d_point_charge[point_index + (i_integral + 4) * npoints] +=
                g_constant_basis[iconst + numb_primitives1 + i_prim1] *
                g_constant_basis[jconst + numb_primitives2 + i_prim2] *
-               gbasis::normalization_primitive_pure_d(alpha) *
+               gbasis::normalization_primitive_pure_f(alpha) *
                gbasis::normalization_primitive_pure_d(beta) *
                (
                1.0*1.7320508075688772 * gbasis::compute_dxy_fzzz_nuclear_attraction_integral(beta, B, alpha, A, pt, P)
@@ -8832,7 +8832,7 @@ __device__ void compute_row_c31_type_integral(const double3& A, const double3& p
              d_point_charge[point_index + (i_integral + 0) * npoints] +=
                g_constant_basis[iconst + numb_primitives1 + i_prim1] *
                g_constant_basis[jconst + numb_primitives2 + i_prim2] *
-               gbasis::normalization_primitive_pure_d(alpha) *
+               gbasis::normalization_primitive_pure_f(alpha) *
                gbasis::normalization_primitive_pure_d(beta) *
                (
                -0.6123724356957945*-0.5 * gbasis::compute_dxx_fxxx_nuclear_attraction_integral(beta, B, alpha, A, pt, P)
@@ -8848,7 +8848,7 @@ __device__ void compute_row_c31_type_integral(const double3& A, const double3& p
              d_point_charge[point_index + (i_integral + 1) * npoints] +=
                g_constant_basis[iconst + numb_primitives1 + i_prim1] *
                g_constant_basis[jconst + numb_primitives2 + i_prim2] *
-               gbasis::normalization_primitive_pure_d(alpha) *
+               gbasis::normalization_primitive_pure_f(alpha) *
                gbasis::normalization_primitive_pure_d(beta) *
                (
                -0.6123724356957945*1.7320508075688772 * gbasis::compute_dxz_fxxx_nuclear_attraction_integral(beta, B, alpha, A, pt, P)
@@ -8858,7 +8858,7 @@ __device__ void compute_row_c31_type_integral(const double3& A, const double3& p
              d_point_charge[point_index + (i_integral + 2) * npoints] +=
                g_constant_basis[iconst + numb_primitives1 + i_prim1] *
                g_constant_basis[jconst + numb_primitives2 + i_prim2] *
-               gbasis::normalization_primitive_pure_d(alpha) *
+               gbasis::normalization_primitive_pure_f(alpha) *
                gbasis::normalization_primitive_pure_d(beta) *
                (
                -0.6123724356957945*1.7320508075688772 * gbasis::compute_dyz_fxxx_nuclear_attraction_integral(beta, B, alpha, A, pt, P)
@@ -8868,7 +8868,7 @@ __device__ void compute_row_c31_type_integral(const double3& A, const double3& p
              d_point_charge[point_index + (i_integral + 3) * npoints] +=
                g_constant_basis[iconst + numb_primitives1 + i_prim1] *
                g_constant_basis[jconst + numb_primitives2 + i_prim2] *
-               gbasis::normalization_primitive_pure_d(alpha) *
+               gbasis::normalization_primitive_pure_f(alpha) *
                gbasis::normalization_primitive_pure_d(beta) *
                (
                -0.6123724356957945*0.8660254037844386 * gbasis::compute_dxx_fxxx_nuclear_attraction_integral(beta, B, alpha, A, pt, P)
@@ -8881,7 +8881,7 @@ __device__ void compute_row_c31_type_integral(const double3& A, const double3& p
              d_point_charge[point_index + (i_integral + 4) * npoints] +=
                g_constant_basis[iconst + numb_primitives1 + i_prim1] *
                g_constant_basis[jconst + numb_primitives2 + i_prim2] *
-               gbasis::normalization_primitive_pure_d(alpha) *
+               gbasis::normalization_primitive_pure_f(alpha) *
                gbasis::normalization_primitive_pure_d(beta) *
                (
                -0.6123724356957945*1.7320508075688772 * gbasis::compute_dxy_fxxx_nuclear_attraction_integral(beta, B, alpha, A, pt, P)
@@ -9243,7 +9243,7 @@ __device__ void compute_row_s31_type_integral(const double3& A, const double3& p
              d_point_charge[point_index + (i_integral + 0) * npoints] +=
                g_constant_basis[iconst + numb_primitives1 + i_prim1] *
                g_constant_basis[jconst + numb_primitives2 + i_prim2] *
-               gbasis::normalization_primitive_pure_d(alpha) *
+               gbasis::normalization_primitive_pure_f(alpha) *
                gbasis::normalization_primitive_pure_d(beta) *
                (
                -0.6123724356957945*-0.5 * gbasis::compute_dxx_fyyy_nuclear_attraction_integral(beta, B, alpha, A, pt, P)
@@ -9259,7 +9259,7 @@ __device__ void compute_row_s31_type_integral(const double3& A, const double3& p
              d_point_charge[point_index + (i_integral + 1) * npoints] +=
                g_constant_basis[iconst + numb_primitives1 + i_prim1] *
                g_constant_basis[jconst + numb_primitives2 + i_prim2] *
-               gbasis::normalization_primitive_pure_d(alpha) *
+               gbasis::normalization_primitive_pure_f(alpha) *
                gbasis::normalization_primitive_pure_d(beta) *
                (
                -0.6123724356957945*1.7320508075688772 * gbasis::compute_dxz_fyyy_nuclear_attraction_integral(beta, B, alpha, A, pt, P)
@@ -9269,7 +9269,7 @@ __device__ void compute_row_s31_type_integral(const double3& A, const double3& p
              d_point_charge[point_index + (i_integral + 2) * npoints] +=
                g_constant_basis[iconst + numb_primitives1 + i_prim1] *
                g_constant_basis[jconst + numb_primitives2 + i_prim2] *
-               gbasis::normalization_primitive_pure_d(alpha) *
+               gbasis::normalization_primitive_pure_f(alpha) *
                gbasis::normalization_primitive_pure_d(beta) *
                (
                -0.6123724356957945*1.7320508075688772 * gbasis::compute_dyz_fyyy_nuclear_attraction_integral(beta, B, alpha, A, pt, P)
@@ -9279,7 +9279,7 @@ __device__ void compute_row_s31_type_integral(const double3& A, const double3& p
              d_point_charge[point_index + (i_integral + 3) * npoints] +=
                g_constant_basis[iconst + numb_primitives1 + i_prim1] *
                g_constant_basis[jconst + numb_primitives2 + i_prim2] *
-               gbasis::normalization_primitive_pure_d(alpha) *
+               gbasis::normalization_primitive_pure_f(alpha) *
                gbasis::normalization_primitive_pure_d(beta) *
                (
                -0.6123724356957945*0.8660254037844386 * gbasis::compute_dxx_fyyy_nuclear_attraction_integral(beta, B, alpha, A, pt, P)
@@ -9292,7 +9292,7 @@ __device__ void compute_row_s31_type_integral(const double3& A, const double3& p
              d_point_charge[point_index + (i_integral + 4) * npoints] +=
                g_constant_basis[iconst + numb_primitives1 + i_prim1] *
                g_constant_basis[jconst + numb_primitives2 + i_prim2] *
-               gbasis::normalization_primitive_pure_d(alpha) *
+               gbasis::normalization_primitive_pure_f(alpha) *
                gbasis::normalization_primitive_pure_d(beta) *
                (
                -0.6123724356957945*1.7320508075688772 * gbasis::compute_dxy_fyyy_nuclear_attraction_integral(beta, B, alpha, A, pt, P)
@@ -9634,7 +9634,7 @@ __device__ void compute_row_c32_type_integral(const double3& A, const double3& p
              d_point_charge[point_index + (i_integral + 0) * npoints] +=
                g_constant_basis[iconst + numb_primitives1 + i_prim1] *
                g_constant_basis[jconst + numb_primitives2 + i_prim2] *
-               gbasis::normalization_primitive_pure_d(alpha) *
+               gbasis::normalization_primitive_pure_f(alpha) *
                gbasis::normalization_primitive_pure_d(beta) *
                (
                1.9364916731037085*-0.5 * gbasis::compute_dxx_fxxz_nuclear_attraction_integral(beta, B, alpha, A, pt, P)
@@ -9647,7 +9647,7 @@ __device__ void compute_row_c32_type_integral(const double3& A, const double3& p
              d_point_charge[point_index + (i_integral + 1) * npoints] +=
                g_constant_basis[iconst + numb_primitives1 + i_prim1] *
                g_constant_basis[jconst + numb_primitives2 + i_prim2] *
-               gbasis::normalization_primitive_pure_d(alpha) *
+               gbasis::normalization_primitive_pure_f(alpha) *
                gbasis::normalization_primitive_pure_d(beta) *
                (
                1.9364916731037085*1.7320508075688772 * gbasis::compute_dxz_fxxz_nuclear_attraction_integral(beta, B, alpha, A, pt, P)
@@ -9656,7 +9656,7 @@ __device__ void compute_row_c32_type_integral(const double3& A, const double3& p
              d_point_charge[point_index + (i_integral + 2) * npoints] +=
                g_constant_basis[iconst + numb_primitives1 + i_prim1] *
                g_constant_basis[jconst + numb_primitives2 + i_prim2] *
-               gbasis::normalization_primitive_pure_d(alpha) *
+               gbasis::normalization_primitive_pure_f(alpha) *
                gbasis::normalization_primitive_pure_d(beta) *
                (
                1.9364916731037085*1.7320508075688772 * gbasis::compute_dyz_fxxz_nuclear_attraction_integral(beta, B, alpha, A, pt, P)
@@ -9665,7 +9665,7 @@ __device__ void compute_row_c32_type_integral(const double3& A, const double3& p
              d_point_charge[point_index + (i_integral + 3) * npoints] +=
                g_constant_basis[iconst + numb_primitives1 + i_prim1] *
                g_constant_basis[jconst + numb_primitives2 + i_prim2] *
-               gbasis::normalization_primitive_pure_d(alpha) *
+               gbasis::normalization_primitive_pure_f(alpha) *
                gbasis::normalization_primitive_pure_d(beta) *
                (
                1.9364916731037085*0.8660254037844386 * gbasis::compute_dxx_fxxz_nuclear_attraction_integral(beta, B, alpha, A, pt, P)
@@ -9676,7 +9676,7 @@ __device__ void compute_row_c32_type_integral(const double3& A, const double3& p
              d_point_charge[point_index + (i_integral + 4) * npoints] +=
                g_constant_basis[iconst + numb_primitives1 + i_prim1] *
                g_constant_basis[jconst + numb_primitives2 + i_prim2] *
-               gbasis::normalization_primitive_pure_d(alpha) *
+               gbasis::normalization_primitive_pure_f(alpha) *
                gbasis::normalization_primitive_pure_d(beta) *
                (
                1.9364916731037085*1.7320508075688772 * gbasis::compute_dxy_fxxz_nuclear_attraction_integral(beta, B, alpha, A, pt, P)
@@ -9981,7 +9981,7 @@ __device__ void compute_row_s32_type_integral(const double3& A, const double3& p
              d_point_charge[point_index + (i_integral + 0) * npoints] +=
                g_constant_basis[iconst + numb_primitives1 + i_prim1] *
                g_constant_basis[jconst + numb_primitives2 + i_prim2] *
-               gbasis::normalization_primitive_pure_d(alpha) *
+               gbasis::normalization_primitive_pure_f(alpha) *
                gbasis::normalization_primitive_pure_d(beta) *
                (
                3.872983346207417*-0.5 * gbasis::compute_dxx_fxyz_nuclear_attraction_integral(beta, B, alpha, A, pt, P)
@@ -9991,7 +9991,7 @@ __device__ void compute_row_s32_type_integral(const double3& A, const double3& p
              d_point_charge[point_index + (i_integral + 1) * npoints] +=
                g_constant_basis[iconst + numb_primitives1 + i_prim1] *
                g_constant_basis[jconst + numb_primitives2 + i_prim2] *
-               gbasis::normalization_primitive_pure_d(alpha) *
+               gbasis::normalization_primitive_pure_f(alpha) *
                gbasis::normalization_primitive_pure_d(beta) *
                (
                3.872983346207417*1.7320508075688772 * gbasis::compute_dxz_fxyz_nuclear_attraction_integral(beta, B, alpha, A, pt, P)
@@ -9999,7 +9999,7 @@ __device__ void compute_row_s32_type_integral(const double3& A, const double3& p
              d_point_charge[point_index + (i_integral + 2) * npoints] +=
                g_constant_basis[iconst + numb_primitives1 + i_prim1] *
                g_constant_basis[jconst + numb_primitives2 + i_prim2] *
-               gbasis::normalization_primitive_pure_d(alpha) *
+               gbasis::normalization_primitive_pure_f(alpha) *
                gbasis::normalization_primitive_pure_d(beta) *
                (
                3.872983346207417*1.7320508075688772 * gbasis::compute_dyz_fxyz_nuclear_attraction_integral(beta, B, alpha, A, pt, P)
@@ -10007,7 +10007,7 @@ __device__ void compute_row_s32_type_integral(const double3& A, const double3& p
              d_point_charge[point_index + (i_integral + 3) * npoints] +=
                g_constant_basis[iconst + numb_primitives1 + i_prim1] *
                g_constant_basis[jconst + numb_primitives2 + i_prim2] *
-               gbasis::normalization_primitive_pure_d(alpha) *
+               gbasis::normalization_primitive_pure_f(alpha) *
                gbasis::normalization_primitive_pure_d(beta) *
                (
                3.872983346207417*0.8660254037844386 * gbasis::compute_dxx_fxyz_nuclear_attraction_integral(beta, B, alpha, A, pt, P)
@@ -10016,7 +10016,7 @@ __device__ void compute_row_s32_type_integral(const double3& A, const double3& p
              d_point_charge[point_index + (i_integral + 4) * npoints] +=
                g_constant_basis[iconst + numb_primitives1 + i_prim1] *
                g_constant_basis[jconst + numb_primitives2 + i_prim2] *
-               gbasis::normalization_primitive_pure_d(alpha) *
+               gbasis::normalization_primitive_pure_f(alpha) *
                gbasis::normalization_primitive_pure_d(beta) *
                (
                3.872983346207417*1.7320508075688772 * gbasis::compute_dxy_fxyz_nuclear_attraction_integral(beta, B, alpha, A, pt, P)
@@ -10324,7 +10324,7 @@ __device__ void compute_row_c33_type_integral(const double3& A, const double3& p
              d_point_charge[point_index + (i_integral + 0) * npoints] +=
                g_constant_basis[iconst + numb_primitives1 + i_prim1] *
                g_constant_basis[jconst + numb_primitives2 + i_prim2] *
-               gbasis::normalization_primitive_pure_d(alpha) *
+               gbasis::normalization_primitive_pure_f(alpha) *
                gbasis::normalization_primitive_pure_d(beta) *
                (
                0.7905694150420949*-0.5 * gbasis::compute_dxx_fxxx_nuclear_attraction_integral(beta, B, alpha, A, pt, P)
@@ -10337,7 +10337,7 @@ __device__ void compute_row_c33_type_integral(const double3& A, const double3& p
              d_point_charge[point_index + (i_integral + 1) * npoints] +=
                g_constant_basis[iconst + numb_primitives1 + i_prim1] *
                g_constant_basis[jconst + numb_primitives2 + i_prim2] *
-               gbasis::normalization_primitive_pure_d(alpha) *
+               gbasis::normalization_primitive_pure_f(alpha) *
                gbasis::normalization_primitive_pure_d(beta) *
                (
                0.7905694150420949*1.7320508075688772 * gbasis::compute_dxz_fxxx_nuclear_attraction_integral(beta, B, alpha, A, pt, P)
@@ -10346,7 +10346,7 @@ __device__ void compute_row_c33_type_integral(const double3& A, const double3& p
              d_point_charge[point_index + (i_integral + 2) * npoints] +=
                g_constant_basis[iconst + numb_primitives1 + i_prim1] *
                g_constant_basis[jconst + numb_primitives2 + i_prim2] *
-               gbasis::normalization_primitive_pure_d(alpha) *
+               gbasis::normalization_primitive_pure_f(alpha) *
                gbasis::normalization_primitive_pure_d(beta) *
                (
                0.7905694150420949*1.7320508075688772 * gbasis::compute_dyz_fxxx_nuclear_attraction_integral(beta, B, alpha, A, pt, P)
@@ -10355,7 +10355,7 @@ __device__ void compute_row_c33_type_integral(const double3& A, const double3& p
              d_point_charge[point_index + (i_integral + 3) * npoints] +=
                g_constant_basis[iconst + numb_primitives1 + i_prim1] *
                g_constant_basis[jconst + numb_primitives2 + i_prim2] *
-               gbasis::normalization_primitive_pure_d(alpha) *
+               gbasis::normalization_primitive_pure_f(alpha) *
                gbasis::normalization_primitive_pure_d(beta) *
                (
                0.7905694150420949*0.8660254037844386 * gbasis::compute_dxx_fxxx_nuclear_attraction_integral(beta, B, alpha, A, pt, P)
@@ -10366,7 +10366,7 @@ __device__ void compute_row_c33_type_integral(const double3& A, const double3& p
              d_point_charge[point_index + (i_integral + 4) * npoints] +=
                g_constant_basis[iconst + numb_primitives1 + i_prim1] *
                g_constant_basis[jconst + numb_primitives2 + i_prim2] *
-               gbasis::normalization_primitive_pure_d(alpha) *
+               gbasis::normalization_primitive_pure_f(alpha) *
                gbasis::normalization_primitive_pure_d(beta) *
                (
                0.7905694150420949*1.7320508075688772 * gbasis::compute_dxy_fxxx_nuclear_attraction_integral(beta, B, alpha, A, pt, P)
@@ -10691,7 +10691,7 @@ __device__ void compute_row_s33_type_integral(const double3& A, const double3& p
              d_point_charge[point_index + (i_integral + 0) * npoints] +=
                g_constant_basis[iconst + numb_primitives1 + i_prim1] *
                g_constant_basis[jconst + numb_primitives2 + i_prim2] *
-               gbasis::normalization_primitive_pure_d(alpha) *
+               gbasis::normalization_primitive_pure_f(alpha) *
                gbasis::normalization_primitive_pure_d(beta) *
                (
                -0.7905694150420949*-0.5 * gbasis::compute_dxx_fyyy_nuclear_attraction_integral(beta, B, alpha, A, pt, P)
@@ -10704,7 +10704,7 @@ __device__ void compute_row_s33_type_integral(const double3& A, const double3& p
              d_point_charge[point_index + (i_integral + 1) * npoints] +=
                g_constant_basis[iconst + numb_primitives1 + i_prim1] *
                g_constant_basis[jconst + numb_primitives2 + i_prim2] *
-               gbasis::normalization_primitive_pure_d(alpha) *
+               gbasis::normalization_primitive_pure_f(alpha) *
                gbasis::normalization_primitive_pure_d(beta) *
                (
                -0.7905694150420949*1.7320508075688772 * gbasis::compute_dxz_fyyy_nuclear_attraction_integral(beta, B, alpha, A, pt, P)
@@ -10713,7 +10713,7 @@ __device__ void compute_row_s33_type_integral(const double3& A, const double3& p
              d_point_charge[point_index + (i_integral + 2) * npoints] +=
                g_constant_basis[iconst + numb_primitives1 + i_prim1] *
                g_constant_basis[jconst + numb_primitives2 + i_prim2] *
-               gbasis::normalization_primitive_pure_d(alpha) *
+               gbasis::normalization_primitive_pure_f(alpha) *
                gbasis::normalization_primitive_pure_d(beta) *
                (
                -0.7905694150420949*1.7320508075688772 * gbasis::compute_dyz_fyyy_nuclear_attraction_integral(beta, B, alpha, A, pt, P)
@@ -10722,7 +10722,7 @@ __device__ void compute_row_s33_type_integral(const double3& A, const double3& p
              d_point_charge[point_index + (i_integral + 3) * npoints] +=
                g_constant_basis[iconst + numb_primitives1 + i_prim1] *
                g_constant_basis[jconst + numb_primitives2 + i_prim2] *
-               gbasis::normalization_primitive_pure_d(alpha) *
+               gbasis::normalization_primitive_pure_f(alpha) *
                gbasis::normalization_primitive_pure_d(beta) *
                (
                -0.7905694150420949*0.8660254037844386 * gbasis::compute_dxx_fyyy_nuclear_attraction_integral(beta, B, alpha, A, pt, P)
@@ -10733,7 +10733,7 @@ __device__ void compute_row_s33_type_integral(const double3& A, const double3& p
              d_point_charge[point_index + (i_integral + 4) * npoints] +=
                g_constant_basis[iconst + numb_primitives1 + i_prim1] *
                g_constant_basis[jconst + numb_primitives2 + i_prim2] *
-               gbasis::normalization_primitive_pure_d(alpha) *
+               gbasis::normalization_primitive_pure_f(alpha) *
                gbasis::normalization_primitive_pure_d(beta) *
                (
                -0.7905694150420949*1.7320508075688772 * gbasis::compute_dxy_fyyy_nuclear_attraction_integral(beta, B, alpha, A, pt, P)
@@ -11343,7 +11343,7 @@ __device__ void compute_diagonal_row_s33_type_integral(const double3& A, const d
                    (alpha * A.y + beta * A.y) / (alpha + beta),
                    (alpha * A.z + beta * A.z) / (alpha + beta)};
       d_point_charge[point_index + (i_integral + 0) * npoints] +=
-        g_constant_basis[iconst + numb_primitives1 + i_prim1] * 
+        g_constant_basis[iconst + numb_primitives1 + i_prim1] *
         g_constant_basis[jconst + numb_primitives1 + i_prim2] *
         gbasis::normalization_primitive_pure_f(alpha) *
         gbasis::normalization_primitive_pure_f(beta) *
@@ -11358,8 +11358,6 @@ __device__ void compute_diagonal_row_s33_type_integral(const double3& A, const d
    // Update index to go to the next segmented shell.
    i_integral += 1;
 }
-
-
 
 
 // END COMPUTER GENERATED (USING PYTHON) CODE "generate_integrals.py"
@@ -11675,8 +11673,8 @@ __global__ void gbasis::compute_point_charge_integrals(
         icontr_shell -= 1;               // Move the contracted shell back to current.
       }
       else if (angmom_1 == -4) {
-	std::printf("G-type orbitals is not supported yet");
-	assert(1 == 0);
+        std::printf("G-type orbitals is not supported yet");
+        assert(1 == 0);
       }
       // Update index of constant memory to the next contracted shell.
       iconst += 2 * numb_primitives_1;
