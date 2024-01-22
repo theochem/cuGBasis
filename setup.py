@@ -145,19 +145,3 @@ setup(
     extras_require={"test": ["pytest>=6.0"]},
     python_requires=">=3.7",
 )
-# ext_modules = [
-#     Pybind11Extension(name="gbasis_cuda",
-#                       sources=["src/molecule.cpp"],
-#                       extra_compile_args=["-O3"]
-#                       )
-# ]
-
-# setup(
-#     name="gbasis_cuda",
-#     ext_modules=ext_modules,
-#     extras_require={"test": "pytest"},
-#     cmdclass={"build_ext": build_ext},
-#     python_requires=">=3.7",
-#     zip_safe=False
-# )
-
