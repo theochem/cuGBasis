@@ -24,7 +24,7 @@ add_subdirectory(./libs/pybind11)
 
 # Add Thrust
 message("Install Thrust")
-add_subdirectory(./libs/thrust_old)
+add_subdirectory(./libs/thrust)
 thrust_create_target(Thrust)
 
 
