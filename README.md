@@ -8,6 +8,14 @@ Eigen using Cmake automatically.
 - GBasis and Chemtools for tests
 
 # Installation
+
+```bash
+git clone https://github.com/qtchem/gbasis_cuda
+
+# Get the dependencies in ./libs/ folder
+git submodule update --init --recursive
+```
+
 In-order to install it need to use:
 ```bash
 pip install -v . 
