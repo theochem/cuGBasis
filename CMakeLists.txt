@@ -65,20 +65,17 @@ message("${CUDAToolkit_LIBRARY_DIR}")
 
 add_library(gbasis_cuda_lib SHARED ${HEADERS} ${SOURCES})
 set_target_properties(gbasis_cuda_lib PROPERTIES CUDA_SEPARABLE_COMPILATION ON)
+set_property(TARGET gbasis_cuda_lib PROPERTY CUDA_ARCHITECTURES native)
 target_compile_options(gbasis_cuda_lib PRIVATE $<$<COMPILE_LANGUAGE:CUDA>:
-        -rdc=true --expt-relaxed-constexpr -O3
+        -rdc=true --expt-relaxed-constexpr -v -keep -t=0 -G 
 	>) # -rdc=true  std=c++14 isn't needed since CMAKE_CUDA_STANDARD already set Debuging -G -g turns off optimization, -O3 turns on optmization, -gencode=arch=compute_35,code=sm_35
 # --expt-relaxed-constexpr is needed for Boys_function.h to work.
 target_link_libraries(gbasis_cuda_lib PRIVATE ${CUDA_cudadevrt_LIBRARY})
-#target_link_libraries(gbasis_cuda_lib PRIVATE -lcublas -lcurand)
 target_link_libraries(gbasis_cuda_lib PRIVATE CUDA::cublas)
 target_link_libraries(gbasis_cuda_lib PRIVATE CUDA::curand)
 target_link_libraries(gbasis_cuda_lib PUBLIC pybind11::embed) # Used to call IODATA to C++\
 target_link_libraries(gbasis_cuda_lib PUBLIC Eigen3::Eigen)
-#target_link_libraries(gbasis_cuda_lib PRIVATE Thrust)
 
-#add_executable(main main.cu)
-#target_link_libraries(main PRIVATE gbasis_cuda_lib)
 # Link the gbasis_cuda library to pybind11
 pybind11_add_module(gbasis_cuda src/pybind.cpp)
 target_link_libraries(gbasis_cuda PRIVATE gbasis_cuda_lib)
