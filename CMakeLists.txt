@@ -23,9 +23,9 @@ find_package(Python COMPONENTS Interpreter Development NumPy REQUIRED)
 add_subdirectory(./libs/pybind11)
 
 # Add Thrust
-message("Install Thrust")
-add_subdirectory(./libs/thrust)
-thrust_create_target(Thrust)
+#message("Install Thrust")
+#add_subdirectory(./libs/thrust)
+#thrust_create_target(Thrust)
 
 
 # Create a CUDA library gbasis_cuda using nvcc compiler that codes the entire CUDA/C++.
