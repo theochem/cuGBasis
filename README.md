@@ -1,11 +1,15 @@
 
 # Requirements
+- CMake
 - Eigen needs to be installed and be on your path. TODO: FIgur eout how to build and instlal 
 Eigen using Cmake automatically.
 - NVCC compiler with single NVIDIA GPU. TODO: only works with 12GB or Higher GPU because I fixed the memory.
 - Pybind11 
-- IOData
-- GBasis and Chemtools for tests
+- [IOData](https://github.com/theochem/iodata)
+
+For testing the following are required:
+- [GBasis](https://github.com/theochem/gbasis)
+- [Chemtools](https://github.com/theochem/chemtools)
 
 # Installation
 
@@ -31,10 +35,28 @@ pytest ./tests/*.py -v
 
 In order to build without the python bindings, useful for debugging purposes,
 ```bash
-cmake -S . -B ./out/build/
+cmake -S . -B ./out/build/  
 make -C ./out/build/
 ./out/build/tests/tests  # Run the C++/CUDA tests
 ```
+
+### Building with CMake
+
+The following can help with compiling this package
+
+1. If CUBLAS, CURAND are not found, add the following flag to the correct path
+```bash 
+cmake -S . -B ./out/build/ -DCUDAToolkit_ROOT=/some/path 
+```
+2. If NVCC is not found, add the following flag to correct path
+```bash
+cmake -S . -B ./out/build/ -DCUDACXX=/some/path/bin/nvcc
+```
+3. If Eigen is not found, add the following flag to the path containing the Eigen3*.cmake files
+```bash
+cmake -S . -B ./out/build/ -DEigen3_DIR=/some/path/share/eigen3/cmake/
+```
+4. 
 
 # How To Use
 ```python
