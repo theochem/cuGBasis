@@ -59,6 +59,10 @@ set(HEADERS
         include/evaluate_laplacian.cuh
 		include/evaluate_kinetic_dens.cuh)
 message("PRINT2 ${CUDA_NVCC_FLAGS}")
+find_package(CUDAToolkit REQUIRED)  # The point of this is to call CUDA code from C++ but without including CUDA code.
+                                    #  see stackexchange - "linking of cuda library in cmake"
+message("${CUDAToolkit_LIBRARY_DIR}")
+
 add_library(gbasis_cuda_lib SHARED ${HEADERS} ${SOURCES})
 set_target_properties(gbasis_cuda_lib PROPERTIES CUDA_SEPARABLE_COMPILATION ON)
 target_compile_options(gbasis_cuda_lib PRIVATE $<$<COMPILE_LANGUAGE:CUDA>:
@@ -66,16 +70,16 @@ target_compile_options(gbasis_cuda_lib PRIVATE $<$<COMPILE_LANGUAGE:CUDA>:
 	>) # -rdc=true  std=c++14 isn't needed since CMAKE_CUDA_STANDARD already set Debuging -G -g turns off optimization, -O3 turns on optmization, -gencode=arch=compute_35,code=sm_35
 # --expt-relaxed-constexpr is needed for Boys_function.h to work.
 target_link_libraries(gbasis_cuda_lib PRIVATE ${CUDA_cudadevrt_LIBRARY})
-target_link_libraries(gbasis_cuda_lib PRIVATE -lcublas -lcurand)
+#target_link_libraries(gbasis_cuda_lib PRIVATE -lcublas -lcurand)
+target_link_libraries(gbasis_cuda_lib PRIVATE CUDA::cublas)
+target_link_libraries(gbasis_cuda_lib PRIVATE CUDA::curand)
 target_link_libraries(gbasis_cuda_lib PUBLIC pybind11::embed) # Used to call IODATA to C++\
 target_link_libraries(gbasis_cuda_lib PUBLIC Eigen3::Eigen)
-target_link_libraries(gbasis_cuda_lib PRIVATE Thrust)
+#target_link_libraries(gbasis_cuda_lib PRIVATE Thrust)
 
 #add_executable(main main.cu)
 #target_link_libraries(main PRIVATE gbasis_cuda_lib)
 # Link the gbasis_cuda library to pybind11
-find_package(CUDAToolkit)  # The point of this is to call CUDA code from C++ but without including CUDA code.
-                           #  see stackexchange - "linking of cuda library in cmake"
 pybind11_add_module(gbasis_cuda src/pybind.cpp)
 target_link_libraries(gbasis_cuda PRIVATE gbasis_cuda_lib)
 target_link_libraries(gbasis_cuda PRIVATE CUDA::cublas)
