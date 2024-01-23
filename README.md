@@ -1,10 +1,9 @@
 
 # Requirements
-- CMake
-- Eigen needs to be installed and be on your path. TODO: FIgur eout how to build and instlal 
-Eigen using Cmake automatically.
-- NVCC compiler with single NVIDIA GPU. TODO: only works with 12GB or Higher GPU because I fixed the memory.
-- Pybind11 
+- [CMake>=3.24](https://cmake.org/)
+- [Eigen](https://eigen.tuxfamily.org/index.php?title=Main_Page) 
+- [CUDA/NVCC/CUDA-TOOLKIT](https://docs.nvidia.com/cuda/cuda-installation-guide-linux/index.html) 
+- [Pybind11](https://github.com/pybind/pybind11) 
 - [IOData](https://github.com/theochem/iodata)
 
 For testing the following are required:
