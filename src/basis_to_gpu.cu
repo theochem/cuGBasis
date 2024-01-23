@@ -1,8 +1,12 @@
 #include <vector>
 #include <cassert>
+#include <exception>
+#include <stdexcept>
 
 #include "../include/contracted_shell.h"
 #include "../include/basis_to_gpu.cuh"
+#include "../include/cuda_utils.cuh"
+
 
 // Stores constant memory for the NVIDIA GPU.
 __constant__ double g_constant_basis[7500];
@@ -108,10 +112,10 @@ __host__ void gbasis::add_mol_basis_to_constant_memory_array(
   // Copy that array over to constant memory.
   double* h_info = h_information.data();
 
-//  printf("\n Copy information over to constant memory. \n");
+  // printf("\n Copy information over to constant memory. \n");
   cudaError_t _m_cudaStat = cudaMemcpyToSymbol(g_constant_basis, h_info, number_of_bytes, 0, cudaMemcpyHostToDevice);
   if (_m_cudaStat != cudaSuccess) {
-    fprintf(stderr, "Error %s at line %d in file %s\n", cudaGetErrorString(_m_cudaStat), __LINE__, __FILE__);
+    gbasis::cuda_check_errors(_m_cudaStat);
     throw std::runtime_error("Copying to constant memory did not work.");
   }
 //  printf(" Stoping \n ");
