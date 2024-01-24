@@ -66,6 +66,7 @@ __host__ std::vector<double> compute_thomas_fermi_energy_density(
  * @param[in] iodata  The IOData object that stores the molecules basis.
  * @param[in] h_points Array in column-major order that stores the three-dimensional points.
  * @param[in] knumb_points Number of points in d_points.
+ * @param[in] a, b: Parameters of the general gradient expansion approximation
  * @return Return the general gradient expansion approximation of kinetic energy density
  */
 __host__ std::vector<double> compute_ked_gradient_expansion_general(

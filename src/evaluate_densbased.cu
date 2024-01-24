@@ -1,7 +1,9 @@
+#include <algorithm>
 
 #include "../include/evaluate_density.cuh"
 #include "../include/evaluate_densbased.cuh"
 #include "../include/evaluate_gradient.cuh"
+#include "../include/evaluate_laplacian.cuh"
 #include "../include/cuda_utils.cuh"
 
 __host__ std::vector<double> gbasis::compute_norm_of_3d_vector(double *h_points, const int knumb_pts){
@@ -169,9 +171,22 @@ __host__ std::vector<double> gbasis::compute_thomas_fermi_energy_density(
   return thomas_fermi;
 }
 
-__host__ std::vector<double> compute_ked_gradient_expansion_general(
+__host__ std::vector<double> gbasis::compute_ked_gradient_expansion_general(
     gbasis::IOData& iodata, const double* h_points, int knumb_points, double a, double b
 ) {
+  std::vector<double> thomas_fermi_ked = gbasis::compute_thomas_fermi_energy_density(iodata, h_points, knumb_points);
+  std::vector<double> weizsacker_ked = gbasis::compute_weizsacker_ked(iodata, h_points, knumb_points);
+  std::vector<double> laplacian = gbasis::evaluate_laplacian(iodata, h_points, knumb_points);
 
+  std::transform(weizsacker_ked.begin(), weizsacker_ked.end(), weizsacker_ked.begin(),
+                 [&a](auto& c){return c * a;});
+  std::transform(laplacian.begin(), laplacian.end(), laplacian.begin(),
+                 [&b](auto& c){return c * b;});
 
+  std::transform(thomas_fermi_ked.begin(), thomas_fermi_ked.end(), weizsacker_ked.begin(),
+                 thomas_fermi_ked.begin(), std::plus<double>());
+  std::transform(thomas_fermi_ked.begin(), thomas_fermi_ked.end(), laplacian.begin(),
+                 thomas_fermi_ked.begin(), std::plus<double>());
+
+  return thomas_fermi_ked;
 }
