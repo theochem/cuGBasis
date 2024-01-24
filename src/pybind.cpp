@@ -75,6 +75,10 @@ PYBIND11_MODULE(gbasis_cuda, m) {
            &gbasis::Molecule::compute_general_ked,
            "Compute the general(ish) kinetic energy density."
       )
+      .def("compute_hamiltonian_ked",
+           &gbasis::Molecule::compute_hamiltonian_ked,
+           "Compute the Hamiltonian kinetic energy density."
+      )
       .def("compute_electrostatic_potential",
            &gbasis::Molecule::compute_electrostatic_potential,
            "Compute electrostatic potential. "
