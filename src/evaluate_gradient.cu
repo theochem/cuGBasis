@@ -1164,12 +1164,12 @@ __host__ std::vector<double> gbasis::evaluate_contraction_derivatives(
 }
 
 __host__ std::vector<double> gbasis::evaluate_electron_density_gradient(
-    gbasis::IOData& iodata, const double* h_points, const int knumb_points
+    gbasis::IOData& iodata, const double* h_points, const int knumb_points, const bool return_row
 ) {
   cublasHandle_t handle;
   cublasCreate(&handle);
   std::vector<double> gradient = gbasis::evaluate_electron_density_gradient_handle(
-      handle, iodata, h_points, knumb_points
+      handle, iodata, h_points, knumb_points, return_row
   );
   cublasDestroy(handle);
   return gradient;
@@ -1178,7 +1178,7 @@ __host__ std::vector<double> gbasis::evaluate_electron_density_gradient(
 
 __host__ std::vector<double> gbasis::evaluate_electron_density_gradient_handle(
     // Initializer of cublas and set to prefer L1 cache ove rshared memory since it doens't use it.
-    cublasHandle_t& handle, gbasis::IOData& iodata, const double* h_points, const int knumb_points
+    cublasHandle_t& handle, gbasis::IOData& iodata, const double* h_points, const int knumb_points, const bool return_row
 ) {
   // Initializer of cublas and set to prefer L1 cache ove rshared memory since it doens't use it.
   cudaFuncSetCacheConfig(gbasis::evaluate_contractions_from_constant_memory_on_any_grid, cudaFuncCachePreferL1);
@@ -1326,26 +1326,43 @@ __host__ std::vector<double> gbasis::evaluate_electron_density_gradient_handle(
     gbasis::multiply_scalar<<< grid3, threadsPerBlock3>>>(d_gradient_electron_density, 2.0, 3 * number_pts_iter);
 
     // Transfer from column-major to row-major order
-    double *d_gradient_clone;
-    gbasis::cuda_check_errors(cudaMalloc((double **) &d_gradient_clone, sizeof(double) * 3 * number_pts_iter));
-    gbasis::cuda_check_errors(
-        cudaMemcpy(d_gradient_clone, d_gradient_electron_density,
-                   sizeof(double) * 3 * number_pts_iter, cudaMemcpyDeviceToDevice)
-    );
-    const double alpha = 1.0;
-    const double beta = 0.0;
-    gbasis::cublas_check_errors(cublasDgeam(handle, CUBLAS_OP_T, CUBLAS_OP_N,
-                                            3, number_pts_iter,
-                                            &alpha, d_gradient_electron_density, number_pts_iter,
-                                            &beta, d_gradient_electron_density, 3,
-                                            d_gradient_clone, 3));
-    cudaFree(d_gradient_electron_density);
+    if(return_row){
+      double *d_gradient_clone;
+      gbasis::cuda_check_errors(cudaMalloc((double **) &d_gradient_clone, sizeof(double) * 3 * number_pts_iter));
+      gbasis::cuda_check_errors(
+          cudaMemcpy(d_gradient_clone, d_gradient_electron_density,
+                     sizeof(double) * 3 * number_pts_iter, cudaMemcpyDeviceToDevice)
+      );
+      const double alpha = 1.0;
+      const double beta = 0.0;
+      gbasis::cublas_check_errors(cublasDgeam(handle, CUBLAS_OP_T, CUBLAS_OP_N,
+                                              3, number_pts_iter,
+                                              &alpha, d_gradient_electron_density, number_pts_iter,
+                                              &beta, d_gradient_electron_density, 3,
+                                              d_gradient_clone, 3));
+      cudaFree(d_gradient_electron_density);
 
-    // Transfer the gradient  of device memory to host memory in row-major order.
-    gbasis::cuda_check_errors(cudaMemcpy(&h_grad_electron_density_row[3 * index_to_copy],
-                                         d_gradient_clone,
-                                         sizeof(double) * 3 * number_pts_iter, cudaMemcpyDeviceToHost));
-    cudaFree(d_gradient_clone);
+      // Transfer the gradient  of device memory to host memory in row-major order.
+      gbasis::cuda_check_errors(cudaMemcpy(&h_grad_electron_density_row[3 * index_to_copy],
+                                           d_gradient_clone,
+                                           sizeof(double) * 3 * number_pts_iter, cudaMemcpyDeviceToHost));
+      cudaFree(d_gradient_clone);
+    }
+    else {
+      // Transfer the x-coordinate gradient of device memory to host memory in row-major order.
+      gbasis::cuda_check_errors(cudaMemcpy(&h_grad_electron_density_row[index_to_copy],
+                                           d_gradient_electron_density,
+                                           sizeof(double) * number_pts_iter, cudaMemcpyDeviceToHost));
+      // Transfer the y-coordinate
+      gbasis::cuda_check_errors(cudaMemcpy(&h_grad_electron_density_row[t_numb_pts + index_to_copy],
+                                           &d_gradient_electron_density[number_pts_iter],
+                                           sizeof(double) * number_pts_iter, cudaMemcpyDeviceToHost));
+      // Transfer the z-coordinate
+      gbasis::cuda_check_errors(cudaMemcpy(&h_grad_electron_density_row[2 * t_numb_pts + index_to_copy],
+                                           &d_gradient_electron_density[2 * number_pts_iter],
+                                           sizeof(double) * number_pts_iter, cudaMemcpyDeviceToHost));
+      cudaFree(d_gradient_electron_density);
+    }
 
     // Update lower-bound of the grid for the next iteration
     index_to_copy += number_pts_iter;

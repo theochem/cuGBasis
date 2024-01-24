@@ -69,10 +69,11 @@ __host__ std::vector<double> evaluate_contraction_derivatives(
  * @param[in] iodata  The IOData object that stores the molecules basis.
  * @param[in] h_points Array in column-major order that stores the three-dimensional points.
  * @param[in] knumb_points Number of points in d_points.
+ * @param[in] return_row If true, then return in row-major order (default), else return column-major.
  * @return Return the gradient of electron density of size (knumb_points, 3) in row-major order.
  */
 __host__ std::vector<double> evaluate_electron_density_gradient(
-    gbasis::IOData& iodata, const double* h_points, const int knumb_points
+    gbasis::IOData& iodata, const double* h_points, int knumb_points, bool return_row = true
 );
 
 /**
@@ -80,7 +81,7 @@ __host__ std::vector<double> evaluate_electron_density_gradient(
  */
 __host__ std::vector<double> evaluate_electron_density_gradient_handle(
     // Initializer of cublas and set to prefer L1 cache ove rshared memory since it doens't use it.
-    cublasHandle_t& handle, gbasis::IOData& iodata, const double* h_points, const int knumb_points
+    cublasHandle_t& handle, gbasis::IOData& iodata, const double* h_points, int knumb_points, bool return_row
 );
 }
 
