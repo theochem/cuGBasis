@@ -58,6 +58,8 @@ class Molecule {
   Vector compute_weizsacker_ked(const Eigen::Ref<MatrixX3R>& array);
   Vector compute_thomas_fermi_ked(const Eigen::Ref<MatrixX3R>& array);
   Vector compute_general_gradient_expansion_ked(const Eigen::Ref<MatrixX3R>& array, double a, double b);
+  Vector compute_empirical_gradient_expansion_ked(const Eigen::Ref<MatrixX3R>& array);
+  Vector compute_gradient_expansion_ked(const Eigen::Ref<MatrixX3R>& array);
   };
 
 }

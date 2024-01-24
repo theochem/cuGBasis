@@ -157,3 +157,23 @@ Vector gbasis::Molecule::compute_general_gradient_expansion_ked(
   Vector v2 = Eigen::Map<Vector>(tf_ked.data(), nrows);
   return v2;
 }
+
+Vector gbasis::Molecule::compute_empirical_gradient_expansion_ked(const Eigen::Ref<MatrixX3R>& array){
+  MatrixX3R pts_row_order = array;
+  size_t nrows = array.rows();
+  std::vector<double> e_ked = gbasis::compute_ked_gradient_expansion_general(
+      *iodata_, pts_row_order.data(), nrows, 1.0 / 5.0, 1.0 / 6.0
+  );
+  Vector v2 = Eigen::Map<Vector>(e_ked.data(), nrows);
+  return v2;
+}
+
+Vector gbasis::Molecule::compute_gradient_expansion_ked(const Eigen::Ref<MatrixX3R>& array){
+  MatrixX3R pts_row_order = array;
+  size_t nrows = array.rows();
+  std::vector<double> e_ked = gbasis::compute_ked_gradient_expansion_general(
+      *iodata_, pts_row_order.data(), nrows, 1.0 / 9.0, 1.0 / 6.0
+  );
+  Vector v2 = Eigen::Map<Vector>(e_ked.data(), nrows);
+  return v2;
+}
