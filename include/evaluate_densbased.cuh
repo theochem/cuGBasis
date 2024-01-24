@@ -72,5 +72,18 @@ __host__ std::vector<double> compute_thomas_fermi_energy_density(
 __host__ std::vector<double> compute_ked_gradient_expansion_general(
     gbasis::IOData& iodata, const double* h_points, int knumb_points, double a, double b
 );
+
+/**
+ * Compute general(ish) kinetic energy density.
+ *
+ * @param[in] iodata  The IOData object that stores the molecules basis.
+ * @param[in] h_points Array in column-major order that stores the three-dimensional points.
+ * @param[in] knumb_points Number of points in d_points.
+ * @param[in] a: Parameters
+ * @return Return general(ish) kinetic energy density.
+ */
+__host__ std::vector<double> compute_general_ked(
+    gbasis::IOData& iodata, const double* h_points, int knumb_points, double a
+);
 }
 #endif //GBASIS_CUDA_INCLUDE_EVALUATE_DENSBASED_CUH_

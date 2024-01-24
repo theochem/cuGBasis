@@ -71,6 +71,10 @@ PYBIND11_MODULE(gbasis_cuda, m) {
            &gbasis::Molecule::compute_empirical_gradient_expansion_ked,
            "Compute the empirical gradient expansion approximation of kinetic energy density."
       )
+      .def("compute_general_ked",
+           &gbasis::Molecule::compute_general_ked,
+           "Compute the general(ish) kinetic energy density."
+      )
       .def("compute_electrostatic_potential",
            &gbasis::Molecule::compute_electrostatic_potential,
            "Compute electrostatic potential. "
