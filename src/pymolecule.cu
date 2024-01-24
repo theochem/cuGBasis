@@ -145,3 +145,15 @@ Vector gbasis::Molecule::compute_thomas_fermi_ked(const Eigen::Ref<MatrixX3R>& a
   Vector v2 = Eigen::Map<Vector>(tf_ked.data(), nrows);
   return v2;
 }
+
+Vector gbasis::Molecule::compute_general_gradient_expansion_ked(
+    const Eigen::Ref<MatrixX3R>& array, const double a, const double b
+    ){
+  MatrixX3R pts_row_order = array;
+  size_t nrows = array.rows();
+  std::vector<double> tf_ked = gbasis::compute_ked_gradient_expansion_general(
+      *iodata_, pts_row_order.data(), nrows, a, b
+      );
+  Vector v2 = Eigen::Map<Vector>(tf_ked.data(), nrows);
+  return v2;
+}
