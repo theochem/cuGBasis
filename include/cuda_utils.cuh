@@ -42,6 +42,8 @@ __host__ double* sum_rows_of_matrix(cublasHandle_t& handle, double* d_matrix, do
 /// Sum of two matrices to array1
 __global__ void sum_two_arrays_inplace(double* d_array1, double* d_array2, int numb_elements);
 
+/// Divide array_1 / array_2 inplace in array_1 with masking, note not serialized correctly
+__global__ void divide_inplace(double* d_array1, double* d_array2, int numb_elements, double mask = 1e-16);
 
 /// Printing device memory for debugging.
 __global__ void print_first_ten_elements(double* arr);

@@ -63,8 +63,23 @@ __global__ void gbasis::square_root(double* d_array, int numb_elements) {
 __global__ void gbasis::pow_inplace(double* d_array, double power, int numb_elements) {
   int global_index = blockIdx.x * blockDim.x + threadIdx.x;
   if(global_index < numb_elements) {
-//    d_array[global_index] = std::pow(d_array[global_index], power);
-    d_array[global_index] = d_array[global_index] * d_array[global_index];
+    d_array[global_index] = std::pow(d_array[global_index], power);
+    // d_array[global_index] = d_array[global_index] * d_array[global_index];
+  }
+}
+
+__global__ void gbasis::divide_inplace(
+    double* d_array1, double* d_array2, const int numb_elements, const double mask
+) {
+  int global_index = blockIdx.x * blockDim.x + threadIdx.x;
+  if(global_index < numb_elements) {
+    // Adding this if-statements, stops the threads and is not proper GPU coding practice
+    if(d_array2[global_index] > mask){
+      d_array1[global_index] = d_array1[global_index] / d_array2[global_index];
+    }
+    else {
+      d_array1[global_index] = mask;
+    }
   }
 }
 
