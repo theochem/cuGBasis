@@ -85,5 +85,17 @@ __host__ std::vector<double> compute_ked_gradient_expansion_general(
 __host__ std::vector<double> compute_general_ked(
     gbasis::IOData& iodata, const double* h_points, int knumb_points, double a
 );
+
+/**
+ * Compute Shannon information density
+ *
+ * @param[in] iodata  The IOData object that stores the molecules basis.
+ * @param[in] h_points Array in column-major order that stores the three-dimensional points.
+ * @param[in] knumb_points Number of points in d_points.
+ * @return Return Shannon information density
+ */
+__host__ std::vector<double> compute_shannon_information_density(
+    gbasis::IOData& iodata, const double* h_points, int knumb_points
+);
 }
 #endif //GBASIS_CUDA_INCLUDE_EVALUATE_DENSBASED_CUH_

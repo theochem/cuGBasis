@@ -206,3 +206,18 @@ __host__ std::vector<double> gbasis::compute_general_ked(
 
   return pdf_ked;
 }
+
+__host__ std::vector<double> gbasis::compute_shannon_information_density(
+    gbasis::IOData& iodata, const double* h_points, int knumb_points
+) {
+  std::vector<double> density = gbasis::evaluate_electron_density_on_any_grid(iodata, h_points, knumb_points);
+  std::vector<double> log_density = density;
+
+  std::transform(log_density.begin(), log_density.end(), log_density.begin(),
+                 [](auto& c){return std::log(c);});
+
+  std::transform(density.begin(), density.end(), log_density.begin(),
+                 density.begin(), std::multiplies<double>());
+
+  return density;
+}

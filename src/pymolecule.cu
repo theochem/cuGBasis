@@ -197,3 +197,13 @@ Vector gbasis::Molecule::compute_hamiltonian_ked(const Eigen::Ref<MatrixX3R>& ar
   Vector v2 = Eigen::Map<Vector>(ham_ked.data(), nrows);
   return v2;
 }
+
+Vector gbasis::Molecule::compute_shannon_information_density(const Eigen::Ref<MatrixX3R>& array){
+  MatrixX3R pts_row_order = array;
+  size_t nrows = array.rows();
+  std::vector<double> entropy = gbasis::compute_shannon_information_density(
+      *iodata_, pts_row_order.data(), nrows
+  );
+  Vector v2 = Eigen::Map<Vector>(entropy.data(), nrows);
+  return v2;
+}
