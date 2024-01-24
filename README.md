@@ -1,16 +1,44 @@
 
-# Requirements
-- [CMake>=3.24](https://cmake.org/)
-- [Eigen](https://eigen.tuxfamily.org/index.php?title=Main_Page) 
-- [CUDA/NVCC/CUDA-TOOLKIT](https://docs.nvidia.com/cuda/cuda-installation-guide-linux/index.html) 
-- [Pybind11](https://github.com/pybind/pybind11) 
-- [IOData](https://github.com/theochem/iodata)
+[![Python Version](https://img.shields.io/badge/python-3.7%2B-blue.svg)](https://docs.python.org/3/whatsnew/3.7.html)
+[![GPLv3 License](https://img.shields.io/badge/License-GPL%20v3-yellow.svg)](https://opensource.org/licenses/)
+[![GitHub contributors](https://img.shields.io/github/contributors/qtchem/gbasis_cuda.svg)](https://github.com/qtchem/gbasis_cuda/graphs/contributors)
 
-For testing the following are required:
-- [GBasis](https://github.com/theochem/gbasis)
-- [Chemtools](https://github.com/theochem/chemtools)
+## About
+GBasisCuda is a free, and open-source C++/CUDA and Python library for computing various quantities efficiently using NVIDIA GPU's 
+in quantum chemistry related to the electron density. It is highly-optimized code built around the GPU
+and compiler-specific optimization.
 
-# Installation
+It depends on reading Gaussian format check-point files (.fchk) using IOData and supports up-to g-type orbitals. 
+The user can use [IOData](https://www.github.com/theochem/iodata) to convert various file-types to fchk format.
+
+To report any issues or ask questions, either [open an issue](
+https://github.com/qtchem/gbasis_cuda/issues/new) or email [qcdevs@gmail.com]().
+
+### Features
+GbasisCuda can compute the following quantites over the GPU for s,p,d,f Gaussian orbitals over any size of grid-points:
+
+- Molecular orbitals
+- Electron density
+- Gradient of electron density
+- Laplacian of electron density
+- Positive definite kinetic energy density
+- General kinetic energy density
+- Electrostatic potential 
+
+## Requirements
+
+- CMake>=3.24: (https://cmake.org/) 
+- Eigen>=3: (https://eigen.tuxfamily.org/index.php?title=Main_Page)
+- CUDA/NVCC/CUDA-TOOLKIT: (https://docs.nvidia.com/cuda/cuda-installation-guide-linux/index.html)
+- Python>=3.7: (http://www.python.org/)
+- Pybind11 on python: (https://github.com/pybind/pybind11)
+- IOData on python: (https://github.com/theochem/iodata)
+
+For testing the following are required to be installed on the Python system:
+- GBasis: (https://github.com/theochem/gbasis)
+- Chemtools: (https://github.com/theochem/chemtools)
+
+## Installation
 
 ```bash
 git clone https://github.com/qtchem/gbasis_cuda
@@ -47,7 +75,7 @@ The following can help with compiling this package
 ```bash 
 cmake -S . -B ./out/build/ -DCUDAToolkit_ROOT=/some/path 
 ```
-2. If NVCC is not found, add the following flag to correct path
+2. If NVCC compiler is not found, add the following flag to correct path
 ```bash
 cmake -S . -B ./out/build/ -DCUDACXX=/some/path/bin/nvcc
 ```
@@ -55,9 +83,14 @@ cmake -S . -B ./out/build/ -DCUDACXX=/some/path/bin/nvcc
 ```bash
 cmake -S . -B ./out/build/ -DEigen3_DIR=/some/path/share/eigen3/cmake/
 ```
-4. 
+4. If you need to set the correct GPU architecture (e.g. compute capabiltiy 6.0), then change the following line in `CMakeLists.txt`
+```bash
+#Change set_property(TARGET gbasis_cuda_lib PROPERTY CUDA_ARCHITECTURES native) to
+set_property(TARGET gbasis_cuda_lib PROPERTY CUDA_ARCHITECTURES 60)
+```
+Not setting the correct GPU architecture will result in an error using the constant memory.
 
-# How To Use
+## How To Use
 ```python
 import gbasis_cuda
 
