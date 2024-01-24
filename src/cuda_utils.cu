@@ -53,6 +53,13 @@ __global__ void gbasis::hadamard_product_with_vector_along_row_inplace_for_trape
   }
 }
 
+__global__ void gbasis::square_root(double* d_array, int numb_elements) {
+  int global_index = blockIdx.x * blockDim.x + threadIdx.x;
+  if(global_index < numb_elements) {
+    d_array[global_index] = std::sqrt(d_array[global_index]);
+  }
+}
+
 __global__ void gbasis::pow_inplace(double* d_array, double power, int numb_elements) {
   int global_index = blockIdx.x * blockDim.x + threadIdx.x;
   if(global_index < numb_elements) {

@@ -21,6 +21,9 @@ __global__ void hadamard_product(double* d_array1, double* d_array2, int numb_ro
 __global__ void hadamard_product_outplace(double* d_output, double* d_array1, double* d_array2, int numb_row, int numb_col);
 __global__ void hadamard_product_with_vector_along_row_inplace_for_trapezoidal(double* d_array, const double* d_vec, int numb_row, int numb_col);
 
+/// Square-root of each element of the array
+__global__ void square_root(double* d_array, int numb_elements);
+
 /// square each element of the array
 __global__ void pow_inplace(double* d_array, double power, int numb_elements);
 
