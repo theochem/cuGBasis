@@ -42,7 +42,8 @@ set(SOURCES
 		src/evaluate_electrostatic.cu
 		src/utils.cpp
 		src/evaluate_laplacian.cu
-		src/evaluate_kinetic_dens.cu)
+		src/evaluate_kinetic_dens.cu
+		src/evaluate_densbased.cu)
 set(HEADERS
         include/basis_to_gpu.cuh
         include/contracted_shell.h
@@ -57,7 +58,8 @@ set(HEADERS
 		include/evaluate_electrostatic.cuh
 		include/utils.h
         include/evaluate_laplacian.cuh
-		include/evaluate_kinetic_dens.cuh)
+		include/evaluate_kinetic_dens.cuh
+		include/evaluate_densbased.cuh)
 message("PRINT2 ${CUDA_NVCC_FLAGS}")
 add_library(gbasis_cuda_lib SHARED ${HEADERS} ${SOURCES})
 set_target_properties(gbasis_cuda_lib PROPERTIES CUDA_SEPARABLE_COMPILATION ON)

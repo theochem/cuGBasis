@@ -5,6 +5,7 @@
 
 #include "../include/pymolecule.cuh"
 #include "../include/basis_to_gpu.cuh"
+#include "../include/evaluate_densbased.cuh"
 #include "../include/evaluate_density.cuh"
 #include "../include/evaluate_gradient.cuh"
 #include "../include/evaluate_laplacian.cuh"
@@ -31,7 +32,7 @@ void gbasis::Molecule::basis_set_to_constant_memory(bool do_segmented_basis){
 
 Vector gbasis::Molecule::compute_electron_density(const Eigen::Ref<MatrixX3R>&  points) {
   // Accept in row-major order because it is numpy default
-  // Conver tto column major order since it works better with the GPU code
+  // Convert to column major order since it works better with the GPU code
   MatrixX3C pts_col_order = points;
   size_t nrows = points.rows();
   std::vector<double> dens = gbasis::evaluate_electron_density_on_any_grid(
@@ -69,7 +70,7 @@ MatrixX3R gbasis::Molecule::compute_electron_density_gradient(const Eigen::Ref<M
 
 Vector gbasis::Molecule::compute_laplacian(const Eigen::Ref<MatrixX3R>&  points) {
   // Accept in row-major order because it is numpy default
-  // Conver tto column major order since it works better with the GPU code
+  // Convert to column major order since it works better with the GPU code
   MatrixX3C pts_col_order = points;
   size_t nrows = points.rows();
   std::vector<double> laplacian = gbasis::evaluate_laplacian(
@@ -81,7 +82,7 @@ Vector gbasis::Molecule::compute_laplacian(const Eigen::Ref<MatrixX3R>&  points)
 
 Vector gbasis::Molecule::compute_positive_definite_kinetic_energy(const Eigen::Ref<MatrixX3R>&  points) {
   // Accept in row-major order because it is numpy default
-  // Conver tto column major order since it works better with the GPU code
+  // Convert to column major order since it works better with the GPU code
   MatrixX3C pts_col_order = points;
   size_t nrows = points.rows();
   std::vector<double> kinetic_dens = gbasis::evaluate_positive_definite_kinetic_density(
@@ -103,7 +104,7 @@ Vector gbasis::Molecule::compute_general_kinetic_energy(const Eigen::Ref<MatrixX
 
 Vector gbasis::Molecule::compute_electrostatic_potential(const Eigen::Ref<MatrixX3R>&  points) {
   // Accept in row-major order because it is numpy default
-  // Conver tto column major order since it works better with the GPU code
+  // Convert to column major order since it works better with the GPU code
   MatrixX3R pts_row_order = points;
   size_t nrows = points.rows();
   std::vector<double> esp = gbasis::compute_electrostatic_potential_over_points(
@@ -112,3 +113,12 @@ Vector gbasis::Molecule::compute_electrostatic_potential(const Eigen::Ref<Matrix
   Vector v2 = Eigen::Map<Vector>(esp.data(), nrows);
   return v2;
 }
+
+Vector gbasis::Molecule::compute_norm_of_vector(const Eigen::Ref<MatrixX3R>& array){
+  MatrixX3R pts_row_order = array;
+  size_t nrows = array.rows();
+  std::vector<double> norm = gbasis::compute_norm_of_3d_vector(pts_row_order.data(), nrows);
+  Vector v2 = Eigen::Map<Vector>(norm.data(), nrows);
+  return v2;
+}
+

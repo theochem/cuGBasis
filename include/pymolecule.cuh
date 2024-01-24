@@ -53,6 +53,7 @@ class Molecule {
   Vector compute_general_kinetic_energy(const Eigen::Ref<MatrixX3R>&  points, const double alpha);
   MatrixX3R compute_electron_density_gradient(const Eigen::Ref<MatrixX3R>&  points);
   Vector compute_electrostatic_potential(const Eigen::Ref<MatrixX3R>&  points);
+  Vector compute_norm_of_vector(const Eigen::Ref<MatrixX3R>& array);
 };
 
 }

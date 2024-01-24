@@ -43,6 +43,10 @@ PYBIND11_MODULE(gbasis_cuda, m) {
            &gbasis::Molecule::compute_positive_definite_kinetic_energy,
            "Compute the general kinetic energy density."
       )
+      .def("compute_norm_of_vector",
+           &gbasis::Molecule::compute_norm_of_vector,
+           "Compute the norm of a vector."
+      )
       .def("compute_electrostatic_potential",
            &gbasis::Molecule::compute_electrostatic_potential,
            "Compute electrostatic potential. "
