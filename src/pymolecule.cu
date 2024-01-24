@@ -122,3 +122,10 @@ Vector gbasis::Molecule::compute_norm_of_vector(const Eigen::Ref<MatrixX3R>& arr
   return v2;
 }
 
+Vector gbasis::Molecule::compute_reduced_density_gradient(const Eigen::Ref<MatrixX3R>& array){
+  MatrixX3R pts_row_order = array;
+  size_t nrows = array.rows();
+  std::vector<double> reduced = gbasis::compute_reduced_density_gradient(*iodata_, pts_row_order.data(), nrows);
+  Vector v2 = Eigen::Map<Vector>(reduced.data(), nrows);
+  return v2;
+}
