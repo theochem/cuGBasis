@@ -129,3 +129,11 @@ Vector gbasis::Molecule::compute_reduced_density_gradient(const Eigen::Ref<Matri
   Vector v2 = Eigen::Map<Vector>(reduced.data(), nrows);
   return v2;
 }
+
+Vector gbasis::Molecule::compute_weizsacker_ked(const Eigen::Ref<MatrixX3R>& array){
+  MatrixX3R pts_row_order = array;
+  size_t nrows = array.rows();
+  std::vector<double> w_ked = gbasis::compute_weizsacker_ked(*iodata_, pts_row_order.data(), nrows);
+  Vector v2 = Eigen::Map<Vector>(w_ked.data(), nrows);
+  return v2;
+}

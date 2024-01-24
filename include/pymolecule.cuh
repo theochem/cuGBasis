@@ -54,7 +54,9 @@ class Molecule {
   MatrixX3R compute_electron_density_gradient(const Eigen::Ref<MatrixX3R>&  points);
   Vector compute_electrostatic_potential(const Eigen::Ref<MatrixX3R>&  points);
   Vector compute_norm_of_vector(const Eigen::Ref<MatrixX3R>& array);
-};
+  Vector compute_reduced_density_gradient(const Eigen::Ref<MatrixX3R>& array);
+  Vector compute_weizsacker_ked(const Eigen::Ref<MatrixX3R>& array);
+  };
 
 }
 #endif //GBASIS_CUDA_INCLUDE_PYMOLCULE_H_

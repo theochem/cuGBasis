@@ -84,3 +84,54 @@ __host__ std::vector<double> gbasis::compute_reduced_density_gradient(
 
   return reduced_dens_grad;
 }
+
+__host__ std::vector<double> gbasis::compute_weizsacker_ked(
+    gbasis::IOData& iodata, const double* h_points, const int knumb_points
+){
+  std::vector<double> weizsacker_ked(knumb_points);
+
+  // Compute the density and norm of the gradient (in column-order)
+  std::vector<double> density = gbasis::evaluate_electron_density_on_any_grid(iodata, h_points, knumb_points);
+  std::vector<double> gradient = gbasis::evaluate_electron_density_gradient(iodata, h_points, knumb_points, false);
+
+  // Transfer the gradient to GPU
+  double *d_gradient;
+  gbasis::cuda_check_errors(cudaMalloc((double **) &d_gradient, sizeof(double) * 3 * knumb_points));
+  gbasis::cuda_check_errors(cudaMemcpy(d_gradient, gradient.data(),
+                                       sizeof(double) * 3 * knumb_points,
+                                       cudaMemcpyHostToDevice));
+  // Compute the dot-product between gradient
+  //    Compute hadamard product between itself
+  dim3 threadsPerBlock(320);
+  dim3 grid((3 * knumb_points + threadsPerBlock.x - 1) / (threadsPerBlock.x));
+  gbasis::hadamard_product<<<grid, threadsPerBlock>>>(d_gradient, d_gradient, 3, knumb_points);
+
+  //   Sum the rows together
+  // Sum the first row with the second row
+  dim3 grid2((knumb_points + threadsPerBlock.x - 1) / (threadsPerBlock.x));
+  gbasis::sum_two_arrays_inplace<<<grid2, threadsPerBlock>>>(d_gradient, &d_gradient[knumb_points], knumb_points);
+  // Add the third row
+  gbasis::sum_two_arrays_inplace<<<grid2, threadsPerBlock>>>(&d_gradient[0], &d_gradient[2 * knumb_points], knumb_points);
+
+  // Transfer density to GPU
+  double *d_density;
+  gbasis::cuda_check_errors(cudaMalloc((double **) &d_density, sizeof(double) * knumb_points));
+  gbasis::cuda_check_errors(cudaMemcpy(d_density, density.data(),
+                                       sizeof(double) *  knumb_points,
+                                       cudaMemcpyHostToDevice));
+
+  // Multiply density by 8
+  gbasis::multiply_scalar<<<grid2, threadsPerBlock>>>(d_density, 8.0, knumb_points);
+
+  // Divide dot product of gradient with (8 rho)
+  gbasis::divide_inplace<<<grid2, threadsPerBlock>>>(d_gradient, d_density, knumb_points, 1e-20);
+  cudaFree(d_density);
+
+  // Transfer back to CPU
+  gbasis::cuda_check_errors(cudaMemcpy(
+      weizsacker_ked.data(), d_gradient, sizeof(double) * knumb_points, cudaMemcpyDeviceToHost
+  ));
+  cudaFree(d_gradient);
+
+  return weizsacker_ked;
+}

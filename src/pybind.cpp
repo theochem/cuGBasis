@@ -51,6 +51,10 @@ PYBIND11_MODULE(gbasis_cuda, m) {
            &gbasis::Molecule::compute_reduced_density_gradient,
            "Compute the reduced density gradient."
       )
+      .def("compute_weizsacker_ked",
+           &gbasis::Molecule::compute_weizsacker_ked,
+           "Compute the Weizsacker Kinetic energy density."
+      )
       .def("compute_electrostatic_potential",
            &gbasis::Molecule::compute_electrostatic_potential,
            "Compute electrostatic potential. "
