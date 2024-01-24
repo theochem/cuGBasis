@@ -1278,13 +1278,6 @@ __host__ std::vector<double> gbasis::evaluate_electron_density_gradient_handle(
     for (int i_deriv = 0; i_deriv < 3; i_deriv++) {
       // Get the ith derivative of the contractions with shape (M, N) in row-major order, N=numb pts, M=numb basis funcs
       double *d_ith_deriv = &d_deriv_contractions[i_deriv * number_pts_iter * knbasisfuncs];
-      //    if (i_deriv == 0) {
-      //      printf("Get the ith derivative %d \n", i_deriv);
-      //      cudaDeviceSynchronize();
-      //      gbasis::print_all<<<1, 1>>>(d_ith_deriv, 4 * 5);
-      //      cudaDeviceSynchronize();
-      //      printf("\n");
-      //    }
 
       // Transfer one-rdm from host/cpu memory to device/gpu memory.
       double *d_one_rdm;
@@ -1303,26 +1296,13 @@ __host__ std::vector<double> gbasis::evaluate_electron_density_gradient_handle(
                                               d_temp_rdm_derivs, number_pts_iter));
       cudaFree(d_one_rdm);
 
-      //    if (i_deriv == 0) {
-      //      printf("Matrix multiply with one_rdm %d \n", i_deriv);
-      //      cudaDeviceSynchronize();
-      //      gbasis::print_all<<<1, 1>>>(d_temp_rdm_derivs, 4 * 5);
-      //      cudaDeviceSynchronize();
-      //      printf("\n");
-      //    }
-
       // Do a hadamard product with the original contractions.
       dim3 threadsPerBlock2(320);
       dim3 grid2((number_pts_iter * knbasisfuncs + threadsPerBlock.x - 1) / (threadsPerBlock.x));
       gbasis::hadamard_product<<<grid2, threadsPerBlock2>>>(
           d_temp_rdm_derivs, d_contractions, knbasisfuncs, number_pts_iter
       );
-      //    if (i_deriv == 0) {
-      //      printf("Do Hadamard product with one-rdm \n");
-      //      cudaDeviceSynchronize();
-      //      gbasis::print_all<<<1, 1>>>(&d_temp_rdm_derivs[0], 4 * 5);
-      //      printf("\n");
-      //    }
+
       // Take the sum to get the ith derivative of the electron density. This is done via matrix-vector multiplcaiton
       // of ones
       thrust::device_vector<double> all_ones(sizeof(double) * knbasisfuncs, 1.0);
@@ -1330,18 +1310,6 @@ __host__ std::vector<double> gbasis::evaluate_electron_density_gradient_handle(
       gbasis::cublas_check_errors(cublasDgemv(handle, CUBLAS_OP_N, number_pts_iter, knbasisfuncs,
                                               &alpha, d_temp_rdm_derivs, number_pts_iter, deviceVecPtr, 1, &beta,
                                               &d_gradient_electron_density[i_deriv * number_pts_iter], 1));
-      //    if(i_deriv == 0) {
-      //      printf("ith derivative %d \n", i_deriv);
-      //      cudaDeviceSynchronize();
-      //      gbasis::print_all<<<1, 1>>>(&d_gradient_electron_density[i_deriv * knumb_points], 4 * 5);
-      //      printf("\n");
-      //    }
-      //    if(i_deriv == 0) {
-      //      printf("Actual ith derivative %d \n", i_deriv);
-      //      cudaDeviceSynchronize();
-      //      gbasis::print_all<<<1, 1>>>(d_ith_deriv_electron_density, 4 * 5);
-      //      printf("\n");
-      //    }
 
       // Free up memory in this iteration for the next calculation of the derivative.
       all_ones.clear();
