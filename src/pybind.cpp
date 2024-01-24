@@ -55,6 +55,10 @@ PYBIND11_MODULE(gbasis_cuda, m) {
            &gbasis::Molecule::compute_weizsacker_ked,
            "Compute the Weizsacker Kinetic energy density."
       )
+      .def("compute_thomas_fermi_ked",
+           &gbasis::Molecule::compute_thomas_fermi_ked,
+           "Compute the Thomas-Fermi kinetic energy density."
+      )
       .def("compute_electrostatic_potential",
            &gbasis::Molecule::compute_electrostatic_potential,
            "Compute electrostatic potential. "

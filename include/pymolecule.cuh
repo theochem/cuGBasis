@@ -56,6 +56,7 @@ class Molecule {
   Vector compute_norm_of_vector(const Eigen::Ref<MatrixX3R>& array);
   Vector compute_reduced_density_gradient(const Eigen::Ref<MatrixX3R>& array);
   Vector compute_weizsacker_ked(const Eigen::Ref<MatrixX3R>& array);
+  Vector compute_thomas_fermi_ked(const Eigen::Ref<MatrixX3R>& array);
   };
 
 }

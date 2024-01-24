@@ -135,3 +135,43 @@ __host__ std::vector<double> gbasis::compute_weizsacker_ked(
 
   return weizsacker_ked;
 }
+
+__host__ std::vector<double> gbasis::compute_thomas_fermi_energy_density(
+    gbasis::IOData& iodata, const double* h_points, int knumb_points
+){
+  std::vector<double> thomas_fermi(knumb_points);
+
+  // Compute the density
+  std::vector<double> density = gbasis::evaluate_electron_density_on_any_grid(iodata, h_points, knumb_points);
+
+  // Transfer density to GPU
+  double *d_density;
+  gbasis::cuda_check_errors(cudaMalloc((double **) &d_density, sizeof(double) * knumb_points));
+  gbasis::cuda_check_errors(cudaMemcpy(d_density, density.data(),
+                                       sizeof(double) *  knumb_points,
+                                       cudaMemcpyHostToDevice));
+
+  // Take the power to (5.0 / 3.0)
+  dim3 threadsPerBlock(320);
+  dim3 grid((knumb_points + threadsPerBlock.x - 1) / (threadsPerBlock.x));
+  gbasis::pow_inplace<<<grid, threadsPerBlock>>>(d_density, 5.0 / 3.0, knumb_points);
+
+  // Multiply by prefactor
+  double prefactor = 0.3 * std::pow(3.0 * std::pow(CUDART_PI_D, 2.0), 2.0 / 3.0);
+  gbasis::multiply_scalar<<<grid, threadsPerBlock>>>(d_density, prefactor, knumb_points);
+
+  // Transfer back to CPU
+  gbasis::cuda_check_errors(cudaMemcpy(
+      thomas_fermi.data(), d_density, sizeof(double) * knumb_points, cudaMemcpyDeviceToHost
+  ));
+  cudaFree(d_density);
+
+  return thomas_fermi;
+}
+
+__host__ std::vector<double> compute_ked_gradient_expansion_general(
+    gbasis::IOData& iodata, const double* h_points, int knumb_points, double a, double b
+) {
+
+
+}
