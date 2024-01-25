@@ -1,22 +1,22 @@
 
 [![Python Version](https://img.shields.io/badge/python-3.7%2B-blue.svg)](https://docs.python.org/3/whatsnew/3.7.html)
 [![GPLv3 License](https://img.shields.io/badge/License-GPL%20v3-yellow.svg)](https://opensource.org/licenses/)
-[![GitHub contributors](https://img.shields.io/github/contributors/qtchem/gbasis_cuda.svg)](https://github.com/qtchem/gbasis_cuda/graphs/contributors)
+[![GitHub contributors](https://img.shields.io/github/contributors/qtchem/chemtoolscuda.svg)](https://github.com/qtchem/chemtoolscuda/graphs/contributors)
 
 ## About
 ChemToolsCUDA is a free, and open-source C++/CUDA and Python library for computing various quantities efficiently 
-using NVIDIA GPU's in quantum chemistry related to the electron density. It is highly-optimized code built around 
-the GPU and compiler-specific optimization.
+using NVIDIA GPU's in quantum chemistry. It is highly-optimized and vectorized, making it useful for cases
+where efficiency matters. ChemToolsCUDA utilizes meta-programming (code generation and template) and
+GPU techniques, making it highly optimized and vectorized for cases where efficiency matters.
 
 It depends on reading Gaussian format check-point files (.fchk) using IOData and supports up-to g-type orbitals. 
 The user can use [IOData](https://www.github.com/theochem/iodata) to convert various file-types to fchk format.
 
 To report any issues or ask questions, either [open an issue](
-https://github.com/qtchem/gbasis_cuda/issues/new) or email [qcdevs@gmail.com]().
+https://github.com/qtchem/chemtoolscuda/issues/new) or email [qcdevs@gmail.com]().
 
 ### Features
-ChemToolsCUDA can compute the following quantites over the GPU for (up-to g-type) Gaussian orbitals 
-over any size of grid-points:
+ChemToolsCUDA can compute the following quantities over any size of grid-points:
 
 - Molecular orbitals
 - Electron density
@@ -50,7 +50,7 @@ For testing the following are required to be installed on the Python system:
 ## Installation
 
 ```bash
-git clone https://github.com/qtchem/gbasis_cuda
+git clone https://github.com/qtchem/chemtoolscuda
 
 # Get the dependencies in ./libs/ folder
 git submodule update --init --recursive
@@ -106,15 +106,15 @@ cmake -S . -B ./out/build/ -DEigen3_DIR=/some/path/share/eigen3/cmake/
 4. If you need to set the correct GPU architecture (e.g. compute capabiltiy 6.0), then change the following line in `CMakeLists.txt`.
    Not setting the correct GPU architecture will result in an error using the constant memory.
 ```bash
-#Change set_property(TARGET gbasis_cuda_lib PROPERTY CUDA_ARCHITECTURES native) to
-set_property(TARGET gbasis_cuda_lib PROPERTY CUDA_ARCHITECTURES 60)
+#Change set_property(TARGET chemtools_cuda_lib PROPERTY CUDA_ARCHITECTURES native) to
+set_property(TARGET chemtools_cuda_lib PROPERTY CUDA_ARCHITECTURES 60)
 ```
 
 ## How To Use
 ```python
-import gbasis_cuda
+import chemtools_cuda
 
-mol = gbasis_cuda.Molecule( FCHK FILE PATH HERE)
+mol = chemtools_cuda.Molecule( FCHK FILE PATH HERE)
 mol.basis_set_to_constant_memory(False)
 
 density =  mol.compute_electron_density_on_cubic_grid( CUBIC INFO HERE)
