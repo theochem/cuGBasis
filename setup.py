@@ -135,13 +135,39 @@ class CMakeBuild(build_ext):
 # The information here can also be placed in setup.cfg - better separation of
 # logic and declaration, and simpler if you include description/version in a file.
 setup(
-    name="gbasis_cuda",
+    name="chemtools_cuda",
     version="0.0.1",
-    author="Ali Tehrani",
-    author_email="alirezatehrani24@gmail.com",
+    author="QC-Devs Community",
+    author_email="qcdevs@gmail.com",
     ext_modules=[CMakeExtension("cmake_example")],
     cmdclass={"build_ext": CMakeBuild},
     zip_safe=False,
+    license="GNU (Version 3)",
+    install_requires=["numpy", "pybind11", "qc-iodata"],
     extras_require={"test": ["pytest>=6.0"]},
     python_requires=">=3.7",
+    long_description_content_type="text/markdown",
+    url="https://github.com/qtchem/ChemToolsCUDA/",
+    project_urls={
+        "Bug Reports": "https://github.com/qtchem/ChemToolsCUDA/issues",
+        "Organization": "https://github.com/qtchem/",
+        "Source": "https://github.com/qtchem/ChemToolsCUDA/",
+    },
+    classifiers=[
+        "Development Status :: 3 - Alpha",
+        # Indicate who your project is intended for
+        "Intended Audience :: Science/Research",
+        "Intended Audience :: Developers",
+        "Topic :: Scientific/Engineering :: Chemistry",
+        "Topic :: Scientific/Engineering :: Physics",
+        "Topic :: Scientific/Engineering :: Mathematics",
+        # Pick your license as you wish
+        "License :: OSI Approved :: GNU Version 3",
+        # Specify the Python versions you support here.
+        # These classifiers are *not* checked by 'pip install'. See instead
+        "Programming Language :: Python :: 3.7",
+        "ENVIRONMENT :: GPU :: NVIDIA CUDA :: 10.2",
+        "ENVIRONMENT :: GPU :: NVIDIA CUDA :: 11.8",
+        "ENVIRONMENT :: GPU :: NVIDIA CUDA :: 12.2"
+    ],
 )
