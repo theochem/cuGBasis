@@ -7,7 +7,7 @@
 namespace py = pybind11;
 
 
-PYBIND11_MODULE(gbasis_cuda, m) {
+PYBIND11_MODULE(chemtools_cuda, m) {
   m.doc() = "Test of documentation";
 
   py::class_<gbasis::Molecule>(m, "Molecule")
@@ -90,5 +90,4 @@ PYBIND11_MODULE(gbasis_cuda, m) {
            "`basis_set_to_constant_memory`."
       )
       .def("get_file_path", &gbasis::Molecule::getFilePath);
-
 }
