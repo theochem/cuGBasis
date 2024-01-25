@@ -1,19 +1,18 @@
 import numpy as np
-import gbasis_cuda
+import chemtools_cuda
 from chemtools.wrappers import Molecule
 import pytest
 
 @pytest.mark.parametrize("fchk",
     [
-        "E948_rwB97XD_def2SVP.fchk",
-        "h2o.fchk",
-        "ch4.fchk",
-        "qm9_000092_HF_cc-pVDZ.fchk"
+        "./tests/data/E948_rwB97XD_def2SVP.fchk",
+        "./tests/data/h2o.fchk",
+        "./tests/data/ch4.fchk",
+        "./tests/data/qm9_000092_HF_cc-pVDZ.fchk"
     ]
 )
 def test_gradient_against_horton(fchk):
-    fchk = "./data/" + fchk
-    mol = gbasis_cuda.Molecule(fchk)
+    mol = chemtools_cuda.Molecule(fchk)
     mol.basis_set_to_constant_memory()
 
     grid_pts = np.random.uniform(-5, 5, size=(50000, 3))
