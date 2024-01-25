@@ -1,13 +1,13 @@
 
 
-#ifndef GBASIS_CUDA_INCLUDE_EVALUATE_LAPLACIAN_CUH_
-#define GBASIS_CUDA_INCLUDE_EVALUATE_LAPLACIAN_CUH_
+#ifndef CHEMTOOLS_CUDA_INCLUDE_EVALUATE_LAPLACIAN_CUH_
+#define CHEMTOOLS_CUDA_INCLUDE_EVALUATE_LAPLACIAN_CUH_
 
 #include "cublas_v2.h"
 
 #include "iodata.h"
 
-namespace gbasis {
+namespace chemtools {
 
 /**
  * Device helper function for evaluating the sum of second derivative of each contractions
@@ -44,7 +44,7 @@ __global__ void evaluate_sum_of_second_contractions_from_constant_memory_on_any_
  *          where M =number of basis-functions.
  */
 __host__ std::vector<double> evaluate_sum_of_second_derivative_contractions(
-    gbasis::IOData& iodata, const double* h_points, const int knumb_points
+    chemtools::IOData& iodata, const double* h_points, const int knumb_points
 );
 
 /**
@@ -62,12 +62,12 @@ __host__ std::vector<double> evaluate_sum_of_second_derivative_contractions(
  * @param knbasisfuncs: Number of basis-functions.
  */
 __host__ void compute_first_term(
-    const cublasHandle_t& handle, const gbasis::IOData& iodata, std::vector<double>& h_laplacian,
+    const cublasHandle_t& handle, const chemtools::IOData& iodata, std::vector<double>& h_laplacian,
     const double* const h_points, const int knumb_points, const int knbasisfuncs
 );
 
 __host__ std::vector<double> evaluate_laplacian_on_any_grid_handle(
-    cublasHandle_t& handle, gbasis::IOData& iodata, const double* h_points, const int knumb_points
+    cublasHandle_t& handle, chemtools::IOData& iodata, const double* h_points, const int knumb_points
 );
 
 /**
@@ -81,7 +81,7 @@ __host__ std::vector<double> evaluate_laplacian_on_any_grid_handle(
  * @return h_laplacian The Laplacian of the electron density evaluated on each point.
  */
 __host__ std::vector<double> evaluate_laplacian(
-    gbasis::IOData& iodata, const double* h_points, const int knumb_points
+    chemtools::IOData& iodata, const double* h_points, const int knumb_points
 );
 }
-#endif //GBASIS_CUDA_INCLUDE_EVALUATE_LAPLACIAN_CUH_
+#endif //CHEMTOOLS_CUDA_INCLUDE_EVALUATE_LAPLACIAN_CUH_

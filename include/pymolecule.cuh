@@ -1,5 +1,5 @@
-#ifndef GBASIS_CUDA_INCLUDE_PYMOLCULE_H_
-#define GBASIS_CUDA_INCLUDE_PYMOLCULE_H_
+#ifndef CHEMTOOLS_CUDA_INCLUDE_PYMOLCULE_H_
+#define CHEMTOOLS_CUDA_INCLUDE_PYMOLCULE_H_
 #include <cuda_runtime.h>
 
 #include <pybind11/pybind11.h>
@@ -22,12 +22,12 @@ using IntVector3D =Eigen::Matrix<int, 1, 3>;
 using Matrix33C =Eigen::Matrix<double, 3, 3, Eigen::ColMajor>;
 using Matrix33R =Eigen::Matrix<double, 3, 3, Eigen::RowMajor>;
 
-namespace gbasis {
+namespace chemtools {
 /// Transfer basis-set object to constant memory.
 
 class Molecule {
   std::string file_path;
-  gbasis::IOData* iodata_;
+  chemtools::IOData* iodata_;
   /// cublasHandle_t handle; Couldn't figure out how to fix this, only works once,
 
  public:
@@ -40,7 +40,7 @@ class Molecule {
 
   // Getters and Setters
   const std::string &getFilePath() const { return file_path; }
-  const gbasis::IOData *getIOData() const { return iodata_; }
+  const chemtools::IOData *getIOData() const { return iodata_; }
 
   // Methods
   void basis_set_to_constant_memory(bool do_segmented_basis);
@@ -66,4 +66,4 @@ class Molecule {
   };
 
 }
-#endif //GBASIS_CUDA_INCLUDE_PYMOLCULE_H_
+#endif //CHEMTOOLS_CUDA_INCLUDE_PYMOLCULE_H_

@@ -1,5 +1,5 @@
-#ifndef GBASIS_CUDA_INCLUDE_EVALUATE_GRADIENT_CUH_
-#define GBASIS_CUDA_INCLUDE_EVALUATE_GRADIENT_CUH_
+#ifndef CHEMTOOLS_CUDA_INCLUDE_EVALUATE_GRADIENT_CUH_
+#define CHEMTOOLS_CUDA_INCLUDE_EVALUATE_GRADIENT_CUH_
 
 #include "cublas_v2.h"
 
@@ -7,7 +7,7 @@
 #include "iodata.h"
 
 
-namespace gbasis {
+namespace chemtools {
 /**
  * Evaluate the derivative of contractions from any grid of points.
  *
@@ -39,7 +39,7 @@ __global__ void evaluate_derivatives_contractions_from_constant_memory(
  * @return Return derivatives of each contraction this is in row-order (3, M, N), where M =number of basis-functions.
  */
 __host__ std::vector<double> evaluate_contraction_derivatives(
-    gbasis::IOData& iodata, const double* h_points, const int knumb_points
+    chemtools::IOData& iodata, const double* h_points, const int knumb_points
 );
 
 /**
@@ -73,7 +73,7 @@ __host__ std::vector<double> evaluate_contraction_derivatives(
  * @return Return the gradient of electron density of size (knumb_points, 3) in row-major order.
  */
 __host__ std::vector<double> evaluate_electron_density_gradient(
-    gbasis::IOData& iodata, const double* h_points, int knumb_points, bool return_row = true
+    chemtools::IOData& iodata, const double* h_points, int knumb_points, bool return_row = true
 );
 
 /**
@@ -81,8 +81,8 @@ __host__ std::vector<double> evaluate_electron_density_gradient(
  */
 __host__ std::vector<double> evaluate_electron_density_gradient_handle(
     // Initializer of cublas and set to prefer L1 cache ove rshared memory since it doens't use it.
-    cublasHandle_t& handle, gbasis::IOData& iodata, const double* h_points, int knumb_points, bool return_row
+    cublasHandle_t& handle, chemtools::IOData& iodata, const double* h_points, int knumb_points, bool return_row
 );
 }
 
-#endif //GBASIS_CUDA_INCLUDE_EVALUATE_GRADIENT_CUH_
+#endif //CHEMTOOLS_CUDA_INCLUDE_EVALUATE_GRADIENT_CUH_

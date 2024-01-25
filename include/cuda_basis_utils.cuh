@@ -1,7 +1,7 @@
-#ifndef GBASIS_CUDA_INCLUDE_CUDA_BASIS_UTILS_CUH_
-#define GBASIS_CUDA_INCLUDE_CUDA_BASIS_UTILS_CUH_
+#ifndef CHEMTOOLS_CUDA_INCLUDE_CUDA_BASIS_UTILS_CUH_
+#define CHEMTOOLS_CUDA_INCLUDE_CUDA_BASIS_UTILS_CUH_
 
-namespace gbasis {
+namespace chemtools {
 /// Compute the normalization constant of a single primitive Cartesian Gaussian, S-type only.
 __device__ double normalization_primitive_s(double alpha);
 /// Compute the normalization constant of a single primitive Cartesian Gaussian, P-type only
@@ -20,4 +20,4 @@ __device__ double solid_harmonic_function_d(int m, double r_Ax, double r_Ay, dou
 __device__ double solid_harmonic_function_f(int m, double r_Ax, double r_Ay, double r_Az);
 __device__ double solid_harmonic_function_g(int m, double r_Ax, double r_Ay, double r_Az);
 }
-#endif //GBASIS_CUDA_INCLUDE_CUDA_BASIS_UTILS_CUH_
+#endif //CHEMTOOLS_CUDA_INCLUDE_CUDA_BASIS_UTILS_CUH_

@@ -1,5 +1,5 @@
-#ifndef GBASIS_CUDA_INCLUDE_INTEGRAL_COEFFS_CUH_
-#define GBASIS_CUDA_INCLUDE_INTEGRAL_COEFFS_CUH_
+#ifndef CHEMTOOLS_CUDA_INCLUDE_INTEGRAL_COEFFS_CUH_
+#define CHEMTOOLS_CUDA_INCLUDE_INTEGRAL_COEFFS_CUH_
 
 #include "../include/boys_functions.cuh"
 #include "../include/cuda_utils.cuh"
@@ -452,6 +452,6 @@ __device__ double compute_fyyz_fyyz_nuclear_attraction_integral(const double& al
 __device__ double compute_fyyz_fxyz_nuclear_attraction_integral(const double& alpha, const double3& A_coord, const double& beta, const double3& B_coord, const double3& pt, const double3& P);
 __device__ double compute_fxyz_fxyz_nuclear_attraction_integral(const double& alpha, const double3& A_coord, const double& beta, const double3& B_coord, const double3& pt, const double3& P);
 
-} // namespace gbasis
+} // namespace chemtools
 
-#endif //GBASIS_CUDA_INCLUDE_INTEGRAL_COEFFS_CUH_
+#endif //CHEMTOOLS_CUDA_INCLUDE_INTEGRAL_COEFFS_CUH_

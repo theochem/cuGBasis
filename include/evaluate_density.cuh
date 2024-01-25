@@ -1,5 +1,5 @@
-#ifndef GBASIS_CUDA_SRC_EVALUATE_CONTRACTIONS_CUH_
-#define GBASIS_CUDA_SRC_EVALUATE_CONTRACTIONS_CUH_
+#ifndef CHEMTOOLS_CUDA_SRC_EVALUATE_CONTRACTIONS_CUH_
+#define CHEMTOOLS_CUDA_SRC_EVALUATE_CONTRACTIONS_CUH_
 
 #include "cublas_v2.h"
 
@@ -8,7 +8,7 @@
 
 #define N 7500  // Number of blocks needs to be less than 64,000 kilobytes. 7500 = 60,000 kB/ 8 bytes for double
 
-namespace gbasis {
+namespace chemtools {
 
 /**
  * Device helper function for evaluating a contractions on a single point (corresponding to a single thread).
@@ -73,7 +73,7 @@ __global__ void hadamard_product(double* d_array1, double* d_array2, int numb_ro
  * @param[in] disp Display the output in certain calculations.
  */
 __host__ std::vector<double> evaluate_electron_density_on_cubic(
-    gbasis::IOData& iodata, const double3 klower_bnd, const double* kaxes_col, const int3 knumb_points, const bool disp = false
+    chemtools::IOData& iodata, const double3 klower_bnd, const double* kaxes_col, const int3 knumb_points, const bool disp = false
 );
 
 /**
@@ -86,7 +86,7 @@ __host__ std::vector<double> evaluate_electron_density_on_cubic(
  * @return h_electron_density The electron density evaluated on each point.
  */
 __host__ std::vector<double> evaluate_electron_density_on_any_grid(
-    gbasis::IOData& iodata, const double* h_points, const int knumb_points
+    chemtools::IOData& iodata, const double* h_points, const int knumb_points
     );
 
 /**
@@ -99,8 +99,8 @@ __host__ std::vector<double> evaluate_electron_density_on_any_grid(
  * @return h_electron_density The electron density evaluated on each point.
  */
 __host__ std::vector<double> evaluate_electron_density_on_any_grid_handle(
-    cublasHandle_t& handle, gbasis::IOData& iodata, const double* h_points, const int knumb_points
+    cublasHandle_t& handle, chemtools::IOData& iodata, const double* h_points, const int knumb_points
 );
 
-} // end gbasis
-#endif //GBASIS_CUDA_SRC_EVALUATE_CONTRACTIONS_CUH_
+} // end chemtools
+#endif //CHEMTOOLS_CUDA_SRC_EVALUATE_CONTRACTIONS_CUH_

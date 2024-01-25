@@ -1,15 +1,15 @@
 
 
-#ifndef GBASIS_CUDA_INCLUDE_EVALUATE_KINETIC_DENS_CUH_
-#define GBASIS_CUDA_INCLUDE_EVALUATE_KINETIC_DENS_CUH_
+#ifndef CHEMTOOLS_CUDA_INCLUDE_EVALUATE_KINETIC_DENS_CUH_
+#define CHEMTOOLS_CUDA_INCLUDE_EVALUATE_KINETIC_DENS_CUH_
 
 #include "cublas_v2.h"
 
 #include "iodata.h"
 
-namespace gbasis {
+namespace chemtools {
 __host__ std::vector<double> evaluate_pos_def_kinetic_density_on_any_grid_handle(
-    cublasHandle_t &handle, gbasis::IOData &iodata, const double *h_points, const int knumb_points
+    cublasHandle_t &handle, chemtools::IOData &iodata, const double *h_points, const int knumb_points
 );
 
 /**
@@ -25,12 +25,12 @@ __host__ std::vector<double> evaluate_pos_def_kinetic_density_on_any_grid_handle
  * @return h_kinetic_energy_density The kinetic energy density evaluated on each point.
  */
 __host__ std::vector<double> evaluate_positive_definite_kinetic_density(
-    gbasis::IOData &iodata, const double *h_points, const int knumb_points
+    chemtools::IOData &iodata, const double *h_points, const int knumb_points
 );
 
 
 /**
- * Evaluate the positive definite kinetic energy density on a grid of points.
+ * Evaluate the general kinetic energy density on a grid of points.
  *
  *      t_\alpha(r) = t_+(r) + \alpha \nabla^2 \rho(r)
  *
@@ -43,7 +43,7 @@ __host__ std::vector<double> evaluate_positive_definite_kinetic_density(
  * @return h_gen_kinetic_density The general form of the kinetic energy density evaluated on each point.
  */
 __host__ std::vector<double> evaluate_general_kinetic_energy_density(
-    gbasis::IOData &iodata, const double alpha, const double *h_points, const int knumb_points
+    chemtools::IOData &iodata, const double alpha, const double *h_points, const int knumb_points
 );
-} // gbasis
-#endif //GBASIS_CUDA_INCLUDE_EVALUATE_KINETIC_DENS_CUH_
+} // chemtools
+#endif //CHEMTOOLS_CUDA_INCLUDE_EVALUATE_KINETIC_DENS_CUH_

@@ -1,11 +1,11 @@
-#ifndef GBASIS_CUDA_INCLUDE_EVALUATE_DENSBASED_CUH_
-#define GBASIS_CUDA_INCLUDE_EVALUATE_DENSBASED_CUH_
+#ifndef CHEMTOOLS_CUDA_INCLUDE_EVALUATE_DENSBASED_CUH_
+#define CHEMTOOLS_CUDA_INCLUDE_EVALUATE_DENSBASED_CUH_
 
 #include <vector>
 
 #include "iodata.h"
 
-namespace gbasis {
+namespace chemtools {
 
 /**
  * Compute the norm of the rows of a three-dimensional vector (e.g. the gradient) using GPU.
@@ -29,7 +29,7 @@ __host__ std::vector<double> compute_norm_of_3d_vector(double *h_points, int knu
  * @return Return the reduced density gradient.
  */
 __host__ std::vector<double> compute_reduced_density_gradient(
-    gbasis::IOData& iodata, const double* h_points, const int knumb_points
+    chemtools::IOData& iodata, const double* h_points, const int knumb_points
     );
 
 /**
@@ -45,7 +45,7 @@ __host__ std::vector<double> compute_reduced_density_gradient(
  * @return Return the reduced density gradient.
  */
 __host__ std::vector<double> compute_weizsacker_ked(
-    gbasis::IOData& iodata, const double* h_points, const int knumb_points
+    chemtools::IOData& iodata, const double* h_points, const int knumb_points
 );
 
 /**
@@ -57,7 +57,7 @@ __host__ std::vector<double> compute_weizsacker_ked(
  * @return Return the Thomas-Fermi kinetic energy density
  */
 __host__ std::vector<double> compute_thomas_fermi_energy_density(
-    gbasis::IOData& iodata, const double* h_points, int knumb_points
+    chemtools::IOData& iodata, const double* h_points, int knumb_points
 );
 
 /**
@@ -70,7 +70,7 @@ __host__ std::vector<double> compute_thomas_fermi_energy_density(
  * @return Return the general gradient expansion approximation of kinetic energy density
  */
 __host__ std::vector<double> compute_ked_gradient_expansion_general(
-    gbasis::IOData& iodata, const double* h_points, int knumb_points, double a, double b
+    chemtools::IOData& iodata, const double* h_points, int knumb_points, double a, double b
 );
 
 /**
@@ -83,7 +83,7 @@ __host__ std::vector<double> compute_ked_gradient_expansion_general(
  * @return Return general(ish) kinetic energy density.
  */
 __host__ std::vector<double> compute_general_ked(
-    gbasis::IOData& iodata, const double* h_points, int knumb_points, double a
+    chemtools::IOData& iodata, const double* h_points, int knumb_points, double a
 );
 
 /**
@@ -95,7 +95,7 @@ __host__ std::vector<double> compute_general_ked(
  * @return Return Shannon information density
  */
 __host__ std::vector<double> compute_shannon_information_density(
-    gbasis::IOData& iodata, const double* h_points, int knumb_points
+    chemtools::IOData& iodata, const double* h_points, int knumb_points
 );
 }
-#endif //GBASIS_CUDA_INCLUDE_EVALUATE_DENSBASED_CUH_
+#endif //CHEMTOOLS_CUDA_INCLUDE_EVALUATE_DENSBASED_CUH_

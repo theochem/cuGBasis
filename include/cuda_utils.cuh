@@ -1,5 +1,5 @@
-#ifndef GBASIS_CUDA_INCLUDE_CUDA_UTILS_CUH_
-#define GBASIS_CUDA_INCLUDE_CUDA_UTILS_CUH_
+#ifndef CHEMTOOLS_CUDA_INCLUDE_CUDA_UTILS_CUH_
+#define CHEMTOOLS_CUDA_INCLUDE_CUDA_UTILS_CUH_
 
 #include <iostream>
 
@@ -8,7 +8,7 @@
 
 #define CUDART_PI_D 3.141592653589793238462643383279502884197169
 
-namespace gbasis {
+namespace chemtools {
 
 /// Copy arrays
 __global__ void copy_arrays(double* d_output, double* d_input, int numb_elements);
@@ -93,4 +93,4 @@ __host__ static const char* cublas_check_errors(cublasStatus_t error)
 
 
 }
-#endif //GBASIS_CUDA_INCLUDE_CUDA_UTILS_CUH_
+#endif //CHEMTOOLS_CUDA_INCLUDE_CUDA_UTILS_CUH_

@@ -1,5 +1,5 @@
-#ifndef GBASIS_CUDA_INCLUDE_UTILS_H_
-#define GBASIS_CUDA_INCLUDE_UTILS_H_
+#ifndef CHEMTOOLS_CUDA_INCLUDE_UTILS_H_
+#define CHEMTOOLS_CUDA_INCLUDE_UTILS_H_
 
 #include <array>
 #include <cmath>
@@ -8,7 +8,7 @@
 
 #include "./contracted_shell.h"
 
-namespace gbasis {
+namespace chemtools {
 
 typedef std::array<double, 3> CoordsXYZ;
 typedef std::array<double, 9> ThreeDMatrixColOrder;
@@ -98,5 +98,5 @@ inline pybind11::array_t<double, pybind11::array::c_style | pybind11::array::for
   seq_ptr.release();
   return pybind11::array(size, data, capsule);
 }
-} // end gbasis
-#endif //GBASIS_CUDA_INCLUDE_UTILS_H_
+} // end chemtools
+#endif //CHEMTOOLS_CUDA_INCLUDE_UTILS_H_

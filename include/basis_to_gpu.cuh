@@ -1,12 +1,12 @@
-#ifndef GBASIS_CUDA_INCLUDE_BASIS_TO_GPU_H_
-#define GBASIS_CUDA_INCLUDE_BASIS_TO_GPU_H_
+#ifndef CHEMTOOLS_CUDA_INCLUDE_BASIS_TO_GPU_H_
+#define CHEMTOOLS_CUDA_INCLUDE_BASIS_TO_GPU_H_
 
 #include "contracted_shell.h"
 // Stores constant memory for the NVIDIA GPU.
 
 extern __constant__ double g_constant_basis[7500];
 
-namespace gbasis {
+namespace chemtools {
 /**
  * Puts molecular basis into constant memory of the NVIDIA GPU as a straight array. Useful when one
  *  just wants to iterate through the array in a row fashion, e.g. evaluating electron density/contraction array.
@@ -31,7 +31,7 @@ namespace gbasis {
  *     atom_coord_z |  K2 | 4B Blank |  angmom_2 | exponent_1 | ... | exponent_K2 | coeff_1 | same pattern repeat...
  */
 __host__ void add_mol_basis_to_constant_memory_array(
-    const gbasis::MolecularBasis& basis, bool do_segmented_basis = false, const bool disp = false);
+    const chemtools::MolecularBasis& basis, bool do_segmented_basis = false, const bool disp = false);
 
 /**
  * Puts molecular basis into constant memory of the NVIDIA GPU as a straight array with consideration
@@ -51,6 +51,6 @@ __host__ void add_mol_basis_to_constant_memory_array(
  *      To reach *atom_coord_x, it is precisely the index 1 + 2 * N.
  *
  */
-__host__ void add_mol_basis_to_constant_memory_array_access(gbasis::MolecularBasis basis);
+__host__ void add_mol_basis_to_constant_memory_array_access(chemtools::MolecularBasis basis);
 }
-#endif //GBASIS_CUDA_INCLUDE_BASIS_TO_GPU_H_
+#endif //CHEMTOOLS_CUDA_INCLUDE_BASIS_TO_GPU_H_

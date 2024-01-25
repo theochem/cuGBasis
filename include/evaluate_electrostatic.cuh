@@ -1,9 +1,9 @@
-#ifndef GBASIS_CUDA_INCLUDE_EVALUATE_ELECTROSTATIC_H_
-#define GBASIS_CUDA_INCLUDE_EVALUATE_ELECTROSTATIC_H_
+#ifndef CHEMTOOLS_CUDA_INCLUDE_EVALUATE_ELECTROSTATIC_H_
+#define CHEMTOOLS_CUDA_INCLUDE_EVALUATE_ELECTROSTATIC_H_
 
 #include "./iodata.h"
 
-namespace gbasis {
+namespace chemtools {
 /**
  * Calculates point charge integrals integrals from basis set stored in constant memory.
  *
@@ -35,7 +35,7 @@ __global__ void compute_point_charge_integrals(
  * @notes The point charge integrals uses the GPU. The one rdm hadamard product also uses the GPU.
  */
 __host__ std::vector<double> compute_electrostatic_potential_over_points(
-    gbasis::IOData &iodata, double *gridm, int knumb_pts, const double screen_tol=1e-11, const bool disp = false);
+    chemtools::IOData &iodata, double *gridm, int knumb_pts, const double screen_tol=1e-11, const bool disp = false);
 
 }
-#endif //GBASIS_CUDA_INCLUDE_EVALUATE_ELECTROSTATIC_H_
+#endif //CHEMTOOLS_CUDA_INCLUDE_EVALUATE_ELECTROSTATIC_H_

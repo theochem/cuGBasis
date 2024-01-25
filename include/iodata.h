@@ -1,8 +1,8 @@
 /**
  * @file Responsible for wrapping around IOData.
  */
-#ifndef GBASIS_CUDA_INCLUDE_IODATA_H_
-#define GBASIS_CUDA_INCLUDE_IODATA_H_
+#ifndef CHEMTOOLS_CUDA_INCLUDE_IODATA_H_
+#define CHEMTOOLS_CUDA_INCLUDE_IODATA_H_
 
 #include <pybind11/pybind11.h>
 #include <string>
@@ -11,13 +11,13 @@
 
 namespace py = pybind11;
 
-namespace gbasis {
+namespace chemtools {
 /**
  * IOData object that holds the atomic orbital, molecular obitals and one_rdm information.
  */
 class IOData {
  private:
-  gbasis::MolecularBasis orbital_basis_;
+  chemtools::MolecularBasis orbital_basis_;
   double* coord_atoms_;      // Row-order
   int natoms;
   int* charges_;             // Charge of atom.
@@ -30,7 +30,7 @@ class IOData {
 
 
  public:
-  IOData(gbasis::MolecularBasis basis, double* coord, int natoms,
+  IOData(chemtools::MolecularBasis basis, double* coord, int natoms,
          double* one_rdm, int shape, double* coeffs, double* occs, int* charges,
          double* mo_one_rdm) :
       orbital_basis_(basis), coord_atoms_(coord), natoms(natoms), one_rdm_(one_rdm), one_rdm_shape_(shape),
@@ -97,6 +97,6 @@ class IOData {
  * @return MolecularBasis object holding the molecular basis set information.
  */
 IOData get_molecular_basis_from_fchk(const std::string& fchk_file_path, bool disp=false);
-} // end gbasis
+} // end chemtools
 
-#endif //GBASIS_CUDA_INCLUDE_IODATA_H_
+#endif //CHEMTOOLS_CUDA_INCLUDE_IODATA_H_

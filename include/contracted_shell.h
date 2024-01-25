@@ -1,11 +1,11 @@
-#ifndef GBASIS_CUDA_CONTRACTED_SHELL_H
-#define GBASIS_CUDA_CONTRACTED_SHELL_H
+#ifndef CHEMTOOLS_CUDA_CONTRACTED_SHELL_H
+#define CHEMTOOLS_CUDA_CONTRACTED_SHELL_H
 
 #include <array>
 #include <assert.h>
 #include <vector>
 
-namespace gbasis {
+namespace chemtools {
 struct GeneralizedContractionShell {
   std::vector<int>                 angmoms;     // Angular momentum are either 0, 1, 2, -2, 3, -3 (Gaussian FHCK)
   std::array<double, 3>            coordinate;
@@ -71,6 +71,6 @@ class MolecularBasis {
     return numb;
   }
 };
-} // end gbasis
+} // end CHEMTOOLS
 
-#endif //GBASIS_CUDA_CONTRACTED_SHELL_H
+#endif //CHEMTOOLS_CUDA_CONTRACTED_SHELL_H
