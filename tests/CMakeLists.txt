@@ -3,8 +3,8 @@ set(CATCH_INCLUDE_DIR .)
 add_library(Catch INTERFACE)
 target_include_directories(Catch INTERFACE ${CATCH_INCLUDE_DIR})
 
-# Find gbasis_cuda_lib
-find_package(gbasis_cuda_lib)
+# Find chemtools_cuda_lib
+find_package(chemtools_cuda_lib)
 set(TEST_SOURCES
         test_densbased.cu
         test_gradient.cu
@@ -16,4 +16,4 @@ set(TEST_SOURCES
 # Add test executable
 add_executable (tests main_test.cu catch.hpp ${TEST_SOURCES})
 target_link_libraries(tests PRIVATE pybind11::embed)
-target_link_libraries(tests PRIVATE gbasis_cuda_lib)
+target_link_libraries(tests PRIVATE chemtools_cuda_lib)
