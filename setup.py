@@ -123,7 +123,10 @@ class CMakeBuild(build_ext):
             build_temp.mkdir(parents=True)
         print("Hello ", ["cmake", ext.sourcedir] + cmake_args)
         print(["cmake", "--build", "."] + build_args)
-	
+        # Don't compile the C++ tests
+        cmake_args.append("-DDONT_COMPILE_TESTS=ON")
+        # Turn on linking to python
+        cmake_args.append("-DLINK_TO_PYTHON=ON")
         subprocess.run(
             ["cmake", ext.sourcedir] + cmake_args, cwd=build_temp, check=True
         )

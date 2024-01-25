@@ -99,15 +99,18 @@ cmake -S . -B ./out/build/ -DCUDACXX=/some/path/bin/nvcc
 [here](https://eigen.tuxfamily.org/dox/TopicCMakeGuide.html) for more information.
 ```bash
 # if pip:
-export CMAKE_PREFIX_PATH="$CMAKE_PREFIX_PATH:/opt/eigen/3.3" pip install -v .
+CMAKE_PREFIX_PATH="$CMAKE_PREFIX_PATH:/opt/eigen/3.3" pip install -v .
 # if cmake:
 cmake -S . -B ./out/build/ -DEigen3_DIR=/some/path/share/eigen3/cmake/
 ```
-4. If you need to set the correct GPU architecture (e.g. compute capabiltiy 6.0), then change the following line in `CMakeLists.txt`.
-   Not setting the correct GPU architecture will result in an error using the constant memory.
+4. If you need to set the correct GPU architecture (e.g. compute capability 6.0), then add the following
+Not setting the correct GPU architecture will result in an error using the constant memory. Note that if cmake is
+greater than 3.24, then if it isn't provided by the user, then CMake will automatically find the correct CUDA architecture.
 ```bash
-#Change set_property(TARGET chemtools_cuda_lib PROPERTY CUDA_ARCHITECTURES native) to
-set_property(TARGET chemtools_cuda_lib PROPERTY CUDA_ARCHITECTURES 60)
+# if pip:
+CMAKE_CUDA_ARCHITECTURES=60 pip install -v .
+# if cmake:
+cmake -S . -B ./out/build/ -DCMAKE_CUDA_ARCHITECTURES=60
 ```
 
 ## How To Use

@@ -1,7 +1,6 @@
 cmake_minimum_required(VERSION 3.16)
 project(chemtools_cuda)
 enable_language(CXX)
-#set(CMAKE_CUDA_COMPILER /usr/local/cuda/bin/nvcc)
 # TODO: Give command line option for CMAKE to find nvcc!
 enable_language(CUDA)
 set(CMAKE_CUDA_STANDARD 14)
@@ -11,22 +10,14 @@ find_package(Eigen3 3.3 REQUIRED NO_MODULE)
 message(${EIGEN3_INCLUDE_DIR})
 # If user wants to add the path to EIGEN themselves then they should do something like so:
 #   TODO: Give a command line option for CMAKE to do so.
-#include_directories(Eigen3 /home/ali-tehrani/miniconda2/envs/py37/include/eigen3/)
 
 # Add pybind11 header files
 # Finding Python Needed to do this for CLION project for my own computer.
 set(PYBIND11_FINDPYTHON ON)
 SET(PYBIND11_PYTHON_VERSION 3.7)
 # TODO: GIve a command-line option for CMAKE to find Python
-#set(Python_ROOT_DIR  /home/ali-tehrani/miniconda2/envs/py37/)
 find_package(Python COMPONENTS Interpreter Development NumPy REQUIRED)
 add_subdirectory(./libs/pybind11)
-
-# Add Thrust
-#message("Install Thrust")
-#add_subdirectory(./libs/thrust)
-#thrust_create_target(Thrust)
-
 
 # Create a CUDA library chemtools_cuda using nvcc compiler that codes the entire CUDA/C++.
 set(SOURCES
@@ -60,16 +51,28 @@ set(HEADERS
         include/evaluate_laplacian.cuh
 		include/evaluate_kinetic_dens.cuh
 		include/evaluate_densbased.cuh)
-message("PRINT2 ${CUDA_NVCC_FLAGS}")
 find_package(CUDAToolkit REQUIRED)  # The point of this is to call CUDA code from C++ but without including CUDA code.
                                     #  see stackexchange - "linking of cuda library in cmake"
-message("${CUDAToolkit_LIBRARY_DIR}")
 
 add_library(chemtools_cuda_lib SHARED ${HEADERS} ${SOURCES})
 set_target_properties(chemtools_cuda_lib PROPERTIES CUDA_SEPARABLE_COMPILATION ON)
-#set_property(TARGET chemtools_cuda_lib PROPERTY CUDA_ARCHITECTURES native)
+# If the user didn't define CUDA architecture
+if("${CMAKE_CUDA_ARCHITECTURES}" STREQUAL "")
+	# If cmake version is greater than 3.24, automatically find the right CUDA Architecture
+	if("$ENV{CMAKE_CUDA_ARCHITECTURES}" STREQUAL "")
+		if(CMAKE_VERSION VERSION_GREATER_EQUAL "3.24")
+			set_property(TARGET chemtools_cuda_lib PROPERTY CUDA_ARCHITECTURES native)
+		endif()
+	else()
+		set_property(TARGET chemtools_cuda_lib PROPERTY CUDA_ARCHITECTURES $ENV{CMAKE_CUDA_ARCHITECTURES})
+	endif ()
+else()
+	# If the user did define the CUDA Archiecture then add it here.
+	set_property(TARGET chemtools_cuda_lib PROPERTY CUDA_ARCHITECTURES ${CMAKE_CUDA_ARCHITECTURES})
+endif()
+
 target_compile_options(chemtools_cuda_lib PRIVATE $<$<COMPILE_LANGUAGE:CUDA>:
-        -rdc=true --expt-relaxed-constexpr
+        -rdc=true --expt-relaxed-constexpr -v
 	>) # -rdc=true  std=c++14 isn't needed since CMAKE_CUDA_STANDARD already set Debuging -G -g turns off optimization, -O3 turns on optmization, -gencode=arch=compute_35,code=sm_35
 # --expt-relaxed-constexpr is needed for Boys_function.h to work.
 target_link_libraries(chemtools_cuda_lib PRIVATE ${CUDA_cudadevrt_LIBRARY})
@@ -78,9 +81,17 @@ target_link_libraries(chemtools_cuda_lib PRIVATE CUDA::curand)
 target_link_libraries(chemtools_cuda_lib PUBLIC pybind11::embed) # Used to call IODATA to C++\
 target_link_libraries(chemtools_cuda_lib PUBLIC Eigen3::Eigen)
 
-# Link the chemtools_cuda library to pybind11
-pybind11_add_module(chemtools_cuda src/pybind.cpp)
-target_link_libraries(chemtools_cuda PRIVATE chemtools_cuda_lib)
-target_link_libraries(chemtools_cuda PRIVATE CUDA::cublas)
+# Link the chemtools_cuda library to pybind11,
+set(${LINK_TO_PYTHON} OFF CACHE BOOL "Link to python")  # This option is set to True in setup.py
+if(${LINK_TO_PYTHON})
+	pybind11_add_module(chemtools_cuda src/pybind.cpp)
+	target_link_libraries(chemtools_cuda PRIVATE chemtools_cuda_lib)
+	target_link_libraries(chemtools_cuda PRIVATE CUDA::cublas)
+endif()
 
-add_subdirectory(tests)
+# Compilation of the tests, not needed e.g. if `LINK_TO_PYTHON` IS True/ON
+set(${DONT_COMPILE_TESTS} OFF CACHE BOOL "Don't compile the tests")
+set(COMPILE_TESTS NOT ${DONT_COMPILE_TESTS})
+if(${COMPILE_TESTS})
+	add_subdirectory(tests)
+endif()
