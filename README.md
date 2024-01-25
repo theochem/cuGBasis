@@ -4,9 +4,9 @@
 [![GitHub contributors](https://img.shields.io/github/contributors/qtchem/gbasis_cuda.svg)](https://github.com/qtchem/gbasis_cuda/graphs/contributors)
 
 ## About
-GBasisCuda is a free, and open-source C++/CUDA and Python library for computing various quantities efficiently using NVIDIA GPU's 
-in quantum chemistry related to the electron density. It is highly-optimized code built around the GPU
-and compiler-specific optimization.
+ChemToolsCUDA is a free, and open-source C++/CUDA and Python library for computing various quantities efficiently 
+using NVIDIA GPU's in quantum chemistry related to the electron density. It is highly-optimized code built around 
+the GPU and compiler-specific optimization.
 
 It depends on reading Gaussian format check-point files (.fchk) using IOData and supports up-to g-type orbitals. 
 The user can use [IOData](https://www.github.com/theochem/iodata) to convert various file-types to fchk format.
@@ -15,15 +15,24 @@ To report any issues or ask questions, either [open an issue](
 https://github.com/qtchem/gbasis_cuda/issues/new) or email [qcdevs@gmail.com]().
 
 ### Features
-GbasisCuda can compute the following quantites over the GPU for s,p,d,f Gaussian orbitals over any size of grid-points:
+ChemToolsCUDA can compute the following quantites over the GPU for (up-to g-type) Gaussian orbitals 
+over any size of grid-points:
 
 - Molecular orbitals
 - Electron density
 - Gradient of electron density
 - Laplacian of electron density
-- Positive definite kinetic energy density
-- General kinetic energy density
-- Electrostatic potential 
+- Electrostatic potential
+- Compute density-based descriptors:
+  - Reduced density gradient
+  - Shannon information density
+  - Norm of gradient
+- Compute various kinetic energy densities:
+  - Positive definite kinetic energy density
+  - General kinetic energy density
+  - Von Weizsacker kinetic Energy Density
+  - Thomas-Fermi kinetic energy density.
+  - General gradient expansion approximation of kinetic energy density
 
 ## Requirements
 
@@ -67,28 +76,39 @@ make -C ./out/build/
 ./out/build/tests/tests  # Run the C++/CUDA tests
 ```
 
-### Building with CMake
+### Installation problems
 
 The following can help with compiling this package
 
-1. If CUBLAS, CURAND are not found, add the following flag to the correct path
+1. If CUBLAS, CURAND are not found, add the following flag to the correct path. 
+See [here](https://cmake.org/cmake/help/latest/module/FindCUDAToolkit.html) for more information on how to modify CMake.
 ```bash 
+# If pip:
+CUDATOOLkit_ROOT=/some/path pip install -v .
+# If cmake:
 cmake -S . -B ./out/build/ -DCUDAToolkit_ROOT=/some/path 
 ```
 2. If NVCC compiler is not found, add the following flag to correct path
 ```bash
+# If pip:
+CUDACXX=/some/path/bin/nvcc pip install -v .
+# If cmake:
 cmake -S . -B ./out/build/ -DCUDACXX=/some/path/bin/nvcc
 ```
-3. If Eigen is not found, add the following flag to the path containing the Eigen3*.cmake files
+3. If Eigen is not found, add the following flag to the path containing the Eigen3*.cmake files. See
+[here](https://eigen.tuxfamily.org/dox/TopicCMakeGuide.html) for more information.
 ```bash
+# if pip:
+export CMAKE_PREFIX_PATH="$CMAKE_PREFIX_PATH:/opt/eigen/3.3" pip install -v .
+# if cmake:
 cmake -S . -B ./out/build/ -DEigen3_DIR=/some/path/share/eigen3/cmake/
 ```
-4. If you need to set the correct GPU architecture (e.g. compute capabiltiy 6.0), then change the following line in `CMakeLists.txt`
+4. If you need to set the correct GPU architecture (e.g. compute capabiltiy 6.0), then change the following line in `CMakeLists.txt`.
+   Not setting the correct GPU architecture will result in an error using the constant memory.
 ```bash
 #Change set_property(TARGET gbasis_cuda_lib PROPERTY CUDA_ARCHITECTURES native) to
 set_property(TARGET gbasis_cuda_lib PROPERTY CUDA_ARCHITECTURES 60)
 ```
-Not setting the correct GPU architecture will result in an error using the constant memory.
 
 ## How To Use
 ```python
