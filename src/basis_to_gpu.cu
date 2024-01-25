@@ -12,8 +12,8 @@
 __constant__ double g_constant_basis[7500];
 
 
-__host__ void gbasis::add_mol_basis_to_constant_memory_array(
-    const gbasis::MolecularBasis& basis, bool do_segmented_basis, const bool disp) {
+__host__ void chemtools::add_mol_basis_to_constant_memory_array(
+    const chemtools::MolecularBasis& basis, bool do_segmented_basis, const bool disp) {
   /**
    * The following explains how memory is placed is with constant memory.
    * 4 byte blank means the previous number was a integer (since its 4 bytes and this is a double array).
@@ -42,7 +42,7 @@ __host__ void gbasis::add_mol_basis_to_constant_memory_array(
   if (fabs(h_information[0]) < 1e-8){
     throw std::runtime_error("Number of contracted shell is zero.");
   }
-  for(gbasis::GeneralizedContractionShell shell : basis.shells) {
+  for(chemtools::GeneralizedContractionShell shell : basis.shells) {
     if (do_segmented_basis){
       // Go through segmented shell.
       for(int i = 0; i < shell.angmoms.size(); i++) {
@@ -115,14 +115,14 @@ __host__ void gbasis::add_mol_basis_to_constant_memory_array(
   // printf("\n Copy information over to constant memory. \n");
   cudaError_t _m_cudaStat = cudaMemcpyToSymbol(g_constant_basis, h_info, number_of_bytes, 0, cudaMemcpyHostToDevice);
   if (_m_cudaStat != cudaSuccess) {
-    gbasis::cuda_check_errors(_m_cudaStat);
+    chemtools::cuda_check_errors(_m_cudaStat);
     throw std::runtime_error("Copying to constant memory did not work.");
   }
 //  printf(" Stoping \n ");
 }
 
 
-__host__ void gbasis::add_mol_basis_to_constant_memory_array_access(gbasis::MolecularBasis basis) {
+__host__ void chemtools::add_mol_basis_to_constant_memory_array_access(chemtools::MolecularBasis basis) {
     /**
      * Basis set information is stored in constant memory as arrays.
      */

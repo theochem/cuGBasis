@@ -44,7 +44,7 @@ TEST_CASE( "Test Derivative of Contractions Against gbasis", "[evaluate_contract
         "./tests/data/qm9_000104_PBE1PBE_pcS-3.fchk"
     );
     std::cout << "FCHK FILE %s \n" << fchk_file << std::endl;
-    gbasis::IOData iodata = gbasis::get_molecular_basis_from_fchk(fchk_file);
+    chemtools::IOData iodata = chemtools::get_molecular_basis_from_fchk(fchk_file);
 
     // Gemerate random grid.
     int numb_pts = 10000;
@@ -56,14 +56,14 @@ TEST_CASE( "Test Derivative of Contractions Against gbasis", "[evaluate_contract
     std::generate(points.begin(), points.end(), gen);
 
     // Calculate Gradient
-    gbasis::add_mol_basis_to_constant_memory_array(iodata.GetOrbitalBasis(), false, false);
-    std::vector<double> gradient_result = gbasis::evaluate_contraction_derivatives(iodata, points.data(), numb_pts);
+    chemtools::add_mol_basis_to_constant_memory_array(iodata.GetOrbitalBasis(), false, false);
+    std::vector<double> gradient_result = chemtools::evaluate_contraction_derivatives(iodata, points.data(), numb_pts);
 
     // COnvert them (with copy) to python objects so that they can be transfered.
     pybind11::array_t<double, pybind11::array::c_style | pybind11::array::forcecast>
-        py_result = gbasis::as_pyarray_from_vector(gradient_result);
+        py_result = chemtools::as_pyarray_from_vector(gradient_result);
     pybind11::array_t<double, pybind11::array::c_style | pybind11::array::forcecast>
-        py_points = gbasis::as_pyarray_from_vector(points);
+        py_points = chemtools::as_pyarray_from_vector(points);
 
     const int nbasis = iodata.GetOrbitalBasis().numb_basis_functions();
 
@@ -134,7 +134,7 @@ TEST_CASE( "Test Gradient of Electron Density Against gbasis", "[evaluate_electr
         "./tests/data/qm9_000104_PBE1PBE_pcS-3.fchk"
     );
     std::cout << "FCHK FILE %s \n" << fchk_file << std::endl;
-    gbasis::IOData iodata = gbasis::get_molecular_basis_from_fchk(fchk_file);
+    chemtools::IOData iodata = chemtools::get_molecular_basis_from_fchk(fchk_file);
 
     // Gemerate random grid.
     int numb_pts = 700000;
@@ -147,15 +147,15 @@ TEST_CASE( "Test Gradient of Electron Density Against gbasis", "[evaluate_electr
 
     // Calculate Gradient
     printf("Calculate Gradient \n");
-    gbasis::add_mol_basis_to_constant_memory_array(iodata.GetOrbitalBasis(), false, false);
-    std::vector<double> gradient_result = gbasis::evaluate_electron_density_gradient(iodata, points.data(), numb_pts);
+    chemtools::add_mol_basis_to_constant_memory_array(iodata.GetOrbitalBasis(), false, false);
+    std::vector<double> gradient_result = chemtools::evaluate_electron_density_gradient(iodata, points.data(), numb_pts);
     printf("Done Gradient \n");
 
     // COnvert them (with copy) to python objects so that they can be transfered.
     pybind11::array_t<double, pybind11::array::c_style | pybind11::array::forcecast>
-        py_result = gbasis::as_pyarray_from_vector(gradient_result);
+        py_result = chemtools::as_pyarray_from_vector(gradient_result);
     pybind11::array_t<double, pybind11::array::c_style | pybind11::array::forcecast>
-        py_points = gbasis::as_pyarray_from_vector(points);
+        py_points = chemtools::as_pyarray_from_vector(points);
 
     auto locals = py::dict("points"_a = py_points,
                            "true_result"_a = py_result,
@@ -216,7 +216,7 @@ TEST_CASE( "Test Gradient of Electron Density Against gbasis (Col Order)", "[eva
         "./tests/data/qm9_000104_PBE1PBE_pcS-3.fchk"
     );
     std::cout << "FCHK FILE %s \n" << fchk_file << std::endl;
-    gbasis::IOData iodata = gbasis::get_molecular_basis_from_fchk(fchk_file);
+    chemtools::IOData iodata = chemtools::get_molecular_basis_from_fchk(fchk_file);
 
     // Gemerate random grid.
     int numb_pts = 700000;
@@ -229,16 +229,16 @@ TEST_CASE( "Test Gradient of Electron Density Against gbasis (Col Order)", "[eva
 
     // Calculate Gradient
     printf("Calculate Gradient \n");
-    gbasis::add_mol_basis_to_constant_memory_array(iodata.GetOrbitalBasis(), false, false);
-    std::vector<double> gradient_result = gbasis::evaluate_electron_density_gradient(iodata, points.data(), numb_pts,
+    chemtools::add_mol_basis_to_constant_memory_array(iodata.GetOrbitalBasis(), false, false);
+    std::vector<double> gradient_result = chemtools::evaluate_electron_density_gradient(iodata, points.data(), numb_pts,
                                                                                      false);
     printf("Done Gradient \n");
 
     // COnvert them (with copy) to python objects so that they can be transfered.
     pybind11::array_t<double, pybind11::array::c_style | pybind11::array::forcecast>
-        py_result = gbasis::as_pyarray_from_vector(gradient_result);
+        py_result = chemtools::as_pyarray_from_vector(gradient_result);
     pybind11::array_t<double, pybind11::array::c_style | pybind11::array::forcecast>
-        py_points = gbasis::as_pyarray_from_vector(points);
+        py_points = chemtools::as_pyarray_from_vector(points);
 
     auto locals = py::dict("points"_a = py_points,
                            "true_result"_a = py_result,

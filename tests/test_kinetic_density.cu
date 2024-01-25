@@ -43,7 +43,7 @@ TEST_CASE( "Test Positive Definite Kinetic Energy Density Against gbasis", "[eva
         "./tests/data/qm9_000104_PBE1PBE_pcS-3.fchk"
     );
     std::cout << "FCHK FILE %s \n" << fchk_file << std::endl;
-    gbasis::IOData iodata = gbasis::get_molecular_basis_from_fchk(fchk_file);
+    chemtools::IOData iodata = chemtools::get_molecular_basis_from_fchk(fchk_file);
 
     // Gemerate random grid.
     int numb_pts = 750000;
@@ -55,16 +55,16 @@ TEST_CASE( "Test Positive Definite Kinetic Energy Density Against gbasis", "[eva
     std::generate(points.begin(), points.end(), gen);
 
     // Calculate Kinetic Energy
-    gbasis::add_mol_basis_to_constant_memory_array(iodata.GetOrbitalBasis(), false, false);
-    std::vector<double> kinetic_dens_result = gbasis::evaluate_positive_definite_kinetic_density(
+    chemtools::add_mol_basis_to_constant_memory_array(iodata.GetOrbitalBasis(), false, false);
+    std::vector<double> kinetic_dens_result = chemtools::evaluate_positive_definite_kinetic_density(
         iodata, points.data(), numb_pts
         );
 
     // COnvert them (with copy) to python objects so that they can be transfered.
     pybind11::array_t<double, pybind11::array::c_style | pybind11::array::forcecast>
-        py_result = gbasis::as_pyarray_from_vector(kinetic_dens_result);
+        py_result = chemtools::as_pyarray_from_vector(kinetic_dens_result);
     pybind11::array_t<double, pybind11::array::c_style | pybind11::array::forcecast>
-        py_points = gbasis::as_pyarray_from_vector(points);
+        py_points = chemtools::as_pyarray_from_vector(points);
 
     const int nbasis = iodata.GetOrbitalBasis().numb_basis_functions();
 
@@ -125,7 +125,7 @@ TEST_CASE( "Test General Kinetic Energy Density Against gbasis", "[evaluate_gene
         "./tests/data/qm9_000104_PBE1PBE_pcS-3.fchk"
     );
     std::cout << "FCHK FILE %s \n" << fchk_file << std::endl;
-    gbasis::IOData iodata = gbasis::get_molecular_basis_from_fchk(fchk_file);
+    chemtools::IOData iodata = chemtools::get_molecular_basis_from_fchk(fchk_file);
 
     // Gemerate random grid.
     int numb_pts = 10000;
@@ -139,16 +139,16 @@ TEST_CASE( "Test General Kinetic Energy Density Against gbasis", "[evaluate_gene
     // Calculate General Kinetic Energy at alpha = 0.5
     std::uniform_real_distribution<double> alpha_gen {-5, 5};
     double alpha = alpha_gen(merseene_engine);
-    gbasis::add_mol_basis_to_constant_memory_array(iodata.GetOrbitalBasis(), false, false);
-    std::vector<double> laplacian_result = gbasis::evaluate_general_kinetic_energy_density(
+    chemtools::add_mol_basis_to_constant_memory_array(iodata.GetOrbitalBasis(), false, false);
+    std::vector<double> laplacian_result = chemtools::evaluate_general_kinetic_energy_density(
         iodata, alpha, points.data(), numb_pts
     );
 
     // COnvert them (with copy) to python objects so that they can be transfered.
     pybind11::array_t<double, pybind11::array::c_style | pybind11::array::forcecast>
-        py_result = gbasis::as_pyarray_from_vector(laplacian_result);
+        py_result = chemtools::as_pyarray_from_vector(laplacian_result);
     pybind11::array_t<double, pybind11::array::c_style | pybind11::array::forcecast>
-        py_points = gbasis::as_pyarray_from_vector(points);
+        py_points = chemtools::as_pyarray_from_vector(points);
 
     const int nbasis = iodata.GetOrbitalBasis().numb_basis_functions();
 

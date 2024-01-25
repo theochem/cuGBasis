@@ -46,7 +46,7 @@ TEST_CASE( "Test Electrostatic Potential", "[evaluate_electrostatic_potential]" 
         //"/home/ali-tehrani/SoftwareProjects/spec_database/tests/data/qm9_000104_PBE1PBE_pcS-3.fchk"
     );
     std::cout << "FCHK FILE %s \n" << fchk_file << std::endl;
-    gbasis::IOData iodata = gbasis::get_molecular_basis_from_fchk(fchk_file);
+    chemtools::IOData iodata = chemtools::get_molecular_basis_from_fchk(fchk_file);
 
     // Gemerate random grid.
     int numb_pts = 1000;
@@ -58,16 +58,16 @@ TEST_CASE( "Test Electrostatic Potential", "[evaluate_electrostatic_potential]" 
     std::generate(points.begin(), points.end(), gen);
 
     // Calculate Gradient
-    gbasis::add_mol_basis_to_constant_memory_array(iodata.GetOrbitalBasis(), true, false);
-    std::vector<double> esp_result = gbasis::compute_electrostatic_potential_over_points(
+    chemtools::add_mol_basis_to_constant_memory_array(iodata.GetOrbitalBasis(), true, false);
+    std::vector<double> esp_result = chemtools::compute_electrostatic_potential_over_points(
         iodata, points.data(), numb_pts
         );
 
     // COnvert them (with copy) to python objects so that they can be transfered.
     pybind11::array_t<double, pybind11::array::c_style | pybind11::array::forcecast>
-        py_result = gbasis::as_pyarray_from_vector(esp_result);
+        py_result = chemtools::as_pyarray_from_vector(esp_result);
     pybind11::array_t<double, pybind11::array::c_style | pybind11::array::forcecast>
-        py_points = gbasis::as_pyarray_from_vector(points);
+        py_points = chemtools::as_pyarray_from_vector(points);
 
     const int nbasis = iodata.GetOrbitalBasis().numb_basis_functions();
 

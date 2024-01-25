@@ -8,17 +8,17 @@
 #include "../include/cuda_utils.cuh"
 
 
-__host__ std::vector<double> gbasis::evaluate_pos_def_kinetic_density_on_any_grid_handle(
-    cublasHandle_t &handle, gbasis::IOData &iodata, const double *h_points, const int knumb_points
+__host__ std::vector<double> chemtools::evaluate_pos_def_kinetic_density_on_any_grid_handle(
+    cublasHandle_t &handle, chemtools::IOData &iodata, const double *h_points, const int knumb_points
 ) {
   // Set cache perference to L1
   cudaFuncSetCacheConfig(
-      gbasis::evaluate_derivatives_contractions_from_constant_memory, cudaFuncCachePreferL1
+      chemtools::evaluate_derivatives_contractions_from_constant_memory, cudaFuncCachePreferL1
   );
 
   // Get the molecular basis from iodata and put it in constant memory of the gpu.
-  const gbasis::MolecularBasis& molecular_basis = iodata.GetOrbitalBasis();
-  //gbasis::add_mol_basis_to_constant_memory_array(molecular_basis, false, false);
+  const chemtools::MolecularBasis& molecular_basis = iodata.GetOrbitalBasis();
+  //chemtools::add_mol_basis_to_constant_memory_array(molecular_basis, false, false);
   int knbasisfuncs = molecular_basis.numb_basis_functions();
 
   // Electron density in global memory and create the handles for using cublas.
@@ -51,8 +51,8 @@ __host__ std::vector<double> gbasis::evaluate_pos_def_kinetic_density_on_any_gri
 
   // Transfer one-rdm from host/cpu memory to device/gpu memory.
   double *d_one_rdm;
-  gbasis::cuda_check_errors(cudaMalloc((double **) &d_one_rdm, knbasisfuncs * knbasisfuncs * sizeof(double)));
-  gbasis::cublas_check_errors(cublasSetMatrix(iodata.GetOneRdmShape(), iodata.GetOneRdmShape(),
+  chemtools::cuda_check_errors(cudaMalloc((double **) &d_one_rdm, knbasisfuncs * knbasisfuncs * sizeof(double)));
+  chemtools::cublas_check_errors(cublasSetMatrix(iodata.GetOneRdmShape(), iodata.GetOneRdmShape(),
                                               sizeof(double), iodata.GetMOOneRDM(),
                                               iodata.GetOneRdmShape(), d_one_rdm, iodata.GetOneRdmShape()));
 
@@ -72,9 +72,9 @@ __host__ std::vector<double> gbasis::evaluate_pos_def_kinetic_density_on_any_gri
     //  Becasue h_points is in column-order and we're slicing based on the number of points that can fit in memory.
     //  Need to slice each (x,y,z) coordinate seperately.
     double *d_points;
-    gbasis::cuda_check_errors(cudaMalloc((double **) &d_points, sizeof(double) * 3 * number_pts_iter));
+    chemtools::cuda_check_errors(cudaMalloc((double **) &d_points, sizeof(double) * 3 * number_pts_iter));
     for (int i_slice = 0; i_slice < 3; i_slice++) {
-      gbasis::cuda_check_errors(cudaMemcpy(&d_points[i_slice * number_pts_iter],
+      chemtools::cuda_check_errors(cudaMemcpy(&d_points[i_slice * number_pts_iter],
                                            &h_points[i_slice * knumb_points + index_to_copy],
                                            sizeof(double) * number_pts_iter,
                                            cudaMemcpyHostToDevice));
@@ -82,11 +82,11 @@ __host__ std::vector<double> gbasis::evaluate_pos_def_kinetic_density_on_any_gri
 
     // Evaluate derivatives of each contraction this is in row-order (3, M, N), where M =number of basis-functions.
     double *d_deriv_contractions;
-    gbasis::cuda_check_errors(cudaMalloc((double **) &d_deriv_contractions,
+    chemtools::cuda_check_errors(cudaMalloc((double **) &d_deriv_contractions,
                                          sizeof(double) * 3 * number_pts_iter * knbasisfuncs));
     dim3 threadsPerBlock(128);
     dim3 grid((number_pts_iter + threadsPerBlock.x - 1) / (threadsPerBlock.x));
-    gbasis::evaluate_derivatives_contractions_from_constant_memory<<<grid, threadsPerBlock>>>(
+    chemtools::evaluate_derivatives_contractions_from_constant_memory<<<grid, threadsPerBlock>>>(
         d_deriv_contractions, d_points, number_pts_iter, knbasisfuncs
     );
 
@@ -96,10 +96,10 @@ __host__ std::vector<double> gbasis::evaluate_pos_def_kinetic_density_on_any_gri
 
     // Allocate memory to hold the matrix-multiplcation between d_one_rdm and each `i`th derivative (i_deriv, M, N)
     double *d_temp_rdm_derivs;
-    gbasis::cuda_check_errors(cudaMalloc((double **) &d_temp_rdm_derivs, sizeof(double) * number_pts_iter * knbasisfuncs));
+    chemtools::cuda_check_errors(cudaMalloc((double **) &d_temp_rdm_derivs, sizeof(double) * number_pts_iter * knbasisfuncs));
     // Allocate device memory for the derivative of the one-electorn rdm column-major order.
     double *d_deriv_rdm;
-    gbasis::cuda_check_errors(cudaMalloc((double **) &d_deriv_rdm, sizeof(double) * number_pts_iter));
+    chemtools::cuda_check_errors(cudaMalloc((double **) &d_deriv_rdm, sizeof(double) * number_pts_iter));
     // Allocate host to transfer it to `h_kinetic_density`
     std::vector<double> h_deriv_rdm(number_pts_iter);
     // For each derivative, calculate the derivative of electron density seperately.
@@ -110,7 +110,7 @@ __host__ std::vector<double> gbasis::evaluate_pos_def_kinetic_density_on_any_gri
       // Matrix multiple one-rdm with the ith derivative of contractions
       double alpha = 1.0;
       double beta = 0.0;
-      gbasis::cublas_check_errors(cublasDgemm(handle, CUBLAS_OP_N, CUBLAS_OP_N,
+      chemtools::cublas_check_errors(cublasDgemm(handle, CUBLAS_OP_N, CUBLAS_OP_N,
                                               number_pts_iter, knbasisfuncs, knbasisfuncs,
                                               &alpha, d_ith_deriv, number_pts_iter,
                                               d_one_rdm, knbasisfuncs, &beta,
@@ -119,14 +119,14 @@ __host__ std::vector<double> gbasis::evaluate_pos_def_kinetic_density_on_any_gri
       // Do a hadamard product with the original contractions.
       dim3 threadsPerBlock2(320);
       dim3 grid2((number_pts_iter * knbasisfuncs + threadsPerBlock.x - 1) / (threadsPerBlock.x));
-      gbasis::hadamard_product<<<grid2, threadsPerBlock2>>>(
+      chemtools::hadamard_product<<<grid2, threadsPerBlock2>>>(
           d_temp_rdm_derivs, d_ith_deriv, knbasisfuncs, number_pts_iter
       );
 
       // Take the sum.
       thrust::device_vector<double> all_ones(sizeof(double) * knbasisfuncs, 1.0);
       double *deviceVecPtr = thrust::raw_pointer_cast(all_ones.data());
-      gbasis::cublas_check_errors(cublasDgemv(handle, CUBLAS_OP_N,
+      chemtools::cublas_check_errors(cublasDgemv(handle, CUBLAS_OP_N,
                                               number_pts_iter, knbasisfuncs,
                                               &alpha, d_temp_rdm_derivs, number_pts_iter, deviceVecPtr, 1, &beta,
                                               d_deriv_rdm, 1));
@@ -134,9 +134,9 @@ __host__ std::vector<double> gbasis::evaluate_pos_def_kinetic_density_on_any_gri
       // Multiply by 0.5
       dim3 threadsPerBlock3(320);
       dim3 grid3((number_pts_iter + threadsPerBlock3.x - 1) / (threadsPerBlock3.x));
-      gbasis::multiply_scalar<<< grid3, threadsPerBlock3>>>(d_deriv_rdm, 0.5, number_pts_iter);
+      chemtools::multiply_scalar<<< grid3, threadsPerBlock3>>>(d_deriv_rdm, 0.5, number_pts_iter);
 
-      gbasis::cuda_check_errors(cudaMemcpy(h_deriv_rdm.data(), d_deriv_rdm,
+      chemtools::cuda_check_errors(cudaMemcpy(h_deriv_rdm.data(), d_deriv_rdm,
                                            sizeof(double) * number_pts_iter, cudaMemcpyDeviceToHost));
 
       // Add to h_laplacian
@@ -162,12 +162,12 @@ __host__ std::vector<double> gbasis::evaluate_pos_def_kinetic_density_on_any_gri
 }
 
 
-__host__ std::vector<double> gbasis::evaluate_positive_definite_kinetic_density(
-    gbasis::IOData &iodata, const double *h_points, const int knumb_points
+__host__ std::vector<double> chemtools::evaluate_positive_definite_kinetic_density(
+    chemtools::IOData &iodata, const double *h_points, const int knumb_points
 ) {
   cublasHandle_t handle;
   cublasCreate(&handle);
-  std::vector<double> kinetic_density = gbasis::evaluate_pos_def_kinetic_density_on_any_grid_handle(
+  std::vector<double> kinetic_density = chemtools::evaluate_pos_def_kinetic_density_on_any_grid_handle(
       handle, iodata, h_points, knumb_points
   );
   cublasDestroy(handle); // cublas handle is no longer needed infact most of
@@ -175,16 +175,16 @@ __host__ std::vector<double> gbasis::evaluate_positive_definite_kinetic_density(
 }
 
 
-__host__ std::vector<double> gbasis::evaluate_general_kinetic_energy_density(
-    gbasis::IOData &iodata, const double alpha, const double *h_points, const int knumb_points
+__host__ std::vector<double> chemtools::evaluate_general_kinetic_energy_density(
+    chemtools::IOData &iodata, const double alpha, const double *h_points, const int knumb_points
 ){
   // Evaluate \nabla^2 \rho
-  std::vector<double> h_laplacian = gbasis::evaluate_laplacian(
+  std::vector<double> h_laplacian = chemtools::evaluate_laplacian(
       iodata, h_points, knumb_points
       );
 
   //  Evaluate t_{+}
-  std::vector<double> h_pos_def_kinetic_energy = gbasis::evaluate_positive_definite_kinetic_density(
+  std::vector<double> h_pos_def_kinetic_energy = chemtools::evaluate_positive_definite_kinetic_density(
       iodata, h_points, knumb_points
       );
 

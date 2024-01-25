@@ -7,10 +7,10 @@ namespace py = pybind11;
 using namespace py::literals;
 
 /// Go over each atom in each direction (x, y, z) and find maximum and minimum and add by the amount.
-std::pair<gbasis::CoordsXYZ, gbasis::CoordsXYZ> gbasis::get_lower_and_upper_bounds(
+std::pair<chemtools::CoordsXYZ, chemtools::CoordsXYZ> chemtools::get_lower_and_upper_bounds(
     const double* coordinates, const int* charges, int natoms, double add_amount) {
-  gbasis::CoordsXYZ lower_bnd = {0., 0., 0.};
-  gbasis::CoordsXYZ upper_bnd = {0., 0., 0.};
+  chemtools::CoordsXYZ lower_bnd = {0., 0., 0.};
+  chemtools::CoordsXYZ upper_bnd = {0., 0., 0.};
 
   // Construct new bounds based on the charges.
   std::vector<std::array<double, 3>> l_bounds_all_atoms;
@@ -120,11 +120,11 @@ std::pair<gbasis::CoordsXYZ, gbasis::CoordsXYZ> gbasis::get_lower_and_upper_boun
       upper_bnd[i] += add_amount;
     }
   }
-  return std::pair<gbasis::CoordsXYZ, gbasis::CoordsXYZ> {lower_bnd, upper_bnd};
+  return std::pair<chemtools::CoordsXYZ, chemtools::CoordsXYZ> {lower_bnd, upper_bnd};
 }
 
 
-gbasis::UniformGrid gbasis::get_grid_from_coordinates_charges(
+chemtools::UniformGrid chemtools::get_grid_from_coordinates_charges(
     const double* coordinates, const int* charges, int natoms, double add_amount
 ){
 
@@ -246,14 +246,14 @@ gbasis::UniformGrid gbasis::get_grid_from_coordinates_charges(
       py_max_coordinate = locals["max_coordinate"].cast<py::array_t<double, py::array::c_style | py::array::forcecast>>();
 
   // Convert them to std::array see utils.h
-  gbasis::CoordsXYZ origin = {py_origin.at(0), py_origin.at(1), py_origin.at(2)};
-  gbasis::CoordsXYZ max_coord = {py_max_coordinate.at(0), py_max_coordinate.at(1), py_max_coordinate.at(2)};
-  gbasis::ThreeDMatrixColOrder axes = {
+  chemtools::CoordsXYZ origin = {py_origin.at(0), py_origin.at(1), py_origin.at(2)};
+  chemtools::CoordsXYZ max_coord = {py_max_coordinate.at(0), py_max_coordinate.at(1), py_max_coordinate.at(2)};
+  chemtools::ThreeDMatrixColOrder axes = {
       py_axes.at(0, 0),
       py_axes.at(1, 0), py_axes.at(2, 0), py_axes.at(0, 1), py_axes.at(1, 1), py_axes.at(2, 1), py_axes.at(0, 2),
       py_axes.at(1, 2), py_axes.at(2, 2)
   };
-  return gbasis::UniformGrid(origin, max_coord, axes);  //  std::make_tuple(origin, max_coord, axes);
+  return chemtools::UniformGrid(origin, max_coord, axes);  //  std::make_tuple(origin, max_coord, axes);
 }
 
 

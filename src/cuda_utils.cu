@@ -8,7 +8,7 @@
 #include <thrust/device_vector.h>
 
 
-__global__ void gbasis::set_identity_row_major(double* d_array, int nrows, int ncols){
+__global__ void chemtools::set_identity_row_major(double* d_array, int nrows, int ncols){
   int x = blockDim.x*blockIdx.x + threadIdx.x;
   int y = blockDim.y*blockIdx.y + threadIdx.y;
   if(x < nrows && y < ncols) {
@@ -19,28 +19,28 @@ __global__ void gbasis::set_identity_row_major(double* d_array, int nrows, int n
   }
 }
 
-__global__ void gbasis::hadamard_product(double* d_array1, double* d_array2, int numb_row, int numb_col) {
+__global__ void chemtools::hadamard_product(double* d_array1, double* d_array2, int numb_row, int numb_col) {
   int global_index = blockIdx.x * blockDim.x + threadIdx.x;
   if(global_index < numb_row * numb_col) {
     d_array1[global_index] *= d_array2[global_index];
   }
 }
 
-__global__ void gbasis::hadamard_product_outplace(double* d_output, double* d_array1, double* d_array2, int numb_row, int numb_col) {
+__global__ void chemtools::hadamard_product_outplace(double* d_output, double* d_array1, double* d_array2, int numb_row, int numb_col) {
   int global_index = blockIdx.x * blockDim.x + threadIdx.x;
   if(global_index < numb_row * numb_col) {
     d_output[global_index] = d_array1[global_index] * d_array2[global_index];
   }
 }
 
-__global__ void gbasis::multiply_scalar(double* d_array, double scalar, int numb_elements) {
+__global__ void chemtools::multiply_scalar(double* d_array, double scalar, int numb_elements) {
   unsigned int global_index = blockIdx.x * blockDim.x + threadIdx.x;
   if(global_index < numb_elements) {
     d_array[global_index] *= scalar;
   }
 }
 
-__global__ void gbasis::hadamard_product_with_vector_along_row_inplace_for_trapezoidal(double* d_array, const double* d_vec, int numb_row, int numb_col) {
+__global__ void chemtools::hadamard_product_with_vector_along_row_inplace_for_trapezoidal(double* d_array, const double* d_vec, int numb_row, int numb_col) {
   int ix = threadIdx.x + blockIdx.x * blockDim.x;
 
   // Maybe it's better to store d_vec elements into shared memory, as to avoid always going to global memory.
@@ -53,14 +53,14 @@ __global__ void gbasis::hadamard_product_with_vector_along_row_inplace_for_trape
   }
 }
 
-__global__ void gbasis::square_root(double* d_array, int numb_elements) {
+__global__ void chemtools::square_root(double* d_array, int numb_elements) {
   int global_index = blockIdx.x * blockDim.x + threadIdx.x;
   if(global_index < numb_elements) {
     d_array[global_index] = std::sqrt(d_array[global_index]);
   }
 }
 
-__global__ void gbasis::pow_inplace(double* d_array, double power, int numb_elements) {
+__global__ void chemtools::pow_inplace(double* d_array, double power, int numb_elements) {
   int global_index = blockIdx.x * blockDim.x + threadIdx.x;
   if(global_index < numb_elements) {
     d_array[global_index] = std::pow(d_array[global_index], power);
@@ -68,7 +68,7 @@ __global__ void gbasis::pow_inplace(double* d_array, double power, int numb_elem
   }
 }
 
-__global__ void gbasis::divide_inplace(
+__global__ void chemtools::divide_inplace(
     double* d_array1, double* d_array2, const int numb_elements, const double mask
 ) {
   int global_index = blockIdx.x * blockDim.x + threadIdx.x;
@@ -83,18 +83,18 @@ __global__ void gbasis::divide_inplace(
   }
 }
 
-__global__ void gbasis::copy_arrays(double* d_output, double* d_input, int numb_elements) {
+__global__ void chemtools::copy_arrays(double* d_output, double* d_input, int numb_elements) {
   int global_index = blockIdx.x * blockDim.x + threadIdx.x;
   if(global_index < numb_elements) {
     d_output[global_index] = d_input[global_index];
   }
 }
 
-__host__ void gbasis::array_transpose(
+__host__ void chemtools::array_transpose(
     cublasHandle_t& handle, double* d_output_col, double* d_input_row, const int numb_rows, const int numb_cols) {
   double const alpha(1.0);
   double const beta(0.0);
-  gbasis::cublas_check_errors(
+  chemtools::cublas_check_errors(
       cublasDgeam( handle, CUBLAS_OP_T, CUBLAS_OP_N, numb_rows, numb_cols, &alpha, d_input_row, numb_cols, &beta, d_input_row,
                    numb_rows, d_output_col, numb_rows )
   );
@@ -102,7 +102,7 @@ __host__ void gbasis::array_transpose(
 
 
 
-__host__ double* gbasis::sum_rows_of_matrix(cublasHandle_t& handle, double* d_matrix, double* d_row_sums,
+__host__ double* chemtools::sum_rows_of_matrix(cublasHandle_t& handle, double* d_matrix, double* d_row_sums,
                                             double* all_ones_ptr, int numb_rows, int numb_cols, const double alpha,
                                             const std::string order) {
   double beta = 0.;
@@ -114,12 +114,12 @@ __host__ double* gbasis::sum_rows_of_matrix(cublasHandle_t& handle, double* d_ma
 //  double *deviceVecPtr = thrust::raw_pointer_cast(all_ones.data());
 
   if (order == "row"){
-    gbasis::cublas_check_errors(cublasDgemv(handle, CUBLAS_OP_T, numb_cols, numb_rows,
+    chemtools::cublas_check_errors(cublasDgemv(handle, CUBLAS_OP_T, numb_cols, numb_rows,
                                             &alpha, d_matrix, numb_cols, all_ones_ptr, 1, &beta,
                                             d_row_sums, 1));
   }
   else if (order == "col") {
-    gbasis::cublas_check_errors(cublasDgemv(handle, CUBLAS_OP_N, numb_rows, numb_cols,
+    chemtools::cublas_check_errors(cublasDgemv(handle, CUBLAS_OP_N, numb_rows, numb_cols,
                                             &alpha, d_matrix, numb_rows, all_ones_ptr, 1, &beta,
                                             d_row_sums, 1));
   }
@@ -128,7 +128,7 @@ __host__ double* gbasis::sum_rows_of_matrix(cublasHandle_t& handle, double* d_ma
 }
 
 
-__global__ void gbasis::sum_two_arrays_inplace(double* d_array1, double* d_array2, int numb_elements) {
+__global__ void chemtools::sum_two_arrays_inplace(double* d_array1, double* d_array2, int numb_elements) {
   int global_index = blockIdx.x * blockDim.x + threadIdx.x;
   if(global_index < numb_elements) {
     d_array1[global_index] = d_array1[global_index] + d_array2[global_index];
@@ -136,16 +136,16 @@ __global__ void gbasis::sum_two_arrays_inplace(double* d_array1, double* d_array
 }
 
 
-__global__ void gbasis::print_first_ten_elements(double* arr) {
+__global__ void chemtools::print_first_ten_elements(double* arr) {
   printf("%E %E %E %E  %E %E \n", arr[0], arr[1], arr[2], arr[3], arr[4], arr[5]);
 }
-__global__ void gbasis::print_all(double* arr, int number) {
+__global__ void chemtools::print_all(double* arr, int number) {
   for(int i =0; i < number; i++) {
     printf("%.12E    ", arr[i]);
   }
 }
 
-__global__ void gbasis::print_matrix(double* arr, int row, int column) {\
+__global__ void chemtools::print_matrix(double* arr, int row, int column) {\
   int k = 0;
   for(int i =0; i < row; i++) {
     printf("ith row %d \n", i);
@@ -157,7 +157,7 @@ __global__ void gbasis::print_matrix(double* arr, int row, int column) {\
   }
 }
 
-__global__ void gbasis::print_firstt_ten_elements(int* arr) {
+__global__ void chemtools::print_firstt_ten_elements(int* arr) {
   printf("%d %d %d %d %d %d \n", arr[0], arr[1], arr[2], arr[3], arr[4], arr[5]);
 }
 

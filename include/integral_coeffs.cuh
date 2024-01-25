@@ -8,7 +8,7 @@
 
 #include "type_traits"
 
-namespace gbasis {
+namespace chemtools {
 /**
 @Section: Recursive E Coefficients from McMurchie-Davidson Equations
 --------------------------------------------------------------------

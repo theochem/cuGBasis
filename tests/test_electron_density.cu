@@ -13,7 +13,7 @@ namespace py = pybind11;
 using namespace py::literals;
 
 
-TEST_CASE( "Test Electron Density Against gbasis", "[evaluate_electron_density_on_cubic]" ) {
+TEST_CASE( "Test Electron Density Against chemtools", "[evaluate_electron_density_on_cubic]" ) {
   //py::initialize_interpreter();  // Open up the python interpretor for this test.
   {  // Need this so that the python object doesn't outline the interpretor.
   // Evaluate the electron density of this example.
@@ -39,9 +39,9 @@ TEST_CASE( "Test Electron Density Against gbasis", "[evaluate_electron_density_o
       "./tests/data/qm9_000104_PBE1PBE_pcS-3.fchk"
     );
   printf("IODATA OB %s \n", fchk_file.c_str());
-  gbasis::IOData iodata = gbasis::get_molecular_basis_from_fchk(fchk_file);
-  gbasis::UniformGrid grid =
-      gbasis::get_grid_from_coordinates_charges(iodata.GetCoordAtoms(), iodata.GetCharges(), iodata.GetNatoms(), 0.0 );
+  chemtools::IOData iodata = chemtools::get_molecular_basis_from_fchk(fchk_file);
+  chemtools::UniformGrid grid =
+      chemtools::get_grid_from_coordinates_charges(iodata.GetCoordAtoms(), iodata.GetCharges(), iodata.GetNatoms(), 0.0 );
   printf("DOne grid \n");
   double3 l_bnd = {grid.l_bnd[0], grid.l_bnd[1], grid.l_bnd[2]};
   std::array<int, 3> shape_arr = grid.calculate_shape({0.9, 0.9, 0.9});
@@ -50,12 +50,12 @@ TEST_CASE( "Test Electron Density Against gbasis", "[evaluate_electron_density_o
 
   // Evaluate electron density on the cube
   printf("Electron density \n");
-  gbasis::add_mol_basis_to_constant_memory_array(iodata.GetOrbitalBasis(), false, false);
-  std::vector<double> result = gbasis::evaluate_electron_density_on_cubic(iodata, l_bnd, &axes_spacing[0], shape, false);
+  chemtools::add_mol_basis_to_constant_memory_array(iodata.GetOrbitalBasis(), false, false);
+  std::vector<double> result = chemtools::evaluate_electron_density_on_cubic(iodata, l_bnd, &axes_spacing[0], shape, false);
   printf("DOne \n");
 
   //Transfer result to pybind11 without copying
-  pybind11::array_t<double, pybind11::array::c_style | pybind11::array::forcecast> py_result = gbasis::as_pyarray_from_vector(result);
+  pybind11::array_t<double, pybind11::array::c_style | pybind11::array::forcecast> py_result = chemtools::as_pyarray_from_vector(result);
   py::array_t<double> l_bnd_py(3, &l_bnd.x);
   py::array_t<double> axes_with_spacing_py(axes_spacing.size(), axes_spacing.data());
   py::array_t<int> shape_py(3, &shape.x);
@@ -122,7 +122,7 @@ TEST_CASE( "Test Electron Density Against gbasis on random grid", "[evaluate_ele
         "./tests/data/qm9_000104_PBE1PBE_pcS-3.fchk"
     );
     printf("IODATA OB %s \n", fchk_file.c_str());
-    gbasis::IOData iodata = gbasis::get_molecular_basis_from_fchk(fchk_file);
+    chemtools::IOData iodata = chemtools::get_molecular_basis_from_fchk(fchk_file);
 
     // Gemerate random grid.
     int numb_pts = 10000;
@@ -136,15 +136,15 @@ TEST_CASE( "Test Electron Density Against gbasis on random grid", "[evaluate_ele
 
     // Evaluate electron density on the cube
     printf("Electron density \n");
-    gbasis::add_mol_basis_to_constant_memory_array(iodata.GetOrbitalBasis(), false, true);
-    std::vector<double> result = gbasis::evaluate_electron_density_on_any_grid(iodata, points.data(), numb_pts);
+    chemtools::add_mol_basis_to_constant_memory_array(iodata.GetOrbitalBasis(), false, true);
+    std::vector<double> result = chemtools::evaluate_electron_density_on_any_grid(iodata, points.data(), numb_pts);
     printf("DOne \n");
 
     //Transfer result to pybind11 without copying
     pybind11::array_t<double, pybind11::array::c_style | pybind11::array::forcecast> py_result =
-        gbasis::as_pyarray_from_vector(result);
+        chemtools::as_pyarray_from_vector(result);
     pybind11::array_t<double, pybind11::array::c_style | pybind11::array::forcecast>
-        py_points = gbasis::as_pyarray_from_vector(points);
+        py_points = chemtools::as_pyarray_from_vector(points);
 
     auto locals = py::dict(
         "true_result"_a=py_result, "fchk_path"_a=fchk_file, "points"_a = py_points, "numb_pts"_a = numb_pts

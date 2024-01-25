@@ -12,7 +12,7 @@
  *  Shell types (NShell values): 0=s, 1=p, -1=sp, 2=6d, -2=5d, 3=10f, -3=7f
  *
  */
-gbasis::IOData gbasis::get_molecular_basis_from_fchk(const std::string& fchk_file_path, bool disp) {
+chemtools::IOData chemtools::get_molecular_basis_from_fchk(const std::string& fchk_file_path, bool disp) {
   // Start python interpreter.
   py::module_ iodata = py::module_::import("iodata");
 
@@ -53,7 +53,7 @@ gbasis::IOData gbasis::get_molecular_basis_from_fchk(const std::string& fchk_fil
   }
 
   // Get the Shell Information.
-  std::vector<gbasis::GeneralizedContractionShell> molecular_basis;
+  std::vector<chemtools::GeneralizedContractionShell> molecular_basis;
   for(int i = 0; i < n_cont_shells; i++) {
     py::object contracted_shell = shells.attr("__getitem__")(i);
     if (disp) {
@@ -192,17 +192,17 @@ gbasis::IOData gbasis::get_molecular_basis_from_fchk(const std::string& fchk_fil
     }
   }
   // Finalize the interpreter.
-  return {gbasis::MolecularBasis(molecular_basis), h_coords_atoms, natoms,
+  return {chemtools::MolecularBasis(molecular_basis), h_coords_atoms, natoms,
           h_one_rdm, one_rdm_shape, h_coeffs, h_occs, charges, h_mo_one_rdm};
 }
 
 
-gbasis::IOData::IOData(const gbasis::IOData& copy):
+chemtools::IOData::IOData(const chemtools::IOData& copy):
   natoms(copy.natoms),
   one_rdm_shape_(copy.one_rdm_shape_)
 {
   int nbasis = copy.orbital_basis_.numb_basis_functions();
-  orbital_basis_ = gbasis::MolecularBasis(copy.orbital_basis_);
+  orbital_basis_ = chemtools::MolecularBasis(copy.orbital_basis_);
   charges_ = new int[natoms];
   std::memcpy(charges_, copy.charges_, sizeof(int) * natoms);
   coord_atoms_ = new double[3 * natoms];

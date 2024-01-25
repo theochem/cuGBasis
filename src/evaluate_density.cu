@@ -21,7 +21,7 @@
  *
  * TODO: Utilize shared memory to reduce the local memory overhead,
  */
-__device__ void gbasis::evaluate_contractions(
+__device__ void chemtools::evaluate_contractions(
     double* d_contractions_array,
     const double& grid_x,
     const double& grid_y,
@@ -53,23 +53,23 @@ __device__ void gbasis::evaluate_contractions(
         // If S, P, D or F orbital/
         if(angmom == 0) {
           d_contractions_array[global_index + icontractions * knumb_points] +=
-              gbasis::normalization_primitive_s(g_constant_basis[iconst + i_prim]) *
+              chemtools::normalization_primitive_s(g_constant_basis[iconst + i_prim]) *
                   coeff_prim *
                   exponential;
         }
         else if (angmom == 1) {
           d_contractions_array[global_index + icontractions * knumb_points] +=
-              gbasis::normalization_primitive_p(g_constant_basis[iconst + i_prim]) *
+              chemtools::normalization_primitive_p(g_constant_basis[iconst + i_prim]) *
                   coeff_prim *
                   r_A_x *
                   exponential;
           d_contractions_array[global_index + (icontractions + 1) * knumb_points] +=
-              gbasis::normalization_primitive_p(g_constant_basis[iconst + i_prim]) *
+              chemtools::normalization_primitive_p(g_constant_basis[iconst + i_prim]) *
                   coeff_prim *
                   r_A_y *
                   exponential;
           d_contractions_array[global_index + (icontractions + 2) * knumb_points] +=
-              gbasis::normalization_primitive_p(g_constant_basis[iconst + i_prim]) *
+              chemtools::normalization_primitive_p(g_constant_basis[iconst + i_prim]) *
                   coeff_prim *
                   r_A_z *
                   exponential;
@@ -77,32 +77,32 @@ __device__ void gbasis::evaluate_contractions(
         else if (angmom == 2) {
           // The ordering is ['xx', 'yy', 'zz', 'xy', 'xz', 'yz']   Old ordering: xx, xy, xz, yy, yz, zz
           d_contractions_array[global_index + icontractions * knumb_points] +=
-              gbasis::normalization_primitive_d(g_constant_basis[iconst + i_prim], 2, 0, 0) *
+              chemtools::normalization_primitive_d(g_constant_basis[iconst + i_prim], 2, 0, 0) *
                   coeff_prim *
                   r_A_x * r_A_x *
                   exponential;
           d_contractions_array[global_index + (icontractions + 1) * knumb_points] +=
-              gbasis::normalization_primitive_d(g_constant_basis[iconst + i_prim], 0, 2, 0) *
+              chemtools::normalization_primitive_d(g_constant_basis[iconst + i_prim], 0, 2, 0) *
                   coeff_prim *
                   r_A_y * r_A_y *
                   exponential;
           d_contractions_array[global_index + (icontractions + 2) * knumb_points] +=
-              gbasis::normalization_primitive_d(g_constant_basis[iconst + i_prim], 0, 0, 2) *
+              chemtools::normalization_primitive_d(g_constant_basis[iconst + i_prim], 0, 0, 2) *
                   coeff_prim *
                   r_A_z * r_A_z *
                   exponential;
           d_contractions_array[global_index + (icontractions + 3) * knumb_points] +=
-              gbasis::normalization_primitive_d(g_constant_basis[iconst + i_prim], 1, 1, 0) *
+              chemtools::normalization_primitive_d(g_constant_basis[iconst + i_prim], 1, 1, 0) *
                   coeff_prim *
                   r_A_x * r_A_y *
                   exponential;
           d_contractions_array[global_index + (icontractions + 4) * knumb_points] +=
-              gbasis::normalization_primitive_d(g_constant_basis[iconst + i_prim], 1, 0, 1) *
+              chemtools::normalization_primitive_d(g_constant_basis[iconst + i_prim], 1, 0, 1) *
                   coeff_prim *
                   r_A_x * r_A_z *
                   exponential;
           d_contractions_array[global_index + (icontractions + 5) * knumb_points] +=
-              gbasis::normalization_primitive_d(g_constant_basis[iconst + i_prim], 0, 1, 1) *
+              chemtools::normalization_primitive_d(g_constant_basis[iconst + i_prim], 0, 1, 1) *
                   coeff_prim *
                   r_A_y * r_A_z *
                   exponential;
@@ -110,251 +110,251 @@ __device__ void gbasis::evaluate_contractions(
         else if (angmom == -2) {
           // Negatives are s denoting sine and c denoting cosine.
           // Fchk ordering is  ['c0', 'c1', 's1', 'c2', 's2']
-          double norm_const = gbasis::normalization_primitive_pure_d(g_constant_basis[iconst + i_prim]);
+          double norm_const = chemtools::normalization_primitive_pure_d(g_constant_basis[iconst + i_prim]);
           d_contractions_array[global_index + icontractions * knumb_points] +=
               norm_const *
                   coeff_prim *
-                  gbasis::solid_harmonic_function_d(0, r_A_x, r_A_y, r_A_z) *
+                  chemtools::solid_harmonic_function_d(0, r_A_x, r_A_y, r_A_z) *
                   exponential;
           d_contractions_array[global_index + (icontractions + 1) * knumb_points] +=
               norm_const *
                   coeff_prim *
-                  gbasis::solid_harmonic_function_d(1, r_A_x, r_A_y, r_A_z) *
+                  chemtools::solid_harmonic_function_d(1, r_A_x, r_A_y, r_A_z) *
                   exponential;
           d_contractions_array[global_index + (icontractions + 2) * knumb_points] +=
               norm_const *
                   coeff_prim *
-                  gbasis::solid_harmonic_function_d(-1, r_A_x, r_A_y, r_A_z) *
+                  chemtools::solid_harmonic_function_d(-1, r_A_x, r_A_y, r_A_z) *
                   exponential;
           d_contractions_array[global_index + (icontractions + 3) * knumb_points] +=
               norm_const *
                   coeff_prim *
-                  gbasis::solid_harmonic_function_d(2, r_A_x, r_A_y, r_A_z) *
+                  chemtools::solid_harmonic_function_d(2, r_A_x, r_A_y, r_A_z) *
                   exponential;
           d_contractions_array[global_index + (icontractions + 4) * knumb_points] +=
               norm_const *
                   coeff_prim *
-                  gbasis::solid_harmonic_function_d(-2, r_A_x, r_A_y, r_A_z) *
+                  chemtools::solid_harmonic_function_d(-2, r_A_x, r_A_y, r_A_z) *
                   exponential;
         }
         else if (angmom == 3) {
           // The ordering is ['xxx', 'yyy', 'zzz', 'xyy', 'xxy', 'xxz', 'xzz', 'yzz', 'yyz', 'xyz']
           d_contractions_array[global_index + icontractions * knumb_points] +=
-              gbasis::normalization_primitive_f(g_constant_basis[iconst + i_prim], 3, 0, 0) *
+              chemtools::normalization_primitive_f(g_constant_basis[iconst + i_prim], 3, 0, 0) *
                   coeff_prim *
                   r_A_x * r_A_x * r_A_x *
                   exponential;
           d_contractions_array[global_index + (icontractions + 1) * knumb_points] +=
-              gbasis::normalization_primitive_f(g_constant_basis[iconst + i_prim], 0, 3, 0) *
+              chemtools::normalization_primitive_f(g_constant_basis[iconst + i_prim], 0, 3, 0) *
                   coeff_prim *
                   r_A_y * r_A_y * r_A_y *
                   exponential;
           d_contractions_array[global_index + (icontractions + 2) * knumb_points] +=
-              gbasis::normalization_primitive_f(g_constant_basis[iconst + i_prim], 0, 0, 3) *
+              chemtools::normalization_primitive_f(g_constant_basis[iconst + i_prim], 0, 0, 3) *
                   coeff_prim *
                   r_A_z * r_A_z * r_A_z *
                   exponential;
           d_contractions_array[global_index + (icontractions + 3) * knumb_points] +=
-              gbasis::normalization_primitive_f(g_constant_basis[iconst + i_prim], 1, 2, 0) *
+              chemtools::normalization_primitive_f(g_constant_basis[iconst + i_prim], 1, 2, 0) *
                   coeff_prim *
                   r_A_x * r_A_y * r_A_y *
                   exponential;
           d_contractions_array[global_index + (icontractions + 4) * knumb_points] +=
-              gbasis::normalization_primitive_f(g_constant_basis[iconst + i_prim], 2, 1, 0) *
+              chemtools::normalization_primitive_f(g_constant_basis[iconst + i_prim], 2, 1, 0) *
                   coeff_prim *
                   r_A_x * r_A_x * r_A_y *
                   exponential;
           d_contractions_array[global_index + (icontractions + 5) * knumb_points] +=
-              gbasis::normalization_primitive_f(g_constant_basis[iconst + i_prim], 2, 0, 1) *
+              chemtools::normalization_primitive_f(g_constant_basis[iconst + i_prim], 2, 0, 1) *
                   coeff_prim *
                   r_A_x * r_A_x * r_A_z *
                   exponential;
           d_contractions_array[global_index + (icontractions + 6) * knumb_points] +=
-              gbasis::normalization_primitive_f(g_constant_basis[iconst + i_prim], 1, 0, 2) *
+              chemtools::normalization_primitive_f(g_constant_basis[iconst + i_prim], 1, 0, 2) *
                   coeff_prim *
                   r_A_x * r_A_z * r_A_z *
                   exponential;
           d_contractions_array[global_index + (icontractions + 7) * knumb_points] +=
-              gbasis::normalization_primitive_f(g_constant_basis[iconst + i_prim], 0, 1, 2) *
+              chemtools::normalization_primitive_f(g_constant_basis[iconst + i_prim], 0, 1, 2) *
                   coeff_prim *
                   r_A_y * r_A_z * r_A_z *
                   exponential;
           d_contractions_array[global_index + (icontractions + 8) * knumb_points] +=
-              gbasis::normalization_primitive_f(g_constant_basis[iconst + i_prim], 0, 2, 1) *
+              chemtools::normalization_primitive_f(g_constant_basis[iconst + i_prim], 0, 2, 1) *
                   coeff_prim *
                   r_A_y * r_A_y * r_A_z *
                   exponential;
           d_contractions_array[global_index + (icontractions + 9) * knumb_points] +=
-              gbasis::normalization_primitive_f(g_constant_basis[iconst + i_prim], 1, 1, 1) *
+              chemtools::normalization_primitive_f(g_constant_basis[iconst + i_prim], 1, 1, 1) *
                   coeff_prim *
                   r_A_x * r_A_y * r_A_z *
                   exponential;
         }
         else if (angmom == -3) {
           // ['c0', 'c1', 's1', 'c2', 's2', 'c3', 's3']
-          double norm_const = gbasis::normalization_primitive_pure_f(g_constant_basis[iconst + i_prim]);
+          double norm_const = chemtools::normalization_primitive_pure_f(g_constant_basis[iconst + i_prim]);
           d_contractions_array[global_index + icontractions * knumb_points] +=
                 norm_const *
                   coeff_prim *
-                  gbasis::solid_harmonic_function_f(0, r_A_x, r_A_y, r_A_z) *
+                  chemtools::solid_harmonic_function_f(0, r_A_x, r_A_y, r_A_z) *
                   exponential;
           d_contractions_array[global_index + (icontractions + 1) * knumb_points] +=
               norm_const *
                   coeff_prim *
-                  gbasis::solid_harmonic_function_f(1, r_A_x, r_A_y, r_A_z) *
+                  chemtools::solid_harmonic_function_f(1, r_A_x, r_A_y, r_A_z) *
                   exponential;
           d_contractions_array[global_index + (icontractions + 2) * knumb_points] +=
               norm_const *
                   coeff_prim *
-                  gbasis::solid_harmonic_function_f(-1, r_A_x, r_A_y, r_A_z) *
+                  chemtools::solid_harmonic_function_f(-1, r_A_x, r_A_y, r_A_z) *
                   exponential;
           d_contractions_array[global_index + (icontractions + 3) * knumb_points] +=
               norm_const *
                   coeff_prim *
-                  gbasis::solid_harmonic_function_f(2, r_A_x, r_A_y, r_A_z) *
+                  chemtools::solid_harmonic_function_f(2, r_A_x, r_A_y, r_A_z) *
                   exponential;
           d_contractions_array[global_index + (icontractions + 4) * knumb_points] +=
               norm_const *
                   coeff_prim *
-                  gbasis::solid_harmonic_function_f(-2, r_A_x, r_A_y, r_A_z) *
+                  chemtools::solid_harmonic_function_f(-2, r_A_x, r_A_y, r_A_z) *
                   exponential;
           d_contractions_array[global_index + (icontractions + 5) * knumb_points] +=
               norm_const *
                   coeff_prim *
-                  gbasis::solid_harmonic_function_f(3, r_A_x, r_A_y, r_A_z) *
+                  chemtools::solid_harmonic_function_f(3, r_A_x, r_A_y, r_A_z) *
                   exponential;
           d_contractions_array[global_index + (icontractions + 6) * knumb_points] +=
               norm_const *
                   coeff_prim *
-                  gbasis::solid_harmonic_function_f(-3, r_A_x, r_A_y, r_A_z) *
+                  chemtools::solid_harmonic_function_f(-3, r_A_x, r_A_y, r_A_z) *
                   exponential;
         }
         else if (angmom == 4) {
           // The ordering is ['zzzz', 'yzzz', 'yyzz', 'yyyz', 'yyyy', 'xzzz', 'xyzz', 'xyyz', 'xyyy', 'xxzz',
           //                                                                'xxyz', 'xxyy', 'xxxz', 'xxxy', 'xxxx']
           d_contractions_array[global_index + icontractions * knumb_points] +=
-              gbasis::normalization_primitive_g(g_constant_basis[iconst + i_prim], 0, 0, 4) *
+              chemtools::normalization_primitive_g(g_constant_basis[iconst + i_prim], 0, 0, 4) *
                   coeff_prim *
                   r_A_z * r_A_z * r_A_z * r_A_z *
                   exponential;
           d_contractions_array[global_index + (icontractions + 1) * knumb_points] +=
-              gbasis::normalization_primitive_g(g_constant_basis[iconst + i_prim], 0, 1, 3) *
+              chemtools::normalization_primitive_g(g_constant_basis[iconst + i_prim], 0, 1, 3) *
                   coeff_prim *
                   r_A_y * r_A_z * r_A_z * r_A_z *
                   exponential;
           d_contractions_array[global_index + (icontractions + 2) * knumb_points] +=
-              gbasis::normalization_primitive_g(g_constant_basis[iconst + i_prim], 0, 2, 2) *
+              chemtools::normalization_primitive_g(g_constant_basis[iconst + i_prim], 0, 2, 2) *
                   coeff_prim *
                   r_A_y * r_A_y * r_A_z * r_A_z *
                   exponential;
           d_contractions_array[global_index + (icontractions + 3) * knumb_points] +=
-              gbasis::normalization_primitive_g(g_constant_basis[iconst + i_prim], 0, 3, 1) *
+              chemtools::normalization_primitive_g(g_constant_basis[iconst + i_prim], 0, 3, 1) *
                   coeff_prim *
                   r_A_y * r_A_y * r_A_y * r_A_z *
                   exponential;
           d_contractions_array[global_index + (icontractions + 4) * knumb_points] +=
-              gbasis::normalization_primitive_g(g_constant_basis[iconst + i_prim], 0, 4, 0) *
+              chemtools::normalization_primitive_g(g_constant_basis[iconst + i_prim], 0, 4, 0) *
                   coeff_prim *
                   r_A_y * r_A_y * r_A_y * r_A_y *
                   exponential;
           d_contractions_array[global_index + (icontractions + 5) * knumb_points] +=
-              gbasis::normalization_primitive_g(g_constant_basis[iconst + i_prim], 1, 0, 3) *
+              chemtools::normalization_primitive_g(g_constant_basis[iconst + i_prim], 1, 0, 3) *
                   coeff_prim *
                   r_A_x * r_A_z * r_A_z * r_A_z *
                   exponential;
           d_contractions_array[global_index + (icontractions + 6) * knumb_points] +=
-              gbasis::normalization_primitive_g(g_constant_basis[iconst + i_prim], 1, 1, 2) *
+              chemtools::normalization_primitive_g(g_constant_basis[iconst + i_prim], 1, 1, 2) *
                   coeff_prim *
                   r_A_x * r_A_y * r_A_z * r_A_z *
                   exponential;
           d_contractions_array[global_index + (icontractions + 7) * knumb_points] +=
-              gbasis::normalization_primitive_g(g_constant_basis[iconst + i_prim], 1, 2, 1) *
+              chemtools::normalization_primitive_g(g_constant_basis[iconst + i_prim], 1, 2, 1) *
                   coeff_prim *
                   r_A_x * r_A_y * r_A_y * r_A_z *
                   exponential;
           d_contractions_array[global_index + (icontractions + 8) * knumb_points] +=
-              gbasis::normalization_primitive_g(g_constant_basis[iconst + i_prim], 1, 3, 0) *
+              chemtools::normalization_primitive_g(g_constant_basis[iconst + i_prim], 1, 3, 0) *
                   coeff_prim *
                   r_A_x * r_A_y * r_A_y * r_A_y *
                   exponential;
           d_contractions_array[global_index + (icontractions + 9) * knumb_points] +=
-              gbasis::normalization_primitive_g(g_constant_basis[iconst + i_prim], 2, 0, 2) *
+              chemtools::normalization_primitive_g(g_constant_basis[iconst + i_prim], 2, 0, 2) *
                   coeff_prim *
                   r_A_x * r_A_x * r_A_z * r_A_z *
                   exponential;
           d_contractions_array[global_index + (icontractions + 10) * knumb_points] +=
-              gbasis::normalization_primitive_g(g_constant_basis[iconst + i_prim], 2, 1, 1) *
+              chemtools::normalization_primitive_g(g_constant_basis[iconst + i_prim], 2, 1, 1) *
                   coeff_prim *
                   r_A_x * r_A_x * r_A_y * r_A_z *
                   exponential;
           d_contractions_array[global_index + (icontractions + 11) * knumb_points] +=
-              gbasis::normalization_primitive_g(g_constant_basis[iconst + i_prim], 2, 2, 0) *
+              chemtools::normalization_primitive_g(g_constant_basis[iconst + i_prim], 2, 2, 0) *
                   coeff_prim *
                   r_A_x * r_A_x * r_A_y * r_A_y *
                   exponential;
           d_contractions_array[global_index + (icontractions + 12) * knumb_points] +=
-              gbasis::normalization_primitive_g(g_constant_basis[iconst + i_prim], 3, 0, 1) *
+              chemtools::normalization_primitive_g(g_constant_basis[iconst + i_prim], 3, 0, 1) *
                   coeff_prim *
                   r_A_x * r_A_x * r_A_x * r_A_z *
                   exponential;
           d_contractions_array[global_index + (icontractions + 13) * knumb_points] +=
-              gbasis::normalization_primitive_g(g_constant_basis[iconst + i_prim], 3, 1, 0) *
+              chemtools::normalization_primitive_g(g_constant_basis[iconst + i_prim], 3, 1, 0) *
                   coeff_prim *
                   r_A_x * r_A_x * r_A_x * r_A_y *
                   exponential;
           d_contractions_array[global_index + (icontractions + 14) * knumb_points] +=
-              gbasis::normalization_primitive_g(g_constant_basis[iconst + i_prim], 4, 0, 0) *
+              chemtools::normalization_primitive_g(g_constant_basis[iconst + i_prim], 4, 0, 0) *
                   coeff_prim *
                   r_A_x * r_A_x * r_A_x * r_A_x *
                   exponential;
         }
         else if (angmom == -4) {
           // ['c0', 'c1', 's1', 'c2', 's2', 'c3', 's3', 'c4', 's4']
-          double norm_const = gbasis::normalization_primitive_pure_g(g_constant_basis[iconst + i_prim]);
+          double norm_const = chemtools::normalization_primitive_pure_g(g_constant_basis[iconst + i_prim]);
           d_contractions_array[global_index + icontractions * knumb_points] +=
               norm_const *
                   coeff_prim *
-                  gbasis::solid_harmonic_function_g(0, r_A_x, r_A_y, r_A_z) *
+                  chemtools::solid_harmonic_function_g(0, r_A_x, r_A_y, r_A_z) *
                   exponential;
           d_contractions_array[global_index + (icontractions + 1) * knumb_points] +=
               norm_const *
                   coeff_prim *
-                  gbasis::solid_harmonic_function_g(1, r_A_x, r_A_y, r_A_z) *
+                  chemtools::solid_harmonic_function_g(1, r_A_x, r_A_y, r_A_z) *
                   exponential;
           d_contractions_array[global_index + (icontractions + 2) * knumb_points] +=
               norm_const *
                   coeff_prim *
-                  gbasis::solid_harmonic_function_g(-1, r_A_x, r_A_y, r_A_z) *
+                  chemtools::solid_harmonic_function_g(-1, r_A_x, r_A_y, r_A_z) *
                   exponential;
           d_contractions_array[global_index + (icontractions + 3) * knumb_points] +=
               norm_const *
                   coeff_prim *
-                  gbasis::solid_harmonic_function_g(2, r_A_x, r_A_y, r_A_z) *
+                  chemtools::solid_harmonic_function_g(2, r_A_x, r_A_y, r_A_z) *
                   exponential;
           d_contractions_array[global_index + (icontractions + 4) * knumb_points] +=
               norm_const *
                   coeff_prim *
-                  gbasis::solid_harmonic_function_g(-2, r_A_x, r_A_y, r_A_z) *
+                  chemtools::solid_harmonic_function_g(-2, r_A_x, r_A_y, r_A_z) *
                   exponential;
           d_contractions_array[global_index + (icontractions + 5) * knumb_points] +=
               norm_const *
                   coeff_prim *
-                  gbasis::solid_harmonic_function_g(3, r_A_x, r_A_y, r_A_z) *
+                  chemtools::solid_harmonic_function_g(3, r_A_x, r_A_y, r_A_z) *
                   exponential;
           d_contractions_array[global_index + (icontractions + 6) * knumb_points] +=
               norm_const *
                   coeff_prim *
-                  gbasis::solid_harmonic_function_g(-3, r_A_x, r_A_y, r_A_z) *
+                  chemtools::solid_harmonic_function_g(-3, r_A_x, r_A_y, r_A_z) *
                   exponential;
           d_contractions_array[global_index + (icontractions + 7) * knumb_points] +=
               norm_const *
                   coeff_prim *
-                  gbasis::solid_harmonic_function_g(4, r_A_x, r_A_y, r_A_z) *
+                  chemtools::solid_harmonic_function_g(4, r_A_x, r_A_y, r_A_z) *
                   exponential;
           d_contractions_array[global_index + (icontractions + 8) * knumb_points] +=
               norm_const *
                   coeff_prim *
-                  gbasis::solid_harmonic_function_g(-4, r_A_x, r_A_y, r_A_z) *
+                  chemtools::solid_harmonic_function_g(-4, r_A_x, r_A_y, r_A_z) *
                   exponential;
         }// End angmoms.
       } // End going over contractions of a single segmented shell.
@@ -391,7 +391,7 @@ __device__ void gbasis::evaluate_contractions(
 }
 
 
-__global__ void gbasis::evaluate_contractions_from_constant_memory_on_any_grid(
+__global__ void chemtools::evaluate_contractions_from_constant_memory_on_any_grid(
     double* d_contractions_array, const double* const d_points, const int knumb_points
 ) {
   unsigned int global_index = blockIdx.x * blockDim.x + threadIdx.x;
@@ -402,7 +402,7 @@ __global__ void gbasis::evaluate_contractions_from_constant_memory_on_any_grid(
     double grid_z = d_points[global_index + knumb_points * 2];
 
     // Evaluate the contractions and store it in d_contractions_array
-    gbasis::evaluate_contractions(
+    chemtools::evaluate_contractions(
         d_contractions_array, grid_x, grid_y, grid_z, knumb_points, global_index
     );
   }
@@ -418,7 +418,7 @@ __global__ void gbasis::evaluate_contractions_from_constant_memory_on_any_grid(
  *
  * TODO: Utilize shared memory to reduce the local memory overhead,
  */
-__global__ void gbasis::evaluate_contractions_from_constant_memory_on_cubic_grid(
+__global__ void chemtools::evaluate_contractions_from_constant_memory_on_cubic_grid(
     double* d_contractions_array, const double3 d_klower_bnd, const double3 d_axes_array_col1,
     const double3 d_axes_array_col2, const double3 d_axes_array_col3, const int3 d_knumb_points
     ) {
@@ -438,25 +438,25 @@ __global__ void gbasis::evaluate_contractions_from_constant_memory_on_cubic_grid
     double grid_z = d_klower_bnd.z +
         (x_index * d_axes_array_col3.x) + (y_index * d_axes_array_col3.y) + (z_index * d_axes_array_col3.z);
     // Evaluate the contractions and store it in d_contractions_array
-    gbasis::evaluate_contractions(
+    chemtools::evaluate_contractions(
         d_contractions_array, grid_x, grid_y, grid_z, knumb_points, global_index
     );
   } // End If statement.
 }
 
 
-__host__ std::vector<double> gbasis::evaluate_electron_density_on_cubic(
-    gbasis::IOData& iodata, const double3 klower_bnd, const double* kaxes_col, const int3 knumb_points, const bool disp )
+__host__ std::vector<double> chemtools::evaluate_electron_density_on_cubic(
+    chemtools::IOData& iodata, const double3 klower_bnd, const double* kaxes_col, const int3 knumb_points, const bool disp )
     {
   // Set cache perference to L1
-  cudaFuncSetCacheConfig(gbasis::evaluate_contractions_from_constant_memory_on_cubic_grid, cudaFuncCachePreferL1);
+  cudaFuncSetCacheConfig(chemtools::evaluate_contractions_from_constant_memory_on_cubic_grid, cudaFuncCachePreferL1);
 
   // Get the molecular basis from iodata and put it in constant memory of the gpu.
   if (disp) {
     printf("Start transfer to constant memory \n");
   }
-  gbasis::MolecularBasis molecular_basis = iodata.GetOrbitalBasis();
-  //gbasis::add_mol_basis_to_constant_memory_array(molecular_basis, false, false);
+  chemtools::MolecularBasis molecular_basis = iodata.GetOrbitalBasis();
+  //chemtools::add_mol_basis_to_constant_memory_array(molecular_basis, false, false);
   int nbasisfuncs = molecular_basis.numb_basis_functions();
   if (disp) {
     printf("DOne transfer to constant memory \n");
@@ -542,7 +542,7 @@ __host__ std::vector<double> gbasis::evaluate_electron_density_on_cubic(
       cublasDestroy(handle);
       throw err;
     }
-    gbasis::cuda_check_errors(cudaMemset(d_contractions, 0, total_contraction_arr_iter_bytes));
+    chemtools::cuda_check_errors(cudaMemset(d_contractions, 0, total_contraction_arr_iter_bytes));
 
     // Evaluate contractions. The number of threads is maximal and the number of thread blocks is calculated.
     int ilen = 128;  // 128 320 1024
@@ -551,12 +551,12 @@ __host__ std::vector<double> gbasis::evaluate_electron_density_on_cubic(
     if (disp) {
       printf("Start contractions %d \n ", grid.x);
     }
-    gbasis::evaluate_contractions_from_constant_memory_on_cubic_grid<<<grid, threadsPerBlock>>>(
+    chemtools::evaluate_contractions_from_constant_memory_on_cubic_grid<<<grid, threadsPerBlock>>>(
         d_contractions, lower_bnd_iter, axes_col1,
             axes_col2, axes_col3, numb_points_iter
     );
     //cudaDeviceSynchronize();
-    //gbasis::print_matrix<<<1, 1>>>(d_contractions, t_nbasis, number_points_iter);
+    //chemtools::print_matrix<<<1, 1>>>(d_contractions, t_nbasis, number_points_iter);
     //cudaDeviceSynchronize();
     if (disp) {
       printf("Done contractions \n ");
@@ -564,8 +564,8 @@ __host__ std::vector<double> gbasis::evaluate_electron_density_on_cubic(
 
     // Allocate device memory for the one_rdm. Number of atomic orbitals is equal to number of molecular obitals
     double *d_one_rdm;
-    gbasis::cuda_check_errors(cudaMalloc((double **) &d_one_rdm, nbasisfuncs * nbasisfuncs * sizeof(double)));
-    gbasis::cublas_check_errors(cublasSetMatrix(iodata.GetOneRdmShape(),
+    chemtools::cuda_check_errors(cudaMalloc((double **) &d_one_rdm, nbasisfuncs * nbasisfuncs * sizeof(double)));
+    chemtools::cublas_check_errors(cublasSetMatrix(iodata.GetOneRdmShape(),
                                                 iodata.GetOneRdmShape(),
                                                 sizeof(double),
                                                 iodata.GetMOOneRDM(),
@@ -594,7 +594,7 @@ __host__ std::vector<double> gbasis::evaluate_electron_density_on_cubic(
     // Matrix multiplcation of one rdm with the contractions array. Everything is in row major order.
     double alpha = 1.;
     double beta = 0.;
-    gbasis::cublas_check_errors(cublasDgemm(handle, CUBLAS_OP_N, CUBLAS_OP_N,
+    chemtools::cublas_check_errors(cublasDgemm(handle, CUBLAS_OP_N, CUBLAS_OP_N,
                                             number_points_iter, iodata.GetOneRdmShape(), iodata.GetOneRdmShape(),
                                             &alpha, d_contractions, number_points_iter,
                                             d_one_rdm, iodata.GetOneRdmShape(), &beta,
@@ -606,20 +606,20 @@ __host__ std::vector<double> gbasis::evaluate_electron_density_on_cubic(
     // Do a hadamard product between d_final and d_contraction and store it in d_final. Maximal
     dim3 threadsPerBlock2(320);
     dim3 grid2((number_points_iter * nbasisfuncs + threadsPerBlock.x - 1) / (threadsPerBlock.x));
-    gbasis::hadamard_product<<<grid2, threadsPerBlock2>>>(d_final, d_contractions,
+    chemtools::hadamard_product<<<grid2, threadsPerBlock2>>>(d_final, d_contractions,
                                                           nbasisfuncs, number_points_iter);
     cudaFree(d_contractions);  // d_contractions is no longer needed.
 
     // Allocate device memory for electron density.
     double *d_electron_density;
-    gbasis::cuda_check_errors(cudaMalloc((double **) &d_electron_density, total_numb_points_iter_bytes));
+    chemtools::cuda_check_errors(cudaMalloc((double **) &d_electron_density, total_numb_points_iter_bytes));
 
     // Sum up the columns of d_final to get the electron density. This is done by doing a matrix multiplcation of
     //    all ones of the transpose of d_final. Here I'm using the fact that d_final is in row major order.
 //    printf("Sum up the columns \n ");
     thrust::device_vector<double> all_ones(sizeof(double) * nbasisfuncs, 1.0);
     double *deviceVecPtr = thrust::raw_pointer_cast(all_ones.data());
-    gbasis::cublas_check_errors(cublasDgemv(handle, CUBLAS_OP_N, number_points_iter, nbasisfuncs,
+    chemtools::cublas_check_errors(cublasDgemv(handle, CUBLAS_OP_N, number_points_iter, nbasisfuncs,
                                             &alpha, d_final, number_points_iter, deviceVecPtr, 1, &beta,
                                             d_electron_density, 1));
     cudaFree(d_final);
@@ -627,7 +627,7 @@ __host__ std::vector<double> gbasis::evaluate_electron_density_on_cubic(
 
     // Transfer electron density from device memory to host memory.
     //    Since I'm computing a sub-grid at a time, need to update the index h_electron_density, accordingly.
-    gbasis::cuda_check_errors(cudaMemcpy(&h_electron_density[0] + index_to_copy,
+    chemtools::cuda_check_errors(cudaMemcpy(&h_electron_density[0] + index_to_copy,
                                          d_electron_density,
                                          total_numb_points_iter_bytes, cudaMemcpyDeviceToHost));
     cudaFree(d_electron_density);
@@ -654,12 +654,12 @@ __host__ std::vector<double> gbasis::evaluate_electron_density_on_cubic(
 }
 
 
-__host__ std::vector<double> gbasis::evaluate_electron_density_on_any_grid(
-    gbasis::IOData& iodata, const double* h_points, const int knumb_points)
+__host__ std::vector<double> chemtools::evaluate_electron_density_on_any_grid(
+    chemtools::IOData& iodata, const double* h_points, const int knumb_points)
 {
   cublasHandle_t handle;
   cublasCreate(&handle);
-  std::vector<double> density = gbasis::evaluate_electron_density_on_any_grid_handle(
+  std::vector<double> density = chemtools::evaluate_electron_density_on_any_grid_handle(
       handle, iodata, h_points, knumb_points
   );
   cublasDestroy(handle); // cublas handle is no longer needed infact most of
@@ -667,15 +667,15 @@ __host__ std::vector<double> gbasis::evaluate_electron_density_on_any_grid(
 }
 
 
-__host__ std::vector<double> gbasis::evaluate_electron_density_on_any_grid_handle(
-    cublasHandle_t& handle, gbasis::IOData& iodata, const double* h_points, const int knumb_points
+__host__ std::vector<double> chemtools::evaluate_electron_density_on_any_grid_handle(
+    cublasHandle_t& handle, chemtools::IOData& iodata, const double* h_points, const int knumb_points
 ) {
   // Set cache perference to L1
-  cudaFuncSetCacheConfig(gbasis::evaluate_contractions_from_constant_memory_on_cubic_grid, cudaFuncCachePreferL1);
+  cudaFuncSetCacheConfig(chemtools::evaluate_contractions_from_constant_memory_on_cubic_grid, cudaFuncCachePreferL1);
 
   // Get the molecular basis from iodata and put it in constant memory of the gpu.
-  gbasis::MolecularBasis molecular_basis = iodata.GetOrbitalBasis();
-  //gbasis::add_mol_basis_to_constant_memory_array(molecular_basis, false, false);
+  chemtools::MolecularBasis molecular_basis = iodata.GetOrbitalBasis();
+  //chemtools::add_mol_basis_to_constant_memory_array(molecular_basis, false, false);
   int nbasisfuncs = molecular_basis.numb_basis_functions();
 
   // Calculate the number of bytes it would take memory of
@@ -726,15 +726,15 @@ __host__ std::vector<double> gbasis::evaluate_electron_density_on_any_grid_handl
       cublasDestroy(handle);
       throw err;
     }
-    gbasis::cuda_check_errors(cudaMemset(d_contractions, 0, total_contraction_arr_iter_bytes));
+    chemtools::cuda_check_errors(cudaMemset(d_contractions, 0, total_contraction_arr_iter_bytes));
 
     // Transfer grid points to GPU, this is in column order with shape (N, 3)
     //  Becasue h_points is in column-order and we're slicing based on the number of points that can fit in memory.
     //  Need to slice each (x,y,z) coordinate seperately.
     double *d_points;
-    gbasis::cuda_check_errors(cudaMalloc((double **) &d_points, sizeof(double) * 3 * number_pts_iter));
+    chemtools::cuda_check_errors(cudaMalloc((double **) &d_points, sizeof(double) * 3 * number_pts_iter));
     for(int i_slice = 0; i_slice < 3; i_slice++) {
-      gbasis::cuda_check_errors(cudaMemcpy(&d_points[i_slice * number_pts_iter],
+      chemtools::cuda_check_errors(cudaMemcpy(&d_points[i_slice * number_pts_iter],
                                            &h_points[i_slice * knumb_points + index_to_copy],
                                            sizeof(double) * number_pts_iter,
                                            cudaMemcpyHostToDevice));
@@ -745,7 +745,7 @@ __host__ std::vector<double> gbasis::evaluate_electron_density_on_any_grid_handl
     int ilen = 128;  // 128 320 1024
     dim3 threadsPerBlock(ilen);
     dim3 grid((number_pts_iter + threadsPerBlock.x - 1) / (threadsPerBlock.x));
-    gbasis::evaluate_contractions_from_constant_memory_on_any_grid<<<grid, threadsPerBlock>>>(
+    chemtools::evaluate_contractions_from_constant_memory_on_any_grid<<<grid, threadsPerBlock>>>(
         d_contractions, d_points, number_pts_iter
     );
     // Free the grid points in device memory.
@@ -753,8 +753,8 @@ __host__ std::vector<double> gbasis::evaluate_electron_density_on_any_grid_handl
 
     // Allocate device memory for the one_rdm. Number of atomic orbitals is equal to number of molecular obitals
     double *d_one_rdm;
-    gbasis::cuda_check_errors(cudaMalloc((double **) &d_one_rdm, nbasisfuncs * nbasisfuncs * sizeof(double)));
-    gbasis::cublas_check_errors(cublasSetMatrix(iodata.GetOneRdmShape(),
+    chemtools::cuda_check_errors(cudaMalloc((double **) &d_one_rdm, nbasisfuncs * nbasisfuncs * sizeof(double)));
+    chemtools::cublas_check_errors(cublasSetMatrix(iodata.GetOneRdmShape(),
                                                 iodata.GetOneRdmShape(),
                                                 sizeof(double),
                                                 iodata.GetMOOneRDM(),
@@ -778,7 +778,7 @@ __host__ std::vector<double> gbasis::evaluate_electron_density_on_any_grid_handl
     // Matrix multiplcation of one rdm with the contractions array. Everything is in row major order.
     double alpha = 1.;
     double beta = 0.;
-    gbasis::cublas_check_errors(cublasDgemm(handle, CUBLAS_OP_N, CUBLAS_OP_N,
+    chemtools::cublas_check_errors(cublasDgemm(handle, CUBLAS_OP_N, CUBLAS_OP_N,
                                             number_pts_iter, iodata.GetOneRdmShape(), iodata.GetOneRdmShape(),
                                             &alpha, d_contractions, number_pts_iter,
                                             d_one_rdm, iodata.GetOneRdmShape(), &beta,
@@ -788,26 +788,26 @@ __host__ std::vector<double> gbasis::evaluate_electron_density_on_any_grid_handl
     // Do a hadamard product between d_final and d_contraction and store it in d_final. Maximal
     dim3 threadsPerBlock2(320);
     dim3 grid2((number_pts_iter * nbasisfuncs + threadsPerBlock.x - 1) / (threadsPerBlock.x));
-    gbasis::hadamard_product<<<grid2, threadsPerBlock2>>>(d_final, d_contractions,
+    chemtools::hadamard_product<<<grid2, threadsPerBlock2>>>(d_final, d_contractions,
         nbasisfuncs, number_pts_iter);
     cudaFree(d_contractions);  // d_contractions is no longer needed.
 
     // Allocate device memory for electron density.
     double *d_electron_density;
-    gbasis::cuda_check_errors(cudaMalloc((double **) &d_electron_density, total_numb_points_iter_bytes));
+    chemtools::cuda_check_errors(cudaMalloc((double **) &d_electron_density, total_numb_points_iter_bytes));
 
     // Sum up the columns of d_final to get the electron density. This is done by doing a matrix multiplcation of
     //    all ones of the transpose of d_final. Here I'm using the fact that d_final is in row major order.
     thrust::device_vector<double> all_ones(sizeof(double) * nbasisfuncs, 1.0);
     double *deviceVecPtr = thrust::raw_pointer_cast(all_ones.data());
-    gbasis::cublas_check_errors(cublasDgemv(handle, CUBLAS_OP_N, number_pts_iter, nbasisfuncs,
+    chemtools::cublas_check_errors(cublasDgemv(handle, CUBLAS_OP_N, number_pts_iter, nbasisfuncs,
                                             &alpha, d_final, number_pts_iter, deviceVecPtr, 1, &beta,
                                             d_electron_density, 1));
     cudaFree(d_final);
 
     // Transfer electron density from device memory to host memory.
     //    Since I'm computing a sub-grid at a time, need to update the index h_electron_density, accordingly.
-    gbasis::cuda_check_errors(cudaMemcpy(&h_electron_density[0] + index_to_copy,
+    chemtools::cuda_check_errors(cudaMemcpy(&h_electron_density[0] + index_to_copy,
                                          d_electron_density,
                                          total_numb_points_iter_bytes, cudaMemcpyDeviceToHost));
     cudaFree(d_electron_density);

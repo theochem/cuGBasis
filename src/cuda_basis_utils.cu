@@ -4,17 +4,17 @@
 #include "../include/cuda_utils.cuh"
 
 /// Compute the normalization constant of a single primitive Cartesian Gaussian, S-type only.
-__device__ double gbasis::normalization_primitive_s(double alpha) {
+__device__ double chemtools::normalization_primitive_s(double alpha) {
   return pow(2.0 * alpha / CUDART_PI_D, 3. / 4.);
 }
 
 /// Compute the normalization constant of a single primitive Cartesian Gaussian, P-type only
-__device__ double gbasis::normalization_primitive_p(double alpha) {
+__device__ double chemtools::normalization_primitive_p(double alpha) {
   return sqrt(pow(2.0 * alpha / CUDART_PI_D, 3. / 2.) * 4 * alpha);
 }
 
 /// Compute the normalization constant of a single primitive Cartesian Gaussian, D-type only
-__device__ double gbasis::normalization_primitive_d(double alpha, int nx, int ny, int nz) {
+__device__ double chemtools::normalization_primitive_d(double alpha, int nx, int ny, int nz) {
   // (nx, ny, nz) are the angular components and sum to 2
   if (((nx == 1) & (ny == 1)) | ((nx == 1) & (nz == 1)) | ((ny == 1) & (nz == 1))) {
     return pow(2.0 * alpha / CUDART_PI_D, 3. / 4.) * 4 * alpha;
@@ -24,7 +24,7 @@ __device__ double gbasis::normalization_primitive_d(double alpha, int nx, int ny
 }
 
 /// Compute the normalization constant of a single primitive Cartesian Gaussian, F-type only
-__device__ double gbasis::normalization_primitive_f(double alpha, int nx, int ny, int nz) {
+__device__ double chemtools::normalization_primitive_f(double alpha, int nx, int ny, int nz) {
   // (nx, ny, nz) are the angular components and sum to 3
   bool cond1 = ((nx == 3) & (ny == 0) & (nz == 0)) |
       ((nx == 0) & (ny == 3) & (nz == 0)) |
@@ -42,7 +42,7 @@ __device__ double gbasis::normalization_primitive_f(double alpha, int nx, int ny
 }
 
 /// Compute the normalization constant of a single primitive Cartesian Gaussian, G-type only
-__device__ double gbasis::normalization_primitive_g(double alpha, int nx, int ny, int nz) {
+__device__ double chemtools::normalization_primitive_g(double alpha, int nx, int ny, int nz) {
   // (nx, ny, nz) are the angular components and sum to 3
   bool cond1 = ((nx == 4) & (ny == 0) & (nz == 0)) |
       ((nx == 0) & (ny == 4) & (nz == 0)) |
@@ -70,25 +70,25 @@ __device__ double gbasis::normalization_primitive_g(double alpha, int nx, int ny
 }
 
 /// Compute the normalization constant of a single primitive Pure (Spherical Harmonics) Gaussian, D-type only.
-__device__ double gbasis::normalization_primitive_pure_d(double alpha) {
+__device__ double chemtools::normalization_primitive_pure_d(double alpha) {
   // Angular momentum L is 2 in this case.
   return sqrt(pow(2.0 * alpha / CUDART_PI_D, 1.5) * pow(4.0 * alpha, 2) / 3.0);
 }
 
-__device__ double gbasis::normalization_primitive_pure_f(double alpha) {
+__device__ double chemtools::normalization_primitive_pure_f(double alpha) {
   // Angular momentum is L is 3 in this case
   // Formula is ((2a / pi)^1.5  *  (4 a)^L  / (2L - 1)!! )^0.5
   return sqrt(pow(2.0 * alpha / CUDART_PI_D, 1.5) * pow(4.0 * alpha, 3) / 15.0);
 }
 
-__device__ double gbasis::normalization_primitive_pure_g(double alpha) {
+__device__ double chemtools::normalization_primitive_pure_g(double alpha) {
   // Angular momentum is L is 4 in this case
   // Formula is ((2a / pi)^1.5  *  (4 a)^L  / (2L - 1)!! )^0.5
   return sqrt(pow(2.0 * alpha / CUDART_PI_D, 1.5) * pow(4.0 * alpha, 4) / 105.0);
 }
 
 /// Compute the Pure/Harmonic basis functions for d-type shells.
-__device__ double gbasis::solid_harmonic_function_d(int m, double r_Ax, double r_Ay, double r_Az) {
+__device__ double chemtools::solid_harmonic_function_d(int m, double r_Ax, double r_Ay, double r_Az) {
   //  In the literature, e.g. in the book Molecular Electronic-Structure Theory by Helgaker, Jørgensen and Olsen,
   //          negative magnetic quantum numbers for pure functions are usually referring to sine-like functions.
   // so m=-2,-1 are sin functions.
@@ -118,7 +118,7 @@ __device__ double gbasis::solid_harmonic_function_d(int m, double r_Ax, double r
 }
 
 /// Compute the Pure/Harmonic basis functions for f-type shells.
-__device__ double gbasis::solid_harmonic_function_f(int m, double r_Ax, double r_Ay, double r_Az) {
+__device__ double chemtools::solid_harmonic_function_f(int m, double r_Ax, double r_Ay, double r_Az) {
   //  In the literature, e.g. in the book Molecular Electronic-Structure Theory by Helgaker, Jørgensen and Olsen,
   //          negative magnetic quantum numbers for pure functions are usually referring to sine-like functions.
   // so m=-2,-1 are sin functions.
@@ -156,7 +156,7 @@ __device__ double gbasis::solid_harmonic_function_f(int m, double r_Ax, double r
 
 
 /// Compute the Pure/Harmonic basis functions for g-type shells.
-__device__ double gbasis::solid_harmonic_function_g(int m, double r_Ax, double r_Ay, double r_Az) {
+__device__ double chemtools::solid_harmonic_function_g(int m, double r_Ax, double r_Ay, double r_Az) {
   if (m == 4) {
     return sqrt(35.0) * (pow(r_Ax, 4.0) - 6.0 * pow(r_Ax, 2.0) * pow(r_Ay, 2.0) + pow(r_Ay, 4.0)) / 8.0;
   }
