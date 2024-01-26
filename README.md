@@ -16,10 +16,8 @@ Please see the website for more information.
 To report any issues or ask questions, either [open an issue](
 https://github.com/qtchem/chemtoolscuda/issues/new) or email [qcdevs@gmail.com]().
 
-  
 ## Citation
 Please use the following citation in any publication:
-
 > **"ChemToolsCUDA: High performance CUDA/Python Library For Computing Quantum Chemistry Density-Based Descriptors for 
 > Larger Systems Using GPUS."**,
 > A. Tehrani, M. Richer, P. W. Ayers, F. Heidar‐Zadeh
