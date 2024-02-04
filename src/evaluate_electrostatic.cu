@@ -761,7 +761,7 @@ __device__ void compute_row_s_type_integral(const double3& A, const double3& pt,
         double3 P = {(alpha * A.x + beta * B.x) / (alpha + beta),
                      (alpha * A.y + beta * B.y) / (alpha + beta),
                      (alpha * A.z + beta * B.z) / (alpha + beta)};
-        if (pow(A.x - B.x, 2.0) + pow(A.y - B.y, 2.0) + pow(A.z - B.z, 2.0) < -log(screen_tol) * (alpha + beta) / (alpha * beta))  {
+        //if (pow(A.x - B.x, 2.0) + pow(A.y - B.y, 2.0) + pow(A.z - B.z, 2.0) < -log(screen_tol) * (alpha + beta) / (alpha * beta))  {
         switch(angmom_2){
           case 0:
              d_point_charge[point_index + (i_integral + 0) * npoints] +=
@@ -1004,7 +1004,7 @@ __device__ void compute_row_s_type_integral(const double3& A, const double3& pt,
                );
              break;
         } // End switch
-         } // End integral screening
+         //} // End integral screening
       }// End primitive 2
     }// End primitive 1
     // Update index to go to the next segmented shell.
@@ -1046,7 +1046,7 @@ __device__ void compute_row_px_type_integral(const double3& A, const double3& pt
         double3 P = {(alpha * A.x + beta * B.x) / (alpha + beta),
                      (alpha * A.y + beta * B.y) / (alpha + beta),
                      (alpha * A.z + beta * B.z) / (alpha + beta)};
-        if (pow(A.x - B.x, 2.0) + pow(A.y - B.y, 2.0) + pow(A.z - B.z, 2.0) < -log(screen_tol) * (alpha + beta) / (alpha * beta))  {
+        //if (pow(A.x - B.x, 2.0) + pow(A.y - B.y, 2.0) + pow(A.z - B.z, 2.0) < -log(screen_tol) * (alpha + beta) / (alpha * beta))  {
         switch(angmom_2){
           case 0:
              d_point_charge[point_index + (i_integral + 0) * npoints] +=
@@ -1289,7 +1289,7 @@ __device__ void compute_row_px_type_integral(const double3& A, const double3& pt
                );
              break;
         } // End switch
-         } // End integral screening
+         //} // End integral screening
       }// End primitive 2
     }// End primitive 1
     // Update index to go to the next segmented shell.
@@ -1331,7 +1331,7 @@ __device__ void compute_row_py_type_integral(const double3& A, const double3& pt
         double3 P = {(alpha * A.x + beta * B.x) / (alpha + beta),
                      (alpha * A.y + beta * B.y) / (alpha + beta),
                      (alpha * A.z + beta * B.z) / (alpha + beta)};
-        if (pow(A.x - B.x, 2.0) + pow(A.y - B.y, 2.0) + pow(A.z - B.z, 2.0) < -log(screen_tol) * (alpha + beta) / (alpha * beta))  {
+        //if (pow(A.x - B.x, 2.0) + pow(A.y - B.y, 2.0) + pow(A.z - B.z, 2.0) < -log(screen_tol) * (alpha + beta) / (alpha * beta))  {
         switch(angmom_2){
           case 0:
              d_point_charge[point_index + (i_integral + 0) * npoints] +=
@@ -1574,7 +1574,7 @@ __device__ void compute_row_py_type_integral(const double3& A, const double3& pt
                );
              break;
         } // End switch
-         } // End integral screening
+         //} // End integral screening
       }// End primitive 2
     }// End primitive 1
     // Update index to go to the next segmented shell.
@@ -1616,7 +1616,7 @@ __device__ void compute_row_pz_type_integral(const double3& A, const double3& pt
         double3 P = {(alpha * A.x + beta * B.x) / (alpha + beta),
                      (alpha * A.y + beta * B.y) / (alpha + beta),
                      (alpha * A.z + beta * B.z) / (alpha + beta)};
-        if (pow(A.x - B.x, 2.0) + pow(A.y - B.y, 2.0) + pow(A.z - B.z, 2.0) < -log(screen_tol) * (alpha + beta) / (alpha * beta))  {
+        //if (pow(A.x - B.x, 2.0) + pow(A.y - B.y, 2.0) + pow(A.z - B.z, 2.0) < -log(screen_tol) * (alpha + beta) / (alpha * beta))  {
         switch(angmom_2){
           case 0:
              d_point_charge[point_index + (i_integral + 0) * npoints] +=
@@ -1859,7 +1859,7 @@ __device__ void compute_row_pz_type_integral(const double3& A, const double3& pt
                );
              break;
         } // End switch
-         } // End integral screening
+         //} // End integral screening
       }// End primitive 2
     }// End primitive 1
     // Update index to go to the next segmented shell.
@@ -1901,7 +1901,7 @@ __device__ void compute_row_dxx_type_integral(const double3& A, const double3& p
         double3 P = {(alpha * A.x + beta * B.x) / (alpha + beta),
                      (alpha * A.y + beta * B.y) / (alpha + beta),
                      (alpha * A.z + beta * B.z) / (alpha + beta)};
-        if (pow(A.x - B.x, 2.0) + pow(A.y - B.y, 2.0) + pow(A.z - B.z, 2.0) < -log(screen_tol) * (alpha + beta) / (alpha * beta))  {
+        //if (pow(A.x - B.x, 2.0) + pow(A.y - B.y, 2.0) + pow(A.z - B.z, 2.0) < -log(screen_tol) * (alpha + beta) / (alpha * beta))  {
         switch(angmom_2){
           case 0:
              d_point_charge[point_index + (i_integral + 0) * npoints] +=
@@ -2144,7 +2144,7 @@ __device__ void compute_row_dxx_type_integral(const double3& A, const double3& p
                );
              break;
         } // End switch
-         } // End integral screening
+         //} // End integral screening
       }// End primitive 2
     }// End primitive 1
     // Update index to go to the next segmented shell.
@@ -2186,7 +2186,7 @@ __device__ void compute_row_dyy_type_integral(const double3& A, const double3& p
         double3 P = {(alpha * A.x + beta * B.x) / (alpha + beta),
                      (alpha * A.y + beta * B.y) / (alpha + beta),
                      (alpha * A.z + beta * B.z) / (alpha + beta)};
-        if (pow(A.x - B.x, 2.0) + pow(A.y - B.y, 2.0) + pow(A.z - B.z, 2.0) < -log(screen_tol) * (alpha + beta) / (alpha * beta))  {
+        //if (pow(A.x - B.x, 2.0) + pow(A.y - B.y, 2.0) + pow(A.z - B.z, 2.0) < -log(screen_tol) * (alpha + beta) / (alpha * beta))  {
         switch(angmom_2){
           case 0:
              d_point_charge[point_index + (i_integral + 0) * npoints] +=
@@ -2429,7 +2429,7 @@ __device__ void compute_row_dyy_type_integral(const double3& A, const double3& p
                );
              break;
         } // End switch
-         } // End integral screening
+         //} // End integral screening
       }// End primitive 2
     }// End primitive 1
     // Update index to go to the next segmented shell.
@@ -2471,7 +2471,7 @@ __device__ void compute_row_dzz_type_integral(const double3& A, const double3& p
         double3 P = {(alpha * A.x + beta * B.x) / (alpha + beta),
                      (alpha * A.y + beta * B.y) / (alpha + beta),
                      (alpha * A.z + beta * B.z) / (alpha + beta)};
-        if (pow(A.x - B.x, 2.0) + pow(A.y - B.y, 2.0) + pow(A.z - B.z, 2.0) < -log(screen_tol) * (alpha + beta) / (alpha * beta))  {
+        //if (pow(A.x - B.x, 2.0) + pow(A.y - B.y, 2.0) + pow(A.z - B.z, 2.0) < -log(screen_tol) * (alpha + beta) / (alpha * beta))  {
         switch(angmom_2){
           case 0:
              d_point_charge[point_index + (i_integral + 0) * npoints] +=
@@ -2714,7 +2714,7 @@ __device__ void compute_row_dzz_type_integral(const double3& A, const double3& p
                );
              break;
         } // End switch
-         } // End integral screening
+         //} // End integral screening
       }// End primitive 2
     }// End primitive 1
     // Update index to go to the next segmented shell.
@@ -2756,7 +2756,7 @@ __device__ void compute_row_dxy_type_integral(const double3& A, const double3& p
         double3 P = {(alpha * A.x + beta * B.x) / (alpha + beta),
                      (alpha * A.y + beta * B.y) / (alpha + beta),
                      (alpha * A.z + beta * B.z) / (alpha + beta)};
-        if (pow(A.x - B.x, 2.0) + pow(A.y - B.y, 2.0) + pow(A.z - B.z, 2.0) < -log(screen_tol) * (alpha + beta) / (alpha * beta))  {
+        //if (pow(A.x - B.x, 2.0) + pow(A.y - B.y, 2.0) + pow(A.z - B.z, 2.0) < -log(screen_tol) * (alpha + beta) / (alpha * beta))  {
         switch(angmom_2){
           case 0:
              d_point_charge[point_index + (i_integral + 0) * npoints] +=
@@ -2999,7 +2999,7 @@ __device__ void compute_row_dxy_type_integral(const double3& A, const double3& p
                );
              break;
         } // End switch
-         } // End integral screening
+         //} // End integral screening
       }// End primitive 2
     }// End primitive 1
     // Update index to go to the next segmented shell.
@@ -3041,7 +3041,7 @@ __device__ void compute_row_dxz_type_integral(const double3& A, const double3& p
         double3 P = {(alpha * A.x + beta * B.x) / (alpha + beta),
                      (alpha * A.y + beta * B.y) / (alpha + beta),
                      (alpha * A.z + beta * B.z) / (alpha + beta)};
-        if (pow(A.x - B.x, 2.0) + pow(A.y - B.y, 2.0) + pow(A.z - B.z, 2.0) < -log(screen_tol) * (alpha + beta) / (alpha * beta))  {
+        //if (pow(A.x - B.x, 2.0) + pow(A.y - B.y, 2.0) + pow(A.z - B.z, 2.0) < -log(screen_tol) * (alpha + beta) / (alpha * beta))  {
         switch(angmom_2){
           case 0:
              d_point_charge[point_index + (i_integral + 0) * npoints] +=
@@ -3284,7 +3284,7 @@ __device__ void compute_row_dxz_type_integral(const double3& A, const double3& p
                );
              break;
         } // End switch
-         } // End integral screening
+         //} // End integral screening
       }// End primitive 2
     }// End primitive 1
     // Update index to go to the next segmented shell.
@@ -3326,7 +3326,7 @@ __device__ void compute_row_dyz_type_integral(const double3& A, const double3& p
         double3 P = {(alpha * A.x + beta * B.x) / (alpha + beta),
                      (alpha * A.y + beta * B.y) / (alpha + beta),
                      (alpha * A.z + beta * B.z) / (alpha + beta)};
-        if (pow(A.x - B.x, 2.0) + pow(A.y - B.y, 2.0) + pow(A.z - B.z, 2.0) < -log(screen_tol) * (alpha + beta) / (alpha * beta))  {
+        //if (pow(A.x - B.x, 2.0) + pow(A.y - B.y, 2.0) + pow(A.z - B.z, 2.0) < -log(screen_tol) * (alpha + beta) / (alpha * beta))  {
         switch(angmom_2){
           case 0:
              d_point_charge[point_index + (i_integral + 0) * npoints] +=
@@ -3569,7 +3569,7 @@ __device__ void compute_row_dyz_type_integral(const double3& A, const double3& p
                );
              break;
         } // End switch
-         } // End integral screening
+         //} // End integral screening
       }// End primitive 2
     }// End primitive 1
     // Update index to go to the next segmented shell.
@@ -3611,7 +3611,7 @@ __device__ void compute_row_fxxx_type_integral(const double3& A, const double3& 
         double3 P = {(alpha * A.x + beta * B.x) / (alpha + beta),
                      (alpha * A.y + beta * B.y) / (alpha + beta),
                      (alpha * A.z + beta * B.z) / (alpha + beta)};
-        if (pow(A.x - B.x, 2.0) + pow(A.y - B.y, 2.0) + pow(A.z - B.z, 2.0) < -log(screen_tol) * (alpha + beta) / (alpha * beta))  {
+        //if (pow(A.x - B.x, 2.0) + pow(A.y - B.y, 2.0) + pow(A.z - B.z, 2.0) < -log(screen_tol) * (alpha + beta) / (alpha * beta))  {
         switch(angmom_2){
           case 0:
              d_point_charge[point_index + (i_integral + 0) * npoints] +=
@@ -3854,7 +3854,7 @@ __device__ void compute_row_fxxx_type_integral(const double3& A, const double3& 
                );
              break;
         } // End switch
-         } // End integral screening
+         //} // End integral screening
       }// End primitive 2
     }// End primitive 1
     // Update index to go to the next segmented shell.
@@ -3896,7 +3896,7 @@ __device__ void compute_row_fyyy_type_integral(const double3& A, const double3& 
         double3 P = {(alpha * A.x + beta * B.x) / (alpha + beta),
                      (alpha * A.y + beta * B.y) / (alpha + beta),
                      (alpha * A.z + beta * B.z) / (alpha + beta)};
-        if (pow(A.x - B.x, 2.0) + pow(A.y - B.y, 2.0) + pow(A.z - B.z, 2.0) < -log(screen_tol) * (alpha + beta) / (alpha * beta))  {
+        //if (pow(A.x - B.x, 2.0) + pow(A.y - B.y, 2.0) + pow(A.z - B.z, 2.0) < -log(screen_tol) * (alpha + beta) / (alpha * beta))  {
         switch(angmom_2){
           case 0:
              d_point_charge[point_index + (i_integral + 0) * npoints] +=
@@ -4139,7 +4139,7 @@ __device__ void compute_row_fyyy_type_integral(const double3& A, const double3& 
                );
              break;
         } // End switch
-         } // End integral screening
+         //} // End integral screening
       }// End primitive 2
     }// End primitive 1
     // Update index to go to the next segmented shell.
@@ -4181,7 +4181,7 @@ __device__ void compute_row_fzzz_type_integral(const double3& A, const double3& 
         double3 P = {(alpha * A.x + beta * B.x) / (alpha + beta),
                      (alpha * A.y + beta * B.y) / (alpha + beta),
                      (alpha * A.z + beta * B.z) / (alpha + beta)};
-        if (pow(A.x - B.x, 2.0) + pow(A.y - B.y, 2.0) + pow(A.z - B.z, 2.0) < -log(screen_tol) * (alpha + beta) / (alpha * beta))  {
+        //if (pow(A.x - B.x, 2.0) + pow(A.y - B.y, 2.0) + pow(A.z - B.z, 2.0) < -log(screen_tol) * (alpha + beta) / (alpha * beta))  {
         switch(angmom_2){
           case 0:
              d_point_charge[point_index + (i_integral + 0) * npoints] +=
@@ -4424,7 +4424,7 @@ __device__ void compute_row_fzzz_type_integral(const double3& A, const double3& 
                );
              break;
         } // End switch
-         } // End integral screening
+         //} // End integral screening
       }// End primitive 2
     }// End primitive 1
     // Update index to go to the next segmented shell.
@@ -4466,7 +4466,7 @@ __device__ void compute_row_fxyy_type_integral(const double3& A, const double3& 
         double3 P = {(alpha * A.x + beta * B.x) / (alpha + beta),
                      (alpha * A.y + beta * B.y) / (alpha + beta),
                      (alpha * A.z + beta * B.z) / (alpha + beta)};
-        if (pow(A.x - B.x, 2.0) + pow(A.y - B.y, 2.0) + pow(A.z - B.z, 2.0) < -log(screen_tol) * (alpha + beta) / (alpha * beta))  {
+        //if (pow(A.x - B.x, 2.0) + pow(A.y - B.y, 2.0) + pow(A.z - B.z, 2.0) < -log(screen_tol) * (alpha + beta) / (alpha * beta))  {
         switch(angmom_2){
           case 0:
              d_point_charge[point_index + (i_integral + 0) * npoints] +=
@@ -4709,7 +4709,7 @@ __device__ void compute_row_fxyy_type_integral(const double3& A, const double3& 
                );
              break;
         } // End switch
-         } // End integral screening
+         //} // End integral screening
       }// End primitive 2
     }// End primitive 1
     // Update index to go to the next segmented shell.
@@ -4751,7 +4751,7 @@ __device__ void compute_row_fxxy_type_integral(const double3& A, const double3& 
         double3 P = {(alpha * A.x + beta * B.x) / (alpha + beta),
                      (alpha * A.y + beta * B.y) / (alpha + beta),
                      (alpha * A.z + beta * B.z) / (alpha + beta)};
-        if (pow(A.x - B.x, 2.0) + pow(A.y - B.y, 2.0) + pow(A.z - B.z, 2.0) < -log(screen_tol) * (alpha + beta) / (alpha * beta))  {
+        //if (pow(A.x - B.x, 2.0) + pow(A.y - B.y, 2.0) + pow(A.z - B.z, 2.0) < -log(screen_tol) * (alpha + beta) / (alpha * beta))  {
         switch(angmom_2){
           case 0:
              d_point_charge[point_index + (i_integral + 0) * npoints] +=
@@ -4994,7 +4994,7 @@ __device__ void compute_row_fxxy_type_integral(const double3& A, const double3& 
                );
              break;
         } // End switch
-         } // End integral screening
+         //} // End integral screening
       }// End primitive 2
     }// End primitive 1
     // Update index to go to the next segmented shell.
@@ -5036,7 +5036,7 @@ __device__ void compute_row_fxxz_type_integral(const double3& A, const double3& 
         double3 P = {(alpha * A.x + beta * B.x) / (alpha + beta),
                      (alpha * A.y + beta * B.y) / (alpha + beta),
                      (alpha * A.z + beta * B.z) / (alpha + beta)};
-        if (pow(A.x - B.x, 2.0) + pow(A.y - B.y, 2.0) + pow(A.z - B.z, 2.0) < -log(screen_tol) * (alpha + beta) / (alpha * beta))  {
+        //if (pow(A.x - B.x, 2.0) + pow(A.y - B.y, 2.0) + pow(A.z - B.z, 2.0) < -log(screen_tol) * (alpha + beta) / (alpha * beta))  {
         switch(angmom_2){
           case 0:
              d_point_charge[point_index + (i_integral + 0) * npoints] +=
@@ -5279,7 +5279,7 @@ __device__ void compute_row_fxxz_type_integral(const double3& A, const double3& 
                );
              break;
         } // End switch
-         } // End integral screening
+         //} // End integral screening
       }// End primitive 2
     }// End primitive 1
     // Update index to go to the next segmented shell.
@@ -5321,7 +5321,7 @@ __device__ void compute_row_fxzz_type_integral(const double3& A, const double3& 
         double3 P = {(alpha * A.x + beta * B.x) / (alpha + beta),
                      (alpha * A.y + beta * B.y) / (alpha + beta),
                      (alpha * A.z + beta * B.z) / (alpha + beta)};
-        if (pow(A.x - B.x, 2.0) + pow(A.y - B.y, 2.0) + pow(A.z - B.z, 2.0) < -log(screen_tol) * (alpha + beta) / (alpha * beta))  {
+        //if (pow(A.x - B.x, 2.0) + pow(A.y - B.y, 2.0) + pow(A.z - B.z, 2.0) < -log(screen_tol) * (alpha + beta) / (alpha * beta))  {
         switch(angmom_2){
           case 0:
              d_point_charge[point_index + (i_integral + 0) * npoints] +=
@@ -5564,7 +5564,7 @@ __device__ void compute_row_fxzz_type_integral(const double3& A, const double3& 
                );
              break;
         } // End switch
-         } // End integral screening
+         //} // End integral screening
       }// End primitive 2
     }// End primitive 1
     // Update index to go to the next segmented shell.
@@ -5606,7 +5606,7 @@ __device__ void compute_row_fyzz_type_integral(const double3& A, const double3& 
         double3 P = {(alpha * A.x + beta * B.x) / (alpha + beta),
                      (alpha * A.y + beta * B.y) / (alpha + beta),
                      (alpha * A.z + beta * B.z) / (alpha + beta)};
-        if (pow(A.x - B.x, 2.0) + pow(A.y - B.y, 2.0) + pow(A.z - B.z, 2.0) < -log(screen_tol) * (alpha + beta) / (alpha * beta))  {
+        //if (pow(A.x - B.x, 2.0) + pow(A.y - B.y, 2.0) + pow(A.z - B.z, 2.0) < -log(screen_tol) * (alpha + beta) / (alpha * beta))  {
         switch(angmom_2){
           case 0:
              d_point_charge[point_index + (i_integral + 0) * npoints] +=
@@ -5849,7 +5849,7 @@ __device__ void compute_row_fyzz_type_integral(const double3& A, const double3& 
                );
              break;
         } // End switch
-         } // End integral screening
+         //} // End integral screening
       }// End primitive 2
     }// End primitive 1
     // Update index to go to the next segmented shell.
@@ -5891,7 +5891,7 @@ __device__ void compute_row_fyyz_type_integral(const double3& A, const double3& 
         double3 P = {(alpha * A.x + beta * B.x) / (alpha + beta),
                      (alpha * A.y + beta * B.y) / (alpha + beta),
                      (alpha * A.z + beta * B.z) / (alpha + beta)};
-        if (pow(A.x - B.x, 2.0) + pow(A.y - B.y, 2.0) + pow(A.z - B.z, 2.0) < -log(screen_tol) * (alpha + beta) / (alpha * beta))  {
+        //if (pow(A.x - B.x, 2.0) + pow(A.y - B.y, 2.0) + pow(A.z - B.z, 2.0) < -log(screen_tol) * (alpha + beta) / (alpha * beta))  {
         switch(angmom_2){
           case 0:
              d_point_charge[point_index + (i_integral + 0) * npoints] +=
@@ -6134,7 +6134,7 @@ __device__ void compute_row_fyyz_type_integral(const double3& A, const double3& 
                );
              break;
         } // End switch
-         } // End integral screening
+         //} // End integral screening
       }// End primitive 2
     }// End primitive 1
     // Update index to go to the next segmented shell.
@@ -6176,7 +6176,7 @@ __device__ void compute_row_fxyz_type_integral(const double3& A, const double3& 
         double3 P = {(alpha * A.x + beta * B.x) / (alpha + beta),
                      (alpha * A.y + beta * B.y) / (alpha + beta),
                      (alpha * A.z + beta * B.z) / (alpha + beta)};
-        if (pow(A.x - B.x, 2.0) + pow(A.y - B.y, 2.0) + pow(A.z - B.z, 2.0) < -log(screen_tol) * (alpha + beta) / (alpha * beta))  {
+        //if (pow(A.x - B.x, 2.0) + pow(A.y - B.y, 2.0) + pow(A.z - B.z, 2.0) < -log(screen_tol) * (alpha + beta) / (alpha * beta))  {
         switch(angmom_2){
           case 0:
              d_point_charge[point_index + (i_integral + 0) * npoints] +=
@@ -6419,7 +6419,7 @@ __device__ void compute_row_fxyz_type_integral(const double3& A, const double3& 
                );
              break;
         } // End switch
-         } // End integral screening
+         //} // End integral screening
       }// End primitive 2
     }// End primitive 1
     // Update index to go to the next segmented shell.
