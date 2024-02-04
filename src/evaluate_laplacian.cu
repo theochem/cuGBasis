@@ -664,7 +664,7 @@ __host__ std::vector<double> chemtools::evaluate_laplacian_on_any_grid_handle(
   cudaError_t error_id = cudaMemGetInfo(&free_mem, &total_mem);
   //  printf("Total Free Memory Avaiable in GPU is %zu \n", free_mem);
   // Calculate how much memory can fit inside the GPU memory.
-  size_t t_numb_chunks = t_highest_number_of_bytes / free_mem;
+  size_t t_numb_chunks = t_highest_number_of_bytes / (free_mem - 500000000);
   // Calculate how many points we can compute with free memory minus 0.5 gigabyte for safe measures:
   //    This is calculated by solving (5 * N M + M^2 + 3N) * 8 bytes = Free memory (in bytes)  for N to get:
   size_t t_numb_pts_of_each_chunk = (

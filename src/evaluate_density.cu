@@ -486,12 +486,16 @@ __host__ std::vector<double> chemtools::evaluate_electron_density_on_cubic(
   size_t t_numb_pts = number_of_pts;
   size_t t_nbasis = nbasisfuncs;
   size_t t_highest_number_of_bytes = sizeof(double) * (2 * t_numb_pts * t_nbasis + t_nbasis * t_nbasis);
-  // Calculate how much memory can fit inside a 12 GB (11.5 GB for safe measures) GPU memory.
-  size_t t_numb_chunks = t_highest_number_of_bytes / 11500000000;
-  // Calculate how many points we can compute in the x-axis (keeping y-axis and z-axis fixed) with 11.5 Gb
+  size_t free_mem = 0;    // in bytes
+  size_t total_mem = 0;  // in bytes
+  cudaError_t error_id = cudaMemGetInfo(&free_mem, &total_mem);
+  free_mem -= 500000000;  // Subtract 0.5 GB for safe measures
+  // Calculate how much memory can fit inside a  GPU memory.
+  size_t t_numb_chunks = t_highest_number_of_bytes / free_mem;
+  // Calculate how many points we can compute in the x-axis (keeping y-axis and z-axis fixed) with free memory
   //    This is calculated by solving (2 * N_x N_y N_z M + M^2) * 8 bytes = 11.5 Gb(in bytes)  for N_x to get:
   //    The reasoning on the x-axis is because we are storing the cubic grid that iterates z-axis first, then y-axis
-  size_t t_numb_pts_of_each_chunk_x = ((11500000000 / (sizeof(double)))  - t_nbasis * t_nbasis) /
+  size_t t_numb_pts_of_each_chunk_x = ((free_mem / (sizeof(double)))  - t_nbasis * t_nbasis) /
       (2 * t_numb_pts_y * t_numb_pts_z * t_nbasis);
   if (t_numb_pts_of_each_chunk_x == 0 and t_numb_chunks > 1.0) {
        // Haven't handle this case yet
@@ -686,11 +690,15 @@ __host__ std::vector<double> chemtools::evaluate_electron_density_on_any_grid_ha
   size_t t_numb_pts = knumb_points;
   size_t t_nbasis = nbasisfuncs;
   size_t t_highest_number_of_bytes = sizeof(double) * (2 * t_numb_pts * t_nbasis + t_nbasis * t_nbasis);
-  // Calculate how much memory can fit inside a 12 GB (11.5 GB for safe measures) GPU memory.
-  size_t t_numb_chunks = t_highest_number_of_bytes / 11500000000;
+  size_t free_mem = 0;   // in bytes
+  size_t total_mem = 0;  // in bytes
+  cudaError_t error_id = cudaMemGetInfo(&free_mem, &total_mem);
+  free_mem -= 500000000;
+  // Calculate how much memory can fit inside a GPU memory.
+  size_t t_numb_chunks = t_highest_number_of_bytes / free_mem;
   // Calculate how many points we can compute with 11.5 Gb:
   //    This is calculated by solving (2 * N M + M^2) * 8 bytes = 11.5 Gb(in bytes)  for N to get:
-  size_t t_numb_pts_of_each_chunk = ((11500000000 / (sizeof(double)))  - t_nbasis * t_nbasis) / (2 * t_nbasis);
+  size_t t_numb_pts_of_each_chunk = ((free_mem / (sizeof(double)))  - t_nbasis * t_nbasis) / (2 * t_nbasis);
   if (t_numb_pts_of_each_chunk == 0 and t_numb_chunks > 1.0) {
     // Haven't handle this case yet
     assert(0);
