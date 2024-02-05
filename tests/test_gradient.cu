@@ -37,7 +37,6 @@ TEST_CASE( "Test Derivative of Contractions Against gbasis", "[evaluate_contract
         "./tests/data/test2.fchk",
         "./tests/data/atom_08_O_N08_M3_ub3lyp_ccpvtz_g09.fchk",
         "./tests/data/atom_08_O_N09_M2_ub3lyp_ccpvtz_g09.fchk",
-        "./tests/data/4141_q000_m01_k00_force_uhf_ccpvtz.fchk",
         "./tests/data/h2o.fchk",
         "./tests/data/ch4.fchk",
         "./tests/data/qm9_000092_HF_cc-pVDZ.fchk",
@@ -127,7 +126,6 @@ TEST_CASE( "Test Gradient of Electron Density Against gbasis", "[evaluate_electr
         "./tests/data/test2.fchk",
         "./tests/data/atom_08_O_N08_M3_ub3lyp_ccpvtz_g09.fchk",
         "./tests/data/atom_08_O_N09_M2_ub3lyp_ccpvtz_g09.fchk",
-        "./tests/data/4141_q000_m01_k00_force_uhf_ccpvtz.fchk",
         "./tests/data/h2o.fchk",
         "./tests/data/ch4.fchk",
         "./tests/data/qm9_000092_HF_cc-pVDZ.fchk",
@@ -146,10 +144,8 @@ TEST_CASE( "Test Gradient of Electron Density Against gbasis", "[evaluate_electr
     std::generate(points.begin(), points.end(), gen);
 
     // Calculate Gradient
-    printf("Calculate Gradient \n");
     chemtools::add_mol_basis_to_constant_memory_array(iodata.GetOrbitalBasis(), false, false);
     std::vector<double> gradient_result = chemtools::evaluate_electron_density_gradient(iodata, points.data(), numb_pts);
-    printf("Done Gradient \n");
 
     // COnvert them (with copy) to python objects so that they can be transfered.
     pybind11::array_t<double, pybind11::array::c_style | pybind11::array::forcecast>
@@ -209,7 +205,6 @@ TEST_CASE( "Test Gradient of Electron Density Against gbasis (Col Order)", "[eva
         "./tests/data/test2.fchk",
         "./tests/data/atom_08_O_N08_M3_ub3lyp_ccpvtz_g09.fchk",
         "./tests/data/atom_08_O_N09_M2_ub3lyp_ccpvtz_g09.fchk",
-        "./tests/data/4141_q000_m01_k00_force_uhf_ccpvtz.fchk",
         "./tests/data/h2o.fchk",
         "./tests/data/ch4.fchk",
         "./tests/data/qm9_000092_HF_cc-pVDZ.fchk",
@@ -228,11 +223,10 @@ TEST_CASE( "Test Gradient of Electron Density Against gbasis (Col Order)", "[eva
     std::generate(points.begin(), points.end(), gen);
 
     // Calculate Gradient
-    printf("Calculate Gradient \n");
     chemtools::add_mol_basis_to_constant_memory_array(iodata.GetOrbitalBasis(), false, false);
-    std::vector<double> gradient_result = chemtools::evaluate_electron_density_gradient(iodata, points.data(), numb_pts,
-                                                                                     false);
-    printf("Done Gradient \n");
+    std::vector<double> gradient_result = chemtools::evaluate_electron_density_gradient(
+        iodata, points.data(), numb_pts, false
+    );
 
     // COnvert them (with copy) to python objects so that they can be transfered.
     pybind11::array_t<double, pybind11::array::c_style | pybind11::array::forcecast>

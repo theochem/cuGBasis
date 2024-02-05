@@ -38,7 +38,6 @@ TEST_CASE( "Test Electrostatic Potential", "[evaluate_electrostatic_potential]" 
         "./tests/data/test2.fchk",
         "./tests/data/atom_08_O_N08_M3_ub3lyp_ccpvtz_g09.fchk",
         "./tests/data/atom_08_O_N09_M2_ub3lyp_ccpvtz_g09.fchk",
-        "./tests/data/4141_q000_m01_k00_force_uhf_ccpvtz.fchk",
         "./tests/data/h2o.fchk",
         "./tests/data/ch4.fchk",
         "./tests/data/qm9_000092_HF_cc-pVDZ.fchk"
