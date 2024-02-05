@@ -22,12 +22,10 @@ add_subdirectory(./libs/pybind11)
 # Create a CUDA library chemtools_cuda using nvcc compiler that codes the entire CUDA/C++.
 set(SOURCES
         src/basis_to_gpu.cu
-        src/boys_functions.cu
         src/iodata.cpp
         src/pymolecule.cu
         src/cuda_basis_utils.cu
         src/cuda_utils.cu
-		src/integral_coeffs.cu
         src/evaluate_density.cu
         src/evaluate_gradient.cu
 		src/evaluate_electrostatic.cu
