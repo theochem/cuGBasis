@@ -49,7 +49,7 @@ __device__ void chemtools::evaluate_contractions(
       for(int i_prim=0; i_prim < numb_primitives; i_prim++) {
         double coeff_prim = g_constant_basis[iconst + numb_primitives * (i_segm_shell + 1) + i_prim + 1 + i_segm_shell];
         double exponential = exp(-g_constant_basis[iconst + i_prim] *
-            ( r_A_x * r_A_x + r_A_y * r_A_y + r_A_z * r_A_Z));
+            ( r_A_x * r_A_x + r_A_y * r_A_y + r_A_z * r_A_z));
         // If S, P, D or F orbital/
         if(angmom == 0) {
           d_contractions_array[global_index + icontractions * knumb_points] +=
