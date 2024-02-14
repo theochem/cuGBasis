@@ -77,6 +77,9 @@ endif()
 
 target_compile_options(chemtools_cuda_lib PRIVATE $<$<COMPILE_LANGUAGE:CUDA>:
         -rdc=true --expt-relaxed-constexpr -v
+	--ptxas-options=-v
+	-O3
+	--optimization-info=inline
 	>) # -rdc=true  std=c++14 isn't needed since CMAKE_CUDA_STANDARD already set Debuging -G -g turns off optimization, -O3 turns on optmization, -gencode=arch=compute_35,code=sm_35
 # --expt-relaxed-constexpr is needed for Boys_function.h to work.
 target_link_libraries(chemtools_cuda_lib PRIVATE ${CUDA_cudadevrt_LIBRARY})
