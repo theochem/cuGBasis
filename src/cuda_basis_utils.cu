@@ -34,15 +34,18 @@ __device__ double chemtools::normalization_primitive_f(double alpha, int nx, int
   bool cond1 = ((nx == 3) & (ny == 0) & (nz == 0)) |
       ((nx == 0) & (ny == 3) & (nz == 0)) |
       ((nx == 0) & (ny == 0) & (nz == 3));
+  double x = 2.0 * alpha / CUDART_PI_D;
+  double a = 4.0 * alpha;
+  double num = x * sqrt(x) * a * a * a;
   if (cond1) {
-    return sqrt(pow(2.0 * alpha / CUDART_PI_D, 3.0 / 2.0) * pow(4 * alpha, 3) / 15);
+    return sqrt(num / 15.0);
   }
   bool cond2 = ((nx == 1) & (ny == 1) & (nz == 1));
   if (cond2) {
-    return sqrt(pow(2.0 * alpha / CUDART_PI_D, 3.0 / 2.0) * pow(4 * alpha, 3));
+    return sqrt(num);
   }
   else {
-    return sqrt(pow(2.0 * alpha / CUDART_PI_D, 3.0 / 2.0) * pow(4 * alpha, 3) / 3);
+    return sqrt(num / 3.0);
   }
 }
 

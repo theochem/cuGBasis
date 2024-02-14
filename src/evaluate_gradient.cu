@@ -44,7 +44,7 @@ __global__ void chemtools::evaluate_derivatives_contractions_from_constant_memor
         for(int i_prim=0; i_prim < numb_primitives; i_prim++) {
           double coeff_prim = g_constant_basis[iconst + numb_primitives * (i_segm_shell + 1) + i_prim + 1 + i_segm_shell];
           double alpha = g_constant_basis[iconst + i_prim];
-          double exponential = exp(- alpha * ( pow(r_A_x, 2.0) + pow(r_A_y, 2.0) + pow(r_A_z, 2.0)));
+          double exponential = exp(- alpha * ( r_A_x * r_A_x + r_A_y * r_A_y + r_A_z * r_A_z));
 
           // If S, P, D or F orbital/
           if(angmom == 0) {
@@ -313,18 +313,18 @@ __global__ void chemtools::evaluate_derivatives_contractions_from_constant_memor
             d_deriv_contracs[knumb_points * (knumb_contractions + icontractions) + global_index] +=
                 chemtools::normalization_primitive_f(g_constant_basis[iconst + i_prim], 3, 0, 0) *
                     coeff_prim *
-                    -2*alpha*pow(r_A_x, 3)*r_A_y *   // deriv x**3*exp(-a*(x**2 + y**2 + z**2)) / dy
+                    -2*alpha*(r_A_x * r_A_x * r_A_x)*r_A_y *   // deriv x**3*exp(-a*(x**2 + y**2 + z**2)) / dy
                     exponential;
             d_deriv_contracs[knumb_points * (knumb_contractions * 2 + icontractions) + global_index] +=
                 chemtools::normalization_primitive_f(g_constant_basis[iconst + i_prim], 3, 0, 0) *
                     coeff_prim *
-                    -2*alpha*pow(r_A_x, 3)*r_A_z *   // deriv x**3*exp(-a*(x**2 + y**2 + z**2)) / dz
+                    -2*alpha*(r_A_x * r_A_x * r_A_x)*r_A_z *   // deriv x**3*exp(-a*(x**2 + y**2 + z**2)) / dz
                     exponential;
             // Take the first, second, third derivative of y_a^3  e^{-a r_a^2}
             d_deriv_contracs[knumb_points * (icontractions + 1) + global_index] +=
                 chemtools::normalization_primitive_f(g_constant_basis[iconst + i_prim], 0, 3, 0) *
                     coeff_prim *
-                    -2*alpha*r_A_x*pow(r_A_y, 3) *   // d y**3*exp(-a*(x**2 + y**2 + z**2)) / dx
+                    -2*alpha*r_A_x*(r_A_y * r_A_y * r_A_y) *   // d y**3*exp(-a*(x**2 + y**2 + z**2)) / dx
                     exponential;
             d_deriv_contracs[knumb_points * (knumb_contractions + icontractions + 1) + global_index] +=
                 chemtools::normalization_primitive_f(g_constant_basis[iconst + i_prim], 0, 3, 0) *
@@ -334,18 +334,18 @@ __global__ void chemtools::evaluate_derivatives_contractions_from_constant_memor
             d_deriv_contracs[knumb_points * (knumb_contractions * 2 + icontractions + 1) + global_index] +=
                 chemtools::normalization_primitive_f(g_constant_basis[iconst + i_prim], 0, 3, 0) *
                     coeff_prim *
-                    -2*alpha*pow(r_A_y, 3)*r_A_z *   // d y**3*exp(-a*(x**2 + y**2 + z**2)) / dz
+                    -2*alpha*(r_A_y * r_A_y * r_A_y)*r_A_z *   // d y**3*exp(-a*(x**2 + y**2 + z**2)) / dz
                     exponential;
             // Take the first, second, third derivative of z_A^3  e^{-a r_a^2}
             d_deriv_contracs[knumb_points * (icontractions + 2) + global_index] +=
                 chemtools::normalization_primitive_f(g_constant_basis[iconst + i_prim], 0, 0, 3) *
                     coeff_prim *
-                    -2*alpha*r_A_x*pow(r_A_z, 3) *   // d z**3*exp(-a*(x**2 + y**2 + z**2)) / dx
+                    -2*alpha*r_A_x*(r_A_z * r_A_z * r_A_z) *   // d z**3*exp(-a*(x**2 + y**2 + z**2)) / dx
                     exponential;
             d_deriv_contracs[knumb_points * (knumb_contractions + icontractions + 2) + global_index] +=
                 chemtools::normalization_primitive_f(g_constant_basis[iconst + i_prim], 0, 0, 3) *
                     coeff_prim *
-                    -2*alpha*r_A_y*pow(r_A_z, 3) *   // d z**3*exp(-a*(x**2 + y**2 + z**2)) / dy
+                    -2*alpha*r_A_y*(r_A_z * r_A_z * r_A_z) *   // d z**3*exp(-a*(x**2 + y**2 + z**2)) / dy
                     exponential;
             d_deriv_contracs[knumb_points * (knumb_contractions * 2 + icontractions + 2) + global_index] +=
                 chemtools::normalization_primitive_f(g_constant_basis[iconst + i_prim], 0, 0, 3) *
@@ -605,28 +605,28 @@ __global__ void chemtools::evaluate_derivatives_contractions_from_constant_memor
             d_deriv_contracs[knumb_points * (icontractions + 14) + global_index] +=
                 chemtools::normalization_primitive_f(g_constant_basis[iconst + i_prim], 0, 0, 4) *
                     coeff_prim *
-                    -2*alpha*r_A_x*pow(r_A_z, 4) *   // d z**4*exp(-a*(x**2 + y**2 + z**2)) / dx
+                    -2*alpha*r_A_x*(r_A_z * r_A_z * r_A_z * r_A_z) *   // d z**4*exp(-a*(x**2 + y**2 + z**2)) / dx
                     exponential;
             d_deriv_contracs[knumb_points * (knumb_contractions + icontractions + 14) + global_index] +=
                 chemtools::normalization_primitive_f(g_constant_basis[iconst + i_prim], 0, 0, 4) *
                     coeff_prim *
-                    -2*alpha*r_A_y*pow(r_A_z, 4) *   // d z**4*exp(-a*(x**2 + y**2 + z**2)) / dy
+                    -2*alpha*r_A_y*(r_A_z * r_A_z * r_A_z * r_A_z) *   // d z**4*exp(-a*(x**2 + y**2 + z**2)) / dy
                     exponential;
             d_deriv_contracs[knumb_points * (knumb_contractions * 2 + icontractions + 14) + global_index] +=
                 chemtools::normalization_primitive_f(g_constant_basis[iconst + i_prim],  0, 0, 4) *
                     coeff_prim *
-                    2*pow(r_A_z, 3)*(-alpha*r_A_z*r_A_z + 2) *   // d z**4*exp(-a*(x**2 + y**2 + z**2)) / dz
+                    2*(r_A_z * r_A_z * r_A_z)*(-alpha*r_A_z*r_A_z + 2) *   // d z**4*exp(-a*(x**2 + y**2 + z**2)) / dz
                     exponential;
             // Take the first, second, third derivative of y z^3 z e^{-a r_a^2}
             d_deriv_contracs[knumb_points * (icontractions + 13) + global_index] +=
                 chemtools::normalization_primitive_f(g_constant_basis[iconst + i_prim], 0, 1, 3) *
                     coeff_prim *
-                    -2*alpha*r_A_x*r_A_y*pow(r_A_z, 3) *   // d y*z**3*exp(-a*(x**2 + y**2 + z**2)) / dx
+                    -2*alpha*r_A_x*r_A_y*(r_A_z * r_A_z * r_A_z) *   // d y*z**3*exp(-a*(x**2 + y**2 + z**2)) / dx
                     exponential;
             d_deriv_contracs[knumb_points * (knumb_contractions + icontractions + 13) + global_index] +=
                 chemtools::normalization_primitive_f(g_constant_basis[iconst + i_prim], 0, 1, 3) *
                     coeff_prim *
-                    pow(r_A_z, 3)*(-2*alpha*r_A_y*r_A_y + 1) *   // d y*z**3*exp(-a*(x**2 + y**2 + z**2)) / dy
+                    (r_A_z * r_A_z * r_A_z)*(-2*alpha*r_A_y*r_A_y + 1) *   // d y*z**3*exp(-a*(x**2 + y**2 + z**2)) / dy
                     exponential;
             d_deriv_contracs[knumb_points * (knumb_contractions * 2 + icontractions + 13) + global_index] +=
                 chemtools::normalization_primitive_f(g_constant_basis[iconst + i_prim],  0, 1, 3) *
@@ -653,7 +653,7 @@ __global__ void chemtools::evaluate_derivatives_contractions_from_constant_memor
             d_deriv_contracs[knumb_points * (icontractions + 11) + global_index] +=
                 chemtools::normalization_primitive_f(g_constant_basis[iconst + i_prim], 0, 3, 1) *
                     coeff_prim *
-                    -2*alpha*r_A_x*pow(r_A_y, 3)*r_A_z *   // d y**3*z*exp(-a*(x**2 + y**2 + z**2)) / dx
+                    -2*alpha*r_A_x*(r_A_y * r_A_y * r_A_y)*r_A_z *   // d y**3*z*exp(-a*(x**2 + y**2 + z**2)) / dx
                     exponential;
             d_deriv_contracs[knumb_points * (knumb_contractions + icontractions + 11) + global_index] +=
                 chemtools::normalization_primitive_f(g_constant_basis[iconst + i_prim], 0, 3, 1) *
@@ -663,34 +663,34 @@ __global__ void chemtools::evaluate_derivatives_contractions_from_constant_memor
             d_deriv_contracs[knumb_points * (knumb_contractions * 2 + icontractions + 11) + global_index] +=
                 chemtools::normalization_primitive_f(g_constant_basis[iconst + i_prim],  0, 3, 1) *
                     coeff_prim *
-                    pow(r_A_y, 3)*(-2*alpha*r_A_z*r_A_z + 1) *   // d y**3*z*exp(-a*(x**2 + y**2 + z**2)) / dz
+                    (r_A_y * r_A_y * r_A_y)*(-2*alpha*r_A_z*r_A_z + 1) *   // d y**3*z*exp(-a*(x**2 + y**2 + z**2)) / dz
                     exponential;
             // Take the first, second, third derivative of y^4 e^{-a r_a^2}
             d_deriv_contracs[knumb_points * (icontractions + 10) + global_index] +=
                 chemtools::normalization_primitive_f(g_constant_basis[iconst + i_prim], 0, 4, 0) *
                     coeff_prim *
-                    -2*alpha*r_A_x*pow(r_A_y, 4) *   // d y**4*exp(-a*(x**2 + y**2 + z**2)) / dx
+                    -2*alpha*r_A_x*(r_A_y * r_A_y * r_A_y * r_A_y) *   // d y**4*exp(-a*(x**2 + y**2 + z**2)) / dx
                     exponential;
             d_deriv_contracs[knumb_points * (knumb_contractions + icontractions + 10) + global_index] +=
                 chemtools::normalization_primitive_f(g_constant_basis[iconst + i_prim], 0, 4, 0) *
                     coeff_prim *
-                    2*pow(r_A_y, 3)*(-alpha*r_A_y*r_A_y + 2) *   // d y**4*exp(-a*(x**2 + y**2 + z**2)) / dy
+                    2*(r_A_y * r_A_y * r_A_y)*(-alpha*r_A_y*r_A_y + 2) *   // d y**4*exp(-a*(x**2 + y**2 + z**2)) / dy
                     exponential;
             d_deriv_contracs[knumb_points * (knumb_contractions * 2 + icontractions + 10) + global_index] +=
                 chemtools::normalization_primitive_f(g_constant_basis[iconst + i_prim],  0, 4, 0) *
                     coeff_prim *
-                    -2*alpha*pow(r_A_y, 4)*r_A_z *   // d y**4*exp(-a*(x**2 + y**2 + z**2)) / dz
+                    -2*alpha*(r_A_y * r_A_y * r_A_y * r_A_y)*r_A_z *   // d y**4*exp(-a*(x**2 + y**2 + z**2)) / dz
                     exponential;
             // Take the first, second, third derivative of x z^3 e^{-a r_a^2}
             d_deriv_contracs[knumb_points * (icontractions + 9) + global_index] +=
                 chemtools::normalization_primitive_f(g_constant_basis[iconst + i_prim], 1, 0, 3) *
                     coeff_prim *
-                    pow(r_A_z, 3)*(-2*alpha*r_A_x*r_A_x + 1) *   // d x*z**3*exp(-a*(x**2 + y**2 + z**2)) / dx
+                    (r_A_z * r_A_z * r_A_z)*(-2*alpha*r_A_x*r_A_x + 1) *   // d x*z**3*exp(-a*(x**2 + y**2 + z**2)) / dx
                     exponential;
             d_deriv_contracs[knumb_points * (knumb_contractions + icontractions + 9) + global_index] +=
                 chemtools::normalization_primitive_f(g_constant_basis[iconst + i_prim], 1, 0, 3) *
                     coeff_prim *
-                    -2*alpha*r_A_x*r_A_y*pow(r_A_z, 3) *   // d x*z**3*exp(-a*(x**2 + y**2 + z**2)) / dy
+                    -2*alpha*r_A_x*r_A_y*(r_A_z * r_A_z * r_A_z) *   // d x*z**3*exp(-a*(x**2 + y**2 + z**2)) / dy
                     exponential;
             d_deriv_contracs[knumb_points * (knumb_contractions * 2 + icontractions + 9) + global_index] +=
                 chemtools::normalization_primitive_f(g_constant_basis[iconst + i_prim],  1, 0, 3) *
@@ -733,7 +733,7 @@ __global__ void chemtools::evaluate_derivatives_contractions_from_constant_memor
             d_deriv_contracs[knumb_points * (icontractions + 6) + global_index] +=
                 chemtools::normalization_primitive_f(g_constant_basis[iconst + i_prim], 1, 3, 0) *
                     coeff_prim *
-                    pow(r_A_y, 3)*(-2*alpha*r_A_x*r_A_x + 1) *   // d x*y**3*exp(-a*(x**2 + y**2 + z**2)) / dx
+                    (r_A_y * r_A_y * r_A_y)*(-2*alpha*r_A_x*r_A_x + 1) *   // d x*y**3*exp(-a*(x**2 + y**2 + z**2)) / dx
                     exponential;
             d_deriv_contracs[knumb_points * (knumb_contractions + icontractions + 6) + global_index] +=
                 chemtools::normalization_primitive_f(g_constant_basis[iconst + i_prim], 1, 3, 0) *
@@ -743,7 +743,7 @@ __global__ void chemtools::evaluate_derivatives_contractions_from_constant_memor
             d_deriv_contracs[knumb_points * (knumb_contractions * 2 + icontractions + 6) + global_index] +=
                 chemtools::normalization_primitive_f(g_constant_basis[iconst + i_prim],  1, 3, 0) *
                     coeff_prim *
-                    -2*alpha*r_A_x*pow(r_A_y, 3)*r_A_z *   // d x*y**3*exp(-a*(x**2 + y**2 + z**2)) / dz
+                    -2*alpha*r_A_x*(r_A_y * r_A_y * r_A_y)*r_A_z *   // d x*y**3*exp(-a*(x**2 + y**2 + z**2)) / dz
                     exponential;
             // Take the first, second, third derivative of x^2 z^2 e^{-a r_a^2}
             d_deriv_contracs[knumb_points * (icontractions + 5) + global_index] +=
@@ -802,12 +802,12 @@ __global__ void chemtools::evaluate_derivatives_contractions_from_constant_memor
             d_deriv_contracs[knumb_points * (knumb_contractions + icontractions + 2) + global_index] +=
                 chemtools::normalization_primitive_f(g_constant_basis[iconst + i_prim], 3, 0, 1) *
                     coeff_prim *
-                    -2*alpha*pow(r_A_x, 3)*r_A_y*r_A_z *   // d x**3*z*exp(-a*(x**2 + y**2 + z**2)) / dy
+                    -2*alpha*(r_A_x * r_A_x * r_A_x)*r_A_y*r_A_z *   // d x**3*z*exp(-a*(x**2 + y**2 + z**2)) / dy
                     exponential;
             d_deriv_contracs[knumb_points * (knumb_contractions * 2 + icontractions + 2) + global_index] +=
                 chemtools::normalization_primitive_f(g_constant_basis[iconst + i_prim], 3, 0, 1) *
                     coeff_prim *
-                    pow(r_A_x, 3)*(-2*alpha*r_A_z*r_A_z + 1) *   // d x**3*z*exp(-a*(x**2 + y**2 + z**2)) / dz
+                    (r_A_x * r_A_x * r_A_x)*(-2*alpha*r_A_z*r_A_z + 1) *   // d x**3*z*exp(-a*(x**2 + y**2 + z**2)) / dz
                     exponential;
             // Take the first, second, third derivative of x^3 y e^{-a r_a^2}
             d_deriv_contracs[knumb_points * (icontractions + 1) + global_index] +=
@@ -818,28 +818,28 @@ __global__ void chemtools::evaluate_derivatives_contractions_from_constant_memor
             d_deriv_contracs[knumb_points * (knumb_contractions + icontractions + 1) + global_index] +=
                 chemtools::normalization_primitive_f(g_constant_basis[iconst + i_prim], 3, 1, 0) *
                     coeff_prim *
-                    pow(r_A_x, 3)*(-2*alpha*r_A_y*r_A_y + 1) *   // d x**3*y*exp(-a*(x**2 + y**2 + z**2)) / dy
+                    (r_A_x * r_A_x * r_A_x)*(-2*alpha*r_A_y*r_A_y + 1) *   // d x**3*y*exp(-a*(x**2 + y**2 + z**2)) / dy
                     exponential;
             d_deriv_contracs[knumb_points * (knumb_contractions * 2 + icontractions + 1) + global_index] +=
                 chemtools::normalization_primitive_f(g_constant_basis[iconst + i_prim], 3, 1, 0) *
                     coeff_prim *
-                    -2*alpha*pow(r_A_x, 3)*r_A_y*r_A_z *   // d x**3*y*exp(-a*(x**2 + y**2 + z**2)) / dz
+                    -2*alpha*(r_A_x * r_A_x * r_A_x)*r_A_y*r_A_z *   // d x**3*y*exp(-a*(x**2 + y**2 + z**2)) / dz
                     exponential;
             // Take the first, second, third derivative of x_a^4 e^{-a r_a^2}
             d_deriv_contracs[knumb_points * icontractions + global_index] +=
                 chemtools::normalization_primitive_f(g_constant_basis[iconst + i_prim], 4, 0, 0) *
                     coeff_prim *
-                    2*pow(r_A_x, 3)*(-alpha*r_A_x*r_A_x + 2) *   // d x**4*exp(-a*(x**2 + y**2 + z**2)) / dx
+                    2*(r_A_x * r_A_x * r_A_x)*(-alpha*r_A_x*r_A_x + 2) *   // d x**4*exp(-a*(x**2 + y**2 + z**2)) / dx
                     exponential;
             d_deriv_contracs[knumb_points * (knumb_contractions + icontractions) + global_index] +=
                 chemtools::normalization_primitive_f(g_constant_basis[iconst + i_prim], 4, 0, 0) *
                     coeff_prim *
-                    -2*alpha*pow(r_A_x, 4)*r_A_y *   // d x**4*exp(-a*(x**2 + y**2 + z**2)) / dy
+                    -2*alpha*(r_A_x * r_A_x * r_A_x * r_A_x)*r_A_y *   // d x**4*exp(-a*(x**2 + y**2 + z**2)) / dy
                     exponential;
             d_deriv_contracs[knumb_points * (knumb_contractions * 2 + icontractions) + global_index] +=
                 chemtools::normalization_primitive_f(g_constant_basis[iconst + i_prim], 4, 0, 0) *
                     coeff_prim *
-                    -2*alpha*pow(r_A_x, 4)*r_A_z *   // d x**4*exp(-a*(x**2 + y**2 + z**2)) / dz
+                    -2*alpha*(r_A_x * r_A_x * r_A_x * r_A_x)*r_A_z *   // d x**4*exp(-a*(x**2 + y**2 + z**2)) / dz
                     exponential;
           }
           else if (angmom == -4) {
@@ -852,8 +852,8 @@ __global__ void chemtools::evaluate_derivatives_contractions_from_constant_memor
                 norm_const *
                     coeff_prim *
                     (
-                        r_A_x*(-alpha*(35*pow(r_A_z, 4) - 30*r_A_z*r_A_z*(r_A_x*r_A_x + r_A_y*r_A_y + r_A_z*r_A_z) +
-                        3*pow(r_A_x*r_A_x + r_A_y*r_A_y + r_A_z*r_A_z, 2)) + 6*r_A_x*r_A_x + 6*r_A_y*r_A_y -
+                        r_A_x*(-alpha*(35*(r_A_z * r_A_z * r_A_z * r_A_z) - 30*r_A_z*r_A_z*(r_A_x*r_A_x + r_A_y*r_A_y + r_A_z*r_A_z) +
+                        3*(r_A_x*r_A_x + r_A_y*r_A_y + r_A_z*r_A_z) * (r_A_x*r_A_x + r_A_y*r_A_y + r_A_z*r_A_z)) + 6*r_A_x*r_A_x + 6*r_A_y*r_A_y -
                         24*r_A_z*r_A_z)/4
                     ) *
                     exponential;
@@ -861,8 +861,8 @@ __global__ void chemtools::evaluate_derivatives_contractions_from_constant_memor
                 norm_const *
                     coeff_prim *
                     (
-                        r_A_y*(-alpha*(35*pow(r_A_z, 4) - 30*r_A_z*r_A_z*(r_A_x*r_A_x + r_A_y*r_A_y + r_A_z*r_A_z) +
-                        3*pow(r_A_x*r_A_x + r_A_y*r_A_y + r_A_z*r_A_z,2)) +
+                        r_A_y*(-alpha*(35*(r_A_z * r_A_z * r_A_z * r_A_z) - 30*r_A_z*r_A_z*(r_A_x*r_A_x + r_A_y*r_A_y + r_A_z*r_A_z) +
+                        3*(r_A_x*r_A_x + r_A_y*r_A_y + r_A_z*r_A_z) * (r_A_x*r_A_x + r_A_y*r_A_y + r_A_z*r_A_z)) +
                         6*r_A_x*r_A_x + 6*r_A_y*r_A_y - 24*r_A_z*r_A_z)/4
                     ) *
                     exponential;
@@ -870,9 +870,9 @@ __global__ void chemtools::evaluate_derivatives_contractions_from_constant_memor
                 norm_const *
                     coeff_prim *
                     (
-                        r_A_z*(-alpha*(35*pow(r_A_z, 4) -
+                        r_A_z*(-alpha*(35*(r_A_z * r_A_z * r_A_z * r_A_z) -
                         30*r_A_z*r_A_z*(r_A_x*r_A_x + r_A_y*r_A_y + r_A_z*r_A_z) +
-                        3*pow(r_A_x*r_A_x + r_A_y*r_A_y + r_A_z*r_A_z,2)) -
+                        3*(r_A_x*r_A_x + r_A_y*r_A_y + r_A_z*r_A_z) * (r_A_x*r_A_x + r_A_y*r_A_y + r_A_z*r_A_z)) -
                         24*r_A_x*r_A_x - 24*r_A_y*r_A_y + 16*r_A_z*r_A_z)/4
                     ) *
                     exponential;
@@ -1039,7 +1039,7 @@ __global__ void chemtools::evaluate_derivatives_contractions_from_constant_memor
                     coeff_prim *
                     sqrt(35.0) *
                     (
-                        r_A_x*(-alpha*(pow(r_A_x, 4) - 6*r_A_x*r_A_x*r_A_y*r_A_y + pow(r_A_y, 4)) + 2*r_A_x*r_A_x -
+                        r_A_x*(-alpha*((r_A_x * r_A_x * r_A_x * r_A_x) - 6*r_A_x*r_A_x*r_A_y*r_A_y + (r_A_y * r_A_y * r_A_y * r_A_y)) + 2*r_A_x*r_A_x -
                         6*r_A_y*r_A_y)/4
                     ) *
                     exponential;
@@ -1048,7 +1048,7 @@ __global__ void chemtools::evaluate_derivatives_contractions_from_constant_memor
                     coeff_prim *
                     sqrt(35.0) *
                     (
-                        r_A_y*(-alpha*(pow(r_A_x, 4) - 6*r_A_x*r_A_x*r_A_y*r_A_y + pow(r_A_y, 4)) - 6*r_A_x*r_A_x +
+                        r_A_y*(-alpha*((r_A_x * r_A_x * r_A_x * r_A_x) - 6*r_A_x*r_A_x*r_A_y*r_A_y + (r_A_y * r_A_y * r_A_y * r_A_y)) - 6*r_A_x*r_A_x +
                         2*r_A_y*r_A_y)/4
                     ) *
                     exponential;
@@ -1057,7 +1057,7 @@ __global__ void chemtools::evaluate_derivatives_contractions_from_constant_memor
                     coeff_prim *
                     sqrt(35) *
                     (
-                        -alpha*r_A_z*(pow(r_A_x, 4) - 6*r_A_x*r_A_x*r_A_y*r_A_y + pow(r_A_y, 4))/4
+                        -alpha*r_A_z*((r_A_x * r_A_x * r_A_x * r_A_x) - 6*r_A_x*r_A_x*r_A_y*r_A_y + (r_A_y * r_A_y * r_A_y * r_A_y))/4
                     ) *
                     exponential;
 

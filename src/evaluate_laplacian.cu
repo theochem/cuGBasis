@@ -28,7 +28,7 @@ __device__ void chemtools::evaluate_sum_of_second_derivative_contractions_from_c
     double r_A_x = (grid_x - g_constant_basis[iconst++]);
     double r_A_y = (grid_y - g_constant_basis[iconst++]);
     double r_A_z = (grid_z - g_constant_basis[iconst++]);
-    //double radius_sq = pow(r_A_x, 2.0) + pow(r_A_y, 2.0) + pow(r_A_z, 2.0);
+    //double radius_sq = (r_A_x * r_A_x) + (r_A_y * r_A_y) + (r_A_z * r_A_z);
     int numb_segment_shells = (int) g_constant_basis[iconst++];
     int numb_primitives = (int) g_constant_basis[iconst++];
     // iconst from here=H+0 to H+(numb_primitives - 1) is the exponents, need this to constantly reiterate them.
@@ -38,7 +38,7 @@ __device__ void chemtools::evaluate_sum_of_second_derivative_contractions_from_c
       for(int i_prim=0; i_prim < numb_primitives; i_prim++) {
         double coeff_prim = g_constant_basis[iconst + numb_primitives * (i_segm_shell + 1) + i_prim + 1 + i_segm_shell];
         double alpha = g_constant_basis[iconst + i_prim];
-        double exponential = exp(- alpha * ( pow(r_A_x, 2.0) + pow(r_A_y, 2.0) + pow(r_A_z, 2.0)));
+        double exponential = exp(- alpha * ( (r_A_x * r_A_x) + (r_A_y * r_A_y) + (r_A_z * r_A_z)));
         // If S, P, D or F orbital/
         if(angmom == 0) {
           d_contractions_array[global_index + icontractions * knumb_points] +=
@@ -69,17 +69,17 @@ __device__ void chemtools::evaluate_sum_of_second_derivative_contractions_from_c
           d_contractions_array[global_index + icontractions * knumb_points] +=
               chemtools::normalization_primitive_d(g_constant_basis[iconst + i_prim], 2, 0, 0) *
                   coeff_prim *
-                  (4*alpha*alpha*pow(r_A_x, 4) + 4*alpha*alpha*r_A_x*r_A_x*r_A_y*r_A_y + 4*alpha*alpha*r_A_x*r_A_x*r_A_z*r_A_z - 14*alpha*r_A_x*r_A_x + 2) *
+                  (4*alpha*alpha*(r_A_x * r_A_x * r_A_x * r_A_x) + 4*alpha*alpha*r_A_x*r_A_x*r_A_y*r_A_y + 4*alpha*alpha*r_A_x*r_A_x*r_A_z*r_A_z - 14*alpha*r_A_x*r_A_x + 2) *
                   exponential;
           d_contractions_array[global_index + (icontractions + 1) * knumb_points] +=
               chemtools::normalization_primitive_d(g_constant_basis[iconst + i_prim], 0, 2, 0) *
                   coeff_prim *
-                  (4*alpha*alpha*r_A_x*r_A_x*r_A_y*r_A_y + 4*alpha*alpha*pow(r_A_y, 4) + 4*alpha*alpha*r_A_y*r_A_y*r_A_z*r_A_z - 14*alpha*r_A_y*r_A_y + 2) *
+                  (4*alpha*alpha*r_A_x*r_A_x*r_A_y*r_A_y + 4*alpha*alpha*(r_A_y * r_A_y * r_A_y * r_A_y) + 4*alpha*alpha*r_A_y*r_A_y*r_A_z*r_A_z - 14*alpha*r_A_y*r_A_y + 2) *
                   exponential;
           d_contractions_array[global_index + (icontractions + 2) * knumb_points] +=
               chemtools::normalization_primitive_d(g_constant_basis[iconst + i_prim], 0, 0, 2) *
                   coeff_prim *
-                  (4*alpha*alpha*r_A_x*r_A_x*r_A_z*r_A_z + 4*alpha*alpha*r_A_y*r_A_y*r_A_z*r_A_z + 4*alpha*alpha*pow(r_A_z, 4) - 14*alpha*r_A_z*r_A_z + 2) *
+                  (4*alpha*alpha*r_A_x*r_A_x*r_A_z*r_A_z + 4*alpha*alpha*r_A_y*r_A_y*r_A_z*r_A_z + 4*alpha*alpha*(r_A_z * r_A_z * r_A_z * r_A_z) - 14*alpha*r_A_z*r_A_z + 2) *
                   exponential;
           d_contractions_array[global_index + (icontractions + 3) * knumb_points] +=
               chemtools::normalization_primitive_d(g_constant_basis[iconst + i_prim], 1, 1, 0) *
@@ -104,7 +104,7 @@ __device__ void chemtools::evaluate_sum_of_second_derivative_contractions_from_c
           d_contractions_array[global_index + icontractions * knumb_points] +=
               norm_const *
                   coeff_prim *
-                  alpha*(-2*alpha*pow(r_A_x, 4) - 4*alpha*r_A_x*r_A_x*r_A_y*r_A_y + 2*alpha*r_A_x*r_A_x*r_A_z*r_A_z - 2*alpha*pow(r_A_y, 4) + 2*alpha*r_A_y*r_A_y*r_A_z*r_A_z + 4*alpha*pow(r_A_z, 4) + 7*r_A_x*r_A_x + 7*r_A_y*r_A_y - 14*r_A_z*r_A_z) *
+                  alpha*(-2*alpha*(r_A_x * r_A_x * r_A_x * r_A_x) - 4*alpha*r_A_x*r_A_x*r_A_y*r_A_y + 2*alpha*r_A_x*r_A_x*r_A_z*r_A_z - 2*alpha*(r_A_y * r_A_y * r_A_y * r_A_y) + 2*alpha*r_A_y*r_A_y*r_A_z*r_A_z + 4*alpha*(r_A_z * r_A_z * r_A_z * r_A_z) + 7*r_A_x*r_A_x + 7*r_A_y*r_A_y - 14*r_A_z*r_A_z) *
                   exponential;
           d_contractions_array[global_index + (icontractions + 1) * knumb_points] +=
               norm_const *
@@ -122,7 +122,7 @@ __device__ void chemtools::evaluate_sum_of_second_derivative_contractions_from_c
               norm_const *
                   coeff_prim *
                   sqrt(3.) *
-                  alpha*(2*alpha*pow(r_A_x, 4) + 2*alpha*r_A_x*r_A_x*r_A_z*r_A_z - 2*alpha*pow(r_A_y, 4) - 2*alpha*r_A_y*r_A_y*r_A_z*r_A_z - 7*r_A_x*r_A_x + 7*r_A_y*r_A_y) *
+                  alpha*(2*alpha*(r_A_x * r_A_x * r_A_x * r_A_x) + 2*alpha*r_A_x*r_A_x*r_A_z*r_A_z - 2*alpha*(r_A_y * r_A_y * r_A_y * r_A_y) - 2*alpha*r_A_y*r_A_y*r_A_z*r_A_z - 7*r_A_x*r_A_x + 7*r_A_y*r_A_y) *
                   exponential;
           d_contractions_array[global_index + (icontractions + 4) * knumb_points] +=
               norm_const *
@@ -136,47 +136,47 @@ __device__ void chemtools::evaluate_sum_of_second_derivative_contractions_from_c
           d_contractions_array[global_index + icontractions * knumb_points] +=
               chemtools::normalization_primitive_f(g_constant_basis[iconst + i_prim], 3, 0, 0) *
                   coeff_prim *
-                  2*r_A_x*(2*alpha*alpha*pow(r_A_x, 4) + 2*alpha*alpha*r_A_x*r_A_x*r_A_y*r_A_y + 2*alpha*alpha*r_A_x*r_A_x*r_A_z*r_A_z - 9*alpha*r_A_x*r_A_x + 3) *
+                  2*r_A_x*(2*alpha*alpha*(r_A_x * r_A_x * r_A_x * r_A_x) + 2*alpha*alpha*r_A_x*r_A_x*r_A_y*r_A_y + 2*alpha*alpha*r_A_x*r_A_x*r_A_z*r_A_z - 9*alpha*r_A_x*r_A_x + 3) *
                   exponential;
           d_contractions_array[global_index + (icontractions + 1) * knumb_points] +=
               chemtools::normalization_primitive_f(g_constant_basis[iconst + i_prim], 0, 3, 0) *
                   coeff_prim *
-                  2*r_A_y*(2*alpha*alpha*r_A_x*r_A_x*r_A_y*r_A_y + 2*alpha*alpha*pow(r_A_y, 4) + 2*alpha*alpha*r_A_y*r_A_y*r_A_z*r_A_z - 9*alpha*r_A_y*r_A_y + 3) *
+                  2*r_A_y*(2*alpha*alpha*r_A_x*r_A_x*r_A_y*r_A_y + 2*alpha*alpha*(r_A_y * r_A_y * r_A_y * r_A_y) + 2*alpha*alpha*r_A_y*r_A_y*r_A_z*r_A_z - 9*alpha*r_A_y*r_A_y + 3) *
                   exponential;
           d_contractions_array[global_index + (icontractions + 2) * knumb_points] +=
               chemtools::normalization_primitive_f(g_constant_basis[iconst + i_prim], 0, 0, 3) *
                   coeff_prim *
-                  2*r_A_z*(2*alpha*alpha*r_A_x*r_A_x*r_A_z*r_A_z + 2*alpha*alpha*r_A_y*r_A_y*r_A_z*r_A_z + 2*alpha*alpha*pow(r_A_z, 4) - 9*alpha*r_A_z*r_A_z + 3) *
+                  2*r_A_z*(2*alpha*alpha*r_A_x*r_A_x*r_A_z*r_A_z + 2*alpha*alpha*r_A_y*r_A_y*r_A_z*r_A_z + 2*alpha*alpha*(r_A_z * r_A_z * r_A_z * r_A_z) - 9*alpha*r_A_z*r_A_z + 3) *
                   exponential;
           d_contractions_array[global_index + (icontractions + 3) * knumb_points] +=
               chemtools::normalization_primitive_f(g_constant_basis[iconst + i_prim], 1, 2, 0) *
                   coeff_prim *
-                  2*r_A_x*(2*alpha*alpha*r_A_x*r_A_x*r_A_y*r_A_y + 2*alpha*alpha*pow(r_A_y, 4) + 2*alpha*alpha*r_A_y*r_A_y*r_A_z*r_A_z - 9*alpha*r_A_y*r_A_y + 1) *
+                  2*r_A_x*(2*alpha*alpha*r_A_x*r_A_x*r_A_y*r_A_y + 2*alpha*alpha*(r_A_y * r_A_y * r_A_y * r_A_y) + 2*alpha*alpha*r_A_y*r_A_y*r_A_z*r_A_z - 9*alpha*r_A_y*r_A_y + 1) *
                   exponential;
           d_contractions_array[global_index + (icontractions + 4) * knumb_points] +=
               chemtools::normalization_primitive_f(g_constant_basis[iconst + i_prim], 2, 1, 0) *
                   coeff_prim *
-                  2*r_A_y*(2*alpha*alpha*pow(r_A_x, 4) + 2*alpha*alpha*r_A_x*r_A_x*r_A_y*r_A_y + 2*alpha*alpha*r_A_x*r_A_x*r_A_z*r_A_z - 9*alpha*r_A_x*r_A_x + 1) *
+                  2*r_A_y*(2*alpha*alpha*(r_A_x * r_A_x * r_A_x * r_A_x) + 2*alpha*alpha*r_A_x*r_A_x*r_A_y*r_A_y + 2*alpha*alpha*r_A_x*r_A_x*r_A_z*r_A_z - 9*alpha*r_A_x*r_A_x + 1) *
                   exponential;
           d_contractions_array[global_index + (icontractions + 5) * knumb_points] +=
               chemtools::normalization_primitive_f(g_constant_basis[iconst + i_prim], 2, 0, 1) *
                   coeff_prim *
-                  2*r_A_z*(2*alpha*alpha*pow(r_A_x, 4) + 2*alpha*alpha*r_A_x*r_A_x*r_A_y*r_A_y + 2*alpha*alpha*r_A_x*r_A_x*r_A_z*r_A_z - 9*alpha*r_A_x*r_A_x + 1) *
+                  2*r_A_z*(2*alpha*alpha*(r_A_x * r_A_x * r_A_x * r_A_x) + 2*alpha*alpha*r_A_x*r_A_x*r_A_y*r_A_y + 2*alpha*alpha*r_A_x*r_A_x*r_A_z*r_A_z - 9*alpha*r_A_x*r_A_x + 1) *
                   exponential;
           d_contractions_array[global_index + (icontractions + 6) * knumb_points] +=
               chemtools::normalization_primitive_f(g_constant_basis[iconst + i_prim], 1, 0, 2) *
                   coeff_prim *
-                  2*r_A_x*(2*alpha*alpha*r_A_x*r_A_x*r_A_z*r_A_z + 2*alpha*alpha*r_A_y*r_A_y*r_A_z*r_A_z + 2*alpha*alpha*pow(r_A_z, 4) - 9*alpha*r_A_z*r_A_z + 1) *
+                  2*r_A_x*(2*alpha*alpha*r_A_x*r_A_x*r_A_z*r_A_z + 2*alpha*alpha*r_A_y*r_A_y*r_A_z*r_A_z + 2*alpha*alpha*(r_A_z * r_A_z * r_A_z * r_A_z) - 9*alpha*r_A_z*r_A_z + 1) *
                   exponential;
           d_contractions_array[global_index + (icontractions + 7) * knumb_points] +=
               chemtools::normalization_primitive_f(g_constant_basis[iconst + i_prim], 0, 1, 2) *
                   coeff_prim *
-                  2*r_A_y*(2*alpha*alpha*r_A_x*r_A_x*r_A_z*r_A_z + 2*alpha*alpha*r_A_y*r_A_y*r_A_z*r_A_z + 2*alpha*alpha*pow(r_A_z, 4) - 9*alpha*r_A_z*r_A_z + 1) *
+                  2*r_A_y*(2*alpha*alpha*r_A_x*r_A_x*r_A_z*r_A_z + 2*alpha*alpha*r_A_y*r_A_y*r_A_z*r_A_z + 2*alpha*alpha*(r_A_z * r_A_z * r_A_z * r_A_z) - 9*alpha*r_A_z*r_A_z + 1) *
                   exponential;
           d_contractions_array[global_index + (icontractions + 8) * knumb_points] +=
               chemtools::normalization_primitive_f(g_constant_basis[iconst + i_prim], 0, 2, 1) *
                   coeff_prim *
-                  2*r_A_z*(2*alpha*alpha*r_A_x*r_A_x*r_A_y*r_A_y + 2*alpha*alpha*pow(r_A_y, 4) + 2*alpha*alpha*r_A_y*r_A_y*r_A_z*r_A_z - 9*alpha*r_A_y*r_A_y + 1) *
+                  2*r_A_z*(2*alpha*alpha*r_A_x*r_A_x*r_A_y*r_A_y + 2*alpha*alpha*(r_A_y * r_A_y * r_A_y * r_A_y) + 2*alpha*alpha*r_A_y*r_A_y*r_A_z*r_A_z - 9*alpha*r_A_y*r_A_y + 1) *
                   exponential;
           d_contractions_array[global_index + (icontractions + 9) * knumb_points] +=
               chemtools::normalization_primitive_f(g_constant_basis[iconst + i_prim], 1, 1, 1) *
@@ -190,25 +190,25 @@ __device__ void chemtools::evaluate_sum_of_second_derivative_contractions_from_c
           d_contractions_array[global_index + icontractions * knumb_points] +=
               norm_const *
                   coeff_prim *
-                  alpha*r_A_z*(-6*alpha*pow(r_A_x, 4) - 12*alpha*r_A_x*r_A_x*r_A_y*r_A_y - 2*alpha*r_A_x*r_A_x*r_A_z*r_A_z - 6*alpha*pow(r_A_y, 4) - 2*alpha*r_A_y*r_A_y*r_A_z*r_A_z + 4*alpha*pow(r_A_z, 4) + 27*r_A_x*r_A_x + 27*r_A_y*r_A_y - 18*r_A_z*r_A_z) *
+                  alpha*r_A_z*(-6*alpha*(r_A_x * r_A_x * r_A_x * r_A_x) - 12*alpha*r_A_x*r_A_x*r_A_y*r_A_y - 2*alpha*r_A_x*r_A_x*r_A_z*r_A_z - 6*alpha*(r_A_y * r_A_y * r_A_y * r_A_y) - 2*alpha*r_A_y*r_A_y*r_A_z*r_A_z + 4*alpha*(r_A_z * r_A_z * r_A_z * r_A_z) + 27*r_A_x*r_A_x + 27*r_A_y*r_A_y - 18*r_A_z*r_A_z) *
                   exponential;
           d_contractions_array[global_index + (icontractions + 1) * knumb_points] +=
               norm_const *
                   coeff_prim *
                   sqrt(1.5) *
-                  alpha*r_A_x*(-2*alpha*pow(r_A_x, 4) - 4*alpha*r_A_x*r_A_x*r_A_y*r_A_y + 6*alpha*r_A_x*r_A_x*r_A_z*r_A_z - 2*alpha*pow(r_A_y, 4) + 6*alpha*r_A_y*r_A_y*r_A_z*r_A_z + 8*alpha*pow(r_A_z, 4) + 9*r_A_x*r_A_x + 9*r_A_y*r_A_y - 36*r_A_z*r_A_z) *
+                  alpha*r_A_x*(-2*alpha*(r_A_x * r_A_x * r_A_x * r_A_x) - 4*alpha*r_A_x*r_A_x*r_A_y*r_A_y + 6*alpha*r_A_x*r_A_x*r_A_z*r_A_z - 2*alpha*(r_A_y * r_A_y * r_A_y * r_A_y) + 6*alpha*r_A_y*r_A_y*r_A_z*r_A_z + 8*alpha*(r_A_z * r_A_z * r_A_z * r_A_z) + 9*r_A_x*r_A_x + 9*r_A_y*r_A_y - 36*r_A_z*r_A_z) *
                   exponential;
           d_contractions_array[global_index + (icontractions + 2) * knumb_points] +=
               norm_const *
                   coeff_prim *
                   sqrt(1.5) *
-                  alpha*r_A_y*(-2*alpha*pow(r_A_x, 4) - 4*alpha*r_A_x*r_A_x*r_A_y*r_A_y + 6*alpha*r_A_x*r_A_x*r_A_z*r_A_z - 2*alpha*pow(r_A_y, 4) + 6*alpha*r_A_y*r_A_y*r_A_z*r_A_z + 8*alpha*pow(r_A_z, 4) + 9*r_A_x*r_A_x + 9*r_A_y*r_A_y - 36*r_A_z*r_A_z) *
+                  alpha*r_A_y*(-2*alpha*(r_A_x * r_A_x * r_A_x * r_A_x) - 4*alpha*r_A_x*r_A_x*r_A_y*r_A_y + 6*alpha*r_A_x*r_A_x*r_A_z*r_A_z - 2*alpha*(r_A_y * r_A_y * r_A_y * r_A_y) + 6*alpha*r_A_y*r_A_y*r_A_z*r_A_z + 8*alpha*(r_A_z * r_A_z * r_A_z * r_A_z) + 9*r_A_x*r_A_x + 9*r_A_y*r_A_y - 36*r_A_z*r_A_z) *
                   exponential;
           d_contractions_array[global_index + (icontractions + 3) * knumb_points] +=
               norm_const *
                   coeff_prim *
                   sqrt(15.0) *
-                  alpha*r_A_z*(2*alpha*pow(r_A_x, 4) + 2*alpha*r_A_x*r_A_x*r_A_z*r_A_z - 2*alpha*pow(r_A_y, 4) - 2*alpha*r_A_y*r_A_y*r_A_z*r_A_z - 9*r_A_x*r_A_x + 9*r_A_y*r_A_y) *
+                  alpha*r_A_z*(2*alpha*(r_A_x * r_A_x * r_A_x * r_A_x) + 2*alpha*r_A_x*r_A_x*r_A_z*r_A_z - 2*alpha*(r_A_y * r_A_y * r_A_y * r_A_y) - 2*alpha*r_A_y*r_A_y*r_A_z*r_A_z - 9*r_A_x*r_A_x + 9*r_A_y*r_A_y) *
                   exponential;
           d_contractions_array[global_index + (icontractions + 4) * knumb_points] +=
               norm_const *
@@ -220,13 +220,13 @@ __device__ void chemtools::evaluate_sum_of_second_derivative_contractions_from_c
               norm_const *
                   coeff_prim *
                   sqrt(2.5) *
-                  alpha*r_A_x*(2*alpha*pow(r_A_x, 4) - 4*alpha*r_A_x*r_A_x*r_A_y*r_A_y + 2*alpha*r_A_x*r_A_x*r_A_z*r_A_z - 6*alpha*pow(r_A_y, 4) - 6*alpha*r_A_y*r_A_y*r_A_z*r_A_z - 9*r_A_x*r_A_x + 27*r_A_y*r_A_y) *
+                  alpha*r_A_x*(2*alpha*(r_A_x * r_A_x * r_A_x * r_A_x) - 4*alpha*r_A_x*r_A_x*r_A_y*r_A_y + 2*alpha*r_A_x*r_A_x*r_A_z*r_A_z - 6*alpha*(r_A_y * r_A_y * r_A_y * r_A_y) - 6*alpha*r_A_y*r_A_y*r_A_z*r_A_z - 9*r_A_x*r_A_x + 27*r_A_y*r_A_y) *
                   exponential;
           d_contractions_array[global_index + (icontractions + 6) * knumb_points] +=
               norm_const *
                   coeff_prim *
                   sqrt(2.5) *
-                  alpha*r_A_y*(6*alpha*pow(r_A_x, 4) + 4*alpha*r_A_x*r_A_x*r_A_y*r_A_y + 6*alpha*r_A_x*r_A_x*r_A_z*r_A_z - 2*alpha*pow(r_A_y, 4) - 2*alpha*r_A_y*r_A_y*r_A_z*r_A_z - 27*r_A_x*r_A_x + 9*r_A_y*r_A_y) *
+                  alpha*r_A_y*(6*alpha*(r_A_x * r_A_x * r_A_x * r_A_x) + 4*alpha*r_A_x*r_A_x*r_A_y*r_A_y + 6*alpha*r_A_x*r_A_x*r_A_z*r_A_z - 2*alpha*(r_A_y * r_A_y * r_A_y * r_A_y) - 2*alpha*r_A_y*r_A_y*r_A_z*r_A_z - 27*r_A_x*r_A_x + 9*r_A_y*r_A_y) *
                   exponential;
         }
         else if (angmom == 4) {
@@ -235,77 +235,77 @@ __device__ void chemtools::evaluate_sum_of_second_derivative_contractions_from_c
           d_contractions_array[global_index + icontractions * knumb_points] +=
               chemtools::normalization_primitive_g(g_constant_basis[iconst + i_prim], 0, 0, 4) *
                   coeff_prim *
-                  r_A_z*r_A_z*(4*alpha*alpha*r_A_x*r_A_x*r_A_z*r_A_z + 4*alpha*alpha*r_A_y*r_A_y*r_A_z*r_A_z + 4*alpha*alpha*pow(r_A_z, 4) - 22*alpha*r_A_z*r_A_z + 12) *
+                  r_A_z*r_A_z*(4*alpha*alpha*r_A_x*r_A_x*r_A_z*r_A_z + 4*alpha*alpha*r_A_y*r_A_y*r_A_z*r_A_z + 4*alpha*alpha*(r_A_z * r_A_z * r_A_z * r_A_z) - 22*alpha*r_A_z*r_A_z + 12) *
                   exponential;
           d_contractions_array[global_index + (icontractions + 1) * knumb_points] +=
               chemtools::normalization_primitive_g(g_constant_basis[iconst + i_prim], 0, 1, 3) *
                   coeff_prim *
-                  2*r_A_y*r_A_z*(2*alpha*alpha*r_A_x*r_A_x*r_A_z*r_A_z + 2*alpha*alpha*r_A_y*r_A_y*r_A_z*r_A_z + 2*alpha*alpha*pow(r_A_z, 4) - 11*alpha*r_A_z*r_A_z + 3) *
+                  2*r_A_y*r_A_z*(2*alpha*alpha*r_A_x*r_A_x*r_A_z*r_A_z + 2*alpha*alpha*r_A_y*r_A_y*r_A_z*r_A_z + 2*alpha*alpha*(r_A_z * r_A_z * r_A_z * r_A_z) - 11*alpha*r_A_z*r_A_z + 3) *
                   exponential;
           d_contractions_array[global_index + (icontractions + 2) * knumb_points] +=
               chemtools::normalization_primitive_g(g_constant_basis[iconst + i_prim], 0, 2, 2) *
                   coeff_prim *
-                  (4*alpha*alpha*r_A_x*r_A_x*r_A_y*r_A_y*r_A_z*r_A_z + 4*alpha*alpha*pow(r_A_y, 4)*r_A_z*r_A_z + 4*alpha*alpha*r_A_y*r_A_y*pow(r_A_z, 4) - 22*alpha*r_A_y*r_A_y*r_A_z*r_A_z + 2*r_A_y*r_A_y + 2*r_A_z*r_A_z) *
+                  (4*alpha*alpha*r_A_x*r_A_x*r_A_y*r_A_y*r_A_z*r_A_z + 4*alpha*alpha*(r_A_y * r_A_y * r_A_y * r_A_y)*r_A_z*r_A_z + 4*alpha*alpha*r_A_y*r_A_y*(r_A_z * r_A_z * r_A_z * r_A_z) - 22*alpha*r_A_y*r_A_y*r_A_z*r_A_z + 2*r_A_y*r_A_y + 2*r_A_z*r_A_z) *
                   exponential;
           d_contractions_array[global_index + (icontractions + 3) * knumb_points] +=
               chemtools::normalization_primitive_g(g_constant_basis[iconst + i_prim], 0, 3, 1) *
                   coeff_prim *
-                  2*r_A_y*r_A_z*(2*alpha*alpha*r_A_x*r_A_x*r_A_y*r_A_y + 2*alpha*alpha*pow(r_A_y, 4) + 2*alpha*alpha*r_A_y*r_A_y*r_A_z*r_A_z - 11*alpha*r_A_y*r_A_y + 3) *
+                  2*r_A_y*r_A_z*(2*alpha*alpha*r_A_x*r_A_x*r_A_y*r_A_y + 2*alpha*alpha*(r_A_y * r_A_y * r_A_y * r_A_y) + 2*alpha*alpha*r_A_y*r_A_y*r_A_z*r_A_z - 11*alpha*r_A_y*r_A_y + 3) *
                   exponential;
           d_contractions_array[global_index + (icontractions + 4) * knumb_points] +=
               chemtools::normalization_primitive_g(g_constant_basis[iconst + i_prim], 0, 4, 0) *
                   coeff_prim *
-                  r_A_y*r_A_y*(4*alpha*alpha*r_A_x*r_A_x*r_A_y*r_A_y + 4*alpha*alpha*pow(r_A_y, 4) + 4*alpha*alpha*r_A_y*r_A_y*r_A_z*r_A_z - 22*alpha*r_A_y*r_A_y + 12) *
+                  r_A_y*r_A_y*(4*alpha*alpha*r_A_x*r_A_x*r_A_y*r_A_y + 4*alpha*alpha*(r_A_y * r_A_y * r_A_y * r_A_y) + 4*alpha*alpha*r_A_y*r_A_y*r_A_z*r_A_z - 22*alpha*r_A_y*r_A_y + 12) *
                   exponential;
           d_contractions_array[global_index + (icontractions + 5) * knumb_points] +=
               chemtools::normalization_primitive_g(g_constant_basis[iconst + i_prim], 1, 0, 3) *
                   coeff_prim *
-                  2*r_A_x*r_A_z*(2*alpha*alpha*r_A_x*r_A_x*r_A_z*r_A_z + 2*alpha*alpha*r_A_y*r_A_y*r_A_z*r_A_z + 2*alpha*alpha*pow(r_A_z, 4) - 11*alpha*r_A_z*r_A_z + 3) *
+                  2*r_A_x*r_A_z*(2*alpha*alpha*r_A_x*r_A_x*r_A_z*r_A_z + 2*alpha*alpha*r_A_y*r_A_y*r_A_z*r_A_z + 2*alpha*alpha*(r_A_z * r_A_z * r_A_z * r_A_z) - 11*alpha*r_A_z*r_A_z + 3) *
                   exponential;
           d_contractions_array[global_index + (icontractions + 6) * knumb_points] +=
               chemtools::normalization_primitive_g(g_constant_basis[iconst + i_prim], 1, 1, 2) *
                   coeff_prim *
-                  2*r_A_x*r_A_y*(2*alpha*alpha*r_A_x*r_A_x*r_A_z*r_A_z + 2*alpha*alpha*r_A_y*r_A_y*r_A_z*r_A_z + 2*alpha*alpha*pow(r_A_z, 4) - 11*alpha*r_A_z*r_A_z + 1) *
+                  2*r_A_x*r_A_y*(2*alpha*alpha*r_A_x*r_A_x*r_A_z*r_A_z + 2*alpha*alpha*r_A_y*r_A_y*r_A_z*r_A_z + 2*alpha*alpha*(r_A_z * r_A_z * r_A_z * r_A_z) - 11*alpha*r_A_z*r_A_z + 1) *
                   exponential;
           d_contractions_array[global_index + (icontractions + 7) * knumb_points] +=
               chemtools::normalization_primitive_g(g_constant_basis[iconst + i_prim], 1, 2, 1) *
                   coeff_prim *
-                  2*r_A_x*r_A_z*(2*alpha*alpha*r_A_x*r_A_x*r_A_y*r_A_y + 2*alpha*alpha*pow(r_A_y, 4) + 2*alpha*alpha*r_A_y*r_A_y*r_A_z*r_A_z - 11*alpha*r_A_y*r_A_y + 1) *
+                  2*r_A_x*r_A_z*(2*alpha*alpha*r_A_x*r_A_x*r_A_y*r_A_y + 2*alpha*alpha*(r_A_y * r_A_y * r_A_y * r_A_y) + 2*alpha*alpha*r_A_y*r_A_y*r_A_z*r_A_z - 11*alpha*r_A_y*r_A_y + 1) *
                   exponential;
           d_contractions_array[global_index + (icontractions + 8) * knumb_points] +=
               chemtools::normalization_primitive_g(g_constant_basis[iconst + i_prim], 1, 3, 0) *
                   coeff_prim *
-                  2*r_A_x*r_A_y*(2*alpha*alpha*r_A_x*r_A_x*r_A_y*r_A_y + 2*alpha*alpha*pow(r_A_y, 4) + 2*alpha*alpha*r_A_y*r_A_y*r_A_z*r_A_z - 11*alpha*r_A_y*r_A_y + 3) *
+                  2*r_A_x*r_A_y*(2*alpha*alpha*r_A_x*r_A_x*r_A_y*r_A_y + 2*alpha*alpha*(r_A_y * r_A_y * r_A_y * r_A_y) + 2*alpha*alpha*r_A_y*r_A_y*r_A_z*r_A_z - 11*alpha*r_A_y*r_A_y + 3) *
                   exponential;
           d_contractions_array[global_index + (icontractions + 9) * knumb_points] +=
               chemtools::normalization_primitive_g(g_constant_basis[iconst + i_prim], 2, 0, 2) *
                   coeff_prim *
-                  (4*alpha*alpha*pow(r_A_x, 4)*r_A_z*r_A_z + 4*alpha*alpha*r_A_x*r_A_x*r_A_y*r_A_y*r_A_z*r_A_z + 4*alpha*alpha*r_A_x*r_A_x*pow(r_A_z, 4) - 22*alpha*r_A_x*r_A_x*r_A_z*r_A_z + 2*r_A_x*r_A_x + 2*r_A_z*r_A_z) *
+                  (4*alpha*alpha*(r_A_x * r_A_x * r_A_x * r_A_x)*r_A_z*r_A_z + 4*alpha*alpha*r_A_x*r_A_x*r_A_y*r_A_y*r_A_z*r_A_z + 4*alpha*alpha*r_A_x*r_A_x*(r_A_z * r_A_z * r_A_z * r_A_z) - 22*alpha*r_A_x*r_A_x*r_A_z*r_A_z + 2*r_A_x*r_A_x + 2*r_A_z*r_A_z) *
                   exponential;
           d_contractions_array[global_index + (icontractions + 10) * knumb_points] +=
               chemtools::normalization_primitive_g(g_constant_basis[iconst + i_prim], 2, 1, 1) *
                   coeff_prim *
-                  2*r_A_y*r_A_z*(2*alpha*alpha*pow(r_A_x, 4) + 2*alpha*alpha*r_A_x*r_A_x*r_A_y*r_A_y + 2*alpha*alpha*r_A_x*r_A_x*r_A_z*r_A_z - 11*alpha*r_A_x*r_A_x + 1) *
+                  2*r_A_y*r_A_z*(2*alpha*alpha*(r_A_x * r_A_x * r_A_x * r_A_x) + 2*alpha*alpha*r_A_x*r_A_x*r_A_y*r_A_y + 2*alpha*alpha*r_A_x*r_A_x*r_A_z*r_A_z - 11*alpha*r_A_x*r_A_x + 1) *
                   exponential;
           d_contractions_array[global_index + (icontractions + 11) * knumb_points] +=
               chemtools::normalization_primitive_g(g_constant_basis[iconst + i_prim], 2, 2, 0) *
                   coeff_prim *
-                  (4*alpha*alpha*pow(r_A_x, 4)*r_A_y*r_A_y + 4*alpha*alpha*r_A_x*r_A_x*pow(r_A_y, 4) + 4*alpha*alpha*r_A_x*r_A_x*r_A_y*r_A_y*r_A_z*r_A_z - 22*alpha*r_A_x*r_A_x*r_A_y*r_A_y + 2*r_A_x*r_A_x + 2*r_A_y*r_A_y) *
+                  (4*alpha*alpha*(r_A_x * r_A_x * r_A_x * r_A_x)*r_A_y*r_A_y + 4*alpha*alpha*r_A_x*r_A_x*(r_A_y * r_A_y * r_A_y * r_A_y) + 4*alpha*alpha*r_A_x*r_A_x*r_A_y*r_A_y*r_A_z*r_A_z - 22*alpha*r_A_x*r_A_x*r_A_y*r_A_y + 2*r_A_x*r_A_x + 2*r_A_y*r_A_y) *
                   exponential;
           d_contractions_array[global_index + (icontractions + 12) * knumb_points] +=
               chemtools::normalization_primitive_g(g_constant_basis[iconst + i_prim], 3, 0, 1) *
                   coeff_prim *
-                  2*r_A_x*r_A_z*(2*alpha*alpha*pow(r_A_x, 4) + 2*alpha*alpha*r_A_x*r_A_x*r_A_y*r_A_y + 2*alpha*alpha*r_A_x*r_A_x*r_A_z*r_A_z - 11*alpha*r_A_x*r_A_x + 3) *
+                  2*r_A_x*r_A_z*(2*alpha*alpha*(r_A_x * r_A_x * r_A_x * r_A_x) + 2*alpha*alpha*r_A_x*r_A_x*r_A_y*r_A_y + 2*alpha*alpha*r_A_x*r_A_x*r_A_z*r_A_z - 11*alpha*r_A_x*r_A_x + 3) *
                   exponential;
           d_contractions_array[global_index + (icontractions + 13) * knumb_points] +=
               chemtools::normalization_primitive_g(g_constant_basis[iconst + i_prim], 3, 1, 0) *
                   coeff_prim *
-                  2*r_A_x*r_A_y*(2*alpha*alpha*pow(r_A_x, 4) + 2*alpha*alpha*r_A_x*r_A_x*r_A_y*r_A_y + 2*alpha*alpha*r_A_x*r_A_x*r_A_z*r_A_z - 11*alpha*r_A_x*r_A_x + 3) *
+                  2*r_A_x*r_A_y*(2*alpha*alpha*(r_A_x * r_A_x * r_A_x * r_A_x) + 2*alpha*alpha*r_A_x*r_A_x*r_A_y*r_A_y + 2*alpha*alpha*r_A_x*r_A_x*r_A_z*r_A_z - 11*alpha*r_A_x*r_A_x + 3) *
                   exponential;
           d_contractions_array[global_index + (icontractions + 14) * knumb_points] +=
               chemtools::normalization_primitive_g(g_constant_basis[iconst + i_prim], 4, 0, 0) *
                   coeff_prim *
-                  r_A_x*r_A_x*(4*alpha*alpha*pow(r_A_x, 4) + 4*alpha*alpha*r_A_x*r_A_x*r_A_y*r_A_y + 4*alpha*alpha*r_A_x*r_A_x*r_A_z*r_A_z - 22*alpha*r_A_x*r_A_x + 12) *
+                  r_A_x*r_A_x*(4*alpha*alpha*(r_A_x * r_A_x * r_A_x * r_A_x) + 4*alpha*alpha*r_A_x*r_A_x*r_A_y*r_A_y + 4*alpha*alpha*r_A_x*r_A_x*r_A_z*r_A_z - 22*alpha*r_A_x*r_A_x + 12) *
                   exponential;
         }
         else if (angmom == -4) {
@@ -314,55 +314,55 @@ __device__ void chemtools::evaluate_sum_of_second_derivative_contractions_from_c
           d_contractions_array[global_index + icontractions * knumb_points] +=
               norm_const *
                   coeff_prim *
-                  alpha*(6*alpha*pow(r_A_x, 6) + 18*alpha*pow(r_A_x, 4)*r_A_y*r_A_y - 42*alpha*pow(r_A_x, 4)*r_A_z*r_A_z + 18*alpha*r_A_x*r_A_x*pow(r_A_y, 4) - 84*alpha*r_A_x*r_A_x*r_A_y*r_A_y*r_A_z*r_A_z - 32*alpha*r_A_x*r_A_x*pow(r_A_z, 4) + 6*alpha*pow(r_A_y, 6) - 42*alpha*pow(r_A_y, 4)*r_A_z*r_A_z - 32*alpha*r_A_y*r_A_y*pow(r_A_z, 4) + 16*alpha*pow(r_A_z, 6) - 33*pow(r_A_x, 4) - 66*r_A_x*r_A_x*r_A_y*r_A_y + 264*r_A_x*r_A_x*r_A_z*r_A_z - 33*pow(r_A_y, 4) + 264*r_A_y*r_A_y*r_A_z*r_A_z - 88*pow(r_A_z, 4))/4 *
+                  alpha*(6*alpha*(r_A_x * r_A_x * r_A_x * r_A_x * r_A_x * r_A_x) + 18*alpha*(r_A_x * r_A_x * r_A_x * r_A_x)*r_A_y*r_A_y - 42*alpha*(r_A_x * r_A_x * r_A_x * r_A_x)*r_A_z*r_A_z + 18*alpha*r_A_x*r_A_x*(r_A_y * r_A_y * r_A_y * r_A_y) - 84*alpha*r_A_x*r_A_x*r_A_y*r_A_y*r_A_z*r_A_z - 32*alpha*r_A_x*r_A_x*(r_A_z * r_A_z * r_A_z * r_A_z) + 6*alpha*(r_A_y * r_A_y * r_A_y * r_A_y * r_A_y * r_A_y) - 42*alpha*(r_A_y * r_A_y * r_A_y * r_A_y)*r_A_z*r_A_z - 32*alpha*r_A_y*r_A_y*(r_A_z * r_A_z * r_A_z * r_A_z) + 16*alpha*(r_A_z * r_A_z * r_A_z * r_A_z * r_A_z * r_A_z) - 33*(r_A_x * r_A_x * r_A_x * r_A_x) - 66*r_A_x*r_A_x*r_A_y*r_A_y + 264*r_A_x*r_A_x*r_A_z*r_A_z - 33*(r_A_y * r_A_y * r_A_y * r_A_y) + 264*r_A_y*r_A_y*r_A_z*r_A_z - 88*(r_A_z * r_A_z * r_A_z * r_A_z))/4 *
                   exponential;
           d_contractions_array[global_index + (icontractions + 1) * knumb_points] +=
               norm_const *
                   coeff_prim *
                   sqrt(2.5) *
-                  alpha*r_A_x*r_A_z*(-6*alpha*pow(r_A_x, 4) - 12*alpha*r_A_x*r_A_x*r_A_y*r_A_y + 2*alpha*r_A_x*r_A_x*r_A_z*r_A_z - 6*alpha*pow(r_A_y, 4) + 2*alpha*r_A_y*r_A_y*r_A_z*r_A_z + 8*alpha*pow(r_A_z, 4) + 33*r_A_x*r_A_x + 33*r_A_y*r_A_y - 44*r_A_z*r_A_z) *
+                  alpha*r_A_x*r_A_z*(-6*alpha*(r_A_x * r_A_x * r_A_x * r_A_x) - 12*alpha*r_A_x*r_A_x*r_A_y*r_A_y + 2*alpha*r_A_x*r_A_x*r_A_z*r_A_z - 6*alpha*(r_A_y * r_A_y * r_A_y * r_A_y) + 2*alpha*r_A_y*r_A_y*r_A_z*r_A_z + 8*alpha*(r_A_z * r_A_z * r_A_z * r_A_z) + 33*r_A_x*r_A_x + 33*r_A_y*r_A_y - 44*r_A_z*r_A_z) *
                   exponential;
           d_contractions_array[global_index + (icontractions + 2) * knumb_points] +=
               norm_const *
                   coeff_prim *
                   sqrt(2.5) *
-                  alpha*r_A_y*r_A_z*(-6*alpha*pow(r_A_x, 4) - 12*alpha*r_A_x*r_A_x*r_A_y*r_A_y + 2*alpha*r_A_x*r_A_x*r_A_z*r_A_z - 6*alpha*pow(r_A_y, 4) + 2*alpha*r_A_y*r_A_y*r_A_z*r_A_z + 8*alpha*pow(r_A_z, 4) + 33*r_A_x*r_A_x + 33*r_A_y*r_A_y - 44*r_A_z*r_A_z) *
+                  alpha*r_A_y*r_A_z*(-6*alpha*(r_A_x * r_A_x * r_A_x * r_A_x) - 12*alpha*r_A_x*r_A_x*r_A_y*r_A_y + 2*alpha*r_A_x*r_A_x*r_A_z*r_A_z - 6*alpha*(r_A_y * r_A_y * r_A_y * r_A_y) + 2*alpha*r_A_y*r_A_y*r_A_z*r_A_z + 8*alpha*(r_A_z * r_A_z * r_A_z * r_A_z) + 33*r_A_x*r_A_x + 33*r_A_y*r_A_y - 44*r_A_z*r_A_z) *
                   exponential;
           d_contractions_array[global_index + (icontractions + 3) * knumb_points] +=
               norm_const *
                   coeff_prim *
                   sqrt(5.0) *
-                  alpha*(-2*alpha*pow(r_A_x, 6) - 2*alpha*pow(r_A_x, 4)*r_A_y*r_A_y + 10*alpha*pow(r_A_x, 4)*r_A_z*r_A_z + 2*alpha*r_A_x*r_A_x*pow(r_A_y, 4) + 12*alpha*r_A_x*r_A_x*pow(r_A_z, 4) + 2*alpha*pow(r_A_y, 6) - 10*alpha*pow(r_A_y, 4)*r_A_z*r_A_z - 12*alpha*r_A_y*r_A_y*pow(r_A_z, 4) + 11*pow(r_A_x, 4) - 66*r_A_x*r_A_x*r_A_z*r_A_z - 11*pow(r_A_y, 4) + 66*r_A_y*r_A_y*r_A_z*r_A_z)/2 *
+                  alpha*(-2*alpha*(r_A_x * r_A_x * r_A_x * r_A_x * r_A_x * r_A_x) - 2*alpha*(r_A_x * r_A_x * r_A_x * r_A_x)*r_A_y*r_A_y + 10*alpha*(r_A_x * r_A_x * r_A_x * r_A_x)*r_A_z*r_A_z + 2*alpha*r_A_x*r_A_x*(r_A_y * r_A_y * r_A_y * r_A_y) + 12*alpha*r_A_x*r_A_x*(r_A_z * r_A_z * r_A_z * r_A_z) + 2*alpha*(r_A_y * r_A_y * r_A_y * r_A_y * r_A_y * r_A_y) - 10*alpha*(r_A_y * r_A_y * r_A_y * r_A_y)*r_A_z*r_A_z - 12*alpha*r_A_y*r_A_y*(r_A_z * r_A_z * r_A_z * r_A_z) + 11*(r_A_x * r_A_x * r_A_x * r_A_x) - 66*r_A_x*r_A_x*r_A_z*r_A_z - 11*(r_A_y * r_A_y * r_A_y * r_A_y) + 66*r_A_y*r_A_y*r_A_z*r_A_z)/2 *
                   exponential;
           d_contractions_array[global_index + (icontractions + 4) * knumb_points] +=
               norm_const *
                   coeff_prim *
                   sqrt(5.0) *
-                  alpha*r_A_x*r_A_y*(-2*alpha*pow(r_A_x, 4) - 4*alpha*r_A_x*r_A_x*r_A_y*r_A_y + 10*alpha*r_A_x*r_A_x*r_A_z*r_A_z - 2*alpha*pow(r_A_y, 4) + 10*alpha*r_A_y*r_A_y*r_A_z*r_A_z + 12*alpha*pow(r_A_z, 4) + 11*r_A_x*r_A_x + 11*r_A_y*r_A_y - 66*r_A_z*r_A_z) *
+                  alpha*r_A_x*r_A_y*(-2*alpha*(r_A_x * r_A_x * r_A_x * r_A_x) - 4*alpha*r_A_x*r_A_x*r_A_y*r_A_y + 10*alpha*r_A_x*r_A_x*r_A_z*r_A_z - 2*alpha*(r_A_y * r_A_y * r_A_y * r_A_y) + 10*alpha*r_A_y*r_A_y*r_A_z*r_A_z + 12*alpha*(r_A_z * r_A_z * r_A_z * r_A_z) + 11*r_A_x*r_A_x + 11*r_A_y*r_A_y - 66*r_A_z*r_A_z) *
                   exponential;
           d_contractions_array[global_index + (icontractions + 5) * knumb_points] +=
               norm_const *
                   coeff_prim *
                   sqrt(35.0 / 2.0) *
-                  alpha*r_A_x*r_A_z*(2*alpha*pow(r_A_x, 4) - 4*alpha*r_A_x*r_A_x*r_A_y*r_A_y + 2*alpha*r_A_x*r_A_x*r_A_z*r_A_z - 6*alpha*pow(r_A_y, 4) - 6*alpha*r_A_y*r_A_y*r_A_z*r_A_z - 11*r_A_x*r_A_x + 33*r_A_y*r_A_y) *
+                  alpha*r_A_x*r_A_z*(2*alpha*(r_A_x * r_A_x * r_A_x * r_A_x) - 4*alpha*r_A_x*r_A_x*r_A_y*r_A_y + 2*alpha*r_A_x*r_A_x*r_A_z*r_A_z - 6*alpha*(r_A_y * r_A_y * r_A_y * r_A_y) - 6*alpha*r_A_y*r_A_y*r_A_z*r_A_z - 11*r_A_x*r_A_x + 33*r_A_y*r_A_y) *
                   exponential;
           d_contractions_array[global_index + (icontractions + 6) * knumb_points] +=
               norm_const *
                   coeff_prim *
                   sqrt(35.0 / 2.0) *
-                  alpha*r_A_y*r_A_z*(6*alpha*pow(r_A_x, 4) + 4*alpha*r_A_x*r_A_x*r_A_y*r_A_y + 6*alpha*r_A_x*r_A_x*r_A_z*r_A_z - 2*alpha*pow(r_A_y, 4) - 2*alpha*r_A_y*r_A_y*r_A_z*r_A_z - 33*r_A_x*r_A_x + 11*r_A_y*r_A_y) *
+                  alpha*r_A_y*r_A_z*(6*alpha*(r_A_x * r_A_x * r_A_x * r_A_x) + 4*alpha*r_A_x*r_A_x*r_A_y*r_A_y + 6*alpha*r_A_x*r_A_x*r_A_z*r_A_z - 2*alpha*(r_A_y * r_A_y * r_A_y * r_A_y) - 2*alpha*r_A_y*r_A_y*r_A_z*r_A_z - 33*r_A_x*r_A_x + 11*r_A_y*r_A_y) *
                   exponential;
           d_contractions_array[global_index + (icontractions + 7) * knumb_points] +=
               norm_const *
                   coeff_prim *
                   sqrt(35.0) *
-                  alpha*(2*alpha*pow(r_A_x, 6) - 10*alpha*pow(r_A_x, 4)*r_A_y*r_A_y - 10*alpha*r_A_x*r_A_x*pow(r_A_y, 4) + 2*alpha*pow(r_A_y, 6) - 10*pow(r_A_x, 4) + 60*r_A_x*r_A_x*r_A_y*r_A_y - 10*pow(r_A_y, 4) + (2*alpha*r_A_z*r_A_z - 1)*(pow(r_A_x, 4) - 6*r_A_x*r_A_x*r_A_y*r_A_y + pow(r_A_y, 4)))/4 *
+                  alpha*(2*alpha*(r_A_x * r_A_x * r_A_x * r_A_x * r_A_x * r_A_x) - 10*alpha*(r_A_x * r_A_x * r_A_x * r_A_x)*r_A_y*r_A_y - 10*alpha*r_A_x*r_A_x*(r_A_y * r_A_y * r_A_y * r_A_y) + 2*alpha*(r_A_y * r_A_y * r_A_y * r_A_y * r_A_y * r_A_y) - 10*(r_A_x * r_A_x * r_A_x * r_A_x) + 60*r_A_x*r_A_x*r_A_y*r_A_y - 10*(r_A_y * r_A_y * r_A_y * r_A_y) + (2*alpha*r_A_z*r_A_z - 1)*((r_A_x * r_A_x * r_A_x * r_A_x) - 6*r_A_x*r_A_x*r_A_y*r_A_y + (r_A_y * r_A_y * r_A_y * r_A_y)))/4 *
                   exponential;
           d_contractions_array[global_index + (icontractions + 8) * knumb_points] +=
               norm_const *
                   coeff_prim *
                   sqrt(35.0) *
-                  alpha*r_A_x*r_A_y*(2*alpha*pow(r_A_x, 4) + 2*alpha*r_A_x*r_A_x*r_A_z*r_A_z - 2*alpha*pow(r_A_y, 4) - 2*alpha*r_A_y*r_A_y*r_A_z*r_A_z - 11*r_A_x*r_A_x + 11*r_A_y*r_A_y) *
+                  alpha*r_A_x*r_A_y*(2*alpha*(r_A_x * r_A_x * r_A_x * r_A_x) + 2*alpha*r_A_x*r_A_x*r_A_z*r_A_z - 2*alpha*(r_A_y * r_A_y * r_A_y * r_A_y) - 2*alpha*r_A_y*r_A_y*r_A_z*r_A_z - 11*r_A_x*r_A_x + 11*r_A_y*r_A_y) *
                   exponential;
         }// End angmoms.
       } // End going over contractions of a single segmented shell.
