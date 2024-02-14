@@ -16,7 +16,7 @@ Equation  (9.5.6), (9.5.7) from Helgaker's et al book.
 */
 template<int T, int I, int J>
 __device__
-__forceinline__
+inline
 typename std::enable_if<(T < 0) || (T > (I + J)), double>::type
 E(const double &alpha, const double &A_coord, const double &beta, const double &B_coord) {
   return 0.;
@@ -24,15 +24,15 @@ E(const double &alpha, const double &A_coord, const double &beta, const double &
 
 template<int T, int I, int J>
 __device__
-__forceinline__
+inline
 typename std::enable_if<(T == 0) && (I == 0) && (J == 0) && (T <= (I + J)), double>::type
 E(const double &alpha, const double &A_coord, const double &beta, const double &B_coord) {
-  return exp(-(alpha * beta) * pow(A_coord - B_coord, 2) / (alpha + beta));
+  return exp(-(alpha * beta) * (A_coord - B_coord) * (A_coord - B_coord) / (alpha + beta));
 }
 
 template<int T, int I, int J>
 __device__
-__forceinline__
+inline
 //typename std::enable_if<(J == 0) && ((I != 0) || (J != 0) || (T != 0)) && ((T >= 0) && (T <= (I + J))), double>::type
 typename std::enable_if<(J == 0) &&
     not((T < 0) || (T > (I + J))) &&
@@ -46,7 +46,7 @@ E(const double &alpha, const double &A_coord, const double &beta, const double &
 
 template<int T, int I, int J>
 __device__
-__forceinline__
+inline
 //typename std::enable_if<(J != 0) && ((I != 0) || (J != 0) || (T != 0)) && ((T >= 0) && (T <= (I + J))), double>::type
 typename std::enable_if<not (J == 0) &&
     not((T < 0) || (T > (I + J))) &&
@@ -175,17 +175,20 @@ Equation  (9.9.18), (9.9.19), (9.9.20) from Helgaker's et al book.
 
 template<int N, int T, int U, int V>
 __device__
-__forceinline__
+inline
 typename std::enable_if<(T == 0) && (U == 0) && (V == 0), double>::type
 R(const double &alpha, const double3 &P_coord, const double &beta, const double3 &C_coord) {
   double p = (alpha + beta);
-  double param = p * (pow(P_coord.x - C_coord.x, 2.0) + pow(P_coord.y - C_coord.y, 2.0) + pow(P_coord.z - C_coord.z, 2.0));
-  return pow(-2.0 * p, N) * chemtools::boys_function<N>(param);
+  double x = P_coord.x - C_coord.x;
+  double y = P_coord.y - C_coord.y;
+  double z = P_coord.z - C_coord.z;
+  double param = p * (x * x + y * y + z * z);
+  return pow(-2.0 * p, __int2double_rn(N)) * chemtools::boys_function<N>(param);
 }
 
 template<int N, int T, int U, int V>
 __device__
-__forceinline__
+inline
 typename std::enable_if<(T == 0) && (U == 0) && (V == 1), double>::type
 R(const double &alpha, const double3 &P_coord, const double &beta, const double3 &C_coord) {
   return (P_coord.z - C_coord.z) * R<N + 1, T, U, 0>(alpha, P_coord, beta, C_coord);
@@ -193,7 +196,7 @@ R(const double &alpha, const double3 &P_coord, const double &beta, const double3
 
 template<int N, int T, int U, int V>
 __device__
-__forceinline__
+inline
 typename std::enable_if<(T == 0) && (U == 0) && (V > 1), double>::type
 R(const double &alpha, const double3 &P_coord, const double &beta, const double3 &C_coord) {
   return (V - 1) * R<N + 1, T, U, V - 2>(alpha, P_coord, beta, C_coord) +
@@ -202,7 +205,7 @@ R(const double &alpha, const double3 &P_coord, const double &beta, const double3
 
 template<int N, int T, int U, int V>
 __device__
-__forceinline__
+inline
 typename std::enable_if<(T == 0) && (U == 1), double>::type
 R(const double &alpha, const double3 &P_coord, const double &beta, const double3 &C_coord) {
   return (P_coord.y - C_coord.y) * R<N + 1, T, 0, V>(alpha, P_coord, beta, C_coord);
@@ -210,7 +213,7 @@ R(const double &alpha, const double3 &P_coord, const double &beta, const double3
 
 template<int N, int T, int U, int V>
 __device__
-__forceinline__
+inline
 typename std::enable_if<(T == 0) && (U > 1), double>::type
 R(const double &alpha, const double3 &P_coord, const double &beta, const double3 &C_coord) {
   return (U - 1) * R<N + 1, T, U - 2, V>(alpha, P_coord, beta, C_coord) +
@@ -219,7 +222,7 @@ R(const double &alpha, const double3 &P_coord, const double &beta, const double3
 
 template<int N, int T, int U, int V>
 __device__
-__forceinline__
+inline
 typename std::enable_if<(T == 1), double>::type
 R(const double &alpha, const double3 &P_coord, const double &beta, const double3 &C_coord) {
   return (P_coord.x - C_coord.x) * R<N + 1, 0, U, V>(alpha, P_coord, beta, C_coord);
@@ -227,7 +230,7 @@ R(const double &alpha, const double3 &P_coord, const double &beta, const double3
 
 template<int N, int T, int U, int V>
 __device__
-__forceinline__
+inline
 typename std::enable_if<(T > 1), double>::type
 R(const double &alpha, const double3 &P_coord, const double &beta, const double3 &C_coord) {
   return (T - 1) * R<N + 1, T - 2, U, V>(alpha, P_coord, beta, C_coord) +
