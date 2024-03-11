@@ -36,13 +36,12 @@ TEST_CASE( "Test Positive Definite Kinetic Energy Density Against gbasis", "[eva
         "./tests/data/test2.fchk",
         "./tests/data/atom_08_O_N08_M3_ub3lyp_ccpvtz_g09.fchk",
         "./tests/data/atom_08_O_N09_M2_ub3lyp_ccpvtz_g09.fchk",
-        "./tests/data/4141_q000_m01_k00_force_uhf_ccpvtz.fchk",
         "./tests/data/h2o.fchk",
         "./tests/data/ch4.fchk",
         "./tests/data/qm9_000092_HF_cc-pVDZ.fchk",
         "./tests/data/qm9_000104_PBE1PBE_pcS-3.fchk"
     );
-    std::cout << "FCHK FILE %s \n" << fchk_file << std::endl;
+    std::cout << "Pos Def KED FCHK FILE %s \n" << fchk_file << std::endl;
     chemtools::IOData iodata = chemtools::get_molecular_basis_from_fchk(fchk_file);
 
     // Gemerate random grid.
@@ -55,7 +54,6 @@ TEST_CASE( "Test Positive Definite Kinetic Energy Density Against gbasis", "[eva
     std::generate(points.begin(), points.end(), gen);
 
     // Calculate Kinetic Energy
-    chemtools::add_mol_basis_to_constant_memory_array(iodata.GetOrbitalBasis(), false, false);
     std::vector<double> kinetic_dens_result = chemtools::evaluate_positive_definite_kinetic_density(
         iodata, points.data(), numb_pts
         );
@@ -80,7 +78,7 @@ from iodata import load_one
 from gbasis.wrappers import from_iodata
 
 iodata = load_one(fchk_path)
-basis, type = from_iodata(iodata)
+basis = from_iodata(iodata)
 rdm = (iodata.mo.coeffs * iodata.mo.occs).dot(iodata.mo.coeffs.T)
 points = points.reshape((numb_pts, 3), order="F")
 points = np.array(points, dtype=np.float64)
@@ -89,7 +87,7 @@ indices_to_compute = np.random.choice(np.arange(len(points)), size=10000)
 true_result = true_result[indices_to_compute]
 points = points[indices_to_compute, :]
 
-kin_dens = evaluate_posdef_kinetic_energy_density(rdm, basis, points, coord_type=type)
+kin_dens = evaluate_posdef_kinetic_energy_density(rdm, basis, points)
 err = np.abs(kin_dens - true_result)
 result = np.all(err < 1e-8)
 print("Kinetic Density Mean, Max, STD Error ", np.mean(err), np.max(err), np.std(err))
@@ -118,13 +116,12 @@ TEST_CASE( "Test General Kinetic Energy Density Against gbasis", "[evaluate_gene
         "./tests/data/test2.fchk",
         "./tests/data/atom_08_O_N08_M3_ub3lyp_ccpvtz_g09.fchk",
         "./tests/data/atom_08_O_N09_M2_ub3lyp_ccpvtz_g09.fchk",
-        "./tests/data/4141_q000_m01_k00_force_uhf_ccpvtz.fchk",
         "./tests/data/h2o.fchk",
         "./tests/data/ch4.fchk",
         "./tests/data/qm9_000092_HF_cc-pVDZ.fchk",
         "./tests/data/qm9_000104_PBE1PBE_pcS-3.fchk"
     );
-    std::cout << "FCHK FILE %s \n" << fchk_file << std::endl;
+    std::cout << "General KED FCHK FILE %s \n" << fchk_file << std::endl;
     chemtools::IOData iodata = chemtools::get_molecular_basis_from_fchk(fchk_file);
 
     // Gemerate random grid.
@@ -139,7 +136,6 @@ TEST_CASE( "Test General Kinetic Energy Density Against gbasis", "[evaluate_gene
     // Calculate General Kinetic Energy at alpha = 0.5
     std::uniform_real_distribution<double> alpha_gen {-5, 5};
     double alpha = alpha_gen(merseene_engine);
-    chemtools::add_mol_basis_to_constant_memory_array(iodata.GetOrbitalBasis(), false, false);
     std::vector<double> laplacian_result = chemtools::evaluate_general_kinetic_energy_density(
         iodata, alpha, points.data(), numb_pts
     );
@@ -165,12 +161,12 @@ from iodata import load_one
 from gbasis.wrappers import from_iodata
 
 iodata = load_one(fchk_path)
-basis, type = from_iodata(iodata)
+basis = from_iodata(iodata)
 rdm = (iodata.mo.coeffs * iodata.mo.occs).dot(iodata.mo.coeffs.T)
 points = points.reshape((numb_pts, 3), order="F")
 points = np.array(points, dtype=np.float64)
 
-kin_dens = evaluate_general_kinetic_energy_density(rdm, basis, points, alpha=alpha, coord_type=type)
+kin_dens = evaluate_general_kinetic_energy_density(rdm, basis, points, alpha=alpha)
 err = np.abs(kin_dens - true_result)
 result = np.all(err < 1e-8)
 print("General Kinetic Density Mean, Max, STD Error ", np.mean(err), np.max(err), np.std(err))

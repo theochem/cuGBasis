@@ -21,6 +21,7 @@ class IOData {
   double* coord_atoms_;      // Row-order
   int natoms;
   int* charges_;             // Charge of atom.
+  int* atnums_;              // Atomic Numbers of atom
   double* one_rdm_;         // Row-order
   int one_rdm_shape_;
   double* mo_coeffs_;       // Row-order
@@ -31,13 +32,13 @@ class IOData {
 
  public:
   IOData(chemtools::MolecularBasis basis, double* coord, int natoms,
-         double* one_rdm, int shape, double* coeffs, double* occs, int* charges,
+         double* one_rdm, int shape, double* coeffs, double* occs, int* charges, int* atnums,
          double* mo_one_rdm) :
       orbital_basis_(basis), coord_atoms_(coord), natoms(natoms), one_rdm_(one_rdm), one_rdm_shape_(shape),
-      mo_coeffs_(coeffs), mo_occupations_(occs), charges_(charges), mo_one_rdm_(mo_one_rdm) {}
+      mo_coeffs_(coeffs), mo_occupations_(occs), charges_(charges), atnums_(atnums), mo_one_rdm_(mo_one_rdm) {}
   ~IOData() {
     delete one_rdm_; delete mo_coeffs_; delete mo_occupations_; delete coord_atoms_; delete charges_;
-             delete mo_one_rdm_;
+    delete atnums_; delete mo_one_rdm_;
   }
   IOData(const IOData& copy);
 
@@ -74,7 +75,7 @@ class IOData {
 
   // Getters
   const MolecularBasis &GetOrbitalBasis() const {return orbital_basis_;}
-  const double *GetCoordAtoms() const {return coord_atoms_;}
+  double *GetCoordAtoms() const {return coord_atoms_;}
   int GetNatoms() const {return natoms;}
   const double *GetOneRdm() const {return one_rdm_;}
   const double *GetMOOneRDM() const {return mo_one_rdm_;}
@@ -82,6 +83,7 @@ class IOData {
   const double *GetMoCoeffs() const {return mo_coeffs_;}
   const double *GetMoOccupations() const {return mo_occupations_;}
   const int*  GetCharges() const {return charges_;}
+  const int* GetAtomicNumbers() const {return atnums_;}
 
   // Setters
   //void SetCoordAtoms(double *coord_atoms) {IOData::coord_atoms_ = coord_atoms;}

@@ -6,8 +6,17 @@
 #include "contracted_shell.h"
 #include "iodata.h"
 
+using d_func_t = void (*)(double*, const double*, const int, const int, const int);
 
 namespace chemtools {
+
+/**
+ * DEVICE FUNCTIONS
+ * ---------------------------------------------------------------------------------------------------------------
+ */
+// This points to the correct __device__ function that evaluates over contractions
+__device__ extern d_func_t p_evaluate_deriv_contractions;
+
 /**
  * Evaluate the derivative of contractions from any grid of points.
  *
@@ -25,11 +34,22 @@ namespace chemtools {
  *                  Values should be set to zero before using.
  * @param[in] d_points The device pointer to the grid points of size (N, 3) stored in column-major order.
  * @param[in] d_knumb_points The number of points in the grid.
+ * @param[in] knumb_contractions Total number of contractions, note this may be different on whats in constant memory
+ * @param[in] i_contr_start Index of where to start updating contractions, should match whats in constant memory.
  */
-__global__ void evaluate_derivatives_contractions_from_constant_memory(
-    double* d_deriv_contracs, const double* const d_points, const int knumb_points, const int knumb_contractions
+__device__ void evaluate_derivatives_contractions_from_constant_memory(
+    double* d_deriv_contracs, const double* const d_points, const int knumb_points, const int knumb_contractions,
+    const int i_contr_start = 0
 );
 
+
+//__device__ static d_func_t p_evaluate_deriv_contractions;
+//__device__ static d_func_t p_evaluate_contractions;
+
+/**
+ * HOST FUNCTIONS
+ * ---------------------------------------------------------------------------------------------------------------
+ */
 /**
  * Evaluate derivatives of the contractions.
  *

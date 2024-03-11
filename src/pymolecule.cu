@@ -8,6 +8,7 @@
 #include "../include/evaluate_densbased.cuh"
 #include "../include/evaluate_density.cuh"
 #include "../include/evaluate_gradient.cuh"
+#include "../include/evaluate_hessian.cuh"
 #include "../include/evaluate_laplacian.cuh"
 #include "../include/evaluate_kinetic_dens.cuh"
 #include "../include/evaluate_electrostatic.cuh"
@@ -17,6 +18,7 @@ namespace py = pybind11;
 chemtools::Molecule::Molecule(const std::string &file_path) {
   this->file_path = file_path;
   chemtools::IOData iodata = chemtools::get_molecular_basis_from_fchk(file_path);
+  // Note that this copies the iodata object over the class, and so it envokes teh destructore
   this->iodata_ = new chemtools::IOData(iodata);
 }
 
@@ -29,6 +31,17 @@ void chemtools::Molecule::basis_set_to_constant_memory(bool do_segmented_basis){
   chemtools::add_mol_basis_to_constant_memory_array(molecular_basis, do_segmented_basis, false);
 }
 
+const MatrixX3R chemtools::Molecule::getCoordinates() const {
+  const double* pts_row_order = iodata_->GetCoordAtoms();
+  MatrixX3R coordinates = Eigen::Map<const MatrixX3R>(pts_row_order, iodata_->GetNatoms(), 3);
+  return coordinates;
+}
+
+const IntVector chemtools::Molecule::getNumbers() const {
+  const int* atomic_numbers = iodata_->GetAtomicNumbers();
+  IntVector atomic_numbs = Eigen::Map<const IntVector>(atomic_numbers, iodata_->GetNatoms());
+  return atomic_numbs;
+}
 
 Vector chemtools::Molecule::compute_electron_density(const Eigen::Ref<MatrixX3R>&  points) {
   // Accept in row-major order because it is numpy default
@@ -43,7 +56,7 @@ Vector chemtools::Molecule::compute_electron_density(const Eigen::Ref<MatrixX3R>
 }
 
 
-Vector chemtools::Molecule::compute_electron_density_cubic(
+TensorXXXR chemtools::Molecule::compute_electron_density_cubic(
     const Vector3D& klower_bnd, const Matrix33R& kaxes, const IntVector3D& knumb_points, const bool disp
 ) {
   Matrix33C kaxes_col_order = kaxes;
@@ -53,7 +66,7 @@ Vector chemtools::Molecule::compute_electron_density_cubic(
       {knumb_points[0], knumb_points[1], knumb_points[2]}, disp
   );
   /// Eigen Tensor doesn't work with pybind11, so the trick here would be to use array_t to convert them
-  Vector v2 = Eigen::Map<Vector>(dens.data(), numb_pts);
+  TensorXXXR v2 = Eigen::TensorMap<TensorXXXR>(dens.data(), knumb_points[0], knumb_points[1], knumb_points[2]);
   return v2;
 }
 
@@ -65,6 +78,17 @@ MatrixX3R chemtools::Molecule::compute_electron_density_gradient(const Eigen::Re
       *iodata_, pts_col_order.data(), nrows
   );
   MatrixX3R v2 = Eigen::Map<MatrixX3R>(grad.data(), nrows, 3);
+  return v2;
+}
+
+TensorXXXR chemtools::Molecule::compute_electron_density_hessian(const Eigen::Ref<MatrixX3R>&  points) {
+  MatrixX3C pts_col_order = points;
+  size_t nrows = points.rows();
+  std::vector<double> hessian_row = chemtools::evaluate_electron_density_hessian(
+      *iodata_, pts_col_order.data(), nrows, true
+  );
+  /// Eigen Tensor doesn't work with pybind11, so the trick here would be to use array_t to convert them
+  TensorXXXR v2 = Eigen::TensorMap<TensorXXXR>(hessian_row.data(), nrows, 3, 3);
   return v2;
 }
 

@@ -65,7 +65,7 @@ from iodata import load_one
 from gbasis.wrappers import from_iodata
 
 iodata = load_one(fchk_path)
-basis, type = from_iodata(iodata)
+basis = from_iodata(iodata)
 rdm = (iodata.mo.coeffs * iodata.mo.occs).dot(iodata.mo.coeffs.T)
 
 num_pts = 50
@@ -75,7 +75,7 @@ random_indices = np.array([np.random.randint(0, shape[0], num_pts), np.random.ra
 global_index = random_indices[:, 0] * (shape[1] * shape[2]) + shape[2] * random_indices[:, 1] + random_indices[:, 2]
 grid = l_bnd + random_indices.dot(axes)
 
-density = evaluate_density(rdm, basis, grid, coord_type=type)
+density = evaluate_density(rdm, basis, grid)
 
 err = np.abs(density - true_result[global_index])
 result = np.all(err < 1e-8)
@@ -89,6 +89,7 @@ assert result, "Electron density on GPU doesn't match gbasis."
   } // Need this so that the python object doesn't outline the interpretor when we close it up.
   //py::finalize_interpreter(); // Close up the python interpretor for this test.
 }
+
 
 TEST_CASE( "Test No Errors When Computing Electron Density At high points", "[evaluate_electron_density_many_pts]" ) {
   // Goal of this test is to make sure the memory management is correct
@@ -114,7 +115,7 @@ TEST_CASE( "Test No Errors When Computing Electron Density At high points", "[ev
         "./tests/data/qm9_000092_HF_cc-pVDZ.fchk",
         "./tests/data/qm9_000104_PBE1PBE_pcS-3.fchk"
     );
-    printf("Test: %s \n", fchk_file.c_str());
+    printf("Computing Electron Density At high points Test: %s \n", fchk_file.c_str());
     chemtools::IOData iodata = chemtools::get_molecular_basis_from_fchk(fchk_file);
 
     // Gemerate random grid.
@@ -131,10 +132,8 @@ TEST_CASE( "Test No Errors When Computing Electron Density At high points", "[ev
     std::vector<double> result = chemtools::evaluate_electron_density_on_any_grid(iodata, points.data(), numb_pts);
 
     REQUIRE(cudaPeekAtLastError() == cudaSuccess);
-
   } // Need this so that the python object doesn't outline the interpretor when we close it up.
 }
-
 
 
 TEST_CASE( "Test Electron Density Against gbasis on random grid", "[evaluate_electron_density_on_any_grid]" ) {
@@ -155,17 +154,17 @@ TEST_CASE( "Test Electron Density Against gbasis on random grid", "[evaluate_ele
         "./tests/data/test2.fchk",
         "./tests/data/atom_08_O_N08_M3_ub3lyp_ccpvtz_g09.fchk",
         "./tests/data/atom_08_O_N09_M2_ub3lyp_ccpvtz_g09.fchk",
-//        "./tests/data/4141_q000_m01_k00_force_uhf_ccpvtz.fchk",
         "./tests/data/h2o.fchk",
         "./tests/data/ch4.fchk",
         "./tests/data/qm9_000092_HF_cc-pVDZ.fchk",
-        "./tests/data/qm9_000104_PBE1PBE_pcS-3.fchk"
+        "./tests/data/qm9_000104_PBE1PBE_pcS-3.fchk",
+        "./tests/data/DUTLAF10_0_q000_m01_k00_force_uwb97xd_def2svpd.fchk"
     );
     printf("Test: %s \n", fchk_file.c_str());
     chemtools::IOData iodata = chemtools::get_molecular_basis_from_fchk(fchk_file);
 
     // Gemerate random grid.
-    int numb_pts = 10000000;
+    int numb_pts = 5000000;
     std::vector<double> points(3 * numb_pts);
     std::random_device rnd_device;
     std::mt19937  merseene_engine {rnd_device()};
@@ -173,9 +172,8 @@ TEST_CASE( "Test Electron Density Against gbasis on random grid", "[evaluate_ele
     auto gen = [&dist, &merseene_engine](){return dist(merseene_engine);};
     std::generate(points.begin(), points.end(), gen);
 
-
     // Evaluate electron density on the cube
-    chemtools::add_mol_basis_to_constant_memory_array(iodata.GetOrbitalBasis(), false, false);
+    printf("Evaluate density \n");
     std::vector<double> result = chemtools::evaluate_electron_density_on_any_grid(iodata, points.data(), numb_pts);
 
     //Transfer result to pybind11 without copying
@@ -194,7 +192,7 @@ from iodata import load_one
 from gbasis.wrappers import from_iodata
 
 iodata = load_one(fchk_path)
-basis, type = from_iodata(iodata)
+basis = from_iodata(iodata)
 rdm = (iodata.mo.coeffs * iodata.mo.occs).dot(iodata.mo.coeffs.T)
 points = points.reshape((numb_pts, 3), order="F")
 points = np.array(points, dtype=np.float64)
@@ -202,7 +200,7 @@ points = np.array(points, dtype=np.float64)
 random_indices = np.unique(np.random.randint(0, len(points), 50000))
 points = points[random_indices, :]
 
-density = evaluate_density(rdm, basis, points, coord_type=type)
+density = evaluate_density(rdm, basis, points)
 err = np.abs(density - true_result[random_indices])
 result = np.all(err < 1e-8)
 print(f"Max Error {np.max(err)}     Mean Err {np.mean(err)}    Std Err {np.std(err)}")

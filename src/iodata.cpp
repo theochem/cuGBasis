@@ -165,6 +165,10 @@ chemtools::IOData chemtools::get_molecular_basis_from_fchk(const std::string& fc
   py::array_t<int> charges_atoms = iodata_obj.attr("atcorenums").cast<py::array_t<int>>();
   for(int i = 0; i < natoms; i++) {charges[i] = charges_atoms.at(i);}
 
+  // Get Atomic Numbers of the atoms
+  int* atnums = new int[natoms];
+  py::array_t<int> atnums_atoms = iodata_obj.attr("atnums").cast<py::array_t<int>>();
+  for(int i = 0; i < natoms; i++) {atnums[i] = atnums_atoms.at(i);}
 
   // Commit them to memory so that pybind11 doesn't wipe them out. This is done using row order.
   double* h_coeffs = new double[one_rdm_shape * nshells];
@@ -193,7 +197,7 @@ chemtools::IOData chemtools::get_molecular_basis_from_fchk(const std::string& fc
   }
   // Finalize the interpreter.
   return {chemtools::MolecularBasis(molecular_basis), h_coords_atoms, natoms,
-          h_one_rdm, one_rdm_shape, h_coeffs, h_occs, charges, h_mo_one_rdm};
+          h_one_rdm, one_rdm_shape, h_coeffs, h_occs, charges, atnums, h_mo_one_rdm};
 }
 
 
@@ -205,6 +209,8 @@ chemtools::IOData::IOData(const chemtools::IOData& copy):
   orbital_basis_ = chemtools::MolecularBasis(copy.orbital_basis_);
   charges_ = new int[natoms];
   std::memcpy(charges_, copy.charges_, sizeof(int) * natoms);
+  atnums_ = new int[natoms];
+  std::memcpy(atnums_, copy.atnums_, sizeof(int) * natoms);
   coord_atoms_ = new double[3 * natoms];
   std::memcpy(coord_atoms_, copy.coord_atoms_, sizeof(double) * 3 * natoms);
   one_rdm_ = new double[copy.one_rdm_shape_ * copy.one_rdm_shape_];

@@ -6,15 +6,20 @@
 #include "../include/evaluate_gradient.cuh"
 #include "../include/evaluate_laplacian.cuh"
 #include "../include/cuda_utils.cuh"
+#include "../include/basis_to_gpu.cuh"
 
 
 __host__ std::vector<double> chemtools::evaluate_pos_def_kinetic_density_on_any_grid_handle(
     cublasHandle_t &handle, chemtools::IOData &iodata, const double *h_points, const int knumb_points
 ) {
   // Set cache perference to L1
-  cudaFuncSetCacheConfig(
-      chemtools::evaluate_derivatives_contractions_from_constant_memory, cudaFuncCachePreferL1
-  );
+//  chemtools::cuda_check_errors(cudaFuncSetCacheConfig(
+//      chemtools::evaluate_derivatives_contractions_from_constant_memory, cudaFuncCachePreferL1
+//  ));
+
+  // Get the function pointers to the correct GPU functions
+  d_func_t h_deriv_contr_func;
+  cudaMemcpyFromSymbol(&h_deriv_contr_func, chemtools::p_evaluate_deriv_contractions, sizeof(d_func_t));
 
   // Get the molecular basis from iodata and put it in constant memory of the gpu.
   const chemtools::MolecularBasis& molecular_basis = iodata.GetOrbitalBasis();
@@ -86,8 +91,20 @@ __host__ std::vector<double> chemtools::evaluate_pos_def_kinetic_density_on_any_
                                          sizeof(double) * 3 * number_pts_iter * knbasisfuncs));
     dim3 threadsPerBlock(128);
     dim3 grid((number_pts_iter + threadsPerBlock.x - 1) / (threadsPerBlock.x));
-    chemtools::evaluate_derivatives_contractions_from_constant_memory<<<grid, threadsPerBlock>>>(
-        d_deriv_contractions, d_points, number_pts_iter, knbasisfuncs
+//    chemtools::evaluate_derivatives_contractions_from_constant_memory<<<grid, threadsPerBlock>>>(
+//        d_deriv_contractions, d_points, number_pts_iter, knbasisfuncs
+//    );
+    chemtools::evaluate_scalar_quantity(
+        molecular_basis,
+        false,
+        false,
+        h_deriv_contr_func,
+        d_deriv_contractions,
+        d_points,
+        number_pts_iter,
+        knbasisfuncs,
+        threadsPerBlock,
+        grid
     );
 
     // Free up points memory in device/gpu memory.

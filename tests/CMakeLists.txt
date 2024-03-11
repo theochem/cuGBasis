@@ -6,11 +6,12 @@ target_include_directories(Catch INTERFACE ${CATCH_INCLUDE_DIR})
 # Find chemtools_cuda_lib
 find_package(chemtools_cuda_lib)
 set(TEST_SOURCES
-        test_densbased.cu
+        test_hessian.cu
+	test_densbased.cu
         test_gradient.cu
-        test_kinetic_density.cu
-        test_laplacian.cu
-        test_electron_density.cu
+	test_kinetic_density.cu
+	test_laplacian.cu
+	test_electron_density.cu
         test_electrostatic_potential.cu
         )
 # Add test executable

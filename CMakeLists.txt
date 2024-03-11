@@ -22,17 +22,21 @@ add_subdirectory(./libs/pybind11)
 # Create a CUDA library chemtools_cuda using nvcc compiler that codes the entire CUDA/C++.
 set(SOURCES
         src/basis_to_gpu.cu
+        src/boys_functions.cu
         src/iodata.cpp
         src/pymolecule.cu
         src/cuda_basis_utils.cu
         src/cuda_utils.cu
+		src/integral_coeffs.cu
         src/evaluate_density.cu
         src/evaluate_gradient.cu
 		src/evaluate_electrostatic.cu
 		src/utils.cpp
 		src/evaluate_laplacian.cu
 		src/evaluate_kinetic_dens.cu
-		src/evaluate_densbased.cu)
+		src/evaluate_densbased.cu
+		src/evaluate_hessian.cu
+)
 set(HEADERS
         include/basis_to_gpu.cuh
         include/contracted_shell.h
@@ -48,7 +52,9 @@ set(HEADERS
 		include/utils.h
         include/evaluate_laplacian.cuh
 		include/evaluate_kinetic_dens.cuh
-		include/evaluate_densbased.cuh)
+		include/evaluate_densbased.cuh
+		include/evaluate_hessian.cuh
+)
 find_package(CUDAToolkit REQUIRED)  # The point of this is to call CUDA code from C++ but without including CUDA code.
                                     #  see stackexchange - "linking of cuda library in cmake"
 
@@ -87,9 +93,13 @@ if(${LINK_TO_PYTHON})
 	target_link_libraries(chemtools_cuda PRIVATE CUDA::cublas)
 endif()
 
+add_subdirectory(tests)
 # Compilation of the tests, not needed e.g. if `LINK_TO_PYTHON` IS True/ON
 set(${DONT_COMPILE_TESTS} OFF CACHE BOOL "Don't compile the tests")
-set(COMPILE_TESTS NOT ${DONT_COMPILE_TESTS})
-if(${COMPILE_TESTS})
+if(NOT ${DONT_COMPILE_TESTS})
 	add_subdirectory(tests)
 endif()
+
+#add_executable (main_c main.cu)
+#target_link_libraries(main_c PRIVATE chemtools_cuda_lib)
+#target_link_libraries(main_c PUBLIC pybind11::embed)

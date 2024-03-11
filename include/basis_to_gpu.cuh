@@ -1,10 +1,15 @@
 #ifndef CHEMTOOLS_CUDA_INCLUDE_BASIS_TO_GPU_H_
 #define CHEMTOOLS_CUDA_INCLUDE_BASIS_TO_GPU_H_
 
-#include "contracted_shell.h"
-// Stores constant memory for the NVIDIA GPU.
+#include <functional>
 
+#include "contracted_shell.h"
+
+// Stores constant memory for the NVIDIA GPU.
 extern __constant__ double g_constant_basis[7500];
+
+// Create a function pointer type definition
+typedef void (*d_func_t)(double*, const double*, const int, const int, const int);
 
 namespace chemtools {
 /**
@@ -13,6 +18,10 @@ namespace chemtools {
  *  The downside is the inability to jump to any contracted shell.
  *
  * @param[in] basis The molecular basis set information as a collection of contracted shells.
+ * @param[out] array of length two.  The first element is the index of the shell that was included in the constant
+ *             memory. If this index is equal to (number of contractions minus one) then it implies the entire
+ *             molecular basis is in constant memory.  The second element is the number of contractions that are
+ *             going to be evaluted if one iterates through constant memory.
  * @note Every basis-set information is casted to a double.
  * @note Storing it as a decontracted basis, i.e. every contraction shell is segmented, i.e. has only one angular
  *       momentum associated with it, is that it reduced the amount of for-loops inside the cuda function. This
@@ -30,8 +39,12 @@ namespace chemtools {
  *     4B Blank | angmom_1 | exponent_1 | ... | exponent_K |  coeff_1 | ... | coeff_K | atom_coord_x | atom_coord_y |
  *     atom_coord_z |  K2 | 4B Blank |  angmom_2 | exponent_1 | ... | exponent_K2 | coeff_1 | same pattern repeat...
  */
-__host__ void add_mol_basis_to_constant_memory_array(
-    const chemtools::MolecularBasis& basis, bool do_segmented_basis = false, const bool disp = false);
+__host__ std::array<std::size_t, 2> add_mol_basis_to_constant_memory_array(
+    const chemtools::MolecularBasis& basis,
+    bool do_segmented_basis = false,
+    const bool disp = false,
+    const std::size_t i_shell_start = 0
+);
 
 /**
  * Puts molecular basis into constant memory of the NVIDIA GPU as a straight array with consideration
@@ -52,5 +65,21 @@ __host__ void add_mol_basis_to_constant_memory_array(
  *
  */
 __host__ void add_mol_basis_to_constant_memory_array_access(chemtools::MolecularBasis basis);
+
+
+__host__ void evaluate_scalar_quantity(
+    const chemtools::MolecularBasis& basis,
+    bool do_segmented_basis,
+    const bool disp,
+    d_func_t func_eval,
+    double* d_output_iter,
+    const double* d_points_iter,
+    const int knumb_points_iter,
+    const int k_total_numb_contractions,
+    dim3 threadsPerBlock,
+    dim3 grid,
+    cudaFuncCache l1_over_shared = cudaFuncCachePreferL1
+);
+
 }
 #endif //CHEMTOOLS_CUDA_INCLUDE_BASIS_TO_GPU_H_

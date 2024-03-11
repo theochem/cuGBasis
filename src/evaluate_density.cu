@@ -11,6 +11,7 @@
 #include "../include/basis_to_gpu.cuh"
 
 
+__device__ d_func_t chemtools::p_evaluate_contractions = chemtools::evaluate_contractions_from_constant_memory_on_any_grid;
 
 /**
  * Only evaluates Cartesian Gaussians and Pure-Solid harmonics.
@@ -27,11 +28,12 @@ __device__ void chemtools::evaluate_contractions(
     const double& grid_y,
     const double& grid_z,
     const int& knumb_points,
-    unsigned int& global_index
+    unsigned int& global_index,
+    const int& i_contr_start
     ) {
   // Setup the initial variables.
   int iconst = 0;                                                          // Index to go over constant memory.
-  unsigned int icontractions = 0;                                         // Index to go over rows of d_contractions_array
+  unsigned int icontractions = i_contr_start;                              // Index to go over rows of d_contractions_array
   unsigned int numb_contracted_shells = (int) g_constant_basis[iconst++];
 
   #pragma unroll
@@ -391,8 +393,9 @@ __device__ void chemtools::evaluate_contractions(
 }
 
 
-__global__ void chemtools::evaluate_contractions_from_constant_memory_on_any_grid(
-    double* d_contractions_array, const double* const d_points, const int knumb_points
+__device__ void chemtools::evaluate_contractions_from_constant_memory_on_any_grid(
+    double* d_contractions_array, const double* const d_points, const int knumb_points, const int knumb_contractions,
+    const int i_const_start
 ) {
   unsigned int global_index = blockIdx.x * blockDim.x + threadIdx.x;
   if (global_index < knumb_points) {
@@ -400,13 +403,14 @@ __global__ void chemtools::evaluate_contractions_from_constant_memory_on_any_gri
     double grid_x = d_points[global_index];
     double grid_y = d_points[global_index + knumb_points];
     double grid_z = d_points[global_index + knumb_points * 2];
-
     // Evaluate the contractions and store it in d_contractions_array
     chemtools::evaluate_contractions(
-        d_contractions_array, grid_x, grid_y, grid_z, knumb_points, global_index
+        d_contractions_array, grid_x, grid_y, grid_z, knumb_points, global_index, i_const_start
     );
   }
 }
+
+
 
 /**
  * Evaluates the contractions on the cubic grid.
@@ -448,8 +452,6 @@ __global__ void chemtools::evaluate_contractions_from_constant_memory_on_cubic_g
 __host__ std::vector<double> chemtools::evaluate_electron_density_on_cubic(
     chemtools::IOData& iodata, const double3 klower_bnd, const double* kaxes_col, const int3 knumb_points, const bool disp )
     {
-  // Set cache perference to L1
-  cudaFuncSetCacheConfig(chemtools::evaluate_contractions_from_constant_memory_on_cubic_grid, cudaFuncCachePreferL1);
 
   // Get the molecular basis from iodata and put it in constant memory of the gpu.
   if (disp) {
@@ -674,8 +676,6 @@ __host__ std::vector<double> chemtools::evaluate_electron_density_on_any_grid(
 __host__ std::vector<double> chemtools::evaluate_electron_density_on_any_grid_handle(
     cublasHandle_t& handle, chemtools::IOData& iodata, const double* h_points, const int knumb_points
 ) {
-  // Set cache perference to L1
-  cudaFuncSetCacheConfig(chemtools::evaluate_contractions_from_constant_memory_on_cubic_grid, cudaFuncCachePreferL1);
 
   // Get the molecular basis from iodata and put it in constant memory of the gpu.
   chemtools::MolecularBasis molecular_basis = iodata.GetOrbitalBasis();
@@ -707,6 +707,9 @@ __host__ std::vector<double> chemtools::evaluate_electron_density_on_any_grid_ha
   // Electron density in global memory and create the handles for using cublas.
   std::vector<double> h_electron_density(knumb_points);
 
+  // Function pointers and copy from device to host
+  d_func_t h_contractions_func;
+  cudaMemcpyFromSymbol(&h_contractions_func, p_evaluate_contractions, sizeof(d_func_t));
 
   // Iterate through each chunk of the data set.
   size_t index_to_copy = 0;  // Index on where to start copying to h_electron_density (start of sub-grid)
@@ -753,8 +756,17 @@ __host__ std::vector<double> chemtools::evaluate_electron_density_on_any_grid_ha
     int ilen = 128;  // 128 320 1024
     dim3 threadsPerBlock(ilen);
     dim3 grid((number_pts_iter + threadsPerBlock.x - 1) / (threadsPerBlock.x));
-    chemtools::evaluate_contractions_from_constant_memory_on_any_grid<<<grid, threadsPerBlock>>>(
-        d_contractions, d_points, number_pts_iter
+    chemtools::evaluate_scalar_quantity(
+        molecular_basis,
+        false,
+        false,
+        h_contractions_func,
+        d_contractions,
+        d_points,
+        number_pts_iter,
+        nbasisfuncs,
+        threadsPerBlock,
+        grid
     );
     // Free the grid points in device memory.
     cudaFree(d_points);

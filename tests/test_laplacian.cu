@@ -20,7 +20,6 @@ using namespace py::literals;
 
 TEST_CASE( "Test Sum of Second Derivatives of Contractions Against gbasis",
            "[evaluate_sum_of_second_derivative_contractions_from_constant_memory]" ) {
-  //py::initialize_interpreter();  // Open up the python interpretor for this test.
   {  // Need this so that the python object doesn't outline the interpretor.
     // Get the IOdata object from the fchk file.
     std::string fchk_file = GENERATE(
@@ -38,13 +37,12 @@ TEST_CASE( "Test Sum of Second Derivatives of Contractions Against gbasis",
         "./tests/data/test2.fchk",
         "./tests/data/atom_08_O_N08_M3_ub3lyp_ccpvtz_g09.fchk",
         "./tests/data/atom_08_O_N09_M2_ub3lyp_ccpvtz_g09.fchk",
-        "./tests/data/4141_q000_m01_k00_force_uhf_ccpvtz.fchk",
         "./tests/data/h2o.fchk",
         "./tests/data/ch4.fchk",
         "./tests/data/qm9_000092_HF_cc-pVDZ.fchk",
         "./tests/data/qm9_000104_PBE1PBE_pcS-3.fchk"
     );
-    std::cout << "FCHK FILE %s \n" << fchk_file << std::endl;
+    std::cout << "Test Sum of Second Derivs: FCHK file %s \n" << fchk_file << std::endl;
     chemtools::IOData iodata = chemtools::get_molecular_basis_from_fchk(fchk_file);
 
     // Gemerate random grid.
@@ -57,7 +55,6 @@ TEST_CASE( "Test Sum of Second Derivatives of Contractions Against gbasis",
     std::generate(points.begin(), points.end(), gen);
 
     // Calculate Gradient
-    chemtools::add_mol_basis_to_constant_memory_array(iodata.GetOrbitalBasis(), false, false);
     std::vector<double> second_sum_deriv = chemtools::evaluate_sum_of_second_derivative_contractions(
         iodata, points.data(), numb_pts
         );
@@ -83,7 +80,7 @@ from gbasis.wrappers import from_iodata
 
 true_result = true_result.reshape((nbasis, numb_pts), order="C")  # column-major order
 iodata = load_one(fchk_path)
-basis, type = from_iodata(iodata)
+basis = from_iodata(iodata)
 
 points = points.reshape((numb_pts, 3), order="F")
 points = np.array(points, dtype=np.float64)
@@ -92,7 +89,7 @@ points = np.array(points, dtype=np.float64)
 output = np.zeros(true_result.shape)
 for deriv in [[2, 0, 0], [0, 2, 0], [0, 0, 2]]:
   derivative =  evaluate_deriv_basis(
-              basis, points, np.array(deriv), coord_type=type
+              basis, points, np.array(deriv)
           )
   output += derivative
 
@@ -101,7 +98,6 @@ print(np.max(error), np.mean(error), np.std(error))
 assert np.all(error < 1e-10), "Gradient on electron density on GPU doesn't match gbasis."
     )", py::globals(), locals);
   } // Need this so that the python object doesn't outline the interpretor when we close it up.
-  //py::finalize_interpreter(); // Close up the python interpretor for this test.
 }
 
 
@@ -124,13 +120,13 @@ TEST_CASE( "Test Laplacian of Electron Density Against gbasis", "[evaluate_lapla
         "./tests/data/test2.fchk",
         "./tests/data/atom_08_O_N08_M3_ub3lyp_ccpvtz_g09.fchk",
         "./tests/data/atom_08_O_N09_M2_ub3lyp_ccpvtz_g09.fchk",
-        "./tests/data/4141_q000_m01_k00_force_uhf_ccpvtz.fchk",
         "./tests/data/h2o.fchk",
         "./tests/data/ch4.fchk",
         "./tests/data/qm9_000092_HF_cc-pVDZ.fchk",
-        "./tests/data/qm9_000104_PBE1PBE_pcS-3.fchk"
+        "./tests/data/qm9_000104_PBE1PBE_pcS-3.fchk",
+        "./tests/data/DUTLAF10_0_q000_m01_k00_force_uwb97xd_def2svpd.fchk"
     );
-    std::cout << "FCHK FILE %s \n" << fchk_file << std::endl;
+    std::cout << "Laplacian FCHK FILE %s \n" << fchk_file << std::endl;
     chemtools::IOData iodata = chemtools::get_molecular_basis_from_fchk(fchk_file);
 
     // Gemerate random grid.
@@ -143,7 +139,6 @@ TEST_CASE( "Test Laplacian of Electron Density Against gbasis", "[evaluate_lapla
     std::generate(points.begin(), points.end(), gen);
 
     // Calculate Gradient
-    chemtools::add_mol_basis_to_constant_memory_array(iodata.GetOrbitalBasis(), false, false);
     std::vector<double> laplacian_result = chemtools::evaluate_laplacian(
         iodata, points.data(), numb_pts
         );
@@ -168,21 +163,21 @@ from iodata import load_one
 from gbasis.wrappers import from_iodata
 
 iodata = load_one(fchk_path)
-basis, type = from_iodata(iodata)
+basis = from_iodata(iodata)
 rdm = (iodata.mo.coeffs * iodata.mo.occs).dot(iodata.mo.coeffs.T)
 points = points.reshape((numb_pts, 3), order="F")
 points = np.array(points, dtype=np.float64)
 
-indices_to_compute = np.random.choice(np.arange(len(points)), size=10000)
+indices_to_compute = np.unique(np.random.choice(np.arange(len(points)), size=10000))
 true_result = true_result[indices_to_compute]
 points = points[indices_to_compute, :]
 
-laplacian = evaluate_density_laplacian(rdm, basis, points, coord_type=type)
+laplacian = evaluate_density_laplacian(rdm, basis, points)
 err = np.abs(laplacian - true_result)
 result = np.all(err < 1e-8)
 print("Mean, Max, STD Error ", np.mean(err), np.max(err), np.std(err))
 assert result, "Laplacian of Electron Density on GPU doesn't match gbasis."
-
+print("\n\n\n")
     )", py::globals(), locals);
   } // Need this so that the python object doesn't outline the interpretor when we close it up.
 }

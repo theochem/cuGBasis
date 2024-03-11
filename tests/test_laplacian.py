@@ -14,7 +14,6 @@ import pytest
                          )
 def test_laplacian_of_electron_density_against_horton(fchk):
     mol = chemtools_cuda.Molecule(fchk)
-    mol.basis_set_to_constant_memory(False)
 
     grid_pts = np.random.uniform(-2, 2, size=(1000, 3))
     grid_pts = np.array(grid_pts, dtype=np.float64, order="C")

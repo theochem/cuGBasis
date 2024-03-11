@@ -57,7 +57,6 @@ TEST_CASE( "Test Electrostatic Potential", "[evaluate_electrostatic_potential]" 
     std::generate(points.begin(), points.end(), gen);
 
     // Calculate Gradient
-    chemtools::add_mol_basis_to_constant_memory_array(iodata.GetOrbitalBasis(), true, false);
     std::vector<double> esp_result = chemtools::compute_electrostatic_potential_over_points(
         iodata, points.data(), numb_pts
         );
@@ -82,16 +81,16 @@ from iodata import load_one
 from gbasis.wrappers import from_iodata
 
 iodata = load_one(fchk_path)
-basis, type = from_iodata(iodata)
+basis = from_iodata(iodata)
 points = points.reshape((numb_pts, 3), order="C")
 points = np.array(points, dtype=np.float64)
 rdm = (iodata.mo.coeffs * iodata.mo.occs).dot(iodata.mo.coeffs.T)
 
-from chemtools.wrappers import Molecule
-mol2 = Molecule.from_file(fchk_path)
-electro = mol2.compute_esp(points)
-#electro = electrostatic_potential(basis=basis, one_density_matrix=rdm, points=points, nuclear_coords=iodata.atcoords,
-#                                  nuclear_charges=iodata.atcorenums, coord_type=type)
+#from chemtools.wrappers import Molecule
+#mol2 = Molecule.from_file(fchk_path)
+#electro = mol2.compute_esp(points)
+electro = electrostatic_potential(basis=basis, one_density_matrix=rdm, points=points, nuclear_coords=iodata.atcoords,
+                                  nuclear_charges=iodata.atcorenums)
 err = np.abs(electro - true_result)
 print("Max error: ", np.max(err))
 result = np.all(err < 1e-8)

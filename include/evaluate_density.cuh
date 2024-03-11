@@ -8,8 +8,19 @@
 
 #define N 7500  // Number of blocks needs to be less than 64,000 kilobytes. 7500 = 60,000 kB/ 8 bytes for double
 
+// Create a function pointer type definition for evaluating anything over contractions
+typedef void (*d_func_t)(double*, const double*, const int, const int, const int);
+
+
 namespace chemtools {
 
+// This points to the correct __device__ function that evaluates over contractions
+__device__ extern d_func_t p_evaluate_contractions;
+
+/**
+ * DEVICE FUNCTIONS
+ * ---------------------------------------------------------------------------------------------------------------
+ */
 /**
  * Device helper function for evaluating a contractions on a single point (corresponding to a single thread).
  *
@@ -20,10 +31,12 @@ namespace chemtools {
  * @param grid_z  The grid point in the z-axis.
  * @param knumb_points  The number of points.
  * @param global_index  The global index of the thread, which also corresponds to the point.
+ * @param i_contr_start Index on where it starts to update the rows/contractions in `d_contractions_array`. Should
+ *                      match what's in constant memory.
  */
 __device__ void evaluate_contractions(
     double* d_contractions_array, const double& grid_x, const double& grid_y, const double& grid_z,
-    const int& knumb_points, unsigned int& global_index
+    const int& knumb_points, unsigned int& global_index, const int& i_contr_start = 0
 );
 
 /**
@@ -56,14 +69,26 @@ __global__ void evaluate_contractions_from_constant_memory_on_cubic_grid(
  * @param[in, out] d_contractions_array  The device pointer to the contractions array of size (M, N) where M is
  *                  the number of contractions and N is the number of points. This is in row-major order.
  * @param d_points  The points in three-dimensions of shape (N, 3) stored in column-major order.
- * @param knumb_points  The number of points in the grid.
+ * @param knumb_points  The number of points in the grid
+ * @param knumb_contractions  Not needed but total number of contractions to update d_contractions_array.
+ * @param i_const_start   Not needed but index of where to start updating the contractions over the rows M.
  */
-__global__ void evaluate_contractions_from_constant_memory_on_any_grid(
-    double* d_contractions_array, const double* const d_points, const int knumb_points
+__device__ void evaluate_contractions_from_constant_memory_on_any_grid(
+    double* d_contractions_array, const double* const d_points, const int knumb_points, const int knumb_contractions,
+    const int i_const_start = 0
 );
+
+
+
 
 /// Hadamard product between array 1 and array2 and stores it in array1.
 __global__ void hadamard_product(double* d_array1, double* d_array2, int numb_row, int numb_col);
+
+
+/**
+ * HOST FUNCTIONS
+ * -----------------------------------------------------------------------
+ */
 
 /**
  * Evaluate the electron density from storing molecular basis in constant memory in cubic grid format.

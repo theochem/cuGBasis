@@ -1,5 +1,3 @@
-
-
 #ifndef CHEMTOOLS_CUDA_INCLUDE_EVALUATE_LAPLACIAN_CUH_
 #define CHEMTOOLS_CUDA_INCLUDE_EVALUATE_LAPLACIAN_CUH_
 
@@ -7,7 +5,17 @@
 
 #include "iodata.h"
 
+// Create a function pointer type definition
+typedef void (*d_func_t)(double*, const double*, const int, const int, const int);
+
 namespace chemtools {
+
+/**
+ * DEVICE FUNCTIONS
+ * ---------------------------------------------------------------------------------------------------------------
+ */
+// This points to the correct __device__ function that evaluates over contractions
+__device__ extern d_func_t p_evaluate_sum_sec_derivs;
 
 /**
  * Device helper function for evaluating the sum of second derivative of each contractions
@@ -26,14 +34,20 @@ namespace chemtools {
  */
 __device__ void evaluate_sum_of_second_derivative_contractions_from_constant_memory(
     double *d_contractions_array, const double &grid_x, const double &grid_y, const double &grid_z,
-    const int &knumb_points, unsigned int &global_index
+    const int &knumb_points, unsigned int &global_index, const int& i_contr_start = 0
 );
 
 
-__global__ void evaluate_sum_of_second_contractions_from_constant_memory_on_any_grid(
-    double* d_contractions_array, const double* const d_points, const int knumb_points
+__device__ void evaluate_sum_of_second_contractions_from_constant_memory_on_any_grid(
+    double* d_contractions_array, const double* d_points, const int knumb_points, const int knumb_contractions,
+    const int i_const_start = 0
 );
 
+
+/**
+ * HOST FUNCTIONS
+ * ---------------------------------------------------------------------------------------------------------------
+ */
 /**
  * Evaluate sum of second derivatives of the contractions.
  *
@@ -62,8 +76,8 @@ __host__ std::vector<double> evaluate_sum_of_second_derivative_contractions(
  * @param knbasisfuncs: Number of basis-functions.
  */
 __host__ void compute_first_term(
-    const cublasHandle_t& handle, const chemtools::IOData& iodata, std::vector<double>& h_laplacian,
-    const double* const h_points, const int knumb_points, const int knbasisfuncs
+    const cublasHandle_t& handle, const chemtools::MolecularBasis& basis, std::vector<double>& h_laplacian,
+    const double* const h_points, const int knumb_points, const int knbasisfuncs, const double* const h_one_rdm
 );
 
 __host__ std::vector<double> evaluate_laplacian_on_any_grid_handle(

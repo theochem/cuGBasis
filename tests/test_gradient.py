@@ -13,7 +13,6 @@ import pytest
 )
 def test_gradient_against_horton(fchk):
     mol = chemtools_cuda.Molecule(fchk)
-    mol.basis_set_to_constant_memory()
 
     grid_pts = np.random.uniform(-5, 5, size=(50000, 3))
     grid_pts = np.array(grid_pts, dtype=np.float64, order="C")

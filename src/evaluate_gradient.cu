@@ -13,8 +13,11 @@
 #include "../include/basis_to_gpu.cuh"
 
 
-__global__ void chemtools::evaluate_derivatives_contractions_from_constant_memory(
-    double* d_deriv_contracs, const double* const d_points, const int knumb_points, const int knumb_contractions
+__device__ extern d_func_t chemtools::p_evaluate_deriv_contractions = chemtools::evaluate_derivatives_contractions_from_constant_memory;
+
+__device__ void chemtools::evaluate_derivatives_contractions_from_constant_memory(
+    double* d_deriv_contracs, const double* const d_points, const int knumb_points, const int knumb_contractions,
+    const int i_contractions_start
 ) {
   int global_index = blockIdx.x * blockDim.x + threadIdx.x;  // map thread index to the index of hte points
   if (global_index < knumb_points){
@@ -25,7 +28,7 @@ __global__ void chemtools::evaluate_derivatives_contractions_from_constant_memor
 
     // Setup the initial variables.
     int iconst = 0;                                                          // Index to go over constant memory.
-    unsigned int icontractions = 0;                                         // Index to go over rows of d_contractions_array
+    unsigned int icontractions = i_contractions_start;                       // Index to go over rows of d_contractions_array
     unsigned int numb_contracted_shells = (int) g_constant_basis[iconst++];
     #pragma unroll
     for(int icontr_shell = 0; icontr_shell < numb_contracted_shells; icontr_shell++) {
@@ -1123,10 +1126,11 @@ __global__ void chemtools::evaluate_derivatives_contractions_from_constant_memor
 }
 
 
+
+
 __host__ std::vector<double> chemtools::evaluate_contraction_derivatives(
     chemtools::IOData& iodata, const double* h_points, const int knumb_points
 ) {
-  cudaFuncSetCacheConfig(chemtools::evaluate_contractions_from_constant_memory_on_any_grid, cudaFuncCachePreferL1);
 
   // Get the molecular basis from iodata and put it in constant memory of the gpu.
   chemtools::MolecularBasis molecular_basis = iodata.GetOrbitalBasis();
@@ -1136,6 +1140,10 @@ __host__ std::vector<double> chemtools::evaluate_contraction_derivatives(
 
   // The output of the contractions in column-major order with shape (3, M, N).
   std::vector<double> h_contractions(3 * knbasisfuncs * knumb_points);
+
+  // Declare Function Pointers
+  d_func_t h_deriv_contractions_func;
+  cudaMemcpyFromSymbol(&h_deriv_contractions_func, p_evaluate_deriv_contractions, sizeof(d_func_t));
 
   // Transfer grid points to GPU, this is in column order with shape (N, 3)
   double* d_points;
@@ -1148,8 +1156,17 @@ __host__ std::vector<double> chemtools::evaluate_contraction_derivatives(
   chemtools::cuda_check_errors(cudaMalloc((double **) &d_deriv_contractions, sizeof(double) * 3 * knumb_points * knbasisfuncs));
   dim3 threadsPerBlock(128);
   dim3 grid((knumb_points + threadsPerBlock.x - 1) / (threadsPerBlock.x));
-  chemtools::evaluate_derivatives_contractions_from_constant_memory<<<grid, threadsPerBlock>>>(
-      d_deriv_contractions, d_points, knumb_points, knbasisfuncs
+  chemtools::evaluate_scalar_quantity(
+      molecular_basis,
+      false,
+      false,
+      h_deriv_contractions_func,
+      d_deriv_contractions,
+      d_points,
+      knumb_points,
+      knbasisfuncs,
+      threadsPerBlock,
+      grid
   );
   printf("Transfer \n");
   // Transfer from device memory to host memory
@@ -1162,6 +1179,7 @@ __host__ std::vector<double> chemtools::evaluate_contraction_derivatives(
 
   return h_contractions;
 }
+
 
 __host__ std::vector<double> chemtools::evaluate_electron_density_gradient(
     chemtools::IOData& iodata, const double* h_points, const int knumb_points, const bool return_row
@@ -1180,8 +1198,6 @@ __host__ std::vector<double> chemtools::evaluate_electron_density_gradient_handl
     // Initializer of cublas and set to prefer L1 cache ove rshared memory since it doens't use it.
     cublasHandle_t& handle, chemtools::IOData& iodata, const double* h_points, const int knumb_points, const bool return_row
 ) {
-  // Initializer of cublas and set to prefer L1 cache ove rshared memory since it doens't use it.
-  cudaFuncSetCacheConfig(chemtools::evaluate_contractions_from_constant_memory_on_any_grid, cudaFuncCachePreferL1);
 
   // Get the molecular basis from iodata and put it in constant memory of the gpu.
   chemtools::MolecularBasis molecular_basis = iodata.GetOrbitalBasis();
@@ -1222,6 +1238,12 @@ __host__ std::vector<double> chemtools::evaluate_electron_density_gradient_handl
   // The output of the electron density in row-major with shape (N, 3).
   std::vector<double> h_grad_electron_density_row(3 * knumb_points);
 
+  // Function pointers and copy from device to host so that it can be evaluted over any size of basis-set.
+  d_func_t h_contractions_func;
+  cudaMemcpyFromSymbol(&h_contractions_func, chemtools::p_evaluate_contractions, sizeof(d_func_t));
+  d_func_t h_deriv_contractions_func;
+  cudaMemcpyFromSymbol(&h_deriv_contractions_func, chemtools::p_evaluate_deriv_contractions, sizeof(d_func_t));
+
   while(index_to_copy < knumb_points) {
   // For each iteration, calculate number of points it should do, number of bytes it corresponds to.
     // At the last chunk,need to do the remaining number of points, hence a minimum is used here.
@@ -1250,21 +1272,46 @@ __host__ std::vector<double> chemtools::evaluate_electron_density_gradient_handl
                                          sizeof(double) * 3 * number_pts_iter * knbasisfuncs));
     dim3 threadsPerBlock(128);
     dim3 grid((number_pts_iter + threadsPerBlock.x - 1) / (threadsPerBlock.x));
-    chemtools::evaluate_derivatives_contractions_from_constant_memory<<<grid, threadsPerBlock>>>(
-        d_deriv_contractions, d_points, number_pts_iter, knbasisfuncs
+//    chemtools::evaluate_derivatives_contractions_from_constant_memory<<<grid, threadsPerBlock>>>(
+//        d_deriv_contractions, d_points, number_pts_iter, knbasisfuncs
+//    );
+    chemtools::evaluate_scalar_quantity(
+        molecular_basis,
+        false,
+        false,
+        h_deriv_contractions_func,
+        d_deriv_contractions,
+        d_points,
+        number_pts_iter,
+        knbasisfuncs,
+        threadsPerBlock,
+        grid
     );
-    //chemtools::print_first_ten_elements<<<1, 1>>>(d_deriv_contractions);
     //chemtools::print_matrix<<<1, 1>>>(d_deriv_contractions, knbasisfuncs, knumb_points);
-    //cudaDeviceSynchronize();
+    cudaDeviceSynchronize();
 
     // Allocate memory and calculate the contractions (without derivatives)
     double *d_contractions;
     chemtools::cuda_check_errors(cudaMalloc((double **) &d_contractions, sizeof(double) * t_nbasis * number_pts_iter));
-    dim3 threadsPerBlock2(320);
+    dim3 threadsPerBlock2(128);
     dim3 grid2((number_pts_iter + threadsPerBlock2.x - 1) / (threadsPerBlock2.x));
-    chemtools::evaluate_contractions_from_constant_memory_on_any_grid<<<grid2, threadsPerBlock2>>>(
-        d_contractions, d_points, number_pts_iter
+    chemtools::evaluate_scalar_quantity(
+        molecular_basis,
+        false,
+        false,
+        h_contractions_func,
+        d_contractions,
+        d_points,
+        number_pts_iter,
+        t_nbasis,
+        threadsPerBlock2,
+        grid2
     );
+    //chemtools::print_matrix<<<1, 1>>>(d_deriv_contractions, knbasisfuncs, knumb_points);
+    cudaDeviceSynchronize();
+//    chemtools::evaluate_contractions_from_constant_memory_on_any_grid<<<grid2, threadsPerBlock2>>>(
+//        d_contractions, d_points, number_pts_iter, knbasisfuncs
+//    );
 
     // Free up points memory in device/gpu memory.
     cudaFree(d_points);

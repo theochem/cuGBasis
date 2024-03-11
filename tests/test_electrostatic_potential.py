@@ -16,7 +16,6 @@ import pytest
                          )
 def test_electrostatic_potential_against_horton(fchk):
     mol = chemtools_cuda.Molecule(fchk)
-    mol.basis_set_to_constant_memory(do_segmented_basis=True)
     grid_pts = np.random.uniform(-2, 2, size=(2000, 3))
     grid_pts = np.array(grid_pts, dtype=np.float64, order="C")
     gpu_esp = mol.compute_electrostatic_potential(grid_pts)
