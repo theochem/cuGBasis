@@ -148,7 +148,7 @@ setup(
     license="GNU (Version 3)",
     install_requires=["numpy", "pybind11", "qc-iodata"],
     extras_require={"test": ["pytest>=6.0"]},
-    python_requires=">=3.7",
+    python_requires=">=3.6",
     long_description_content_type="text/markdown",
     url="https://github.com/qtchem/ChemToolsCUDA/",
     project_urls={
