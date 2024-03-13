@@ -23,7 +23,7 @@ class IOData {
   int* charges_;             // Charge of atom.
   int* atnums_;              // Atomic Numbers of atom
   double* one_rdm_;         // Row-order
-  int one_rdm_shape_;
+  std::array<int, 2> one_rdm_shape_;
   double* mo_coeffs_;       // Row-order
   double* mo_occupations_;
   // Row-order, this is (mo_coeffs_ * mo_occupations).dot(mo_coeffs_). Used to evaluate Electron Density.
@@ -32,7 +32,7 @@ class IOData {
 
  public:
   IOData(chemtools::MolecularBasis basis, double* coord, int natoms,
-         double* one_rdm, int shape, double* coeffs, double* occs, int* charges, int* atnums,
+         double* one_rdm, std::array<int, 2> shape, double* coeffs, double* occs, int* charges, int* atnums,
          double* mo_one_rdm) :
       orbital_basis_(basis), coord_atoms_(coord), natoms(natoms), one_rdm_(one_rdm), one_rdm_shape_(shape),
       mo_coeffs_(coeffs), mo_occupations_(occs), charges_(charges), atnums_(atnums), mo_one_rdm_(mo_one_rdm) {}
@@ -43,19 +43,19 @@ class IOData {
   IOData(const IOData& copy);
 
   inline void print_molecular_coefficients(){
-    int ncols = orbital_basis_.numb_basis_functions();
-    for(int i = 0; i < one_rdm_shape_; i++) {
-      for(int j = 0; j < ncols; j++){
-        printf(" %f ", mo_coeffs_[j + i * ncols]);
+    // mo coefficients is in row-major order
+    for(int i = 0; i < one_rdm_shape_[0]; i++) {
+      for(int j = 0; j < one_rdm_shape_[1]; j++){
+        printf(" %f ", mo_coeffs_[j + i * one_rdm_shape_[1]]);
       }
       printf("\n");
     }
   }
 
   inline void print_one_rdm(){
-    for(int i = 0; i < one_rdm_shape_; i++) {
-      for(int j = 0; j < one_rdm_shape_; j++){
-        printf(" %f ", one_rdm_[j + i * one_rdm_shape_]);
+    for(int i = 0; i < one_rdm_shape_[0]; i++) {
+      for(int j = 0; j < one_rdm_shape_[0]; j++){
+        printf(" %f ", one_rdm_[j + i * one_rdm_shape_[0]]);
       }
       printf("\n");
     }
@@ -79,7 +79,7 @@ class IOData {
   int GetNatoms() const {return natoms;}
   const double *GetOneRdm() const {return one_rdm_;}
   const double *GetMOOneRDM() const {return mo_one_rdm_;}
-  int GetOneRdmShape() const {return one_rdm_shape_;}
+  int GetOneRdmShape() const {return one_rdm_shape_[0];}
   const double *GetMoCoeffs() const {return mo_coeffs_;}
   const double *GetMoOccupations() const {return mo_occupations_;}
   const int*  GetCharges() const {return charges_;}

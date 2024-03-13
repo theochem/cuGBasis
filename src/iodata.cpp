@@ -137,13 +137,17 @@ chemtools::IOData chemtools::get_molecular_basis_from_fchk(const std::string& fc
   // From IOData: Dictionary where keys are names and values are one-particle density matrices.
   // Names can be scf, post_scf, scf_spin, post_scf_spin. These matrices are always expressed in the AO basis.
   py::dict one_rdms = iodata_obj.attr("one_rdms");
-  py::array_t<double, py::array::c_style> one_rdm = one_rdms["scf"].cast<py::array_t<double>>();
-  int one_rdm_shape = one_rdm.shape()[0];
+  py::array_t<double, py::array::c_style> one_rdm;
+  if (! one_rdms.empty()) {
+    one_rdm = one_rdms["scf"].cast<py::array_t<double>>();
+  }
 
   // Get Molecular orbital coefficients and occupations.
   py::object molecular_orb_obj = iodata_obj.attr("mo");
   py::array_t<double, py::array::c_style> coeffs = (molecular_orb_obj.attr("coeffs")).cast<py::array_t<double>>();
   py::array_t<double, py::array::c_style> occs = molecular_orb_obj.attr("occs").cast<py::array_t<double>>();
+  int one_rdm_shape_row = coeffs.shape()[0];
+  int one_rdm_shape_col = coeffs.shape()[1];
 
   // Get the one_rdm that transforms from atomic orbitals to one_rdm using molecular orbitals and occupations.
   //  Here I"m using numpy to do the dot products, then it passes by value to C++, where then I obtain it.
@@ -157,7 +161,6 @@ chemtools::IOData chemtools::get_molecular_basis_from_fchk(const std::string& fc
 
   // Get the coordinates of the atoms.
   int natoms = iodata_obj.attr("natom").cast<int>();
-  printf("Number of atoms %d \n", natoms);
   py::array_t<double, py::array::c_style> coords_atoms = iodata_obj.attr("atcoords").cast<py::array_t<double>>();
 
   // Get Charges of the atoms.
@@ -170,24 +173,31 @@ chemtools::IOData chemtools::get_molecular_basis_from_fchk(const std::string& fc
   py::array_t<int> atnums_atoms = iodata_obj.attr("atnums").cast<py::array_t<int>>();
   for(int i = 0; i < natoms; i++) {atnums[i] = atnums_atoms.at(i);}
 
-  // Commit them to memory so that pybind11 doesn't wipe them out. This is done using row order.
-  double* h_coeffs = new double[one_rdm_shape * nshells];
-  double* h_occs = new double[one_rdm_shape];
+  // Commit them to memory so that pybind11 doesn't wipe them out. This is done using column order.
+  double* h_coeffs = new double[one_rdm_shape_row * one_rdm_shape_col];
+  double* h_occs = new double[one_rdm_shape_col];
   double* h_coords_atoms = new double[natoms * 3];
-  double* h_one_rdm = new double[one_rdm_shape * one_rdm_shape];
-  double* h_mo_one_rdm = new double[one_rdm_shape * one_rdm_shape];
-  for(int i = 0; i < one_rdm_shape; i++){
-    // Iterate the rows.
-    for(int j = 0; j < one_rdm_shape; j++){
-      h_one_rdm[i + j * one_rdm_shape] = one_rdm.at(i, j);
-      h_mo_one_rdm[i + j * one_rdm_shape] = mo_one_rdm.at(i, j);
+  double* h_one_rdm = new double[one_rdm_shape_row * one_rdm_shape_row];
+  double* h_mo_one_rdm = new double[one_rdm_shape_row * one_rdm_shape_row];
+  for(int i = 0; i < one_rdm_shape_row; i++){
+    // Iterate coefficients in row-major order
+    for(int k = 0; k < one_rdm_shape_col; k++) {
+      h_coeffs[k + i * one_rdm_shape_col] = coeffs.at(i, k);
     }
-    // Iterate Rows
-    for(int k = 0; k < nshells; k++) {
-      h_coeffs[k + i * nshells] = coeffs.at(i, k);
+    // Iterate the column. Update h_mo_one_rdm in column-major order.
+    for(int j = 0; j < one_rdm_shape_row; j++){
+      // Update one rdm if it isn't empty
+      h_mo_one_rdm[i + j * one_rdm_shape_row] = mo_one_rdm.at(i, j);
+      // Update scf one -rdm
+      if (! one_rdms.empty()) {
+        h_one_rdm[i + j * one_rdm_shape_row] = one_rdm.at(i, j);
+      }
+      else {
+        h_one_rdm[i + j * one_rdm_shape_row] = 0.0;
+      }
     }
   }
-  for(int i = 0; i < one_rdm_shape; i++) {
+  for(int i = 0; i < one_rdm_shape_col; i++) {
     h_occs[i] = occs.at(i);
   }
   for(int i = 0; i < natoms; i++) {
@@ -197,7 +207,7 @@ chemtools::IOData chemtools::get_molecular_basis_from_fchk(const std::string& fc
   }
   // Finalize the interpreter.
   return {chemtools::MolecularBasis(molecular_basis), h_coords_atoms, natoms,
-          h_one_rdm, one_rdm_shape, h_coeffs, h_occs, charges, atnums, h_mo_one_rdm};
+          h_one_rdm, {one_rdm_shape_row, one_rdm_shape_col}, h_coeffs, h_occs, charges, atnums, h_mo_one_rdm};
 }
 
 
@@ -213,12 +223,12 @@ chemtools::IOData::IOData(const chemtools::IOData& copy):
   std::memcpy(atnums_, copy.atnums_, sizeof(int) * natoms);
   coord_atoms_ = new double[3 * natoms];
   std::memcpy(coord_atoms_, copy.coord_atoms_, sizeof(double) * 3 * natoms);
-  one_rdm_ = new double[copy.one_rdm_shape_ * copy.one_rdm_shape_];
-  std::memcpy(one_rdm_, copy.one_rdm_, sizeof(double) * copy.one_rdm_shape_ * copy.one_rdm_shape_);
-  mo_coeffs_ = new double[nbasis * copy.one_rdm_shape_];
-  std::memcpy(mo_coeffs_, copy.mo_coeffs_, sizeof(double) * nbasis * copy.one_rdm_shape_);
-  mo_occupations_ = new double[one_rdm_shape_];
-  std::memcpy(mo_occupations_, copy.mo_occupations_, sizeof(double) * one_rdm_shape_);
-  mo_one_rdm_ = new double[one_rdm_shape_ * one_rdm_shape_];
-  std::memcpy(mo_one_rdm_, copy.mo_one_rdm_, sizeof(double) * one_rdm_shape_ * one_rdm_shape_);
+  one_rdm_ = new double[copy.one_rdm_shape_[0] * copy.one_rdm_shape_[0]];
+  std::memcpy(one_rdm_, copy.one_rdm_, sizeof(double) * copy.one_rdm_shape_[0] * copy.one_rdm_shape_[0]);
+  mo_coeffs_ = new double[copy.one_rdm_shape_[0] * copy.one_rdm_shape_[1]];
+  std::memcpy(mo_coeffs_, copy.mo_coeffs_, sizeof(double) * copy.one_rdm_shape_[0] * copy.one_rdm_shape_[1]);
+  mo_occupations_ = new double[one_rdm_shape_[1]];
+  std::memcpy(mo_occupations_, copy.mo_occupations_, sizeof(double) * one_rdm_shape_[1]);
+  mo_one_rdm_ = new double[one_rdm_shape_[0] * one_rdm_shape_[0]];
+  std::memcpy(mo_one_rdm_, copy.mo_one_rdm_, sizeof(double) * one_rdm_shape_[0] * one_rdm_shape_[0]);
 }
