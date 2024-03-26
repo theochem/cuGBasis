@@ -21,43 +21,43 @@ add_subdirectory(./libs/pybind11)
 
 # Create a CUDA library chemtools_cuda using nvcc compiler that codes the entire CUDA/C++.
 set(SOURCES
-        src/basis_to_gpu.cu
-        src/boys_functions.cu
-        src/iodata.cpp
-        src/pymolecule.cu
-        src/cuda_basis_utils.cu
-        src/cuda_utils.cu
-		src/integral_coeffs.cu
-        src/evaluate_density.cu
-        src/evaluate_gradient.cu
-		src/evaluate_electrostatic.cu
-		src/utils.cpp
-		src/evaluate_laplacian.cu
-		src/evaluate_kinetic_dens.cu
-		src/evaluate_densbased.cu
-		src/evaluate_hessian.cu
+	src/basis_to_gpu.cu
+#	src/boys_functions.cu
+	src/iodata.cpp
+	src/cuda_basis_utils.cu
+	src/cuda_utils.cu
+	src/integral_coeffs.cu
+	src/evaluate_density.cu
+	src/evaluate_gradient.cu
+	src/evaluate_electrostatic.cu
+	src/utils.cpp
+	src/evaluate_laplacian.cu
+	src/evaluate_kinetic_dens.cu
+	src/evaluate_densbased.cu
+	src/evaluate_hessian.cu
+	src/pymolecule.cu
 )
 set(HEADERS
-        include/basis_to_gpu.cuh
-        include/contracted_shell.h
-        include/iodata.h
-        include/pymolecule.cuh
-        include/boys_functions.cuh
-        include/cuda_basis_utils.cuh
-        include/cuda_utils.cuh
-		include/integral_coeffs.cuh
-        include/evaluate_density.cuh
-        include/evaluate_gradient.cuh
-		include/evaluate_electrostatic.cuh
-		include/utils.h
-        include/evaluate_laplacian.cuh
-		include/evaluate_kinetic_dens.cuh
-		include/evaluate_densbased.cuh
-		include/evaluate_hessian.cuh
+	include/basis_to_gpu.cuh
+	include/contracted_shell.h
+	include/iodata.h
+	include/boys_functions.cuh
+	include/cuda_basis_utils.cuh
+	include/cuda_utils.cuh
+	include/integral_coeffs.cuh
+	include/evaluate_density.cuh
+	include/evaluate_gradient.cuh
+	include/evaluate_electrostatic.cuh
+	include/utils.h
+	include/evaluate_laplacian.cuh
+	include/evaluate_kinetic_dens.cuh
+	include/evaluate_densbased.cuh
+	include/evaluate_hessian.cuh
+	include/pymolecule.cuh
 )
 find_package(CUDAToolkit REQUIRED)  # The point of this is to call CUDA code from C++ but without including CUDA code.
-                                    #  see stackexchange - "linking of cuda library in cmake"
-
+                                    #  see stackexchange - "linking of cuda library in cmake
+				    
 add_library(chemtools_cuda_lib SHARED ${HEADERS} ${SOURCES})
 set_target_properties(chemtools_cuda_lib PROPERTIES CUDA_SEPARABLE_COMPILATION ON)
 # If the user didn't define CUDA architecture
@@ -89,11 +89,16 @@ target_link_libraries(chemtools_cuda_lib PUBLIC Eigen3::Eigen)
 set(${LINK_TO_PYTHON} OFF CACHE BOOL "Link to python")  # This option is set to True in setup.py
 if(${LINK_TO_PYTHON})
 	pybind11_add_module(chemtools_cuda src/pybind.cpp)
+	# ChemtoolsCUDA is compiled as a shared library and then linked via RPATH to Python package via Python_SITEARCH variable
+	#    obtained from find_package(Python ...) The other alternative is to use the compiled library that is inside
+	#    the build folder, this might be a better approach then the current.
+	set_target_properties(chemtools_cuda PROPERTIES BUILD_WITH_INSTALL_RPATH TRUE INSTALL_RPATH "${Python_SITEARCH}")
+	message("SHARED LIBRARY INSTALLED TO Python ${Python_SITEARCH}")
 	target_link_libraries(chemtools_cuda PRIVATE chemtools_cuda_lib)
 	target_link_libraries(chemtools_cuda PRIVATE CUDA::cublas)
 endif()
 
-add_subdirectory(tests)
+#add_subdirectory(tests)
 # Compilation of the tests, not needed e.g. if `LINK_TO_PYTHON` IS True/ON
 set(${DONT_COMPILE_TESTS} OFF CACHE BOOL "Don't compile the tests")
 if(NOT ${DONT_COMPILE_TESTS})
