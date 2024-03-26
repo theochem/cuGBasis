@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en">
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Molecule Class &mdash; chemtools_cuda  documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+      <link rel="stylesheet" type="text/css" href="_static/css/override.css" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/sphinx_highlight.js"></script>
+        <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Conventions" href="conventions.html" />
+    <link rel="prev" title="Installation" href="installation.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            chemtools_cuda
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">User documentation:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="installation.html#downloading-code">Downloading Code</a></li>
+<li class="toctree-l2"><a class="reference internal" href="installation.html#dependencies">Dependencies</a></li>
+<li class="toctree-l2"><a class="reference internal" href="installation.html#id1">Installation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="installation.html#python-binding">Python Binding</a></li>
+<li class="toctree-l3"><a class="reference internal" href="installation.html#c">C++</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="installation.html#installation-problems">Installation problems</a></li>
+<li class="toctree-l2"><a class="reference internal" href="installation.html#building-documentation">Building Documentation</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Molecule Class</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#chemtools_cuda.Molecule"><code class="docutils literal notranslate"><span class="pre">Molecule</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#chemtools_cuda.Molecule.compute_density"><code class="docutils literal notranslate"><span class="pre">Molecule.compute_density()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#chemtools_cuda.Molecule.compute_electrostatic_potential"><code class="docutils literal notranslate"><span class="pre">Molecule.compute_electrostatic_potential()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#chemtools_cuda.Molecule.compute_empirical_gradient_expansion_ked"><code class="docutils literal notranslate"><span class="pre">Molecule.compute_empirical_gradient_expansion_ked()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#chemtools_cuda.Molecule.compute_general_gradient_expansion_ked"><code class="docutils literal notranslate"><span class="pre">Molecule.compute_general_gradient_expansion_ked()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#chemtools_cuda.Molecule.compute_general_ked"><code class="docutils literal notranslate"><span class="pre">Molecule.compute_general_ked()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#chemtools_cuda.Molecule.compute_general_kinetic_energy_density"><code class="docutils literal notranslate"><span class="pre">Molecule.compute_general_kinetic_energy_density()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#chemtools_cuda.Molecule.compute_gradient"><code class="docutils literal notranslate"><span class="pre">Molecule.compute_gradient()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#chemtools_cuda.Molecule.compute_gradient_expansion_ked"><code class="docutils literal notranslate"><span class="pre">Molecule.compute_gradient_expansion_ked()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#chemtools_cuda.Molecule.compute_hessian"><code class="docutils literal notranslate"><span class="pre">Molecule.compute_hessian()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#chemtools_cuda.Molecule.compute_laplacian"><code class="docutils literal notranslate"><span class="pre">Molecule.compute_laplacian()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#chemtools_cuda.Molecule.compute_norm_of_vector"><code class="docutils literal notranslate"><span class="pre">Molecule.compute_norm_of_vector()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#chemtools_cuda.Molecule.compute_positive_definite_kinetic_energy_density"><code class="docutils literal notranslate"><span class="pre">Molecule.compute_positive_definite_kinetic_energy_density()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#chemtools_cuda.Molecule.compute_reduced_density_gradient"><code class="docutils literal notranslate"><span class="pre">Molecule.compute_reduced_density_gradient()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#chemtools_cuda.Molecule.compute_schrodinger_ked"><code class="docutils literal notranslate"><span class="pre">Molecule.compute_schrodinger_ked()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#chemtools_cuda.Molecule.compute_shannon_information_density"><code class="docutils literal notranslate"><span class="pre">Molecule.compute_shannon_information_density()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#chemtools_cuda.Molecule.compute_thomas_fermi_ked"><code class="docutils literal notranslate"><span class="pre">Molecule.compute_thomas_fermi_ked()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#chemtools_cuda.Molecule.compute_weizsacker_ked"><code class="docutils literal notranslate"><span class="pre">Molecule.compute_weizsacker_ked()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#chemtools_cuda.Molecule.coordinates"><code class="docutils literal notranslate"><span class="pre">Molecule.coordinates</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#chemtools_cuda.Molecule.get_file_path"><code class="docutils literal notranslate"><span class="pre">Molecule.get_file_path()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#chemtools_cuda.Molecule.numbers"><code class="docutils literal notranslate"><span class="pre">Molecule.numbers</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="conventions.html">Conventions</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="conventions.html#basis-set-conventions">Basis set conventions</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="conventions.html#contractions">Contractions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="conventions.html#gaussian-primitives">Gaussian Primitives</a></li>
+<li class="toctree-l3"><a class="reference internal" href="conventions.html#cartesian">Cartesian</a></li>
+<li class="toctree-l3"><a class="reference internal" href="conventions.html#pure-harmonic">Pure/Harmonic</a></li>
+<li class="toctree-l3"><a class="reference internal" href="conventions.html#basis-set-ordering">Basis Set Ordering</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">chemtools_cuda</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Molecule Class</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/molecule.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-chemtools_cuda">
+<span id="id1"></span><span id="molecule-class"></span><h1>Molecule Class<a class="headerlink" href="#module-chemtools_cuda" title="Permalink to this heading"></a></h1>
+<p>Molecule class tht reads wavefunction information and computes various quantities.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="chemtools_cuda.Molecule">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">chemtools_cuda.</span></span><span class="sig-name descname"><span class="pre">Molecule</span></span><a class="headerlink" href="#chemtools_cuda.Molecule" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">pybind11_object</span></code></p>
+<dl class="field-list simple">
+<dt class="field-odd">Attributes<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><a class="reference internal" href="#chemtools_cuda.Molecule.coordinates" title="chemtools_cuda.Molecule.coordinates"><code class="xref py py-obj docutils literal notranslate"><span class="pre">coordinates</span></code></a></dt><dd><p>Cartesian coordinates of the atomic centers.</p>
+</dd>
+<dt><a class="reference internal" href="#chemtools_cuda.Molecule.numbers" title="chemtools_cuda.Molecule.numbers"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numbers</span></code></a></dt><dd><p>Atomic number of atomic centers.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Methods</p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#chemtools_cuda.Molecule.compute_density" title="chemtools_cuda.Molecule.compute_density"><code class="xref py py-obj docutils literal notranslate"><span class="pre">compute_density</span></code></a></p></td>
+<td><p>Compute electron density <span class="math notranslate nohighlight">\(\rho(\mathbf{r})\)</span>.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#chemtools_cuda.Molecule.compute_electrostatic_potential" title="chemtools_cuda.Molecule.compute_electrostatic_potential"><code class="xref py py-obj docutils literal notranslate"><span class="pre">compute_electrostatic_potential</span></code></a></p></td>
+<td><p>Compute the molecular electrostatic potential.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#chemtools_cuda.Molecule.compute_empirical_gradient_expansion_ked" title="chemtools_cuda.Molecule.compute_empirical_gradient_expansion_ked"><code class="xref py py-obj docutils literal notranslate"><span class="pre">compute_empirical_gradient_expansion_ked</span></code></a></p></td>
+<td><p>Compute the empirical gradient expansion approximation of kinetic energy density.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#chemtools_cuda.Molecule.compute_general_gradient_expansion_ked" title="chemtools_cuda.Molecule.compute_general_gradient_expansion_ked"><code class="xref py py-obj docutils literal notranslate"><span class="pre">compute_general_gradient_expansion_ked</span></code></a></p></td>
+<td><p>Compute the general gradient expansion approximation of kinetic energy density.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#chemtools_cuda.Molecule.compute_general_ked" title="chemtools_cuda.Molecule.compute_general_ked"><code class="xref py py-obj docutils literal notranslate"><span class="pre">compute_general_ked</span></code></a></p></td>
+<td><p>Compute the general(ish) kinetic energy density.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#chemtools_cuda.Molecule.compute_general_kinetic_energy_density" title="chemtools_cuda.Molecule.compute_general_kinetic_energy_density"><code class="xref py py-obj docutils literal notranslate"><span class="pre">compute_general_kinetic_energy_density</span></code></a></p></td>
+<td><p>Compute the general kinetic energy density on a grid of points.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#chemtools_cuda.Molecule.compute_gradient" title="chemtools_cuda.Molecule.compute_gradient"><code class="xref py py-obj docutils literal notranslate"><span class="pre">compute_gradient</span></code></a></p></td>
+<td><p>Compute the gradient of the electron density.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#chemtools_cuda.Molecule.compute_gradient_expansion_ked" title="chemtools_cuda.Molecule.compute_gradient_expansion_ked"><code class="xref py py-obj docutils literal notranslate"><span class="pre">compute_gradient_expansion_ked</span></code></a></p></td>
+<td><p>Compute the gradient expansion approximation of kinetic energy density</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#chemtools_cuda.Molecule.compute_hessian" title="chemtools_cuda.Molecule.compute_hessian"><code class="xref py py-obj docutils literal notranslate"><span class="pre">compute_hessian</span></code></a></p></td>
+<td><p>Compute the Hessian of the electron density.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#chemtools_cuda.Molecule.compute_laplacian" title="chemtools_cuda.Molecule.compute_laplacian"><code class="xref py py-obj docutils literal notranslate"><span class="pre">compute_laplacian</span></code></a></p></td>
+<td><p>Compute the Laplacian of the electron density.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#chemtools_cuda.Molecule.compute_norm_of_vector" title="chemtools_cuda.Molecule.compute_norm_of_vector"><code class="xref py py-obj docutils literal notranslate"><span class="pre">compute_norm_of_vector</span></code></a></p></td>
+<td><p>Compute the norm of a three-dimensional vector using GPU.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#chemtools_cuda.Molecule.compute_positive_definite_kinetic_energy_density" title="chemtools_cuda.Molecule.compute_positive_definite_kinetic_energy_density"><code class="xref py py-obj docutils literal notranslate"><span class="pre">compute_positive_definite_kinetic_energy_density</span></code></a></p></td>
+<td><p>Compute the positive definite kinetic energy density on a grid of points.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#chemtools_cuda.Molecule.compute_reduced_density_gradient" title="chemtools_cuda.Molecule.compute_reduced_density_gradient"><code class="xref py py-obj docutils literal notranslate"><span class="pre">compute_reduced_density_gradient</span></code></a></p></td>
+<td><p>Compute the reduced density gradient.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#chemtools_cuda.Molecule.compute_schrodinger_ked" title="chemtools_cuda.Molecule.compute_schrodinger_ked"><code class="xref py py-obj docutils literal notranslate"><span class="pre">compute_schrodinger_ked</span></code></a></p></td>
+<td><p>Compute the Schrödinger kinetic energy density.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#chemtools_cuda.Molecule.compute_shannon_information_density" title="chemtools_cuda.Molecule.compute_shannon_information_density"><code class="xref py py-obj docutils literal notranslate"><span class="pre">compute_shannon_information_density</span></code></a></p></td>
+<td><p>Compute the Shannon information density.&quot;</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#chemtools_cuda.Molecule.compute_thomas_fermi_ked" title="chemtools_cuda.Molecule.compute_thomas_fermi_ked"><code class="xref py py-obj docutils literal notranslate"><span class="pre">compute_thomas_fermi_ked</span></code></a></p></td>
+<td><p>Compute the Thomas-Fermi kinetic energy density.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#chemtools_cuda.Molecule.compute_weizsacker_ked" title="chemtools_cuda.Molecule.compute_weizsacker_ked"><code class="xref py py-obj docutils literal notranslate"><span class="pre">compute_weizsacker_ked</span></code></a></p></td>
+<td><p>Compute the Weizsacker Kinetic energy density.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#chemtools_cuda.Molecule.get_file_path" title="chemtools_cuda.Molecule.get_file_path"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_file_path</span></code></a></p></td>
+<td><p>Get the wavefunction file path.</p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py method">
+<dt class="sig sig-object py" id="chemtools_cuda.Molecule.compute_density">
+<span class="sig-name descname"><span class="pre">compute_density</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#chemtools_cuda.Molecule.compute_density" title="Permalink to this definition"></a></dt>
+<dd><p>Compute electron density <span class="math notranslate nohighlight">\(\rho(\mathbf{r})\)</span>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>points</strong> (<em>ndarray</em><em>(</em><em>N</em><em>, </em><em>3</em><em>)</em>) – Cartesian coordinates of <span class="math notranslate nohighlight">\(N\)</span> points in three-dimensions.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The electron density evaluated on each point.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>ndarray(N,)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="chemtools_cuda.Molecule.compute_electrostatic_potential">
+<span class="sig-name descname"><span class="pre">compute_electrostatic_potential</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#chemtools_cuda.Molecule.compute_electrostatic_potential" title="Permalink to this definition"></a></dt>
+<dd><p>Compute the molecular electrostatic potential.</p>
+<div class="math notranslate nohighlight">
+\[\Phi(\mathbf{r}) = \sum_{i=1}^{N_{atom}} \frac{Z_A}{|\mathbf{r} - \mathbf{R}_A|^2}  -
+ \int \frac{\rho(\mathbf{r}^\prime)}{|\mathbf{r} - \mathbf{r}^\prime|^2 }d\mathbf{r}^\prime,\]</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>points</strong> (<em>ndarray</em><em>(</em><em>N</em><em>, </em><em>3</em><em>)</em>) – Cartesian coordinates of <span class="math notranslate nohighlight">\(N\)</span> points in three-dimensions.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="chemtools_cuda.Molecule.compute_empirical_gradient_expansion_ked">
+<span class="sig-name descname"><span class="pre">compute_empirical_gradient_expansion_ked</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#chemtools_cuda.Molecule.compute_empirical_gradient_expansion_ked" title="Permalink to this definition"></a></dt>
+<dd><p>Compute the empirical gradient expansion approximation of kinetic energy density.</p>
+<div class="math notranslate nohighlight">
+\[\tau_{EGEA}(\mathbf{r}) = \tau_{TF}(\mathbf{r}) + \frac{1}{5} \tau_W(\mathbf{r}) +
+\frac{1}{6} \nabla^2 \rho(\mathbf{r})\]</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>points</strong> (<em>ndarray</em><em>(</em><em>N</em><em>, </em><em>3</em><em>)</em>) – Cartesian coordinates of <span class="math notranslate nohighlight">\(N\)</span> points in three-dimensions.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="chemtools_cuda.Molecule.compute_general_gradient_expansion_ked">
+<span class="sig-name descname"><span class="pre">compute_general_gradient_expansion_ked</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#chemtools_cuda.Molecule.compute_general_gradient_expansion_ked" title="Permalink to this definition"></a></dt>
+<dd><p>Compute the general gradient expansion approximation of kinetic energy density.</p>
+<div class="math notranslate nohighlight">
+\[\tau_{GGE}(\mathbf{r}) = \tau_{TF}(\mathbf{r}) + \alpha \tau_{W}(\mathbf{r}) + \beta \nabla^2 \rho(\mathbf{r})\]</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>points</strong> (<em>ndarray</em><em>(</em><em>N</em><em>, </em><em>3</em><em>)</em>) – Cartesian coordinates of <span class="math notranslate nohighlight">\(N\)</span> points in three-dimensions.</p></li>
+<li><p><strong>alpha</strong> (<em>float</em>) – Constant parameter.</p></li>
+<li><p><strong>beta</strong> (<em>float</em>) – Constant parameter.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="chemtools_cuda.Molecule.compute_general_ked">
+<span class="sig-name descname"><span class="pre">compute_general_ked</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#chemtools_cuda.Molecule.compute_general_ked" title="Permalink to this definition"></a></dt>
+<dd><p>Compute the general(ish) kinetic energy density.</p>
+<div class="math notranslate nohighlight">
+\[\tau_G(\mathbf{r}, \alpha)  = \tau_{PD}(\mathbf{r}) + \frac{1}{4} (\alpha - 1) \nabla^2 \rho(\mathbf{r}),\]</div>
+<p>where <span class="math notranslate nohighlight">\(a\)</span> is a constant parameter.  When <span class="math notranslate nohighlight">\(a=0\)</span>, then it is the ‘Schrödinger’ kinetic energy, when
+<span class="math notranslate nohighlight">\(a=1\)</span>, then it is the positive-definite kinetic energy.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>points</strong> (<em>ndarray</em><em>(</em><em>N</em><em>, </em><em>3</em><em>)</em>) – Cartesian coordinates of <span class="math notranslate nohighlight">\(N\)</span> points in three-dimensions.</p></li>
+<li><p><strong>alpha</strong> (<em>float</em>) – The constant parameter.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="chemtools_cuda.Molecule.compute_general_kinetic_energy_density">
+<span class="sig-name descname"><span class="pre">compute_general_kinetic_energy_density</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#chemtools_cuda.Molecule.compute_general_kinetic_energy_density" title="Permalink to this definition"></a></dt>
+<dd><p>Compute the general kinetic energy density on a grid of points.</p>
+<div class="math notranslate nohighlight">
+\[t_\alpha(r) = t_+(r) + \alpha \nabla^2 \rho(r)\]</div>
+<p>where <span class="math notranslate nohighlight">\(t_+(r)\)</span> is the positive definite kinetic energy density and
+<span class="math notranslate nohighlight">\(\nabla^2\)</span> is the Laplacian.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>points</strong> (<em>ndarray</em><em>(</em><em>N</em><em>, </em><em>3</em><em>)</em>) – Cartesian coordinates of <span class="math notranslate nohighlight">\(N\)</span> points in three-dimensions.</p></li>
+<li><p><strong>alpha</strong> (<em>float</em>) – Constant parameter.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="chemtools_cuda.Molecule.compute_gradient">
+<span class="sig-name descname"><span class="pre">compute_gradient</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#chemtools_cuda.Molecule.compute_gradient" title="Permalink to this definition"></a></dt>
+<dd><p>Compute the gradient of the electron density.</p>
+<div class="math notranslate nohighlight">
+\[\nabla \rho(\mathbf{r}) = \bigg(\frac{\partial \rho}{\partial x}, \frac{\partial \rho}{\partial y},
+\frac{\partial \rho}{\partial z} \bigg),\]</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>points</strong> (<em>ndarray</em><em>(</em><em>N</em><em>, </em><em>3</em><em>)</em>) – Cartesian coordinates of <span class="math notranslate nohighlight">\(N\)</span> points in three-dimensions.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The gradient of the electron density evaluated on each point.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>ndarray(N, 3)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="chemtools_cuda.Molecule.compute_gradient_expansion_ked">
+<span class="sig-name descname"><span class="pre">compute_gradient_expansion_ked</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#chemtools_cuda.Molecule.compute_gradient_expansion_ked" title="Permalink to this definition"></a></dt>
+<dd><p>Compute the gradient expansion approximation of kinetic energy density</p>
+<div class="math notranslate nohighlight">
+\[\tau_{GEA}(\mathbf{r}) = \tau_{TF}(\mathbf{r}) + \frac{1}{9} \tau_W(\mathbf{r}) +
+\frac{1}{6} \nabla^2 \rho(\mathbf{r})\]</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>points</strong> (<em>ndarray</em><em>(</em><em>N</em><em>, </em><em>3</em><em>)</em>) – Cartesian coordinates of <span class="math notranslate nohighlight">\(N\)</span> points in three-dimensions.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="chemtools_cuda.Molecule.compute_hessian">
+<span class="sig-name descname"><span class="pre">compute_hessian</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#chemtools_cuda.Molecule.compute_hessian" title="Permalink to this definition"></a></dt>
+<dd><p>Compute the Hessian of the electron density.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>points</strong> (<em>ndarray</em><em>(</em><em>N</em><em>, </em><em>3</em><em>)</em>) – Cartesian coordinates of <span class="math notranslate nohighlight">\(N\)</span> points in three-dimensions.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The Hessian of the electron density evaluated on each point.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>ndarray(N, 3, 3)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="chemtools_cuda.Molecule.compute_laplacian">
+<span class="sig-name descname"><span class="pre">compute_laplacian</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#chemtools_cuda.Molecule.compute_laplacian" title="Permalink to this definition"></a></dt>
+<dd><p>Compute the Laplacian of the electron density.</p>
+<div class="math notranslate nohighlight">
+\[\nabla^2 \rho(\mathbf{r}) = \sqrt{\bigg(\frac{\partial \rho}{\partial x} \bigg)^2 +
+ \bigg(\frac{\partial \rho}{\partial y} \bigg)^2 + \bigg(\frac{\partial \rho}{\partial z} \bigg)^2}\]</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>points</strong> (<em>ndarray</em><em>(</em><em>N</em><em>, </em><em>3</em><em>)</em>) – Cartesian coordinates of <span class="math notranslate nohighlight">\(N\)</span> points in three-dimensions.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="chemtools_cuda.Molecule.compute_norm_of_vector">
+<span class="sig-name descname"><span class="pre">compute_norm_of_vector</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#chemtools_cuda.Molecule.compute_norm_of_vector" title="Permalink to this definition"></a></dt>
+<dd><p>Compute the norm of a three-dimensional vector using GPU.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>points</strong> (<em>ndarray</em><em>(</em><em>N</em><em>, </em><em>3</em><em>)</em>) – Cartesian coordinates of <span class="math notranslate nohighlight">\(N\)</span> points in three-dimensions.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="chemtools_cuda.Molecule.compute_positive_definite_kinetic_energy_density">
+<span class="sig-name descname"><span class="pre">compute_positive_definite_kinetic_energy_density</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#chemtools_cuda.Molecule.compute_positive_definite_kinetic_energy_density" title="Permalink to this definition"></a></dt>
+<dd><p>Compute the positive definite kinetic energy density on a grid of points.</p>
+<div class="math notranslate nohighlight">
+\[\tau_{PD}(\mathbf{r}) = \frac{1}{2} \sum_{i=1}^{N} \big|\nabla \phi_i (\mathbf{r})\big|^2,\]</div>
+<p>where <span class="math notranslate nohighlight">\(\phi_i\)</span> is the molecular orbitals.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>points</strong> (<em>ndarray</em><em>(</em><em>N</em><em>, </em><em>3</em><em>)</em>) – Cartesian coordinates of <span class="math notranslate nohighlight">\(N\)</span> points in three-dimensions.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="chemtools_cuda.Molecule.compute_reduced_density_gradient">
+<span class="sig-name descname"><span class="pre">compute_reduced_density_gradient</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#chemtools_cuda.Molecule.compute_reduced_density_gradient" title="Permalink to this definition"></a></dt>
+<dd><p>Compute the reduced density gradient.</p>
+<div class="math notranslate nohighlight">
+\[s(\mathbf{r}) = \frac{1}{3(2 \pi^2)^{1/3}}\frac{|\nabla \rho(\mathbf{r})|}{\rho(\mathbf{r})^{4/3}}.\]</div>
+<p>Note it may be more efficient to compute each component individually, then using
+Numpy to compute this quanity.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>points</strong> (<em>ndarray</em><em>(</em><em>N</em><em>, </em><em>3</em><em>)</em>) – Cartesian coordinates of <span class="math notranslate nohighlight">\(N\)</span> points in three-dimensions.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="chemtools_cuda.Molecule.compute_schrodinger_ked">
+<span class="sig-name descname"><span class="pre">compute_schrodinger_ked</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#chemtools_cuda.Molecule.compute_schrodinger_ked" title="Permalink to this definition"></a></dt>
+<dd><p>Compute the Schrödinger kinetic energy density.</p>
+<p>This is the general(sh) kinetic energy density when <span class="math notranslate nohighlight">\(a=0\)</span>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>points</strong> (<em>ndarray</em><em>(</em><em>N</em><em>, </em><em>3</em><em>)</em>) – Cartesian coordinates of <span class="math notranslate nohighlight">\(N\)</span> points in three-dimensions.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="chemtools_cuda.Molecule.compute_shannon_information_density">
+<span class="sig-name descname"><span class="pre">compute_shannon_information_density</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#chemtools_cuda.Molecule.compute_shannon_information_density" title="Permalink to this definition"></a></dt>
+<dd><p>Compute the Shannon information density.”</p>
+<div class="math notranslate nohighlight">
+\[s(\mathbf{r}) = \rho(\mathbf{r}) \log \rho(\mathbf{r}),\]</div>
+<p>where the integral gives the Shannon entropy of the electron density.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>points</strong> (<em>ndarray</em><em>(</em><em>N</em><em>, </em><em>3</em><em>)</em>) – Cartesian coordinates of <span class="math notranslate nohighlight">\(N\)</span> points in three-dimensions.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="chemtools_cuda.Molecule.compute_thomas_fermi_ked">
+<span class="sig-name descname"><span class="pre">compute_thomas_fermi_ked</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#chemtools_cuda.Molecule.compute_thomas_fermi_ked" title="Permalink to this definition"></a></dt>
+<dd><p>Compute the Thomas-Fermi kinetic energy density.</p>
+<div class="math notranslate nohighlight">
+\[\tau_{TF}(\mathbf{r}) = \frac{3}{10} (3\pi)^{2/3} \rho(\mathbf{r})^{5/3}\]</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>points</strong> (<em>ndarray</em><em>(</em><em>N</em><em>, </em><em>3</em><em>)</em>) – Cartesian coordinates of <span class="math notranslate nohighlight">\(N\)</span> points in three-dimensions.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="chemtools_cuda.Molecule.compute_weizsacker_ked">
+<span class="sig-name descname"><span class="pre">compute_weizsacker_ked</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#chemtools_cuda.Molecule.compute_weizsacker_ked" title="Permalink to this definition"></a></dt>
+<dd><p>Compute the Weizsacker Kinetic energy density.</p>
+<div class="math notranslate nohighlight">
+\[\tau_W(\mathbf{r}) = \frac{\big|\nabla \rho(\mathbf{r}) \big|^2}{8\rho(\mathbf{r})}\]</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>points</strong> (<em>ndarray</em><em>(</em><em>N</em><em>, </em><em>3</em><em>)</em>) – Cartesian coordinates of <span class="math notranslate nohighlight">\(N\)</span> points in three-dimensions.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="chemtools_cuda.Molecule.coordinates">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">coordinates</span></span><a class="headerlink" href="#chemtools_cuda.Molecule.coordinates" title="Permalink to this definition"></a></dt>
+<dd><p>Cartesian coordinates of the atomic centers.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="chemtools_cuda.Molecule.get_file_path">
+<span class="sig-name descname"><span class="pre">get_file_path</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#chemtools_cuda.Molecule.get_file_path" title="Permalink to this definition"></a></dt>
+<dd><p>Get the wavefunction file path.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="chemtools_cuda.Molecule.numbers">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">numbers</span></span><a class="headerlink" href="#chemtools_cuda.Molecule.numbers" title="Permalink to this definition"></a></dt>
+<dd><p>Atomic number of atomic centers.</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="installation.html" class="btn btn-neutral float-left" title="Installation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="conventions.html" class="btn btn-neutral float-right" title="Conventions" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, QC-Devs.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

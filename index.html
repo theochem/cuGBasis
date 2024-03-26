@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en">
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Welcome to ChemToolsCuda’s documentation! &mdash; chemtools_cuda  documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+      <link rel="stylesheet" type="text/css" href="_static/css/override.css" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/sphinx_highlight.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Installation" href="installation.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="#" class="icon icon-home">
+            chemtools_cuda
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">User documentation:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="installation.html#downloading-code">Downloading Code</a></li>
+<li class="toctree-l2"><a class="reference internal" href="installation.html#dependencies">Dependencies</a></li>
+<li class="toctree-l2"><a class="reference internal" href="installation.html#id1">Installation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="installation.html#python-binding">Python Binding</a></li>
+<li class="toctree-l3"><a class="reference internal" href="installation.html#c">C++</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="installation.html#installation-problems">Installation problems</a></li>
+<li class="toctree-l2"><a class="reference internal" href="installation.html#building-documentation">Building Documentation</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="molecule.html">Molecule Class</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="molecule.html#chemtools_cuda.Molecule"><code class="docutils literal notranslate"><span class="pre">Molecule</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="molecule.html#chemtools_cuda.Molecule.compute_density"><code class="docutils literal notranslate"><span class="pre">Molecule.compute_density()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="molecule.html#chemtools_cuda.Molecule.compute_electrostatic_potential"><code class="docutils literal notranslate"><span class="pre">Molecule.compute_electrostatic_potential()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="molecule.html#chemtools_cuda.Molecule.compute_empirical_gradient_expansion_ked"><code class="docutils literal notranslate"><span class="pre">Molecule.compute_empirical_gradient_expansion_ked()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="molecule.html#chemtools_cuda.Molecule.compute_general_gradient_expansion_ked"><code class="docutils literal notranslate"><span class="pre">Molecule.compute_general_gradient_expansion_ked()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="molecule.html#chemtools_cuda.Molecule.compute_general_ked"><code class="docutils literal notranslate"><span class="pre">Molecule.compute_general_ked()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="molecule.html#chemtools_cuda.Molecule.compute_general_kinetic_energy_density"><code class="docutils literal notranslate"><span class="pre">Molecule.compute_general_kinetic_energy_density()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="molecule.html#chemtools_cuda.Molecule.compute_gradient"><code class="docutils literal notranslate"><span class="pre">Molecule.compute_gradient()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="molecule.html#chemtools_cuda.Molecule.compute_gradient_expansion_ked"><code class="docutils literal notranslate"><span class="pre">Molecule.compute_gradient_expansion_ked()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="molecule.html#chemtools_cuda.Molecule.compute_hessian"><code class="docutils literal notranslate"><span class="pre">Molecule.compute_hessian()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="molecule.html#chemtools_cuda.Molecule.compute_laplacian"><code class="docutils literal notranslate"><span class="pre">Molecule.compute_laplacian()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="molecule.html#chemtools_cuda.Molecule.compute_norm_of_vector"><code class="docutils literal notranslate"><span class="pre">Molecule.compute_norm_of_vector()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="molecule.html#chemtools_cuda.Molecule.compute_positive_definite_kinetic_energy_density"><code class="docutils literal notranslate"><span class="pre">Molecule.compute_positive_definite_kinetic_energy_density()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="molecule.html#chemtools_cuda.Molecule.compute_reduced_density_gradient"><code class="docutils literal notranslate"><span class="pre">Molecule.compute_reduced_density_gradient()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="molecule.html#chemtools_cuda.Molecule.compute_schrodinger_ked"><code class="docutils literal notranslate"><span class="pre">Molecule.compute_schrodinger_ked()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="molecule.html#chemtools_cuda.Molecule.compute_shannon_information_density"><code class="docutils literal notranslate"><span class="pre">Molecule.compute_shannon_information_density()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="molecule.html#chemtools_cuda.Molecule.compute_thomas_fermi_ked"><code class="docutils literal notranslate"><span class="pre">Molecule.compute_thomas_fermi_ked()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="molecule.html#chemtools_cuda.Molecule.compute_weizsacker_ked"><code class="docutils literal notranslate"><span class="pre">Molecule.compute_weizsacker_ked()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="molecule.html#chemtools_cuda.Molecule.coordinates"><code class="docutils literal notranslate"><span class="pre">Molecule.coordinates</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="molecule.html#chemtools_cuda.Molecule.get_file_path"><code class="docutils literal notranslate"><span class="pre">Molecule.get_file_path()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="molecule.html#chemtools_cuda.Molecule.numbers"><code class="docutils literal notranslate"><span class="pre">Molecule.numbers</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="conventions.html">Conventions</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="conventions.html#basis-set-conventions">Basis set conventions</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="conventions.html#contractions">Contractions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="conventions.html#gaussian-primitives">Gaussian Primitives</a></li>
+<li class="toctree-l3"><a class="reference internal" href="conventions.html#cartesian">Cartesian</a></li>
+<li class="toctree-l3"><a class="reference internal" href="conventions.html#pure-harmonic">Pure/Harmonic</a></li>
+<li class="toctree-l3"><a class="reference internal" href="conventions.html#basis-set-ordering">Basis Set Ordering</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="#">chemtools_cuda</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="#" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Welcome to ChemToolsCuda’s documentation!</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/index.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="welcome-to-chemtoolscuda-s-documentation">
+<h1>Welcome to ChemToolsCuda’s documentation!<a class="headerlink" href="#welcome-to-chemtoolscuda-s-documentation" title="Permalink to this heading"></a></h1>
+<a class="reference internal image-reference" href="_images/chemtoolscuda_logo_with_text.jpeg"><img alt="_images/chemtoolscuda_logo_with_text.jpeg" src="_images/chemtoolscuda_logo_with_text.jpeg" style="width: 450px;" /></a>
+<p>ChemToolsCUDA is a free, and open-source C++/CUDA and Python library for computing various quantities efficiently
+using NVIDIA GPU’s in quantum chemistry. It is highly-optimized and vectorized, making it useful for cases
+where efficiency matters. It has substantial speed-ups compared to both commerical and open-source post-processing
+quantum chemistry codes.</p>
+<p>ChemToolsCUDA can read various wave-function formats (wfn, wfx, molden and fchk) using IOData and supports up-to g-type
+(Cartesian or Pure) orbitals. It can compute the following features:</p>
+<ul class="simple">
+<li><p>Molecular orbitals</p></li>
+<li><p>Electron density</p></li>
+<li><p>Gradient of electron density</p></li>
+<li><p>Laplacian of electron density</p></li>
+<li><p>Hessian of electron density</p></li>
+<li><p>Electrostatic potential</p></li>
+<li><p>Compute density-based descriptors:</p>
+<ul>
+<li><p>Reduced density gradient</p></li>
+<li><p>Shannon information density</p></li>
+<li><p>Norm of gradient</p></li>
+</ul>
+</li>
+<li><p>Compute various kinetic energy densities:</p>
+<ul>
+<li><p>Positive definite kinetic energy density</p></li>
+<li><p>General kinetic energy density</p></li>
+<li><p>Von Weizsacker kinetic Energy Density</p></li>
+<li><p>Thomas-Fermi kinetic energy density.</p></li>
+<li><p>General gradient expansion approximation of kinetic energy density</p></li>
+</ul>
+</li>
+</ul>
+<p>To report any issues or ask questions, either <a class="reference external" href="https://github.com/qtchem/chemtoolscuda/issues/new">open an issue</a>
+or email <a class="reference external" href="mailto:qcdevs&#37;&#52;&#48;gmail&#46;com">qcdevs<span>&#64;</span>gmail<span>&#46;</span>com</a>.</p>
+<div class="toctree-wrapper compound">
+<p class="caption" role="heading"><span class="caption-text">User documentation:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="installation.html#downloading-code">Downloading Code</a></li>
+<li class="toctree-l2"><a class="reference internal" href="installation.html#dependencies">Dependencies</a></li>
+<li class="toctree-l2"><a class="reference internal" href="installation.html#id1">Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="installation.html#installation-problems">Installation problems</a></li>
+<li class="toctree-l2"><a class="reference internal" href="installation.html#building-documentation">Building Documentation</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="molecule.html">Molecule Class</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="molecule.html#chemtools_cuda.Molecule"><code class="docutils literal notranslate"><span class="pre">Molecule</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="conventions.html">Conventions</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="conventions.html#basis-set-conventions">Basis set conventions</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="toctree-wrapper compound">
+</div>
+</section>
+<section id="indices-and-tables">
+<h1>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this heading"></a></h1>
+<ul class="simple">
+<li><p><a class="reference internal" href="genindex.html"><span class="std std-ref">Index</span></a></p></li>
+<li><p><a class="reference internal" href="py-modindex.html"><span class="std std-ref">Module Index</span></a></p></li>
+<li><p><a class="reference internal" href="search.html"><span class="std std-ref">Search Page</span></a></p></li>
+</ul>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="installation.html" class="btn btn-neutral float-right" title="Installation" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, QC-Devs.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
