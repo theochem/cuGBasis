@@ -6,129 +6,119 @@ Installation
 Downloading Code
 ================
 
-The latest code can be obtained through theochem (https://github.com/theochem/grid) in Github,
+The latest code can be obtained through theochem (https://github.com/qtchem/ChemtoolsCUDA) in Github,
 
 .. code-block:: bash
 
-   git clone https://github.com/theochem/grid.git
+   git clone https://github.com/qtchem/ChemToolsCUDA.git
 
-.. _usr_py_depend:
+   # Get the dependencies in ./libs/ folder
+   git submodule update --init --recursive
+
+
 
 Dependencies
 ============
 
-The following dependencies will be necessary for Procrustes to build properly,
+The following dependencies will be necessary for ChemToolsCUDA to build properly,
 
-* Python >= 3.0: http://www.python.org/
+* CMake>=3.24: (https://cmake.org/)
+* Eigen>=3: (https://eigen.tuxfamily.org/index.php?title=Main_Page)
+* CUDA/DRIVERS/NVCC/CUDA-TOOLKIT: (https://docs.nvidia.com/cuda/cuda-installation-guide-linux/index.html)
+* Python>=3.7: (http://www.python.org/)
 * NumPy >= 1.16.0: http://www.numpy.org/
-* SciPy >= 1.4.0: http://www.scipy.org/
-* Sphinx >= 2.3.0: https://www.sphinx-doc.org/
-* SymPy >= 1.4.0: https://www.sympy.org/en/index.html
-* PyTest >= 5.4.3: `https://docs.pytest.org/ <https://docs.pytest.org/>`_
-* QA requirement: Tox >= 4.0.0: https://tox.wiki/en/latest/
-* Sphinx >= 2.3.0, if one wishes to build the documentation locally:
-  `https://www.sphinx-doc.org/ <https://www.sphinx-doc.org/>`_
+* Pybind11 on python: (https://github.com/pybind/pybind11)
+* IOData on python: (https://github.com/theochem/iodata)
 
+For testing the following are required to be installed on the Python system:
+
+* PyTest >= 5.4.3: (https://docs.pytest.org/ <https://docs.pytest.org/)
+* GBasis: (https://github.com/theochem/gbasis)
+* ChemTools: (https://github.com/theochem/chemtools)
 
 
 Installation
 ============
 
-Installation via pip can be done by the following command:
+Python Binding
+---------------
+
+Once you downloaded the code, obtained the required libraries and dependencies, then one can use pip to install
+the Python bindings:
 
 .. code-block:: bash
 
-    pip install git+https://github.com/theochem/grid.git@master
+    pip install -v .
 
 
-With later release in PyPi, Grid can be installed via
-
-.. code-block:: bash
-
-    pip install qc-grid
-
-
-Grid can also be installed by cloning via git,
+In order to see if it successfully installed, run the following
 
 .. code-block:: bash
 
-   git clone https://github.com/theochem/grid.git
+    pytest -v ./tests/*.py
 
 
-Then installation via pip can be done by going into the directory where Grid is downloaded to and running,
+C++
+---
 
-.. code-block:: bash
-
-    cd grid
-    pip install .
-
-Successful installation can be checked by running the tests,
+In order to build a shared library without the python bindings, particularly useful for debugging purposes,
 
 .. code-block:: bash
 
-    pytest --pyargs grid
+    cmake -S . -B ./out/build/
+    make -C ./out/build/
+    ./out/build/tests/tests  # Run the C++/CUDA tests
 
 
 
+Installation problems
+=====================
+
+The following can help with compiling this package
+
+- If CMake version is greater than 3.24, then CMake will automatically find the correct CUDA architecture based on the
+  user's NVIDIA GPU.
+  If not, the user will need to set the correct GPU architecture (e.g. compute capability 6.0). This can be
+  found through the `NVIDIA website <https://developer.nvidia.com/cuda-gpus>`_. Once it is found, then one can
+  add an environment variable to indicate to compile using the correct CUDA architecture.
+
+.. code-block:: bash
+
+    # if pip:
+    CMAKE_CUDA_ARCHITECTURES=60 pip install -v .
+    # if cmake:
+    cmake -S . -B ./out/build/ -DCMAKE_CUDA_ARCHITECTURES=60
+
+- If CUBLAS, CURAND are not found, add the following flag to the correct path.
+  See `here <https://cmake.org/cmake/help/latest/module/FindCUDAToolkit.html>`_ for more information on how to modify CMake.
+
+.. code-block:: bash
+
+    # If pip:
+    CUDATOOLkit_ROOT=/some/path pip install -v .
+    # If cmake:
+    cmake -S . -B ./out/build/ -DCUDAToolkit_ROOT=/some/path
+
+- If NVCC compiler is not found, add the following flag to correct path
+
+.. code-block:: bash
+
+    # If pip:
+    CUDACXX=/some/path/bin/nvcc pip install -v .
+    # If cmake:
+    cmake -S . -B ./out/build/ -DCUDACXX=/some/path/bin/nvcc
+
+- If Eigen is not found, add the following flag to the path containing the Eigen3*.cmake files. See
+  `here <https://eigen.tuxfamily.org/dox/TopicCMakeGuide.html>`_ for more information.
+
+.. code-block:: bash
+
+    # if pip:
+    CMAKE_PREFIX_PATH="$CMAKE_PREFIX_PATH:/opt/eigen/3.3" pip install -v .
+    # if cmake:
+    cmake -S . -B ./out/build/ -DEigen3_DIR=/some/path/share/eigen3/cmake/
 
 
-
-
-
-
-..
-    The stable release of the package can be easily installed through the *pip* and
-    *conda* package management systems, which install the dependencies automatically, if not
-    available. To use *pip*, simply run the following command:
-
-    .. code-block:: bash
-
-        pip install qc-procrustes
-
-    To use *conda*, one can either install the package through Anaconda Navigator or run the following
-    command in a desired *conda* environment:
-
-    .. code-block:: bash
-
-        conda install -c theochem qc-procrustes
-
-
-    Alternatively, the *Procrustes* source code can be download from GitHub (either the stable version
-    or the development version) and then installed from source. For example, one can download the latest
-    source code using *git* by:
-
-    .. code-block:: bash
-
-        # download source code
-        git clone git@github.com:theochem/procrustes.git
-        cd procrustes
-
-    From the parent directory, the dependencies can either be installed using *pip* by:
-
-    .. code-block:: bash
-
-        # install dependencies using pip
-        pip install -r requirements.txt
-
-
-    or, through *conda* by:
-
-    .. code-block:: bash
-
-        # create and activate myenv environment
-        # Procruste works with Python 3.6, 3.7, and 3.8
-        conda create -n myenv python=3.6
-        conda activate myenv
-        # install dependencies using conda
-        conda install --yes --file requirements.txt
-
-
-    Finally, the *Procrustes* package can be installed (from source) by:
-
-    .. code-block:: bash
-
-        # install Procrustes from source
-        pip install .
 
 Building Documentation
 ======================
@@ -137,6 +127,5 @@ The following shows how to build the documentation using sphinx to the folder `_
 
     .. code-block:: bash
 
-        cd ./doc
-        ./gen_api.sh
-        sphinx-build -b html . _build
+        cd doc
+        make html

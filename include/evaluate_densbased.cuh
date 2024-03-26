@@ -51,6 +51,8 @@ __host__ std::vector<double> compute_weizsacker_ked(
 /**
  * Compute the Thomas-Fermi kinetic energy density.
  *
+ * \frac{3}{10} (3\pi)^{2/3} \rho(\mathbf{r})^{5/3}
+ *
  * @param[in] iodata  The IOData object that stores the molecules basis.
  * @param[in] h_points Array in column-major order that stores the three-dimensional points.
  * @param[in] knumb_points Number of points in d_points.
@@ -76,6 +78,8 @@ __host__ std::vector<double> compute_ked_gradient_expansion_general(
 /**
  * Compute general(ish) kinetic energy density.
  *
+ * \tau_G(\mathbf{r}, \alpha)  = \tau_{PD}(\mathbf{r}) + \frac{1}{4} (\alpha - 1) \nabla^2 \rho(\mathbf{r}),
+ *
  * @param[in] iodata  The IOData object that stores the molecules basis.
  * @param[in] h_points Array in column-major order that stores the three-dimensional points.
  * @param[in] knumb_points Number of points in d_points.
@@ -88,6 +92,8 @@ __host__ std::vector<double> compute_general_ked(
 
 /**
  * Compute Shannon information density
+ *
+ * s(\mathbf{r}) = \rho(\mathbf{r}) \log \rho(\mathbf{r}),
  *
  * @param[in] iodata  The IOData object that stores the molecules basis.
  * @param[in] h_points Array in column-major order that stores the three-dimensional points.
