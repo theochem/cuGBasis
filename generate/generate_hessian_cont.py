@@ -36,7 +36,12 @@ p_cartesian = [
     x * exp, y * exp, z * exp
 ]
 d_cartesian = [
-    x * x * exp, y * y * exp, z * z * exp, x * y * exp, x * z * exp, y * z * exp
+    x * x * exp,
+    y * y * exp,
+    z * z * exp,
+    x * y * exp,
+    x * z * exp,
+    y * z * exp
 ]
 d_spherical = [
     (2 * z * z - x * x - y * y) * exp / 2,   #m = 0
