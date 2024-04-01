@@ -838,3 +838,170 @@ __host__ std::vector<double> chemtools::evaluate_electron_density_on_any_grid_ha
   }
   return h_electron_density;
 }
+
+
+__host__ std::vector<double> chemtools::evaluate_molecular_orbitals_on_any_grid(
+    chemtools::IOData& iodata, const double* h_points, const int knumb_points
+){
+  cublasHandle_t handle;
+  cublasCreate(&handle);
+  std::vector<double> density = chemtools::evaluate_molecular_orbitals_on_any_grid_handle(
+      handle, iodata, h_points, knumb_points
+  );
+  cublasDestroy(handle); // cublas handle is no longer needed infact most of
+  return density;
+}
+
+
+__host__ std::vector<double> chemtools::evaluate_molecular_orbitals_on_any_grid_handle(
+    cublasHandle_t& handle, chemtools::IOData& iodata, const double* h_points, const int knumb_points
+) {
+  // Get the molecular basis from iodata and put it in constant memory of the gpu.
+  chemtools::MolecularBasis molecular_basis = iodata.GetOrbitalBasis();
+  int nbasisfuncs = molecular_basis.numb_basis_functions();
+
+  // Calculate the number of bytes it would take memory of
+  //   The highest memory operation is doing Y=XA, where X is contraction array, A is one-rdm
+  //   You need to store two matrices of size (MxN) where M is number of contractions
+  //   and N is the number of points and one matrix of size (MxM) for the one-rdm.
+  //   Take 12 Gigabyte GPU, then convert it into bytes
+  size_t t_numb_pts = knumb_points;
+  size_t t_nbasis = nbasisfuncs;
+  size_t t_highest_number_of_bytes = sizeof(double) * (2 * t_numb_pts * t_nbasis + t_nbasis * t_nbasis);
+  size_t free_mem = 0;   // in bytes
+  size_t total_mem = 0;  // in bytes
+  cudaError_t error_id = cudaMemGetInfo(&free_mem, &total_mem);
+  free_mem -= 500000000;
+  // Calculate how much memory can fit inside a GPU memory.
+  size_t t_numb_chunks = t_highest_number_of_bytes / free_mem;
+  // Calculate how many points we can compute with 11.5 Gb:
+  //    This is calculated by solving (2 * N M + M^2) * 8 bytes = 11.5 Gb(in bytes)  for N to get:
+  size_t t_numb_pts_of_each_chunk = ((free_mem / (sizeof(double)))  - t_nbasis * t_nbasis) / (2 * t_nbasis);
+  if (t_numb_pts_of_each_chunk == 0 and t_numb_chunks > 1.0) {
+    // Haven't handle this case yet
+    assert(0);
+  }
+
+  // Molecular orbitals shape (M, N), where M is number of orbitals and N is number of points, stored in col order
+  std::vector<double> h_mol_orbitals_col(knumb_points * t_nbasis);
+
+  // Function pointers and copy from device to host
+  d_func_t h_contractions_func;
+  cudaMemcpyFromSymbol(&h_contractions_func, chemtools::p_evaluate_contractions, sizeof(d_func_t));
+
+  // Iterate through each chunk of the data set.
+  size_t index_to_copy = 0;  // Index on where to start copying to h_electron_density (start of sub-grid)
+  size_t i_iter = 0;
+  while(index_to_copy < knumb_points) {
+    // For each iteration, calculate number of points it should do, number of bytes it corresponds to.
+    // At the last chunk,need to do the remaining number of points, hence a minimum is used here.
+    size_t number_pts_iter = std::min(
+        t_numb_pts - i_iter * t_numb_pts_of_each_chunk, t_numb_pts_of_each_chunk
+    );
+//    int3 numb_points_iter = {static_cast<int>(number_pts_iter), knumb_points.y, knumb_points.z};
+    size_t total_numb_points_iter_bytes = number_pts_iter * sizeof(double);
+    size_t total_contraction_arr_iter_bytes = total_numb_points_iter_bytes * t_nbasis;
+    //printf("Number of points %zu \n", number_pts_iter);
+    //printf("Maximal number of points in x-axis to do each chunk %zu \n", number_pts_iter);
+
+    // Allocate device memory for contractions array, and set all elements to zero via cudaMemset.
+    //    The contraction array rows are the atomic orbitals and columns are grid points and is stored in row-major order.
+    double *d_contractions;
+    cudaError err = cudaMalloc((double **) &d_contractions, total_contraction_arr_iter_bytes);
+    if (err != cudaSuccess) {
+      std::cout << "Cuda Error in allocating contractions, actual error: " << cudaGetErrorString(err) << std::endl;
+      cudaFree(d_contractions);
+      cublasDestroy(handle);
+      throw err;
+    }
+    chemtools::cuda_check_errors(cudaMemset(d_contractions, 0, total_contraction_arr_iter_bytes));
+
+    // Transfer grid points to GPU, this is in column order with shape (N, 3)
+    //  Becasue h_points is in column-order and we're slicing based on the number of points that can fit in memory.
+    //  Need to slice each (x,y,z) coordinate seperately.
+    double *d_points;
+    chemtools::cuda_check_errors(cudaMalloc((double **) &d_points, sizeof(double) * 3 * number_pts_iter));
+    for(int i_slice = 0; i_slice < 3; i_slice++) {
+      chemtools::cuda_check_errors(cudaMemcpy(&d_points[i_slice * number_pts_iter],
+                                              &h_points[i_slice * knumb_points + index_to_copy],
+                                              sizeof(double) * number_pts_iter,
+                                              cudaMemcpyHostToDevice));
+    }
+
+    // Evaluate contractions. The number of threads is maximal and the number of thread blocks is calculated.
+    // Produces a matrix of size (N, M) where N is the number of points
+    int ilen = 128;  // 128 320 1024
+    dim3 threadsPerBlock(ilen);
+    dim3 grid((number_pts_iter + threadsPerBlock.x - 1) / (threadsPerBlock.x));
+    chemtools::evaluate_scalar_quantity(
+        molecular_basis,
+        false,
+        false,
+        h_contractions_func,
+        d_contractions,
+        d_points,
+        number_pts_iter,
+        nbasisfuncs,
+        threadsPerBlock,
+        grid
+    );
+    // Free the grid points in device memory.
+    cudaFree(d_points);
+
+    // Allocate device memory for the one_rdm. Number of atomic orbitals is equal to number of molecular obitals
+    double *d_one_rdm;
+    chemtools::cuda_check_errors(cudaMalloc((double **) &d_one_rdm, nbasisfuncs * nbasisfuncs * sizeof(double)));
+    chemtools::cublas_check_errors(cublasSetMatrix(iodata.GetOneRdmShape(),
+                                                   iodata.GetOneRdmShape(),
+                                                   sizeof(double),
+                                                   iodata.GetMOOneRDM(),
+                                                   iodata.GetOneRdmShape(),
+                                                   d_one_rdm,
+                                                   iodata.GetOneRdmShape()));
+
+    // Allocate device memory for the array holding the matrix multiplication of one_rdm and contraction array.
+    double *d_mol_orbs;
+    err = cudaMalloc((double **) &d_mol_orbs, total_contraction_arr_iter_bytes);
+    if (err != cudaSuccess) {
+      std::cout << "Cuda Error in allocating d_final in evaluating density, "
+                   "actual error: " << cudaGetErrorString(err) << std::endl;
+      cudaFree(d_contractions);
+      cudaFree(d_one_rdm);
+      cudaFree(d_contractions);
+      cublasDestroy(handle);
+      throw err;
+    }
+
+    // Matrix multiplcation of one rdm with the contractions array. Everything is in row major order.
+    double alpha = 1.;
+    double beta = 0.;
+    chemtools::cublas_check_errors(cublasDgemm(handle, CUBLAS_OP_N, CUBLAS_OP_N,
+                                               number_pts_iter, iodata.GetOneRdmShape(), iodata.GetOneRdmShape(),
+                                               &alpha, d_contractions, number_pts_iter,
+                                               d_one_rdm, iodata.GetOneRdmShape(), &beta,
+                                               d_mol_orbs, number_pts_iter));
+    cudaFree(d_one_rdm); // one body reduced density matrix isn't needed anymore.
+
+
+    // Transfer electron density from device memory to host memory.
+    //    Since I'm computing a sub-grid at a time, need to update the index h_electron_density, accordingly.
+    //    Note that d_mol_orbs is in row-major order with shape (M, N)
+    std::vector<double> h_mol_orbitals_row(t_nbasis * number_pts_iter);
+    chemtools::cuda_check_errors(cudaMemcpy(h_mol_orbitals_row.data(),
+                                            d_mol_orbs,
+                                            sizeof(double) * t_nbasis * number_pts_iter, cudaMemcpyDeviceToHost));
+    cudaFree(d_mol_orbs);
+
+    // Transfer from row to column major order;
+    for(int i_row = 0; i_row < t_nbasis; i_row++){
+      for(int j_col = 0; j_col < number_pts_iter; j_col++) {
+        h_mol_orbitals_col[t_nbasis * index_to_copy + (j_col * t_nbasis + i_row)] = h_mol_orbitals_row[i_row * number_pts_iter + j_col];
+      }
+    }
+
+    // Update lower-bound of the grid for the next iteration
+    index_to_copy += number_pts_iter;
+    i_iter += 1;  // Update the index for each iteration.
+  }
+  return h_mol_orbitals_col;
+}

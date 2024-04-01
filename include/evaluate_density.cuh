@@ -79,12 +79,6 @@ __device__ void evaluate_contractions_from_constant_memory_on_any_grid(
 );
 
 
-
-
-/// Hadamard product between array 1 and array2 and stores it in array1.
-__global__ void hadamard_product(double* d_array1, double* d_array2, int numb_row, int numb_col);
-
-
 /**
  * HOST FUNCTIONS
  * -----------------------------------------------------------------------
@@ -124,6 +118,30 @@ __host__ std::vector<double> evaluate_electron_density_on_any_grid(
  * @return h_electron_density The electron density evaluated on each point.
  */
 __host__ std::vector<double> evaluate_electron_density_on_any_grid_handle(
+    cublasHandle_t& handle, chemtools::IOData& iodata, const double* h_points, const int knumb_points
+);
+
+/**
+ * Evaluate the molecular orbitals from storing molecular basis in constant memory over any grid.
+ *
+ * @param[in] h_points Array in column-major order that stores the `N` three-dimensional points.
+ * @param[in] knumb_points Number of points in d_points.
+ * @param[in] nbasisfuncs The number of basis functions.
+ * @return h_mol_orbitals The molecular orbitals (M, N) coloumn-order evaluated on each point.
+ */
+__host__ std::vector<double> evaluate_molecular_orbitals_on_any_grid(
+    chemtools::IOData& iodata, const double* h_points, const int knumb_points
+);
+
+/**
+ * Evaluate the molecular orbitals from storing molecular basis in constant memory over any grid.
+ *
+ * @param[in] h_points Array in column-major order that stores the `N` three-dimensional points.
+ * @param[in] knumb_points Number of points in d_points.
+ * @param[in] nbasisfuncs The number of basis functions.
+ * @return h_mol_orbitals The molecular orbitals (M, N) coloumn-order evaluated on each point.
+ */
+__host__ std::vector<double> evaluate_molecular_orbitals_on_any_grid_handle(
     cublasHandle_t& handle, chemtools::IOData& iodata, const double* h_points, const int knumb_points
 );
 
