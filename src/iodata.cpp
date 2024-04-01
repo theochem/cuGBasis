@@ -155,7 +155,26 @@ chemtools::IOData chemtools::get_molecular_basis_from_fchk(const std::string& fc
   local["iodata_obj"] = iodata_obj;
   local["mo_one_rdm"];
   py::exec(R"(
-        mo_one_rdm = (iodata_obj.mo.coeffs * iodata_obj.mo.occs).dot(iodata_obj.mo.coeffs.T)
+        # Convert to the Gaussian (.fchk) format
+        import numpy as np
+        from iodata.basis import convert_conventions, HORTON2_CONVENTIONS
+
+        conventions = HORTON2_CONVENTIONS
+        conventions[(0, 'c')] = ['1']
+        conventions[(1, 'c')] = ['x', 'y', 'z']
+        conventions[(2, 'c')] = ['xx', 'yy', 'zz', 'xy', 'xz', 'yz']
+        conventions[(3, 'c')] = ['xxx', 'yyy', 'zzz', 'xyy', 'xxy', 'xxz', 'xzz', 'yzz', 'yyz', 'xyz']
+        conventions[(4, 'c')] = ['zzzz', 'yzzz', 'yyzz', 'yyyz', 'yyyy', 'xzzz', 'xyzz', 'xyyz', 'xyyy',
+                                  'xxzz', 'xxyz', 'xxyy', 'xxxz', 'xxxy', 'xxxx']
+        conventions[(5, 'c')] = HORTON2_CONVENTIONS[(5, 'c')][::-1]
+        conventions[(6, 'c')] = HORTON2_CONVENTIONS[(6, 'c')][::-1]
+        conventions[(7, 'c')] = HORTON2_CONVENTIONS[(7, 'c')][::-1]
+        conventions[(8, 'c')] = HORTON2_CONVENTIONS[(8, 'c')][::-1]
+        conventions[(9, 'c')] = HORTON2_CONVENTIONS[(9, 'c')][::-1]
+
+        permutation, signs = convert_conventions(iodata_obj.obasis, conventions)
+        coeffs = signs[:, np.newaxis] * iodata_obj.mo.coeffs[permutation]
+        mo_one_rdm = (coeffs * iodata_obj.mo.occs).dot(coeffs.T)
     )", py::globals(), local);
   py::array_t<double, py::array::c_style> mo_one_rdm = local["mo_one_rdm"].cast<py::array_t<double>>();
 
