@@ -17,6 +17,7 @@
 
 namespace py = pybind11;
 using MatrixX3C = Eigen::Matrix<double, Eigen::Dynamic, 3, Eigen::ColMajor>;
+using MatrixXXC = Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic, Eigen::ColMajor>;
 using MatrixX3R = Eigen::Matrix<double, Eigen::Dynamic, 3, Eigen::RowMajor>;
 using Vector = Eigen::Matrix<double, 1, Eigen::Dynamic>;
 using Vector3D = Eigen::Matrix<double, 1, 3>;
@@ -50,8 +51,8 @@ class Molecule {
 
   // Methods
   void basis_set_to_constant_memory(bool do_segmented_basis);
-  void clear_constant_memory();
   Vector compute_electron_density(const Eigen::Ref<MatrixX3R>&  points);
+  MatrixXXC compute_molecular_orbitals(const Eigen::Ref<MatrixX3R>&  points);
   TensorXXXR compute_electron_density_cubic(
       const Vector3D& klower_bnd, const Matrix33R& kaxes, const IntVector3D& knumb_points, const bool disp = false);
   Vector compute_laplacian(const Eigen::Ref<MatrixX3R>&  points);

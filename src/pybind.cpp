@@ -35,6 +35,22 @@ PYBIND11_MODULE(chemtools_cuda, m) {
         The electron density evaluated on each point.
 )pbdoc"
            )
+      .def("compute_molecular_orbitals",
+           &chemtools::Molecule::compute_molecular_orbitals,
+           py::return_value_policy::reference_internal,
+           R"pbdoc(Compute Molecular Orbitals
+
+    Parameters
+    ----------
+    points: ndarray(N, 3)
+        Cartesian coordinates of :math:`N` points in three-dimensions.
+
+    Returns
+    -------
+    ndarray(M, N)
+        The M molecular orbitals evaluated on each point.
+)pbdoc"
+      )
       .def("compute_gradient",
            &chemtools::Molecule::compute_electron_density_gradient,
            py::return_value_policy::reference_internal,
@@ -141,7 +157,7 @@ PYBIND11_MODULE(chemtools_cuda, m) {
            R"pbdoc(Compute the reduced density gradient.
 
     .. math::
-         s(\mathbf{r}) = \frac{1}{3(2 \pi^2)^{1/3}}\frac{|\nabla \rho(\mathbf{r})|}{\rho(\mathbf{r})^{4/3}}.
+         s(\mathbf{r}) = \frac{1}{2(3 \pi^2)^{1/3}}\frac{|\nabla \rho(\mathbf{r})|}{\rho(\mathbf{r})^{4/3}}.
 
     Note it may be more efficient to compute each component individually, then using
     Numpy to compute this quanity.
