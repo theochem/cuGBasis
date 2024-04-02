@@ -1,0 +1,6 @@
+Degree,Cartesian Order,Spherical Order
+0 (s-type),1,N/A
+1 (p-type),"x,y,z",N/A
+2 (d-type),"xx,yy,zz,xy,xz,yz","c0, c1, s1, c2, s2"
+3 (f-type),"xxx, yyy, zzz, xyy, xxy, xxz, xzz, yzz, yyz, xyz","c0, c1, s1, c2, s2, c3, s3"
+4 (g-type),"zzzz, yzzz, yyzz, yyyz, yyyy, xzzz, xyzz, xyyz, xyyy, xxzz, xxyz, xxyy, xxxz, xxxy, xxxx","c0, c1, s1, c2, s2, c3, s3, c4, s4"
