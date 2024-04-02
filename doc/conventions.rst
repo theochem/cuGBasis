@@ -69,10 +69,10 @@ Basis-set Groupings (Shells)
 
 The grouping of all basis-functions/contractions :math:`\{\Phi_i^{K_i}: 0 \leq i \leq M \}` is the basis-set. However,
 the contractions are grouped together more simply, called Generalized Contraction Shells, based on having
-identical exponents :math:`\alpha`, type :math:`K \in \{C, S\}`, and centers :math:`A`.
+identical exponents :math:`\alpha`, and centers :math:`A`.
 
-If they are instead grouped together, based on having identical :math:`\alpha`, type :math:`K \in \{C, S\}`,
-centers :math:`A` and degree :math:`l`, then they are called Segmented Contraction Shells.
+If they are instead grouped together, based on having identical :math:`\alpha`,
+centers :math:`A`, :math:`K \in \{C, S\}`, and degree :math:`l`, then they are called Segmented Contraction Shells.
 
 The following shows an example of a generalized contracted shell:
 
