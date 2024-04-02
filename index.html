@@ -7,6 +7,7 @@
   <title>Welcome to ChemToolsCuda’s documentation! &mdash; chemtools_cuda  documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
       <link rel="stylesheet" type="text/css" href="_static/css/override.css" />
+      <link rel="stylesheet" type="text/css" href="_static/css/custom.css" />
 
   
   <!--[if lt IE 9]>
@@ -19,6 +20,7 @@
         <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="_static/doctools.js"></script>
         <script src="_static/sphinx_highlight.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -70,6 +72,7 @@
 <li class="toctree-l3"><a class="reference internal" href="molecule.html#chemtools_cuda.Molecule.compute_gradient_expansion_ked"><code class="docutils literal notranslate"><span class="pre">Molecule.compute_gradient_expansion_ked()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="molecule.html#chemtools_cuda.Molecule.compute_hessian"><code class="docutils literal notranslate"><span class="pre">Molecule.compute_hessian()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="molecule.html#chemtools_cuda.Molecule.compute_laplacian"><code class="docutils literal notranslate"><span class="pre">Molecule.compute_laplacian()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="molecule.html#chemtools_cuda.Molecule.compute_molecular_orbitals"><code class="docutils literal notranslate"><span class="pre">Molecule.compute_molecular_orbitals()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="molecule.html#chemtools_cuda.Molecule.compute_norm_of_vector"><code class="docutils literal notranslate"><span class="pre">Molecule.compute_norm_of_vector()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="molecule.html#chemtools_cuda.Molecule.compute_positive_definite_kinetic_energy_density"><code class="docutils literal notranslate"><span class="pre">Molecule.compute_positive_definite_kinetic_energy_density()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="molecule.html#chemtools_cuda.Molecule.compute_reduced_density_gradient"><code class="docutils literal notranslate"><span class="pre">Molecule.compute_reduced_density_gradient()</span></code></a></li>
@@ -85,16 +88,27 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="conventions.html">Conventions</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="conventions.html#basis-set-conventions">Basis set conventions</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="conventions.html#contractions">Contractions</a></li>
-<li class="toctree-l3"><a class="reference internal" href="conventions.html#gaussian-primitives">Gaussian Primitives</a></li>
+<li class="toctree-l2"><a class="reference internal" href="conventions.html#gaussian-primitives">Gaussian Primitives</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="conventions.html#cartesian">Cartesian</a></li>
-<li class="toctree-l3"><a class="reference internal" href="conventions.html#pure-harmonic">Pure/Harmonic</a></li>
-<li class="toctree-l3"><a class="reference internal" href="conventions.html#basis-set-ordering">Basis Set Ordering</a></li>
+<li class="toctree-l3"><a class="reference internal" href="conventions.html#spherical-pure">Spherical/Pure</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="conventions.html#contractions">Contractions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="conventions.html#basis-set-groupings-shells">Basis-set Groupings (Shells)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="conventions.html#basis-set-ordering">Basis Set Ordering</a></li>
 </ul>
 </li>
 </ul>
+<p class="caption" role="heading"><span class="caption-text">Example Tutorials:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="quick_start.html">Quick Start</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="quick_start.html#Constructing-Molecule-Object">Constructing Molecule Object</a></li>
+<li class="toctree-l2"><a class="reference internal" href="quick_start.html#Electron-Density">Electron Density</a></li>
+<li class="toctree-l2"><a class="reference internal" href="quick_start.html#Reduced-Density-Gradient">Reduced Density Gradient</a></li>
+<li class="toctree-l2"><a class="reference internal" href="quick_start.html#NCI-Index-Using-The-Hessian">NCI Index Using The Hessian</a></li>
+</ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="critical_points.html">QTAIM Critical Points</a></li>
 </ul>
 
         </div>
@@ -172,12 +186,26 @@ or email <a class="reference external" href="mailto:qcdevs&#37;&#52;&#48;gmail&#
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="conventions.html">Conventions</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="conventions.html#basis-set-conventions">Basis set conventions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="conventions.html#gaussian-primitives">Gaussian Primitives</a></li>
+<li class="toctree-l2"><a class="reference internal" href="conventions.html#contractions">Contractions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="conventions.html#basis-set-groupings-shells">Basis-set Groupings (Shells)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="conventions.html#basis-set-ordering">Basis Set Ordering</a></li>
 </ul>
 </li>
 </ul>
 </div>
 <div class="toctree-wrapper compound">
+<p class="caption" role="heading"><span class="caption-text">Example Tutorials:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="quick_start.html">Quick Start</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="quick_start.html#Constructing-Molecule-Object">Constructing Molecule Object</a></li>
+<li class="toctree-l2"><a class="reference internal" href="quick_start.html#Electron-Density">Electron Density</a></li>
+<li class="toctree-l2"><a class="reference internal" href="quick_start.html#Reduced-Density-Gradient">Reduced Density Gradient</a></li>
+<li class="toctree-l2"><a class="reference internal" href="quick_start.html#NCI-Index-Using-The-Hessian">NCI Index Using The Hessian</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="critical_points.html">QTAIM Critical Points</a></li>
+</ul>
 </div>
 </section>
 <section id="indices-and-tables">

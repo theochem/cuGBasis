@@ -55,6 +55,8 @@ or email qcdevs@gmail.com.
     :maxdepth: 2
     :caption: Example Tutorials:
 
+    ./quick_start
+    ./critical_points
 
 
 Indices and tables

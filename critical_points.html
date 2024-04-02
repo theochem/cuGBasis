@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en">
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>QTAIM Critical Points &mdash; chemtools_cuda  documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+      <link rel="stylesheet" type="text/css" href="_static/css/override.css" />
+      <link rel="stylesheet" type="text/css" href="_static/nbsphinx-code-cells.css" />
+      <link rel="stylesheet" type="text/css" href="_static/css/custom.css" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/sphinx_highlight.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+        <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="Quick Start" href="quick_start.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            chemtools_cuda
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">User documentation:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="installation.html#downloading-code">Downloading Code</a></li>
+<li class="toctree-l2"><a class="reference internal" href="installation.html#dependencies">Dependencies</a></li>
+<li class="toctree-l2"><a class="reference internal" href="installation.html#id1">Installation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="installation.html#python-binding">Python Binding</a></li>
+<li class="toctree-l3"><a class="reference internal" href="installation.html#c">C++</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="installation.html#installation-problems">Installation problems</a></li>
+<li class="toctree-l2"><a class="reference internal" href="installation.html#building-documentation">Building Documentation</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="molecule.html">Molecule Class</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="molecule.html#chemtools_cuda.Molecule"><code class="docutils literal notranslate"><span class="pre">Molecule</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="molecule.html#chemtools_cuda.Molecule.compute_density"><code class="docutils literal notranslate"><span class="pre">Molecule.compute_density()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="molecule.html#chemtools_cuda.Molecule.compute_electrostatic_potential"><code class="docutils literal notranslate"><span class="pre">Molecule.compute_electrostatic_potential()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="molecule.html#chemtools_cuda.Molecule.compute_empirical_gradient_expansion_ked"><code class="docutils literal notranslate"><span class="pre">Molecule.compute_empirical_gradient_expansion_ked()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="molecule.html#chemtools_cuda.Molecule.compute_general_gradient_expansion_ked"><code class="docutils literal notranslate"><span class="pre">Molecule.compute_general_gradient_expansion_ked()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="molecule.html#chemtools_cuda.Molecule.compute_general_ked"><code class="docutils literal notranslate"><span class="pre">Molecule.compute_general_ked()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="molecule.html#chemtools_cuda.Molecule.compute_general_kinetic_energy_density"><code class="docutils literal notranslate"><span class="pre">Molecule.compute_general_kinetic_energy_density()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="molecule.html#chemtools_cuda.Molecule.compute_gradient"><code class="docutils literal notranslate"><span class="pre">Molecule.compute_gradient()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="molecule.html#chemtools_cuda.Molecule.compute_gradient_expansion_ked"><code class="docutils literal notranslate"><span class="pre">Molecule.compute_gradient_expansion_ked()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="molecule.html#chemtools_cuda.Molecule.compute_hessian"><code class="docutils literal notranslate"><span class="pre">Molecule.compute_hessian()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="molecule.html#chemtools_cuda.Molecule.compute_laplacian"><code class="docutils literal notranslate"><span class="pre">Molecule.compute_laplacian()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="molecule.html#chemtools_cuda.Molecule.compute_molecular_orbitals"><code class="docutils literal notranslate"><span class="pre">Molecule.compute_molecular_orbitals()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="molecule.html#chemtools_cuda.Molecule.compute_norm_of_vector"><code class="docutils literal notranslate"><span class="pre">Molecule.compute_norm_of_vector()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="molecule.html#chemtools_cuda.Molecule.compute_positive_definite_kinetic_energy_density"><code class="docutils literal notranslate"><span class="pre">Molecule.compute_positive_definite_kinetic_energy_density()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="molecule.html#chemtools_cuda.Molecule.compute_reduced_density_gradient"><code class="docutils literal notranslate"><span class="pre">Molecule.compute_reduced_density_gradient()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="molecule.html#chemtools_cuda.Molecule.compute_schrodinger_ked"><code class="docutils literal notranslate"><span class="pre">Molecule.compute_schrodinger_ked()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="molecule.html#chemtools_cuda.Molecule.compute_shannon_information_density"><code class="docutils literal notranslate"><span class="pre">Molecule.compute_shannon_information_density()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="molecule.html#chemtools_cuda.Molecule.compute_thomas_fermi_ked"><code class="docutils literal notranslate"><span class="pre">Molecule.compute_thomas_fermi_ked()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="molecule.html#chemtools_cuda.Molecule.compute_weizsacker_ked"><code class="docutils literal notranslate"><span class="pre">Molecule.compute_weizsacker_ked()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="molecule.html#chemtools_cuda.Molecule.coordinates"><code class="docutils literal notranslate"><span class="pre">Molecule.coordinates</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="molecule.html#chemtools_cuda.Molecule.get_file_path"><code class="docutils literal notranslate"><span class="pre">Molecule.get_file_path()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="molecule.html#chemtools_cuda.Molecule.numbers"><code class="docutils literal notranslate"><span class="pre">Molecule.numbers</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="conventions.html">Conventions</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="conventions.html#gaussian-primitives">Gaussian Primitives</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="conventions.html#cartesian">Cartesian</a></li>
+<li class="toctree-l3"><a class="reference internal" href="conventions.html#spherical-pure">Spherical/Pure</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="conventions.html#contractions">Contractions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="conventions.html#basis-set-groupings-shells">Basis-set Groupings (Shells)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="conventions.html#basis-set-ordering">Basis Set Ordering</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Example Tutorials:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="quick_start.html">Quick Start</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="quick_start.html#Constructing-Molecule-Object">Constructing Molecule Object</a></li>
+<li class="toctree-l2"><a class="reference internal" href="quick_start.html#Electron-Density">Electron Density</a></li>
+<li class="toctree-l2"><a class="reference internal" href="quick_start.html#Reduced-Density-Gradient">Reduced Density Gradient</a></li>
+<li class="toctree-l2"><a class="reference internal" href="quick_start.html#NCI-Index-Using-The-Hessian">NCI Index Using The Hessian</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">QTAIM Critical Points</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">chemtools_cuda</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">QTAIM Critical Points</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/critical_points.nblink.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="QTAIM-Critical-Points">
+<h1>QTAIM Critical Points<a class="headerlink" href="#QTAIM-Critical-Points" title="Permalink to this heading"></a></h1>
+<p>This example illustrates how to find the QTAIM critical points using ChemTools and ChemToolsCUDA. This is precisely when the gradient of the electron density <span class="math notranslate nohighlight">\(\nabla \rho = 0\)</span> is zero. The first step is to load the wavefunction information using ChemToolsCUDA.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">chemtools_cuda</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="c1"># Load the wavefunction information</span>
+<span class="n">fchk_path</span> <span class="o">=</span> <span class="s2">&quot;./ALA_ALA_0_q000_m01_k00_force_uwb97xd_def2svpd.fchk&quot;</span>
+<span class="n">mol</span> <span class="o">=</span> <span class="n">chemtools_cuda</span><span class="o">.</span><span class="n">Molecule</span><span class="p">(</span><span class="n">fchk_path</span><span class="p">)</span>
+
+<span class="c1"># Get the atomic coordinates and numbers</span>
+<span class="n">atom_coords</span> <span class="o">=</span> <span class="n">mol</span><span class="o">.</span><span class="n">coordinates</span>
+<span class="n">atom_numbers</span> <span class="o">=</span> <span class="n">mol</span><span class="o">.</span><span class="n">numbers</span>
+<span class="n">natoms</span> <span class="o">=</span> <span class="n">atom_coords</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+</pre></div>
+</div>
+</div>
+<p>The next step is to construct initial points where the gradient is thought to be zero. This occurs near the center of the atoms, inbetween two atoms, and further inbetween three/four atoms. The following procedure should work for all types of molecules and is vectorized in order to increase computational time. However, it may run out of memory. This is circumvented by efficiently searching for the ten closet neighbors of each atom and finding the midpoints between them.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">scipy.spatial</span> <span class="kn">import</span> <span class="n">KDTree</span>
+
+<span class="c1"># Start by adding the coordinates of the atom</span>
+<span class="n">init_pts</span> <span class="o">=</span> <span class="n">mol</span><span class="o">.</span><span class="n">coordinates</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+
+<span class="c1"># Add the midpoint between any two atoms</span>
+<span class="n">arr1</span> <span class="o">=</span> <span class="n">init_pts</span><span class="o">.</span><span class="n">copy</span><span class="p">()[:,</span> <span class="n">np</span><span class="o">.</span><span class="n">newaxis</span><span class="p">,</span> <span class="p">:]</span>
+<span class="n">init_pts</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">((</span><span class="n">init_pts</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">reshape</span><span class="p">((</span><span class="n">arr1</span> <span class="o">+</span> <span class="n">init_pts</span><span class="p">)</span> <span class="o">/</span> <span class="mf">2.0</span><span class="p">,</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">init_pts</span><span class="p">)</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">init_pts</span><span class="p">),</span> <span class="mi">3</span><span class="p">))))</span>
+
+<span class="c1"># Construct a KDTree, and search for (usually) ten neighbours at a time.</span>
+<span class="n">tree</span> <span class="o">=</span> <span class="n">KDTree</span><span class="p">(</span><span class="n">atom_coords</span><span class="p">)</span>
+<span class="n">nbhrs</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">natoms</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
+
+<span class="c1"># Go through each atom</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">natoms</span><span class="p">):</span>
+    <span class="c1"># Grab `nbhrs` closest atoms of the current atom.</span>
+    <span class="n">_</span><span class="p">,</span> <span class="n">indices</span> <span class="o">=</span> <span class="n">tree</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">atom_coords</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">k</span><span class="o">=</span><span class="n">nbhrs</span><span class="p">)</span>
+
+    <span class="c1"># Using only the `nbhrs` atoms, construct midpoints every three atoms.</span>
+    <span class="n">coords</span> <span class="o">=</span> <span class="n">atom_coords</span><span class="p">[</span><span class="n">indices</span><span class="p">]</span>
+    <span class="n">arr1</span> <span class="o">=</span> <span class="n">coords</span><span class="o">.</span><span class="n">copy</span><span class="p">()[:,</span> <span class="n">np</span><span class="o">.</span><span class="n">newaxis</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">newaxis</span><span class="p">,</span> <span class="p">:]</span>
+    <span class="n">arr2</span> <span class="o">=</span> <span class="n">coords</span><span class="o">.</span><span class="n">copy</span><span class="p">()[</span><span class="n">np</span><span class="o">.</span><span class="n">newaxis</span><span class="p">,</span> <span class="p">:,</span> <span class="n">np</span><span class="o">.</span><span class="n">newaxis</span><span class="p">,</span> <span class="p">:]</span>
+    <span class="n">init_pts</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">((</span><span class="n">init_pts</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">reshape</span><span class="p">((</span><span class="n">arr1</span> <span class="o">+</span> <span class="n">arr2</span> <span class="o">+</span> <span class="n">coords</span><span class="p">)</span> <span class="o">/</span> <span class="mf">3.0</span><span class="p">,</span> <span class="p">(</span><span class="n">nbhrs</span> <span class="o">**</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">))))</span>
+
+    <span class="c1"># Using only the `nbhrs` atoms, construct midpoints every four atoms.</span>
+    <span class="n">arr1</span> <span class="o">=</span> <span class="n">coords</span><span class="o">.</span><span class="n">copy</span><span class="p">()[:,</span> <span class="n">np</span><span class="o">.</span><span class="n">newaxis</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">newaxis</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">newaxis</span><span class="p">,</span> <span class="p">:]</span>
+    <span class="n">arr2</span> <span class="o">=</span> <span class="n">coords</span><span class="o">.</span><span class="n">copy</span><span class="p">()[</span><span class="n">np</span><span class="o">.</span><span class="n">newaxis</span><span class="p">,</span> <span class="p">:,</span> <span class="n">np</span><span class="o">.</span><span class="n">newaxis</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">newaxis</span><span class="p">,</span> <span class="p">:]</span>
+    <span class="n">arr3</span> <span class="o">=</span> <span class="n">coords</span><span class="o">.</span><span class="n">copy</span><span class="p">()[</span><span class="n">np</span><span class="o">.</span><span class="n">newaxis</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">newaxis</span><span class="p">,</span> <span class="p">:,</span> <span class="n">np</span><span class="o">.</span><span class="n">newaxis</span><span class="p">,</span> <span class="p">:]</span>
+    <span class="n">init_pts</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">((</span><span class="n">init_pts</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">reshape</span><span class="p">((</span><span class="n">arr1</span> <span class="o">+</span> <span class="n">arr2</span> <span class="o">+</span> <span class="n">arr3</span> <span class="o">+</span> <span class="n">coords</span><span class="p">)</span> <span class="o">/</span> <span class="mf">4.0</span><span class="p">,</span> <span class="p">(</span><span class="n">nbhrs</span> <span class="o">**</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">))))</span>
+
+<span class="c1"># Remove any duplicates</span>
+<span class="n">init_pts</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">init_pts</span><span class="p">,</span> <span class="n">decimals</span><span class="o">=</span><span class="mi">10</span><span class="p">),</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<p>Obtain the electron density, gradient and hessian and use it to run the ChemTools algorithm for efficiently finding the critical points and then find the bond-paths for all bond-critical points.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">chemtools.topology.critical</span> <span class="kn">import</span> <span class="n">Topology</span>
+
+<span class="n">dens_func</span> <span class="o">=</span> <span class="n">mol</span><span class="o">.</span><span class="n">compute_density</span>
+<span class="n">grad_func</span> <span class="o">=</span> <span class="n">mol</span><span class="o">.</span><span class="n">compute_gradient</span>
+<span class="n">hess_func</span> <span class="o">=</span> <span class="n">mol</span><span class="o">.</span><span class="n">compute_hessian</span>
+
+<span class="n">topo</span> <span class="o">=</span> <span class="n">Topology</span><span class="p">(</span><span class="n">dens_func</span><span class="p">,</span> <span class="n">grad_func</span><span class="p">,</span> <span class="n">hess_func</span><span class="p">,</span> <span class="n">init_pts</span><span class="p">)</span>
+<span class="n">topo</span><span class="o">.</span><span class="n">find_critical_points_vectorized</span><span class="p">(</span><span class="n">atom_coords</span><span class="p">,</span> <span class="n">use_log</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">topo</span><span class="o">.</span><span class="n">find_bond_paths</span><span class="p">(</span><span class="n">tol</span><span class="o">=</span><span class="mf">1e-8</span><span class="p">,</span> <span class="n">max_ss</span><span class="o">=</span><span class="mf">0.1</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Start Critical Points Finding.
+Number of initial points: 7078
+Iteration: 1,   Sum Gradient Norm of pts left: 13795.26664591485   Number of pts left: 7078
+Iteration: 2,   Sum Gradient Norm of pts left: 16780.400882584137   Number of pts left: 6406
+Iteration: 3,   Sum Gradient Norm of pts left: 8817.066657700365   Number of pts left: 5621
+Iteration: 4,   Sum Gradient Norm of pts left: 6677.456524919042   Number of pts left: 5044
+Iteration: 5,   Sum Gradient Norm of pts left: 7703.419316732867   Number of pts left: 4542
+Iteration: 6,   Sum Gradient Norm of pts left: 5181.546111085325   Number of pts left: 3644
+Iteration: 7,   Sum Gradient Norm of pts left: 3920.4795305932676   Number of pts left: 2636
+Iteration: 8,   Sum Gradient Norm of pts left: 2872.2573213748974   Number of pts left: 1780
+Iteration: 9,   Sum Gradient Norm of pts left: 1989.0294892860857   Number of pts left: 1171
+Iteration: 10,   Sum Gradient Norm of pts left: 1207.2857892143145   Number of pts left: 750
+Iteration: 11,   Sum Gradient Norm of pts left: 1365.7288943831077   Number of pts left: 500
+Iteration: 12,   Sum Gradient Norm of pts left: 334.7816083341251   Number of pts left: 330
+Iteration: 13,   Sum Gradient Norm of pts left: 1283.755969682446   Number of pts left: 219
+Iteration: 14,   Sum Gradient Norm of pts left: 223.65822783103656   Number of pts left: 134
+Iteration: 15,   Sum Gradient Norm of pts left: 156.539276677374   Number of pts left: 95
+Iteration: 16,   Sum Gradient Norm of pts left: 35.491083921338465   Number of pts left: 68
+Iteration: 17,   Sum Gradient Norm of pts left: 278.25726013961315   Number of pts left: 46
+Iteration: 18,   Sum Gradient Norm of pts left: 2.790225722591271   Number of pts left: 32
+Iteration: 19,   Sum Gradient Norm of pts left: 0.8964181432629607   Number of pts left: 20
+Iteration: 20,   Sum Gradient Norm of pts left: 0.34165905752363   Number of pts left: 13
+Iteration: 21,   Sum Gradient Norm of pts left: 0.17196361371146468   Number of pts left: 10
+Iteration: 22,   Sum Gradient Norm of pts left: 0.1410298852305501   Number of pts left: 5
+Iteration: 23,   Sum Gradient Norm of pts left: 0.06653078857485395   Number of pts left: 4
+Iteration: 24,   Sum Gradient Norm of pts left: 0.0165977830289024   Number of pts left: 2
+Iteration: 25,   Sum Gradient Norm of pts left: 5.4636591286238576e-05   Number of pts left: 1
+Iteration: 26,   Sum Gradient Norm of pts left: 4.465092962324014e-10   Number of pts left: 1
+Final number of points found 61
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre><span></span><span class="o">%</span><span class="k">matplotlib</span> inline
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+
+<span class="c1"># Grab the critical points</span>
+<span class="n">bcp</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">x</span><span class="o">.</span><span class="n">coordinate</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">topo</span><span class="o">.</span><span class="n">bcp</span><span class="p">])</span>
+<span class="n">nna</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">x</span><span class="o">.</span><span class="n">coordinate</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">topo</span><span class="o">.</span><span class="n">nna</span><span class="p">])</span>
+<span class="n">rcp</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">x</span><span class="o">.</span><span class="n">coordinate</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">topo</span><span class="o">.</span><span class="n">rcp</span><span class="p">])</span>
+<span class="n">ccp</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">x</span><span class="o">.</span><span class="n">coordinate</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">topo</span><span class="o">.</span><span class="n">ccp</span><span class="p">])</span>
+
+<span class="c1"># Plot the critical points and bond paths</span>
+<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">),</span> <span class="n">subplot_kw</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;projection&#39;</span><span class="p">:</span> <span class="s1">&#39;3d&#39;</span><span class="p">})</span>
+<span class="c1"># Plot the bond paths</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">topo</span><span class="o">.</span><span class="n">bcp</span><span class="p">)):</span>
+    <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">):</span>
+        <span class="n">p</span> <span class="o">=</span> <span class="n">topo</span><span class="o">.</span><span class="n">bp</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="p">]</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">p</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">p</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">p</span><span class="p">[:,</span> <span class="mi">2</span><span class="p">],</span> <span class="n">c</span><span class="o">=</span><span class="s2">&quot;k&quot;</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="c1"># Plot the critical points</span>
+<span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">rcp</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">rcp</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">rcp</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">rcp</span><span class="p">[:,</span> <span class="mi">2</span><span class="p">],</span> <span class="n">c</span><span class="o">=</span><span class="s2">&quot;y&quot;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;RCP&quot;</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="mi">25</span><span class="p">)</span>
+<span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">ccp</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">ccp</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">ccp</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">ccp</span><span class="p">[:,</span> <span class="mi">2</span><span class="p">],</span> <span class="n">c</span><span class="o">=</span><span class="s2">&quot;m&quot;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;CCP&quot;</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="mi">25</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">bcp</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">bcp</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">bcp</span><span class="p">[:,</span> <span class="mi">2</span><span class="p">],</span> <span class="n">c</span><span class="o">=</span><span class="s2">&quot;b&quot;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;BCP&quot;</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="mi">50</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">nna</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">nna</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">nna</span><span class="p">[:,</span> <span class="mi">2</span><span class="p">],</span> <span class="n">c</span><span class="o">=</span><span class="s2">&quot;r&quot;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;(N)NA&quot;</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="mi">50</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">loc</span><span class="o">=</span><span class="s2">&quot;lower center&quot;</span><span class="p">,</span> <span class="n">shadow</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">15</span><span class="p">,</span> <span class="n">ncol</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;expand&quot;</span><span class="p">)</span> <span class="c1">#</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;QTAIM Critical Points and Bond Paths&quot;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">25</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/critical_points_6_0.png" src="_images/critical_points_6_0.png" />
+</div>
+</div>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="quick_start.html" class="btn btn-neutral float-left" title="Quick Start" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, QC-Devs.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

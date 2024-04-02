@@ -7,6 +7,7 @@
   <title>Conventions &mdash; chemtools_cuda  documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
       <link rel="stylesheet" type="text/css" href="_static/css/override.css" />
+      <link rel="stylesheet" type="text/css" href="_static/css/custom.css" />
 
   
   <!--[if lt IE 9]>
@@ -19,10 +20,13 @@
         <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="_static/doctools.js"></script>
         <script src="_static/sphinx_highlight.js"></script>
-        <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+        <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Quick Start" href="quick_start.html" />
     <link rel="prev" title="Molecule Class" href="molecule.html" /> 
 </head>
 
@@ -71,6 +75,7 @@
 <li class="toctree-l3"><a class="reference internal" href="molecule.html#chemtools_cuda.Molecule.compute_gradient_expansion_ked"><code class="docutils literal notranslate"><span class="pre">Molecule.compute_gradient_expansion_ked()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="molecule.html#chemtools_cuda.Molecule.compute_hessian"><code class="docutils literal notranslate"><span class="pre">Molecule.compute_hessian()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="molecule.html#chemtools_cuda.Molecule.compute_laplacian"><code class="docutils literal notranslate"><span class="pre">Molecule.compute_laplacian()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="molecule.html#chemtools_cuda.Molecule.compute_molecular_orbitals"><code class="docutils literal notranslate"><span class="pre">Molecule.compute_molecular_orbitals()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="molecule.html#chemtools_cuda.Molecule.compute_norm_of_vector"><code class="docutils literal notranslate"><span class="pre">Molecule.compute_norm_of_vector()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="molecule.html#chemtools_cuda.Molecule.compute_positive_definite_kinetic_energy_density"><code class="docutils literal notranslate"><span class="pre">Molecule.compute_positive_definite_kinetic_energy_density()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="molecule.html#chemtools_cuda.Molecule.compute_reduced_density_gradient"><code class="docutils literal notranslate"><span class="pre">Molecule.compute_reduced_density_gradient()</span></code></a></li>
@@ -86,16 +91,27 @@
 </ul>
 </li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Conventions</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#basis-set-conventions">Basis set conventions</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#contractions">Contractions</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#gaussian-primitives">Gaussian Primitives</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#gaussian-primitives">Gaussian Primitives</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#cartesian">Cartesian</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#pure-harmonic">Pure/Harmonic</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#basis-set-ordering">Basis Set Ordering</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#spherical-pure">Spherical/Pure</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#contractions">Contractions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#basis-set-groupings-shells">Basis-set Groupings (Shells)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#basis-set-ordering">Basis Set Ordering</a></li>
 </ul>
 </li>
 </ul>
+<p class="caption" role="heading"><span class="caption-text">Example Tutorials:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="quick_start.html">Quick Start</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="quick_start.html#Constructing-Molecule-Object">Constructing Molecule Object</a></li>
+<li class="toctree-l2"><a class="reference internal" href="quick_start.html#Electron-Density">Electron Density</a></li>
+<li class="toctree-l2"><a class="reference internal" href="quick_start.html#Reduced-Density-Gradient">Reduced Density Gradient</a></li>
+<li class="toctree-l2"><a class="reference internal" href="quick_start.html#NCI-Index-Using-The-Hessian">NCI Index Using The Hessian</a></li>
+</ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="critical_points.html">QTAIM Critical Points</a></li>
 </ul>
 
         </div>
@@ -124,42 +140,107 @@
              
   <section id="conventions">
 <span id="id1"></span><h1>Conventions<a class="headerlink" href="#conventions" title="Permalink to this heading"></a></h1>
-<section id="basis-set-conventions">
-<h2>Basis set conventions<a class="headerlink" href="#basis-set-conventions" title="Permalink to this heading"></a></h2>
-<section id="contractions">
-<h3>Contractions<a class="headerlink" href="#contractions" title="Permalink to this heading"></a></h3>
-</section>
+<p>This following page outlines the basis-set conventions that ChemToolsCUDA uses to evaluate various quantities.</p>
 <section id="gaussian-primitives">
-<h3>Gaussian Primitives<a class="headerlink" href="#gaussian-primitives" title="Permalink to this heading"></a></h3>
-</section>
+<h2>Gaussian Primitives<a class="headerlink" href="#gaussian-primitives" title="Permalink to this heading"></a></h2>
+<p>ChemToolsCUDA supports both Cartesian and Spherical primitive Gaussian type orbitals.</p>
 <section id="cartesian">
 <h3>Cartesian<a class="headerlink" href="#cartesian" title="Permalink to this heading"></a></h3>
+<p>Normalized Cartesian primitive Gaussian with order <span class="math notranslate nohighlight">\((i, j, k)\)</span>
+centered at position <span class="math notranslate nohighlight">\(\mathbf{A} = (A_x, A_y, A_z)\)</span> is written as</p>
+<div class="math notranslate nohighlight">
+\[b_j^C(x, y, z) = N (x - A_x)^i (y - A_y)^j (z - A_z)^k e^{-\alpha ||(x,y,z) - \mathbf{A}||^2},\]</div>
+<p>where <span class="math notranslate nohighlight">\(i, j, k\)</span> are positive integers, <span class="math notranslate nohighlight">\(N\)</span> is the L2-normalization constant and <span class="math notranslate nohighlight">\(\alpha\)</span> is the Gaussian width parameter.
+The degree <span class="math notranslate nohighlight">\(l\)</span> of a Cartesian primitive Gaussian is defined as <span class="math notranslate nohighlight">\(l = i + j + k\)</span>.</p>
 </section>
-<section id="pure-harmonic">
-<h3>Pure/Harmonic<a class="headerlink" href="#pure-harmonic" title="Permalink to this heading"></a></h3>
+<section id="spherical-pure">
+<h3>Spherical/Pure<a class="headerlink" href="#spherical-pure" title="Permalink to this heading"></a></h3>
+<p>Normalized spherical primitives Gaussians with degree <span class="math notranslate nohighlight">\(l\)</span> and order <span class="math notranslate nohighlight">\(m\)</span>
+centered at position <span class="math notranslate nohighlight">\(\mathbf{A} = (A_x, A_y, A_z)\)</span> is written as</p>
+<div class="math notranslate nohighlight">
+\[b_j^S(r, \theta, \phi) = N ||r - \mathbf{A}||^l Y_{lm}(\theta, \phi) e^{-\alpha ||(x,y,z) - \mathbf{A}||^2}\]</div>
+<p>where <span class="math notranslate nohighlight">\(Y_{lm}\)</span> is the real spherical harmonics, <span class="math notranslate nohighlight">\(N\)</span> is the L2-normalization constant, and <span class="math notranslate nohighlight">\(\alpha\)</span> is the Gaussian width parameter.</p>
+<p>ChemToolsCUDA uses the real regular solid harmonics, i.e. <span class="math notranslate nohighlight">\(S_{lm} = r_A^l Y_{lm}\)</span>, since when <span class="math notranslate nohighlight">\(l=0,1\)</span>, it matches its
+Cartesian Gaussian primitives. Further, it uses the Cartesian representation for <span class="math notranslate nohighlight">\(S_{lm}\)</span> in-order to avoid
+the conversion from Cartesian <span class="math notranslate nohighlight">\((x, y, z)\)</span> to spherical coordinates <span class="math notranslate nohighlight">\((r, \theta, \phi)\)</span>.</p>
+<p>For example, the regular solid harmonics for degree 2 is</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\begin{align*}
+    S_{2,0}(x, y, z) &amp;= 0.5 (3z^2 - (x^2 + y^2 + z^2)) \\
+    S_{2,1}(x, y, z) &amp;= \sqrt{3}xz \\
+    S_{2,-1}(x,y,z) &amp;= \sqrt{3}yz \\
+     \vdots
+\end{align*}\end{split}\]</div>
+</section>
+</section>
+<section id="contractions">
+<h2>Contractions<a class="headerlink" href="#contractions" title="Permalink to this heading"></a></h2>
+<p>ChemToolsCUDA uses linear combination of primitives Gaussian as basis-functions (known as contracted Gaussian
+type-orbitals or contractions):</p>
+<div class="math notranslate nohighlight">
+\[\Phi_i^{K_i} = \sum_j d_{j}^i b_j^K(x, y, z; \alpha_j),\]</div>
+<p>where <span class="math notranslate nohighlight">\(K_i \in \{C, S\}\)</span> denotes whether it is Cartesian or Spherical, <span class="math notranslate nohighlight">\(d_j\)</span> are the
+contraction coefficients and <span class="math notranslate nohighlight">\(b_j\)</span> is a primitive Gaussian with fixed parameters, except for <span class="math notranslate nohighlight">\(\alpha_j\)</span>,
+for all <span class="math notranslate nohighlight">\(j\)</span>.  The contractions are not required to be normalized, and if they are, the contraction coeffcients
+are assumed to contain the normalization constant.</p>
+</section>
+<section id="basis-set-groupings-shells">
+<h2>Basis-set Groupings (Shells)<a class="headerlink" href="#basis-set-groupings-shells" title="Permalink to this heading"></a></h2>
+<p>The grouping of all basis-functions/contractions <span class="math notranslate nohighlight">\(\{\Phi_i^{K_i}: 0 \leq i \leq M \}\)</span> is the basis-set. However,
+the contractions are grouped together more simply, called Generalized Contraction Shells, based on having
+identical exponents <span class="math notranslate nohighlight">\(\alpha\)</span>, and centers <span class="math notranslate nohighlight">\(A\)</span>.</p>
+<p>If they are instead grouped together, based on having identical <span class="math notranslate nohighlight">\(\alpha\)</span>,
+centers <span class="math notranslate nohighlight">\(A\)</span>, <span class="math notranslate nohighlight">\(K \in \{C, S\}\)</span>, and degree <span class="math notranslate nohighlight">\(l\)</span>, then they are called Segmented Contraction Shells.</p>
+<p>The following shows an example of a generalized contracted shell:</p>
+<a class="reference internal image-reference" href="_images/contracted_shell_example.png"><img alt="_images/contracted_shell_example.png" src="_images/contracted_shell_example.png" style="width: 800px;" /></a>
+<div class="line-block">
+<div class="line"><br /></div>
+</div>
+<p>The following shows an example of conversion to an segmented contracted shell:</p>
+<a class="reference internal image-reference" href="_images/contracted_segmented_example.png"><img alt="_images/contracted_segmented_example.png" src="_images/contracted_segmented_example.png" style="width: 800px;" /></a>
 </section>
 <section id="basis-set-ordering">
-<h3>Basis Set Ordering<a class="headerlink" href="#basis-set-ordering" title="Permalink to this heading"></a></h3>
-<div class="math notranslate nohighlight">
-\[\begin{split}\begin{align}
-    r &amp;= \sqrt{x^2 + y^2 + z^2}\\
-    \theta &amp;= \text{arctan2} \bigg(\frac{y}{x}\bigg)\\
-    \phi &amp;= arc\cos \bigg(\frac{z}{r}\bigg)
-\end{align}\end{split}\]</div>
-<p>such that when the radius is zero <span class="math notranslate nohighlight">\(r=0\)</span>, then the angles are zero <span class="math notranslate nohighlight">\(\theta,\phi = 0\)</span>.</p>
-<p>Grid offers a <code class="xref py py-class docutils literal notranslate"><span class="pre">utility</span></code> function to convert to spherical coordinates</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">from</span> <span class="nn">grid.utils</span> <span class="kn">import</span> <span class="n">convert_cart_to_sph</span>
-
-<span class="c1"># Generate random set of points</span>
-<span class="n">cart_pts</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">uniform</span><span class="p">((</span><span class="o">-</span><span class="mi">100</span><span class="p">,</span> <span class="mi">100</span><span class="p">),</span> <span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="mi">1000</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
-<span class="c1"># Convert to spherical coordinates</span>
-<span class="n">spher_pts</span> <span class="o">=</span> <span class="n">convert_cart_to_sph</span><span class="p">(</span><span class="n">cart_pts</span><span class="p">)</span>
-<span class="c1"># Convert to spherical coordinates, centered at [1, 1, 1]</span>
-<span class="n">spher_pts</span> <span class="o">=</span> <span class="n">convert_cart_to_sph</span><span class="p">(</span><span class="n">cart_pts</span><span class="p">,</span> <span class="n">center</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">]))</span>
-</pre></div>
-</div>
-</section>
+<h2>Basis Set Ordering<a class="headerlink" href="#basis-set-ordering" title="Permalink to this heading"></a></h2>
+<p>ChemToolsCUDA follows the same basis-set ordering that Gaussian computational chemistry software uses.
+Note that for spherical orders, the positive orders <span class="math notranslate nohighlight">\(m\geq0\)</span> are associated with cosine function, denoted as c, and
+the negative orders <span class="math notranslate nohighlight">\(m&lt;0\)</span> are associated with sine function, denoted as s. Thus “s21” implies
+it is a solid harmonic with <span class="math notranslate nohighlight">\(l=2\)</span> and <span class="math notranslate nohighlight">\(m=-1\)</span>.</p>
+<table class="longtable docutils align-default" id="id2">
+<caption><span class="caption-text">Basis-set Order for Cartesian and Spherical Orders</span><a class="headerlink" href="#id2" title="Permalink to this table"></a></caption>
+<colgroup>
+<col style="width: 23.1%" />
+<col style="width: 38.5%" />
+<col style="width: 38.5%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Degree</p></th>
+<th class="head"><p>Cartesian Order</p></th>
+<th class="head"><p>Spherical Order</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>0 (s-type)</p></td>
+<td><p>1</p></td>
+<td><p>N/A</p></td>
+</tr>
+<tr class="row-odd"><td><p>1 (p-type)</p></td>
+<td><p>x,y,z</p></td>
+<td><p>N/A</p></td>
+</tr>
+<tr class="row-even"><td><p>2 (d-type)</p></td>
+<td><p>xx,yy,zz,xy,xz,yz</p></td>
+<td><p>c0, c1, s1, c2, s2</p></td>
+</tr>
+<tr class="row-odd"><td><p>3 (f-type)</p></td>
+<td><p>xxx, yyy, zzz, xyy, xxy, xxz, xzz, yzz, yyz, xyz</p></td>
+<td><p>c0, c1, s1, c2, s2, c3, s3</p></td>
+</tr>
+<tr class="row-even"><td><p>4 (g-type)</p></td>
+<td><p>zzzz, yzzz, yyzz, yyyz, yyyy, xzzz, xyzz, xyyz, xyyy, xxzz, xxyz, xxyy, xxxz, xxxy, xxxx</p></td>
+<td><p>c0, c1, s1, c2, s2, c3, s3, c4, s4</p></td>
+</tr>
+</tbody>
+</table>
 </section>
 </section>
 
@@ -168,6 +249,7 @@
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="molecule.html" class="btn btn-neutral float-left" title="Molecule Class" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="quick_start.html" class="btn btn-neutral float-right" title="Quick Start" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
