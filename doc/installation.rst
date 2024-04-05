@@ -69,6 +69,44 @@ In order to build a shared library without the python bindings, particularly use
     make -C ./out/build/
     ./out/build/tests/tests  # Run the C++/CUDA tests
 
+Compute Canada
+---------------
+
+The following is the set of instructions for creating a Python environment inside Compute Canada
+and installing ChemToolsCUDA. It's important to compile/install ChemToolsCUDA with a GPU enabled.
+It is recommended that CMake version be greater than 3.24 (see below).
+Note that different Cuda environments can be loaded, but here we will load Cuda 11.7 version.
+It's important to load the required depedencies before creating the python environment
+so that the same compiler is used when creating the Python virtual environment, and when
+installing (this may not be required but is hypothesized to may cause future errors).
+
+.. code-block:: bash
+
+    # Load the dependencies for ChemToolsCUDA and Python environment
+    module load StdEnv/2020 intel/2020.1.217 cmake cuda/11.7 eigen/3.4.0
+    module load python/3.9
+
+    # Create Python environment
+    virtualenv --no-download py39_chemtoolscuda
+
+    # Activate Environment
+    source ./py39_chemtoolscuda/bin/activate
+
+    # Install dependencies
+    pip install --no-index --upgrade pip
+    pip install numpy scipy pybind11 --no-index
+    pip install qc-iodata
+
+    # Enable GPU
+    salloc --time=1:0:0 --acount=ACCOUNT --mem=12G --gres=gpu:p100:1
+
+    # Load the required dependencies
+    module load StdEnv/2020 intel/2020.1.217 cmake cuda/11.7 eigen/3.4.0
+    source py39_chemtoolscuda/bin/activate
+
+    # Go to ChemTools CUDA folder and install it
+    cd ....
+    pip install -v .
 
 
 Installation problems
