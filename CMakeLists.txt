@@ -14,7 +14,7 @@ message(${EIGEN3_INCLUDE_DIR})
 # Add pybind11 header files
 # Finding Python Needed to do this for CLION project for my own computer.
 set(PYBIND11_FINDPYTHON ON)
-SET(PYBIND11_PYTHON_VERSION 3.7)
+#SET(PYBIND11_PYTHON_VERSION 3.7)
 # TODO: GIve a command-line option for CMAKE to find Python
 find_package(Python COMPONENTS Interpreter Development NumPy REQUIRED)
 add_subdirectory(./libs/pybind11)
@@ -57,7 +57,17 @@ set(HEADERS
 )
 find_package(CUDAToolkit REQUIRED)  # The point of this is to call CUDA code from C++ but without including CUDA code.
                                     #  see stackexchange - "linking of cuda library in cmake
-				    
+set_source_files_properties(
+  ./src/integral_coeffs.cu
+  PROPERTIES
+  COMPILE_FLAGS "-G -g"
+)
+set_source_files_properties(
+	./src/evaluate_electrostatic.cu
+	PROPERTIES
+	COMPILE_FLAGS "-G -g"
+	)
+
 add_library(chemtools_cuda_lib SHARED ${HEADERS} ${SOURCES})
 set_target_properties(chemtools_cuda_lib PROPERTIES CUDA_SEPARABLE_COMPILATION ON)
 # If the user didn't define CUDA architecture
