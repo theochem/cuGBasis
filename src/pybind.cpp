@@ -111,7 +111,8 @@ PYBIND11_MODULE(chemtools_cuda, m) {
     .. math::
         \tau_{PD}(\mathbf{r}) = \frac{1}{2} \sum_{i=1}^{N} \big|\nabla \phi_i (\mathbf{r})\big|^2,
 
-    where :math:`\phi_i` is the molecular orbitals.
+    where :math:`\phi_i` is the molecular orbitals. In the QTAIM community, this is denoted as
+    :math:`G(\mathbf{r})`.
 
     Parameters
     ----------
@@ -269,7 +270,12 @@ PYBIND11_MODULE(chemtools_cuda, m) {
            py::return_value_policy::reference_internal,
            R"pbdoc(Compute the Schrödinger kinetic energy density.
 
-    This is the general(sh) kinetic energy density when :math:`a=0`.
+    This is the general(sh) kinetic energy density when :math:`a=0`:
+
+    .. math::
+        K(\mathbf{r})  = \tau_{PD}(\mathbf{r}) - \frac{1}{4} \nabla^2 \rho(\mathbf{r}),
+
+    In the QTAIM community, this is denoted as :math:`K(\mathbf{r})`.
 
     Parameters
     ----------
