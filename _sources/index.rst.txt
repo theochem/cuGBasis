@@ -57,6 +57,8 @@ or email qcdevs@gmail.com.
 
     ./quick_start
     ./critical_points
+    ./reduced_density_gradient
+    ./generating_cube_files
 
 
 Indices and tables
