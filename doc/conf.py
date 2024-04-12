@@ -12,7 +12,7 @@ import sys
 sys.path.insert(0, os.path.abspath("."))
 sys.path.insert(0, os.path.abspath("../"))
 
-project = 'chemtools_cuda'
+project = 'cuchemtools'
 copyright = '2024, QC-Devs'
 author = 'QC-Devs'
 
