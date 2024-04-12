@@ -3,4 +3,4 @@
 Molecule Class
 ##############
 
-.. automodule:: chemtools_cuda
+.. automodule:: cuchemtools

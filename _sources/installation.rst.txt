@@ -6,11 +6,11 @@ Installation
 Downloading Code
 ================
 
-The latest code can be obtained through theochem (https://github.com/qtchem/ChemtoolsCUDA) in Github,
+The latest code can be obtained through theochem (https://github.com/qtchem/CuChemTools) in Github,
 
 .. code-block:: bash
 
-   git clone https://github.com/qtchem/ChemToolsCUDA.git
+   git clone https://github.com/qtchem/CuChemTools.git
 
    # Get the dependencies in ./libs/ folder
    git submodule update --init --recursive
@@ -20,7 +20,7 @@ The latest code can be obtained through theochem (https://github.com/qtchem/Chem
 Dependencies
 ============
 
-The following dependencies will be necessary for ChemToolsCUDA to build properly,
+The following dependencies will be necessary for CuChemTools to build properly,
 
 * CMake>=3.24: (https://cmake.org/)
 * Eigen>=3: (https://eigen.tuxfamily.org/index.php?title=Main_Page)
@@ -73,7 +73,7 @@ Compute Canada
 ---------------
 
 The following is the set of instructions for creating a Python environment inside Compute Canada
-and installing ChemToolsCUDA. It's important to compile/install ChemToolsCUDA with a GPU enabled.
+and installing CuChemTools. It's important to compile/install CuChemTools with a GPU enabled.
 It is recommended that CMake version be greater than 3.24 (see below).
 Note that different Cuda environments can be loaded, but here we will load Cuda 11.7 version.
 It's important to load the required depedencies before creating the python environment
@@ -82,15 +82,15 @@ installing (this may not be required but is hypothesized to may cause future err
 
 .. code-block:: bash
 
-    # Load the dependencies for ChemToolsCUDA and Python environment
+    # Load the dependencies for CuChemTools and Python environment
     module load StdEnv/2020 intel/2020.1.217 cmake cuda/11.7 eigen/3.4.0
     module load python/3.9
 
     # Create Python environment
-    virtualenv --no-download py39_chemtoolscuda
+    virtualenv --no-download py39_cuchemtools
 
     # Activate Environment
-    source ./py39_chemtoolscuda/bin/activate
+    source ./py39_cuchemtools/bin/activate
 
     # Install dependencies
     pip install --no-index --upgrade pip
@@ -102,9 +102,9 @@ installing (this may not be required but is hypothesized to may cause future err
 
     # Load the required dependencies
     module load StdEnv/2020 intel/2020.1.217 cmake cuda/11.7 eigen/3.4.0
-    source py39_chemtoolscuda/bin/activate
+    source py39_cuchemtools/bin/activate
 
-    # Go to ChemTools CUDA folder and install it
+    # Go to CuChemTools folder and install it
     cd ....
     pip install -v .
 

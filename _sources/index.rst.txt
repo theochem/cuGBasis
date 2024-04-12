@@ -1,4 +1,4 @@
-.. chemtoolscuda documentation master file, created by
+.. cuchemtools documentation master file, created by
    sphinx-quickstart on Mon Mar 25 15:07:18 2024.
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
@@ -8,15 +8,15 @@
 Welcome to ChemToolsCuda's documentation!
 =========================================
 
-.. image:: chemtoolscuda_logo_with_text.jpeg
+.. image:: cuchemtools_logo.jpeg
     :width: 450
 
-ChemToolsCUDA is a free, and open-source C++/CUDA and Python library for computing various quantities efficiently
+CuChemTools is a free, and open-source C++/CUDA and Python library for computing various quantities efficiently
 using NVIDIA GPU's in quantum chemistry. It is highly-optimized and vectorized, making it useful for cases
 where efficiency matters. It has substantial speed-ups compared to both commerical and open-source post-processing
 quantum chemistry codes.
 
-ChemToolsCUDA can read various wave-function formats (wfn, wfx, molden and fchk) using IOData and supports up-to g-type
+CuChemTools can read various wave-function formats (wfn, wfx, molden and fchk) using IOData and supports up-to g-type
 (Cartesian or Pure) orbitals. It can compute the following features:
 
 * Molecular orbitals

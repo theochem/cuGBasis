@@ -3,13 +3,13 @@
 Conventions
 ############
 
-This following page outlines the basis-set conventions that ChemToolsCUDA uses to evaluate various quantities.
+This following page outlines the basis-set conventions that CuChemTools uses to evaluate various quantities.
 
 
 Gaussian Primitives
 -------------------
 
-ChemToolsCUDA supports both Cartesian and Spherical primitive Gaussian type orbitals.
+CuChemTools supports both Cartesian and Spherical primitive Gaussian type orbitals.
 
 Cartesian
 =========
@@ -34,7 +34,7 @@ centered at position :math:`\mathbf{A} = (A_x, A_y, A_z)` is written as
 
 where :math:`Y_{lm}` is the real spherical harmonics, :math:`N` is the L2-normalization constant, and :math:`\alpha` is the Gaussian width parameter.
 
-ChemToolsCUDA uses the real regular solid harmonics, i.e. :math:`S_{lm} = r_A^l Y_{lm}`, since when :math:`l=0,1`, it matches its
+CuChemTools uses the real regular solid harmonics, i.e. :math:`S_{lm} = r_A^l Y_{lm}`, since when :math:`l=0,1`, it matches its
 Cartesian Gaussian primitives. Further, it uses the Cartesian representation for :math:`S_{lm}` in-order to avoid
 the conversion from Cartesian :math:`(x, y, z)` to spherical coordinates :math:`(r, \theta, \phi)`.
 
@@ -52,7 +52,7 @@ For example, the regular solid harmonics for degree 2 is
 
 Contractions
 ------------
-ChemToolsCUDA uses linear combination of primitives Gaussian as basis-functions (known as contracted Gaussian
+CuChemTools uses linear combination of primitives Gaussian as basis-functions (known as contracted Gaussian
 type-orbitals or contractions):
 
 .. math::
@@ -90,7 +90,7 @@ The following shows an example of conversion to an segmented contracted shell:
 Basis Set Ordering
 ------------------
 
-ChemToolsCUDA follows the same basis-set ordering that Gaussian computational chemistry software uses.
+CuChemTools follows the same basis-set ordering that Gaussian computational chemistry software uses.
 Note that for spherical orders, the positive orders :math:`m\geq0` are associated with cosine function, denoted as c, and
 the negative orders :math:`m<0` are associated with sine function, denoted as s. Thus "s21" implies
 it is a solid harmonic with :math:`l=2` and :math:`m=-1`.
