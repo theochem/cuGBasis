@@ -1,5 +1,5 @@
 import numpy as np
-import chemtools_cuda
+import cuchemtools
 from chemtools.wrappers import Molecule
 import pytest
 
@@ -12,7 +12,7 @@ import pytest
     ]
 )
 def test_hessian_against_horton(fchk):
-    mol = chemtools_cuda.Molecule(fchk)
+    mol = cuchemtools.Molecule(fchk)
 
     grid_pts = np.random.uniform(-5, 5, size=(1000, 3))
     grid_pts = np.array(grid_pts, dtype=np.float64, order="C")

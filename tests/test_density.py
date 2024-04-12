@@ -1,5 +1,5 @@
 import numpy as np
-import chemtools_cuda
+import cuchemtools
 from grid.cubic import UniformGrid
 from chemtools.wrappers import Molecule
 import pytest
@@ -14,11 +14,11 @@ import pytest
                          ]
                          )
 def test_electron_density_against_horton(fchk):
-    mol = chemtools_cuda.Molecule(fchk)
+    mol = cuchemtools.Molecule(fchk)
 
     grid_pts = np.random.uniform(-2, 2, size=(50000, 3))
     grid_pts = np.array(grid_pts, dtype=np.float64, order="C")
-    gpu_gradient = mol.compute_electron_density(grid_pts)
+    gpu_gradient = mol.compute_density(grid_pts)
 
     mol2 = Molecule.from_file(fchk)
     cpu_gradient = mol2.compute_density(grid_pts)
@@ -35,10 +35,10 @@ def test_electron_density_against_horton(fchk):
                          ]
                          )
 def test_electron_density_on_cubic_grid_against_horton(fchk):
-    mol = chemtools_cuda.Molecule(fchk)
+    mol = cuchemtools.Molecule(fchk)
     mol2 = Molecule.from_file(fchk)
 
     grid = UniformGrid.from_molecule(mol2.numbers, mol2.coordinates, spacing=0.5)
-    gpu_density = mol.compute_electron_density_on_cubic_grid(grid.origin, grid.axes, grid.shape, False)
+    gpu_density = mol.compute_density_on_cubic_grid(grid.origin, grid.axes, grid.shape, False)
     cpu_density = mol2.compute_density(grid.points)
     assert np.all(np.abs(cpu_density - gpu_density) < 1e-8)
