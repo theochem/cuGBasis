@@ -4,7 +4,7 @@ add_library(Catch INTERFACE)
 target_include_directories(Catch INTERFACE ${CATCH_INCLUDE_DIR})
 
 # Find chemtools_cuda_lib
-find_package(chemtools_cuda_lib)
+find_package(cuchemtools_lib)
 set(TEST_SOURCES
 		test_mol_orbitals.cu
 		test_gradient.cu
@@ -18,4 +18,4 @@ set(TEST_SOURCES
 # Add test executable
 add_executable (tests main_test.cu catch.hpp ${TEST_SOURCES})
 target_link_libraries(tests PRIVATE pybind11::embed)
-target_link_libraries(tests PRIVATE chemtools_cuda_lib)
+target_link_libraries(tests PRIVATE cuchemtools_lib)
