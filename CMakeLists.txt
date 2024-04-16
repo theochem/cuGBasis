@@ -6,7 +6,7 @@ enable_language(CUDA)
 set(CMAKE_CUDA_STANDARD 14)
 
 # Add Eigen header files
-find_package(Eigen3 3.3)
+find_package(Eigen3 3.3 QUIET)
 message(${EIGEN3_INCLUDE_DIR})
 
 # If user wants to add the path to EIGEN themselves then they should do something like so:
