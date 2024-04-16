@@ -23,7 +23,6 @@ Dependencies
 The following dependencies will be necessary for CuChemTools to build properly,
 
 * CMake>=3.24: (https://cmake.org/)
-* Eigen>=3: (https://eigen.tuxfamily.org/index.php?title=Main_Page)
 * CUDA/DRIVERS/NVCC/CUDA-TOOLKIT: (https://docs.nvidia.com/cuda/cuda-installation-guide-linux/index.html)
 * Python>=3.7: (http://www.python.org/)
 * NumPy >= 1.16.0: http://www.numpy.org/
@@ -36,6 +35,9 @@ For testing the following are required to be installed on the Python system:
 * GBasis: (https://github.com/theochem/gbasis)
 * ChemTools: (https://github.com/theochem/chemtools)
 
+The following Eigen package will automatically be tried to linked if CMake could not find the package already.
+
+* Eigen>=3: (https://eigen.tuxfamily.org/index.php?title=Main_Page)
 
 Installation
 ============
@@ -146,7 +148,9 @@ The following can help with compiling this package
     # If cmake:
     cmake -S . -B ./out/build/ -DCUDACXX=/some/path/bin/nvcc
 
-- If Eigen is not found, add the following flag to the path containing the Eigen3*.cmake files. See
+- Eigen is added in the lib folder and CMake will first initially try to find if Eigen was installed.
+  If Eigen is not found, then it will try to link it by itself.
+  If these still don't work, then add the following flag to the path containing the Eigen3*.cmake files. See
   `here <https://eigen.tuxfamily.org/dox/TopicCMakeGuide.html>`_ for more information.
 
 .. code-block:: bash

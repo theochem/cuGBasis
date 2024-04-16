@@ -8,8 +8,12 @@ set(CMAKE_CUDA_STANDARD 14)
 # Add Eigen header files
 find_package(Eigen3 3.3 REQUIRED NO_MODULE)
 message(${EIGEN3_INCLUDE_DIR})
+
 # If user wants to add the path to EIGEN themselves then they should do something like so:
-#   TODO: Give a command line option for CMAKE to do so.
+if( NOT Eigen3_FOUND )
+	add_subdirectory(libs/eigen)
+endif()
+
 
 # Add pybind11 header files
 # Finding Python Needed to do this for CLION project for my own computer.
@@ -92,7 +96,12 @@ target_link_libraries(cuchemtools_lib PRIVATE ${CUDA_cudadevrt_LIBRARY})
 target_link_libraries(cuchemtools_lib PRIVATE CUDA::cublas)
 target_link_libraries(cuchemtools_lib PRIVATE CUDA::curand)
 target_link_libraries(cuchemtools_lib PUBLIC pybind11::embed) # Used to call IODATA to C++\
-target_link_libraries(cuchemtools_lib PUBLIC Eigen3::Eigen)
+if ( Eigen3_FOUND )
+	target_link_libraries(cuchemtools_lib PUBLIC Eigen3::Eigen)
+else()
+	target_link_libraries(cuchemtools_lib PUBLIC eigen)
+endif()
+
 
 # Link the chemtools_cuda library to pybind11,
 set(${LINK_TO_PYTHON} OFF CACHE BOOL "Link to python")  # This option is set to True in setup.py
