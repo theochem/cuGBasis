@@ -119,7 +119,7 @@ if(${LINK_TO_PYTHON})
 	target_link_libraries(cuchemtools PRIVATE CUDA::cublas)
 endif()
 
-add_subdirectory(tests)
+#add_subdirectory(tests)
 # Compilation of the tests, not needed e.g. if `LINK_TO_PYTHON` IS True/ON
 set(${DONT_COMPILE_TESTS} OFF CACHE BOOL "Don't compile the tests")
 if(NOT ${DONT_COMPILE_TESTS})
