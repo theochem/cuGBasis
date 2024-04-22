@@ -3,7 +3,7 @@
 Conventions
 ############
 
-This following page outlines the basis-set conventions that CuGBasis uses to evaluate various quantities.
+This following page outlines the basis-set conventions that cuGBasis uses to evaluate various quantities.
 
 
 Gaussian Primitives

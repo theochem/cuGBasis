@@ -8,7 +8,7 @@
 Welcome to CuGBasis's documentation!
 =========================================
 
-.. image:: cuGBasus_Logo.jpeg
+.. image:: cuGBasis_Logo.jpeg
     :width: 450
 
 CuGBasis is a free, and open-source C++/CUDA and Python library for computing various quantities efficiently

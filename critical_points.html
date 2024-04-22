@@ -162,7 +162,7 @@
              
   <section id="QTAIM-Critical-Points">
 <h1>QTAIM Critical Points<a class="headerlink" href="#QTAIM-Critical-Points" title="Permalink to this heading"></a></h1>
-<p>This example illustrates how to find the QTAIM critical points and bond-paths using ChemTools and CuGbasis. This is precisely when the gradient of the electron density <span class="math notranslate nohighlight">\(\nabla \rho = 0\)</span> is zero. The first step is to load the wavefunction information using CuGBasis.</p>
+<p>This example illustrates how to find the QTAIM critical points and bond-paths using ChemTools and cuGbasis. This is precisely when the gradient of the electron density <span class="math notranslate nohighlight">\(\nabla \rho = 0\)</span> is zero. The first step is to load the wavefunction information using CuGBasis.</p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
 </pre></div>
@@ -183,7 +183,7 @@
 </div>
 <section id="Using-Default-Initial-Guess">
 <h2>Using Default Initial Guess<a class="headerlink" href="#Using-Default-Initial-Guess" title="Permalink to this heading"></a></h2>
-<p>In this example, we will provide only the atomic coordinates and it will generate initial guesses where the gradient of the electron density is close to zero. This should roughly be near the center of each atom, inbetween any two atoms and between three/four atoms. The electron density, gradient and hessian are obtained from CuGBasis and use is given to the ChemTools algorithm for efficiently finding the critical points and then find the bond-paths for all bond-critical points.</p>
+<p>In this example, we will provide only the atomic coordinates and it will generate initial guesses where the gradient of the electron density is close to zero. This should roughly be near the center of each atom, inbetween any two atoms and between three/four atoms. The electron density, gradient and hessian are obtained from cuGBasis and use is given to the ChemTools algorithm for efficiently finding the critical points and then find the bond-paths for all bond-critical points.</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
 </pre></div>

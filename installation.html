@@ -171,7 +171,7 @@ git<span class="w"> </span>submodule<span class="w"> </span>update<span class="w
 </section>
 <section id="dependencies">
 <h2>Dependencies<a class="headerlink" href="#dependencies" title="Permalink to this heading"></a></h2>
-<p>The following dependencies will be necessary for CuGBasis to build properly,</p>
+<p>The following dependencies will be necessary for cuGBasis to build properly,</p>
 <ul class="simple">
 <li><p>CMake&gt;=3.24: (<a class="reference external" href="https://cmake.org/">https://cmake.org/</a>)</p></li>
 <li><p>CUDA/DRIVERS/NVCC/CUDA-TOOLKIT: (<a class="reference external" href="https://docs.nvidia.com/cuda/cuda-installation-guide-linux/index.html">https://docs.nvidia.com/cuda/cuda-installation-guide-linux/index.html</a>)</p></li>
@@ -217,13 +217,13 @@ make<span class="w"> </span>-C<span class="w"> </span>./out/build/
 <section id="compute-canada">
 <h3>Compute Canada<a class="headerlink" href="#compute-canada" title="Permalink to this heading"></a></h3>
 <p>The following is the set of instructions for creating a Python environment inside Compute Canada
-and installing CuGBasis. It’s important to compile/install CuGBasis with a GPU enabled.
+and installing cuGBasis. It’s important to compile/install cuGBasis with a GPU enabled.
 It is recommended that CMake version be greater than 3.24 (see below).
 Note that different Cuda environments can be loaded, but here we will load Cuda 11.7 version.
 It’s important to load the required depedencies before creating the python environment
 so that the same compiler is used when creating the Python virtual environment, and when
 installing (this may not be required but is hypothesized to may cause future errors).</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Load the dependencies for CuGBasis and Python environment</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Load the dependencies for cuGBasis and Python environment</span>
 module<span class="w"> </span>load<span class="w"> </span>StdEnv/2020<span class="w"> </span>intel/2020.1.217<span class="w"> </span>cmake<span class="w"> </span>cuda/11.7<span class="w"> </span>eigen/3.4.0
 module<span class="w"> </span>load<span class="w"> </span>python/3.9
 
@@ -245,7 +245,7 @@ salloc<span class="w"> </span>--time<span class="o">=</span><span class="m">1</s
 module<span class="w"> </span>load<span class="w"> </span>StdEnv/2020<span class="w"> </span>intel/2020.1.217<span class="w"> </span>cmake<span class="w"> </span>cuda/11.7<span class="w"> </span>eigen/3.4.0
 <span class="nb">source</span><span class="w"> </span>py39_cugbasis/bin/activate
 
-<span class="c1"># Go to CuGBasis folder and install it</span>
+<span class="c1"># Go to cuGBasis folder and install it</span>
 <span class="nb">cd</span><span class="w"> </span>....
 pip<span class="w"> </span>install<span class="w"> </span>-v<span class="w"> </span>.
 </pre></div>
