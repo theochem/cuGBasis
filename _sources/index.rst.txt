@@ -1,22 +1,22 @@
-.. cuchemtools documentation master file, created by
+.. CuGBasis documentation master file, created by
    sphinx-quickstart on Mon Mar 25 15:07:18 2024.
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
 
 
-Welcome to ChemToolsCuda's documentation!
+Welcome to CuGBasis's documentation!
 =========================================
 
-.. image:: cuchemtools_logo.jpeg
+.. image:: cuGBasus_Logo.jpeg
     :width: 450
 
-CuChemTools is a free, and open-source C++/CUDA and Python library for computing various quantities efficiently
+CuGBasis is a free, and open-source C++/CUDA and Python library for computing various quantities efficiently
 using NVIDIA GPU's in quantum chemistry. It is highly-optimized and vectorized, making it useful for cases
 where efficiency matters. It has substantial speed-ups compared to both commerical and open-source post-processing
 quantum chemistry codes.
 
-CuChemTools can read various wave-function formats (wfn, wfx, molden and fchk) using IOData and supports up-to g-type
+CuGBasis can read various wave-function formats (wfn, wfx, molden and fchk) using IOData and supports up-to g-type
 (Cartesian or Pure) orbitals. It can compute the following features:
 
 * Molecular orbitals
@@ -40,7 +40,7 @@ CuChemTools can read various wave-function formats (wfn, wfx, molden and fchk) u
   * General gradient expansion approximation of kinetic energy density
 
 
-To report any issues or ask questions, either `open an issue <https://github.com/qtchem/chemtoolscuda/issues/new>`_
+To report any issues or ask questions, either `open an issue <https://github.com/qtchem/cugbasis/issues/new>`_
 or email qcdevs@gmail.com.
 
 .. toctree::
