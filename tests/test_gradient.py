@@ -26,7 +26,7 @@ def test_gradient_against_horton(fchk):
     for i, pt in enumerate(grid_pts):
         print("PT ", pt)
         print("CPU ", cpu_gradient[i])
-        gpu = mol.compute_electron_density_gradient(np.array([pt]))[0]
+        gpu = mol.compute_gradient(np.array([pt]))[0]
         print("GPU ", gpu)
         print("Error ", np.abs(cpu_gradient[i] - gpu))
         print("")

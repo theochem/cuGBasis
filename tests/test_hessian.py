@@ -19,6 +19,6 @@ def test_hessian_against_horton(fchk):
 
     mol2 = Molecule.from_file(fchk)
     cpu_hessian = mol2.compute_hessian(grid_pts)
-    gpu_hessian = mol.compute_electron_density_hessian(grid_pts)
+    gpu_hessian = mol.compute_hessian(grid_pts)
 
     assert np.all(np.abs(gpu_hessian - cpu_hessian) < 1e-8)
