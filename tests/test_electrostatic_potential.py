@@ -1,5 +1,5 @@
 import numpy as np
-import cuchemtools
+import cugbasis
 from chemtools.wrappers import Molecule
 import pytest
 
@@ -15,7 +15,7 @@ import pytest
                          ]
                          )
 def test_electrostatic_potential_against_horton(fchk):
-    mol = cuchemtools.Molecule(fchk)
+    mol = cugbasis.Molecule(fchk)
     grid_pts = np.random.uniform(-2, 2, size=(2000, 3))
     grid_pts = np.array(grid_pts, dtype=np.float64, order="C")
     gpu_esp = mol.compute_electrostatic_potential(grid_pts)

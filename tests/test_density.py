@@ -1,5 +1,5 @@
 import numpy as np
-import cuchemtools
+import cugbasis
 from grid.cubic import UniformGrid
 from chemtools.wrappers import Molecule
 import pytest
@@ -14,7 +14,7 @@ import pytest
                          ]
                          )
 def test_electron_density_against_horton(fchk):
-    mol = cuchemtools.Molecule(fchk)
+    mol = cugbasis.Molecule(fchk)
 
     grid_pts = np.random.uniform(-2, 2, size=(50000, 3))
     grid_pts = np.array(grid_pts, dtype=np.float64, order="C")
@@ -35,7 +35,7 @@ def test_electron_density_against_horton(fchk):
                          ]
                          )
 def test_electron_density_on_cubic_grid_against_horton(fchk):
-    mol = cuchemtools.Molecule(fchk)
+    mol = cugbasis.Molecule(fchk)
     mol2 = Molecule.from_file(fchk)
 
     grid = UniformGrid.from_molecule(mol2.numbers, mol2.coordinates, spacing=0.5)
