@@ -38,7 +38,7 @@ const MatrixX3R chemtools::Molecule::getCoordinates() const {
 }
 
 const IntVector chemtools::Molecule::getNumbers() const {
-  const int* atomic_numbers = iodata_->GetAtomicNumbers();
+  const long int* atomic_numbers = iodata_->GetAtomicNumbers();
   IntVector atomic_numbs = Eigen::Map<const IntVector>(atomic_numbers, iodata_->GetNatoms());
   return atomic_numbs;
 }

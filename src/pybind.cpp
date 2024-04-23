@@ -6,7 +6,7 @@
 namespace py = pybind11;
 
 
-PYBIND11_MODULE(cuchemtools, m) {
+PYBIND11_MODULE(cugbasis, m) {
   m.doc() = "Molecule class tht reads wavefunction information and computes various quantities.";
   py::options options;
   options.disable_function_signatures();
