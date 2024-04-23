@@ -316,11 +316,11 @@ PYBIND11_MODULE(cugbasis, m) {
       )
       // Properties
       .def_property_readonly(
-          "coordinates", &chemtools::Molecule::getCoordinates, py::return_value_policy::reference_internal,
+          "atcoords", &chemtools::Molecule::getCoordinates, py::return_value_policy::reference_internal,
           "Cartesian coordinates of the atomic centers."
           )
       .def_property_readonly(
-          "numbers", &chemtools::Molecule::getNumbers, py::return_value_policy::reference_internal,
+          "atnums", &chemtools::Molecule::getNumbers, py::return_value_policy::reference_internal,
           "Atomic number of atomic centers."
       )
       .def("get_file_path", &chemtools::Molecule::getFilePath, "Get the wavefunction file path.");
