@@ -3,4 +3,4 @@
 Molecule Class
 ##############
 
-.. automodule:: cuchemtools
+.. automodule:: cugbasis
