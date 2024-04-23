@@ -138,7 +138,7 @@ class CMakeBuild(build_ext):
 # The information here can also be placed in setup.cfg - better separation of
 # logic and declaration, and simpler if you include description/version in a file.
 setup(
-    name="chemtools_cuda",
+    name="cugbasis",
     version="0.0.1",
     author="QC-Devs Community",
     author_email="qcdevs@gmail.com",

@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.16)
-project(cuchemtools)
+project(cugbasis)
 enable_language(CXX)
 # TODO: Give command line option for CMAKE to find nvcc!
 enable_language(CUDA)
@@ -74,48 +74,48 @@ set_source_files_properties(
 	COMPILE_FLAGS "-G -g"
 	)
 
-add_library(cuchemtools_lib SHARED ${HEADERS} ${SOURCES})
-set_target_properties(cuchemtools_lib PROPERTIES CUDA_SEPARABLE_COMPILATION ON)
+add_library(cugbasis_lib SHARED ${HEADERS} ${SOURCES})
+set_target_properties(cugbasis_lib PROPERTIES CUDA_SEPARABLE_COMPILATION ON)
 # If the user didn't define CUDA architecture
 if("${CMAKE_CUDA_ARCHITECTURES}" STREQUAL "")
 	# If cmake version is greater than 3.24, automatically find the right CUDA Architecture
 	if("$ENV{CMAKE_CUDA_ARCHITECTURES}" STREQUAL "")
 		if(CMAKE_VERSION VERSION_GREATER_EQUAL "3.24")
-			set_property(TARGET cuchemtools_lib PROPERTY CUDA_ARCHITECTURES native)
+			set_property(TARGET cugbasis_lib PROPERTY CUDA_ARCHITECTURES native)
 		endif()
 	else()
-		set_property(TARGET cuchemtools_lib PROPERTY CUDA_ARCHITECTURES $ENV{CMAKE_CUDA_ARCHITECTURES})
+		set_property(TARGET cugbasis_lib PROPERTY CUDA_ARCHITECTURES $ENV{CMAKE_CUDA_ARCHITECTURES})
 	endif ()
 else()
 	# If the user did define the CUDA Archiecture then add it here.
-	set_property(TARGET cuchemtools_lib PROPERTY CUDA_ARCHITECTURES ${CMAKE_CUDA_ARCHITECTURES})
+	set_property(TARGET cugbasis_lib PROPERTY CUDA_ARCHITECTURES ${CMAKE_CUDA_ARCHITECTURES})
 endif()
-target_compile_options(cuchemtools_lib PRIVATE $<$<COMPILE_LANGUAGE:CUDA>:
+target_compile_options(cugbasis_lib PRIVATE $<$<COMPILE_LANGUAGE:CUDA>:
         -rdc=true --expt-relaxed-constexpr -v
 	>) # -rdc=true  std=c++14 isn't needed since CMAKE_CUDA_STANDARD already set Debuging -G -g turns off optimization, -O3 turns on optmization, -gencode=arch=compute_35,code=sm_35
 # --expt-relaxed-constexpr is needed for Boys_function.h to work.
-target_link_libraries(cuchemtools_lib PRIVATE ${CUDA_cudadevrt_LIBRARY})
-target_link_libraries(cuchemtools_lib PRIVATE CUDA::cublas)
-target_link_libraries(cuchemtools_lib PRIVATE CUDA::curand)
-target_link_libraries(cuchemtools_lib PUBLIC pybind11::embed) # Used to call IODATA to C++\
+target_link_libraries(cugbasis_lib PRIVATE ${CUDA_cudadevrt_LIBRARY})
+target_link_libraries(cugbasis_lib PRIVATE CUDA::cublas)
+target_link_libraries(cugbasis_lib PRIVATE CUDA::curand)
+target_link_libraries(cugbasis_lib PUBLIC pybind11::embed) # Used to call IODATA to C++\
 if ( Eigen3_FOUND )
-	target_link_libraries(cuchemtools_lib PUBLIC Eigen3::Eigen)
+	target_link_libraries(cugbasis_lib PUBLIC Eigen3::Eigen)
 else()
-	target_link_libraries(cuchemtools_lib PUBLIC eigen)
+	target_link_libraries(cugbasis_lib PUBLIC eigen)
 endif()
 
 
 # Link the chemtools_cuda library to pybind11,
 set(${LINK_TO_PYTHON} OFF CACHE BOOL "Link to python")  # This option is set to True in setup.py
 if(${LINK_TO_PYTHON})
-	pybind11_add_module(cuchemtools src/pybind.cpp)
-	# cuchemtools is compiled as a shared library and then linked via RPATH to Python package via Python_SITEARCH variable
+	pybind11_add_module(cugbasis src/pybind.cpp)
+	# cugbasis is compiled as a shared library and then linked via RPATH to Python package via Python_SITEARCH variable
 	#    obtained from find_package(Python ...) The other alternative is to use the compiled library that is inside
 	#    the build folder, this might be a better approach then the current.
-	set_target_properties(cuchemtools PROPERTIES BUILD_WITH_INSTALL_RPATH TRUE INSTALL_RPATH "${Python_SITEARCH}")
+	set_target_properties(cugbasis PROPERTIES BUILD_WITH_INSTALL_RPATH TRUE INSTALL_RPATH "${Python_SITEARCH}")
 	message("SHARED LIBRARY INSTALLED TO Python ${Python_SITEARCH}")
-	target_link_libraries(cuchemtools PRIVATE cuchemtools_lib)
-	target_link_libraries(cuchemtools PRIVATE CUDA::cublas)
+	target_link_libraries(cugbasis PRIVATE cugbasis_lib)
+	target_link_libraries(cugbasis PRIVATE CUDA::cublas)
 endif()
 
 #add_subdirectory(tests)
