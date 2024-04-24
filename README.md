@@ -18,7 +18,7 @@ https://github.com/qtchem/CuGBasis/issues/new) or email [qcdevs@gmail.com]().
 ## Citation
 Please use the following citation in any publication:
 > **"CuGBasis: High performance CUDA/Python Library For Efficient Computation
-> of QUantum Chemistry Density-Based Descriptors for Larger Systems."**,
+> of Quantum Chemistry Density-Based Descriptors for Larger Systems."**,
 > A. Tehrani, M. Richer, P. W. Ayers, F. Heidar‐Zadeh
 >
 

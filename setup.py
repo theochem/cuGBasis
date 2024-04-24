@@ -150,11 +150,11 @@ setup(
     extras_require={"test": ["pytest>=6.0"]},
     python_requires=">=3.6",
     long_description_content_type="text/markdown",
-    url="https://github.com/qtchem/ChemToolsCUDA/",
+    url="https://github.com/qtchem/cugbasis/",
     project_urls={
-        "Bug Reports": "https://github.com/qtchem/ChemToolsCUDA/issues",
+        "Bug Reports": "https://github.com/qtchem/cugbasis/issues",
         "Organization": "https://github.com/qtchem/",
-        "Source": "https://github.com/qtchem/ChemToolsCUDA/",
+        "Source": "https://github.com/qtchem/cugbasis/",
     },
     classifiers=[
         "Development Status :: 3 - Alpha",
