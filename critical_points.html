@@ -67,6 +67,8 @@
 </li>
 <li class="toctree-l1"><a class="reference internal" href="molecule.html">Molecule Class</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="molecule.html#cugbasis.Molecule"><code class="docutils literal notranslate"><span class="pre">Molecule</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="molecule.html#cugbasis.Molecule.atcoords"><code class="docutils literal notranslate"><span class="pre">Molecule.atcoords</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="molecule.html#cugbasis.Molecule.atnums"><code class="docutils literal notranslate"><span class="pre">Molecule.atnums</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="molecule.html#cugbasis.Molecule.compute_density"><code class="docutils literal notranslate"><span class="pre">Molecule.compute_density()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="molecule.html#cugbasis.Molecule.compute_electrostatic_potential"><code class="docutils literal notranslate"><span class="pre">Molecule.compute_electrostatic_potential()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="molecule.html#cugbasis.Molecule.compute_empirical_gradient_expansion_ked"><code class="docutils literal notranslate"><span class="pre">Molecule.compute_empirical_gradient_expansion_ked()</span></code></a></li>
@@ -85,9 +87,7 @@
 <li class="toctree-l3"><a class="reference internal" href="molecule.html#cugbasis.Molecule.compute_shannon_information_density"><code class="docutils literal notranslate"><span class="pre">Molecule.compute_shannon_information_density()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="molecule.html#cugbasis.Molecule.compute_thomas_fermi_ked"><code class="docutils literal notranslate"><span class="pre">Molecule.compute_thomas_fermi_ked()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="molecule.html#cugbasis.Molecule.compute_weizsacker_ked"><code class="docutils literal notranslate"><span class="pre">Molecule.compute_weizsacker_ked()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="molecule.html#cugbasis.Molecule.coordinates"><code class="docutils literal notranslate"><span class="pre">Molecule.coordinates</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="molecule.html#cugbasis.Molecule.get_file_path"><code class="docutils literal notranslate"><span class="pre">Molecule.get_file_path()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="molecule.html#cugbasis.Molecule.numbers"><code class="docutils literal notranslate"><span class="pre">Molecule.numbers</span></code></a></li>
 </ul>
 </li>
 </ul>
@@ -162,7 +162,7 @@
              
   <section id="QTAIM-Critical-Points">
 <h1>QTAIM Critical Points<a class="headerlink" href="#QTAIM-Critical-Points" title="Permalink to this heading"></a></h1>
-<p>This example illustrates how to find the QTAIM critical points and bond-paths using ChemTools and cuGbasis. This is precisely when the gradient of the electron density <span class="math notranslate nohighlight">\(\nabla \rho = 0\)</span> is zero. The first step is to load the wavefunction information using CuGBasis.</p>
+<p>This example illustrates how to find the QTAIM critical points and bond-paths using ChemTools and cuGBasis. This is precisely when the gradient of the electron density <span class="math notranslate nohighlight">\(\nabla \rho = 0\)</span> is zero. The first step is to load the wavefunction information using cuGBasis.</p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
 </pre></div>
@@ -171,12 +171,12 @@
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
 <span class="c1"># Load the wavefunction information</span>
-<span class="n">fchk_path</span> <span class="o">=</span> <span class="s2">&quot;./ALA_ALA_0_q000_m01_k00_force_uwb97xd_def2svpd.fchk&quot;</span>
+<span class="n">fchk_path</span> <span class="o">=</span> <span class="s2">&quot;./ALA_ALA_peptide_uwb97xd_def2svpd.fchk&quot;</span>
 <span class="n">mol</span> <span class="o">=</span> <span class="n">cugbasis</span><span class="o">.</span><span class="n">Molecule</span><span class="p">(</span><span class="n">fchk_path</span><span class="p">)</span>
 
 <span class="c1"># Get the atomic coordinates and numbers</span>
-<span class="n">atom_coords</span> <span class="o">=</span> <span class="n">mol</span><span class="o">.</span><span class="n">coordinates</span>
-<span class="n">atom_numbers</span> <span class="o">=</span> <span class="n">mol</span><span class="o">.</span><span class="n">numbers</span>
+<span class="n">atom_coords</span> <span class="o">=</span> <span class="n">mol</span><span class="o">.</span><span class="n">atcoords</span>
+<span class="n">atom_numbers</span> <span class="o">=</span> <span class="n">mol</span><span class="o">.</span><span class="n">atnums</span>
 <span class="n">natoms</span> <span class="o">=</span> <span class="n">atom_coords</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
 </pre></div>
 </div>
@@ -239,7 +239,7 @@ Final number of points found 61
 Is Poincare-Hopf Equation Satisfied?:  True
 </pre></div></div>
 </div>
-<div class="nbinput nblast docutils container">
+<div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
 </pre></div>
 </div>
@@ -252,8 +252,30 @@ Is Poincare-Hopf Equation Satisfied?:  True
 <span class="c1"># Evaluate different properties on the critical points</span>
 <span class="n">lap_nna</span> <span class="o">=</span> <span class="n">mol</span><span class="o">.</span><span class="n">compute_laplacian</span><span class="p">(</span><span class="n">nna</span><span class="p">)</span>
 <span class="n">rdg_nna</span> <span class="o">=</span> <span class="n">mol</span><span class="o">.</span><span class="n">compute_reduced_density_gradient</span><span class="p">(</span><span class="n">nna</span><span class="p">)</span>
-</pre></div>
+
+<span class="c1"># Get the bond paths from the fourth BCP</span>
+<span class="n">bond_pth1</span> <span class="o">=</span> <span class="n">topo</span><span class="o">.</span><span class="n">bp</span><span class="p">[</span><span class="mi">4</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+<span class="n">bond_pth2</span> <span class="o">=</span> <span class="n">topo</span><span class="o">.</span><span class="n">bp</span><span class="p">[</span><span class="mi">4</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Fourth bond critical point:    </span><span class="si">{</span><span class="n">topo</span><span class="o">.</span><span class="n">bcp</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span><span class="o">.</span><span class="n">coordinate</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Initial bond path 1 point:     </span><span class="si">{</span><span class="n">bond_pth1</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Initial bond path 2 point:     </span><span class="si">{</span><span class="n">bond_pth2</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="c1"># Check the final point is an atomic-coordinate</span>
+<span class="n">dist</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">bond_pth1</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">atom_coords</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">index</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">dist</span> <span class="o">&lt;</span> <span class="mf">0.01</span><span class="p">)[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Bond path 1 converged to atom </span><span class="si">{</span><span class="n">index</span><span class="si">}</span><span class="s2"> with coords </span><span class="si">{</span><span class="n">atom_coords</span><span class="p">[</span><span class="n">index</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<br/></pre></div>
 </div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Fourth bond critical point:    [11.16293088 15.3014835   6.94768032]
+Initial bond path 1 point:     [11.16292343 15.30138428  6.94769036]
+Initial bond path 2 point:     [11.16293834 15.30158273  6.94767027]
+Bond path 1 converged to atom 8 with coords [11.0737951  13.8082288   7.07513461]
+</pre></div></div>
 </div>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
@@ -303,12 +325,12 @@ Is Poincare-Hopf Equation Satisfied?:  True
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
 <span class="c1"># Load the wavefunction information</span>
-<span class="n">fchk_path</span> <span class="o">=</span> <span class="s2">&quot;./FEFEFKEK_0_q-01_m01_k00_force_uwb97xd_def2svpd.fchk&quot;</span>
+<span class="n">fchk_path</span> <span class="o">=</span> <span class="s2">&quot;./PHE_TRP_peptide_uwb97xd_def2svpd.fchk&quot;</span>
 <span class="n">mol</span> <span class="o">=</span> <span class="n">cugbasis</span><span class="o">.</span><span class="n">Molecule</span><span class="p">(</span><span class="n">fchk_path</span><span class="p">)</span>
 
 <span class="c1"># Get the atomic coordinates and numbers</span>
-<span class="n">atom_coords</span> <span class="o">=</span> <span class="n">mol</span><span class="o">.</span><span class="n">coordinates</span>
-<span class="n">atom_numbers</span> <span class="o">=</span> <span class="n">mol</span><span class="o">.</span><span class="n">numbers</span>
+<span class="n">atom_coords</span> <span class="o">=</span> <span class="n">mol</span><span class="o">.</span><span class="n">atcoords</span>
+<span class="n">atom_numbers</span> <span class="o">=</span> <span class="n">mol</span><span class="o">.</span><span class="n">atnums</span>
 <span class="n">natoms</span> <span class="o">=</span> <span class="n">atom_coords</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
 </pre></div>
 </div>
@@ -364,260 +386,6 @@ Is Poincare-Hopf Equation Satisfied?:  True
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-Start Critical Points Finding.
-Number of initial points: 74279
-Iteration: 1,   Sum Gradient Norm of pts left: 68668.55898004257   Number of pts left: 74279
-Iteration: 2,   Sum Gradient Norm of pts left: 121405.86514622386   Number of pts left: 68134
-Iteration: 3,   Sum Gradient Norm of pts left: 81586.41131677461   Number of pts left: 61022
-Iteration: 4,   Sum Gradient Norm of pts left: 63757.78149726375   Number of pts left: 55896
-Iteration: 5,   Sum Gradient Norm of pts left: 59045.08260932944   Number of pts left: 51028
-Iteration: 6,   Sum Gradient Norm of pts left: 38512.94224547554   Number of pts left: 42393
-Iteration: 7,   Sum Gradient Norm of pts left: 30166.96434139207   Number of pts left: 32930
-Iteration: 8,   Sum Gradient Norm of pts left: 25855.143586075214   Number of pts left: 25257
-Iteration: 9,   Sum Gradient Norm of pts left: 19961.031097529805   Number of pts left: 19229
-Iteration: 10,   Sum Gradient Norm of pts left: 11775.062802642467   Number of pts left: 14686
-Iteration: 11,   Sum Gradient Norm of pts left: 11812.466333526627   Number of pts left: 11468
-Iteration: 12,   Sum Gradient Norm of pts left: 8055.682524020028   Number of pts left: 9206
-Iteration: 13,   Sum Gradient Norm of pts left: 7104.043773485118   Number of pts left: 7380
-Iteration: 14,   Sum Gradient Norm of pts left: 7536.167238764821   Number of pts left: 6029
-Iteration: 15,   Sum Gradient Norm of pts left: 5192.358819538544   Number of pts left: 4947
-Iteration: 16,   Sum Gradient Norm of pts left: 5242.4103031197255   Number of pts left: 4129
-Iteration: 17,   Sum Gradient Norm of pts left: 3539.9513222697797   Number of pts left: 3451
-Iteration: 18,   Sum Gradient Norm of pts left: 2534.2741055412166   Number of pts left: 2946
-Iteration: 19,   Sum Gradient Norm of pts left: 1728.4041613435886   Number of pts left: 2534
-Iteration: 20,   Sum Gradient Norm of pts left: 3031.9845032207822   Number of pts left: 2212
-Iteration: 21,   Sum Gradient Norm of pts left: 1295.0878153503463   Number of pts left: 1941
-Iteration: 22,   Sum Gradient Norm of pts left: 1249.4600724206746   Number of pts left: 1728
-Iteration: 23,   Sum Gradient Norm of pts left: 263.3962998487871   Number of pts left: 1554
-Iteration: 24,   Sum Gradient Norm of pts left: 579.6970923448117   Number of pts left: 1410
-Iteration: 25,   Sum Gradient Norm of pts left: 406.58215129739654   Number of pts left: 1266
-Iteration: 26,   Sum Gradient Norm of pts left: 1641.8926885105432   Number of pts left: 1160
-Iteration: 27,   Sum Gradient Norm of pts left: 972.7155557733744   Number of pts left: 1065
-Iteration: 28,   Sum Gradient Norm of pts left: 1132.9942955742306   Number of pts left: 999
-Iteration: 29,   Sum Gradient Norm of pts left: 593.7110350824705   Number of pts left: 933
-Iteration: 30,   Sum Gradient Norm of pts left: 108.17826787273279   Number of pts left: 853
-Iteration: 31,   Sum Gradient Norm of pts left: 43.92215841839177   Number of pts left: 790
-Iteration: 32,   Sum Gradient Norm of pts left: 395.0950807268141   Number of pts left: 739
-Iteration: 33,   Sum Gradient Norm of pts left: 42.56095194417098   Number of pts left: 692
-Iteration: 34,   Sum Gradient Norm of pts left: 62.772237815168516   Number of pts left: 647
-Iteration: 35,   Sum Gradient Norm of pts left: 151.1617726740986   Number of pts left: 603
-Iteration: 36,   Sum Gradient Norm of pts left: 855.4277669432372   Number of pts left: 579
-Iteration: 37,   Sum Gradient Norm of pts left: 30.94301839917721   Number of pts left: 548
-Iteration: 38,   Sum Gradient Norm of pts left: 94.32372624549518   Number of pts left: 516
-Iteration: 39,   Sum Gradient Norm of pts left: 37.96333137521147   Number of pts left: 491
-Iteration: 40,   Sum Gradient Norm of pts left: 42.45551461651678   Number of pts left: 472
-Iteration: 41,   Sum Gradient Norm of pts left: 19.138671654681673   Number of pts left: 452
-Iteration: 42,   Sum Gradient Norm of pts left: 54.679243201784985   Number of pts left: 429
-Iteration: 43,   Sum Gradient Norm of pts left: 48.277000277030005   Number of pts left: 417
-Iteration: 44,   Sum Gradient Norm of pts left: 63.14895858899038   Number of pts left: 405
-Iteration: 45,   Sum Gradient Norm of pts left: 344.55328787073523   Number of pts left: 383
-Iteration: 46,   Sum Gradient Norm of pts left: 11.737965759300888   Number of pts left: 361
-Iteration: 47,   Sum Gradient Norm of pts left: 35.67980828149621   Number of pts left: 339
-Iteration: 48,   Sum Gradient Norm of pts left: 8.20183763269641   Number of pts left: 330
-Iteration: 49,   Sum Gradient Norm of pts left: 14.665850772267339   Number of pts left: 320
-Iteration: 50,   Sum Gradient Norm of pts left: 78.81895950442784   Number of pts left: 297
-Iteration: 51,   Sum Gradient Norm of pts left: 8.603011433113913   Number of pts left: 285
-Iteration: 52,   Sum Gradient Norm of pts left: 6.013031747018265   Number of pts left: 271
-Iteration: 53,   Sum Gradient Norm of pts left: 4.107767877372855   Number of pts left: 262
-Iteration: 54,   Sum Gradient Norm of pts left: 10.393534081335408   Number of pts left: 254
-Iteration: 55,   Sum Gradient Norm of pts left: 11.808410400457326   Number of pts left: 246
-Iteration: 56,   Sum Gradient Norm of pts left: 5.210784123929768   Number of pts left: 231
-Iteration: 57,   Sum Gradient Norm of pts left: 2.961970587927477   Number of pts left: 222
-Iteration: 58,   Sum Gradient Norm of pts left: 3.8837906404734275   Number of pts left: 221
-Iteration: 59,   Sum Gradient Norm of pts left: 3.5747880530162286   Number of pts left: 214
-Iteration: 60,   Sum Gradient Norm of pts left: 11.10196786100471   Number of pts left: 206
-Iteration: 61,   Sum Gradient Norm of pts left: 2.7723398672684834   Number of pts left: 192
-Iteration: 62,   Sum Gradient Norm of pts left: 110.27960611983572   Number of pts left: 185
-Iteration: 63,   Sum Gradient Norm of pts left: 4.022918016679588   Number of pts left: 180
-Iteration: 64,   Sum Gradient Norm of pts left: 3.2273689227843416   Number of pts left: 179
-Iteration: 65,   Sum Gradient Norm of pts left: 17.584723084394287   Number of pts left: 174
-Iteration: 66,   Sum Gradient Norm of pts left: 2.440265506546463   Number of pts left: 169
-Iteration: 67,   Sum Gradient Norm of pts left: 79.8814100444962   Number of pts left: 163
-Iteration: 68,   Sum Gradient Norm of pts left: 2.641816787589227   Number of pts left: 155
-Iteration: 69,   Sum Gradient Norm of pts left: 1.871861306400455   Number of pts left: 154
-Iteration: 70,   Sum Gradient Norm of pts left: 0.7799662927130979   Number of pts left: 150
-Iteration: 71,   Sum Gradient Norm of pts left: 1.1737723843371897   Number of pts left: 144
-Iteration: 72,   Sum Gradient Norm of pts left: 2.924783787403729   Number of pts left: 142
-Iteration: 73,   Sum Gradient Norm of pts left: 2.0291965179805094   Number of pts left: 137
-Iteration: 74,   Sum Gradient Norm of pts left: 738.3604937281779   Number of pts left: 134
-Iteration: 75,   Sum Gradient Norm of pts left: 0.9516235062150695   Number of pts left: 133
-Iteration: 76,   Sum Gradient Norm of pts left: 0.8877678750879456   Number of pts left: 129
-Iteration: 77,   Sum Gradient Norm of pts left: 106.70701597852167   Number of pts left: 129
-Iteration: 78,   Sum Gradient Norm of pts left: 1.1287439521854805   Number of pts left: 124
-Iteration: 79,   Sum Gradient Norm of pts left: 1.4297682113041854   Number of pts left: 121
-Iteration: 80,   Sum Gradient Norm of pts left: 1.0798656431493001   Number of pts left: 119
-Iteration: 81,   Sum Gradient Norm of pts left: 1.1491553526788758   Number of pts left: 117
-Iteration: 82,   Sum Gradient Norm of pts left: 1.4505577126712454   Number of pts left: 115
-Iteration: 83,   Sum Gradient Norm of pts left: 0.9247986453807715   Number of pts left: 115
-Iteration: 84,   Sum Gradient Norm of pts left: 1.2371529693094776   Number of pts left: 110
-Iteration: 85,   Sum Gradient Norm of pts left: 7.708037312884642   Number of pts left: 110
-Iteration: 86,   Sum Gradient Norm of pts left: 1.7355027243199928   Number of pts left: 108
-Iteration: 87,   Sum Gradient Norm of pts left: 1.0549085104745477   Number of pts left: 104
-Iteration: 88,   Sum Gradient Norm of pts left: 1.059773131461493   Number of pts left: 102
-Iteration: 89,   Sum Gradient Norm of pts left: 5.0133307800751545   Number of pts left: 100
-Iteration: 90,   Sum Gradient Norm of pts left: 2.3623847316389286   Number of pts left: 98
-Iteration: 91,   Sum Gradient Norm of pts left: 1.4117106527801102   Number of pts left: 98
-Iteration: 92,   Sum Gradient Norm of pts left: 0.689202482801012   Number of pts left: 95
-Iteration: 93,   Sum Gradient Norm of pts left: 1.2037735129452813   Number of pts left: 94
-Iteration: 94,   Sum Gradient Norm of pts left: 0.8728584746545788   Number of pts left: 93
-Iteration: 95,   Sum Gradient Norm of pts left: 1.1450511057127608   Number of pts left: 90
-Iteration: 96,   Sum Gradient Norm of pts left: 3.078963229492075   Number of pts left: 90
-Iteration: 97,   Sum Gradient Norm of pts left: 1.0394119332353533   Number of pts left: 89
-Iteration: 98,   Sum Gradient Norm of pts left: 0.8131383507560603   Number of pts left: 87
-Iteration: 99,   Sum Gradient Norm of pts left: 2.8740313487972116   Number of pts left: 85
-Iteration: 100,   Sum Gradient Norm of pts left: 1.1039169497707235   Number of pts left: 85
-Iteration: 101,   Sum Gradient Norm of pts left: 1.8394614099709568   Number of pts left: 84
-Iteration: 102,   Sum Gradient Norm of pts left: 1.0597689351461799   Number of pts left: 81
-Iteration: 103,   Sum Gradient Norm of pts left: 2.5827442499436475   Number of pts left: 81
-Iteration: 104,   Sum Gradient Norm of pts left: 0.7786093912449257   Number of pts left: 79
-Iteration: 105,   Sum Gradient Norm of pts left: 0.686749349339473   Number of pts left: 77
-Iteration: 106,   Sum Gradient Norm of pts left: 0.8843939419015349   Number of pts left: 76
-Iteration: 107,   Sum Gradient Norm of pts left: 2.5881635879951066   Number of pts left: 74
-Iteration: 108,   Sum Gradient Norm of pts left: 12.006936400316551   Number of pts left: 71
-Iteration: 109,   Sum Gradient Norm of pts left: 54.602203659449785   Number of pts left: 70
-Iteration: 110,   Sum Gradient Norm of pts left: 1.4805984507903105   Number of pts left: 70
-Iteration: 111,   Sum Gradient Norm of pts left: 1.800793777939802   Number of pts left: 69
-Iteration: 112,   Sum Gradient Norm of pts left: 1.0911839251477975   Number of pts left: 68
-Iteration: 113,   Sum Gradient Norm of pts left: 0.7735461938493347   Number of pts left: 66
-Iteration: 114,   Sum Gradient Norm of pts left: 0.5639348002439291   Number of pts left: 64
-Iteration: 115,   Sum Gradient Norm of pts left: 0.5070131822579609   Number of pts left: 64
-Iteration: 116,   Sum Gradient Norm of pts left: 0.593530626445337   Number of pts left: 64
-Iteration: 117,   Sum Gradient Norm of pts left: 0.4718776185508299   Number of pts left: 63
-Iteration: 118,   Sum Gradient Norm of pts left: 0.8236434650936505   Number of pts left: 62
-Iteration: 119,   Sum Gradient Norm of pts left: 0.3408423531033296   Number of pts left: 62
-Iteration: 120,   Sum Gradient Norm of pts left: 0.3825715607398019   Number of pts left: 61
-Iteration: 121,   Sum Gradient Norm of pts left: 0.2181355748390945   Number of pts left: 60
-Iteration: 122,   Sum Gradient Norm of pts left: 0.2335674727919163   Number of pts left: 60
-Iteration: 123,   Sum Gradient Norm of pts left: 0.4108371022360938   Number of pts left: 60
-Iteration: 124,   Sum Gradient Norm of pts left: 0.4039296039471612   Number of pts left: 60
-Iteration: 125,   Sum Gradient Norm of pts left: 0.2588884724492406   Number of pts left: 60
-Iteration: 126,   Sum Gradient Norm of pts left: 0.4560571251264232   Number of pts left: 60
-Iteration: 127,   Sum Gradient Norm of pts left: 0.3190243437523975   Number of pts left: 60
-Iteration: 128,   Sum Gradient Norm of pts left: 0.3186459673960767   Number of pts left: 60
-Iteration: 129,   Sum Gradient Norm of pts left: 0.39256409435544876   Number of pts left: 60
-Iteration: 130,   Sum Gradient Norm of pts left: 0.23923278748332427   Number of pts left: 59
-Iteration: 131,   Sum Gradient Norm of pts left: 0.5471033373217847   Number of pts left: 59
-Iteration: 132,   Sum Gradient Norm of pts left: 0.6211803833374914   Number of pts left: 59
-Iteration: 133,   Sum Gradient Norm of pts left: 0.2761666828106832   Number of pts left: 58
-Iteration: 134,   Sum Gradient Norm of pts left: 0.40958691747945514   Number of pts left: 58
-Iteration: 135,   Sum Gradient Norm of pts left: 0.20479536583330268   Number of pts left: 58
-Iteration: 136,   Sum Gradient Norm of pts left: 0.2289204436682763   Number of pts left: 56
-Iteration: 137,   Sum Gradient Norm of pts left: 0.4020135311589622   Number of pts left: 55
-Iteration: 138,   Sum Gradient Norm of pts left: 0.21190681338224426   Number of pts left: 55
-Iteration: 139,   Sum Gradient Norm of pts left: 0.5276026847613123   Number of pts left: 55
-Iteration: 140,   Sum Gradient Norm of pts left: 4.387734752008945   Number of pts left: 55
-Iteration: 141,   Sum Gradient Norm of pts left: 1.5211947243084862   Number of pts left: 54
-Iteration: 142,   Sum Gradient Norm of pts left: 0.9395755879290218   Number of pts left: 54
-Iteration: 143,   Sum Gradient Norm of pts left: 27.669908976819354   Number of pts left: 54
-Iteration: 144,   Sum Gradient Norm of pts left: 1.0939992213095586   Number of pts left: 53
-Iteration: 145,   Sum Gradient Norm of pts left: 0.19762267036384804   Number of pts left: 53
-Iteration: 146,   Sum Gradient Norm of pts left: 0.2844144915900022   Number of pts left: 53
-Iteration: 147,   Sum Gradient Norm of pts left: 0.22319556495769755   Number of pts left: 53
-Iteration: 148,   Sum Gradient Norm of pts left: 0.28336944614065385   Number of pts left: 53
-Iteration: 149,   Sum Gradient Norm of pts left: 0.41817873885293544   Number of pts left: 53
-Iteration: 150,   Sum Gradient Norm of pts left: 20.105152069655823   Number of pts left: 53
-Iteration: 151,   Sum Gradient Norm of pts left: 0.4034221534097332   Number of pts left: 53
-Iteration: 152,   Sum Gradient Norm of pts left: 0.3690319985361999   Number of pts left: 53
-Iteration: 153,   Sum Gradient Norm of pts left: 0.417097642852235   Number of pts left: 53
-Iteration: 154,   Sum Gradient Norm of pts left: 0.18526444100489078   Number of pts left: 53
-Iteration: 155,   Sum Gradient Norm of pts left: 0.19036551229855   Number of pts left: 52
-Iteration: 156,   Sum Gradient Norm of pts left: 0.35958007529478525   Number of pts left: 51
-Iteration: 157,   Sum Gradient Norm of pts left: 2.7081752678644664   Number of pts left: 50
-Iteration: 158,   Sum Gradient Norm of pts left: 1.1498544859018576   Number of pts left: 50
-Iteration: 159,   Sum Gradient Norm of pts left: 0.7738765089817964   Number of pts left: 50
-Iteration: 160,   Sum Gradient Norm of pts left: 0.44915214723565444   Number of pts left: 50
-Iteration: 161,   Sum Gradient Norm of pts left: 0.5887278196677075   Number of pts left: 49
-Iteration: 162,   Sum Gradient Norm of pts left: 0.8190985030960872   Number of pts left: 49
-Iteration: 163,   Sum Gradient Norm of pts left: 0.549169160937144   Number of pts left: 48
-Iteration: 164,   Sum Gradient Norm of pts left: 0.209317848940976   Number of pts left: 47
-Iteration: 165,   Sum Gradient Norm of pts left: 0.25642238948989066   Number of pts left: 46
-Iteration: 166,   Sum Gradient Norm of pts left: 0.1724981507183297   Number of pts left: 45
-Iteration: 167,   Sum Gradient Norm of pts left: 0.18235784775279393   Number of pts left: 45
-Iteration: 168,   Sum Gradient Norm of pts left: 0.21043409544039707   Number of pts left: 45
-Iteration: 169,   Sum Gradient Norm of pts left: 0.1802094156070251   Number of pts left: 45
-Iteration: 170,   Sum Gradient Norm of pts left: 0.42329956650575534   Number of pts left: 45
-Iteration: 171,   Sum Gradient Norm of pts left: 0.39547717679719663   Number of pts left: 45
-Iteration: 172,   Sum Gradient Norm of pts left: 0.23688093929588275   Number of pts left: 45
-Iteration: 173,   Sum Gradient Norm of pts left: 0.1817067141094791   Number of pts left: 45
-Iteration: 174,   Sum Gradient Norm of pts left: 0.1932889677569583   Number of pts left: 45
-Iteration: 175,   Sum Gradient Norm of pts left: 0.15905108826992068   Number of pts left: 45
-Iteration: 176,   Sum Gradient Norm of pts left: 0.19223729048918872   Number of pts left: 44
-Iteration: 177,   Sum Gradient Norm of pts left: 0.18357986085259542   Number of pts left: 44
-Iteration: 178,   Sum Gradient Norm of pts left: 0.1708321242752671   Number of pts left: 44
-Iteration: 179,   Sum Gradient Norm of pts left: 0.17863384613041716   Number of pts left: 44
-Iteration: 180,   Sum Gradient Norm of pts left: 0.19925285099797752   Number of pts left: 44
-Iteration: 181,   Sum Gradient Norm of pts left: 0.16071651708706255   Number of pts left: 44
-Iteration: 182,   Sum Gradient Norm of pts left: 0.18805403135813384   Number of pts left: 44
-Iteration: 183,   Sum Gradient Norm of pts left: 0.18269785178750192   Number of pts left: 44
-Iteration: 184,   Sum Gradient Norm of pts left: 0.17389708564330475   Number of pts left: 44
-Iteration: 185,   Sum Gradient Norm of pts left: 0.1773423222495032   Number of pts left: 44
-Iteration: 186,   Sum Gradient Norm of pts left: 0.1952494966603132   Number of pts left: 44
-Iteration: 187,   Sum Gradient Norm of pts left: 0.15949511112197398   Number of pts left: 44
-Iteration: 188,   Sum Gradient Norm of pts left: 0.1914774957349511   Number of pts left: 44
-Iteration: 189,   Sum Gradient Norm of pts left: 0.18498392133743255   Number of pts left: 44
-Iteration: 190,   Sum Gradient Norm of pts left: 0.1712567418980242   Number of pts left: 44
-Iteration: 191,   Sum Gradient Norm of pts left: 0.17693691211049653   Number of pts left: 44
-Iteration: 192,   Sum Gradient Norm of pts left: 0.19700698807107506   Number of pts left: 44
-Iteration: 193,   Sum Gradient Norm of pts left: 0.1600092194002104   Number of pts left: 44
-Iteration: 194,   Sum Gradient Norm of pts left: 0.18807172495156183   Number of pts left: 44
-Iteration: 195,   Sum Gradient Norm of pts left: 0.18290593503927632   Number of pts left: 44
-Iteration: 196,   Sum Gradient Norm of pts left: 0.17404778589055414   Number of pts left: 44
-Iteration: 197,   Sum Gradient Norm of pts left: 0.17836316793185333   Number of pts left: 44
-Iteration: 198,   Sum Gradient Norm of pts left: 0.19540735460618683   Number of pts left: 44
-Iteration: 199,   Sum Gradient Norm of pts left: 0.15999896167568867   Number of pts left: 44
-Iteration: 200,   Sum Gradient Norm of pts left: 0.19158890320205035   Number of pts left: 44
-Iteration: 201,   Sum Gradient Norm of pts left: 0.18268639331718578   Number of pts left: 44
-Iteration: 202,   Sum Gradient Norm of pts left: 0.1710130355189225   Number of pts left: 44
-Iteration: 203,   Sum Gradient Norm of pts left: 0.1767808708857762   Number of pts left: 44
-Iteration: 204,   Sum Gradient Norm of pts left: 0.1976074526075174   Number of pts left: 44
-Iteration: 205,   Sum Gradient Norm of pts left: 0.15989815037700644   Number of pts left: 44
-Iteration: 206,   Sum Gradient Norm of pts left: 0.18881263246887275   Number of pts left: 44
-Iteration: 207,   Sum Gradient Norm of pts left: 0.1842364529817766   Number of pts left: 44
-Iteration: 208,   Sum Gradient Norm of pts left: 0.17446894824817452   Number of pts left: 44
-Iteration: 209,   Sum Gradient Norm of pts left: 0.17758796804892782   Number of pts left: 44
-Iteration: 210,   Sum Gradient Norm of pts left: 0.193300849193229   Number of pts left: 44
-Iteration: 211,   Sum Gradient Norm of pts left: 0.22166539117551287   Number of pts left: 44
-Iteration: 212,   Sum Gradient Norm of pts left: 0.20430974312398853   Number of pts left: 44
-Iteration: 213,   Sum Gradient Norm of pts left: 0.19919553831460166   Number of pts left: 44
-Iteration: 214,   Sum Gradient Norm of pts left: 0.17066142709222465   Number of pts left: 44
-Iteration: 215,   Sum Gradient Norm of pts left: 0.1793907654975197   Number of pts left: 44
-Iteration: 216,   Sum Gradient Norm of pts left: 0.22480373150083577   Number of pts left: 44
-Iteration: 217,   Sum Gradient Norm of pts left: 0.1626487246513282   Number of pts left: 44
-Iteration: 218,   Sum Gradient Norm of pts left: 0.19043415813752398   Number of pts left: 44
-Iteration: 219,   Sum Gradient Norm of pts left: 0.18271065526156574   Number of pts left: 44
-Iteration: 220,   Sum Gradient Norm of pts left: 0.1812973808039301   Number of pts left: 44
-Iteration: 221,   Sum Gradient Norm of pts left: 0.27655415954007856   Number of pts left: 44
-Iteration: 222,   Sum Gradient Norm of pts left: 0.21391668508241482   Number of pts left: 44
-Iteration: 223,   Sum Gradient Norm of pts left: 0.22969055346531744   Number of pts left: 44
-Iteration: 224,   Sum Gradient Norm of pts left: 0.19383097993274173   Number of pts left: 44
-Iteration: 225,   Sum Gradient Norm of pts left: 0.2683900771528395   Number of pts left: 44
-Iteration: 226,   Sum Gradient Norm of pts left: 0.18436285531462182   Number of pts left: 44
-Iteration: 227,   Sum Gradient Norm of pts left: 0.17695213148551028   Number of pts left: 44
-Iteration: 228,   Sum Gradient Norm of pts left: 0.1966136838516205   Number of pts left: 43
-Iteration: 229,   Sum Gradient Norm of pts left: 0.1597277486948572   Number of pts left: 43
-Iteration: 230,   Sum Gradient Norm of pts left: 0.18780809084530428   Number of pts left: 43
-Iteration: 231,   Sum Gradient Norm of pts left: 0.18279901400741425   Number of pts left: 43
-Iteration: 232,   Sum Gradient Norm of pts left: 0.17421077968489962   Number of pts left: 43
-Iteration: 233,   Sum Gradient Norm of pts left: 0.1773597075646241   Number of pts left: 43
-Iteration: 234,   Sum Gradient Norm of pts left: 0.19528926147681577   Number of pts left: 43
-Iteration: 235,   Sum Gradient Norm of pts left: 0.15966956462754955   Number of pts left: 43
-Iteration: 236,   Sum Gradient Norm of pts left: 0.1914293723829972   Number of pts left: 43
-Iteration: 237,   Sum Gradient Norm of pts left: 0.182425521679014   Number of pts left: 43
-Iteration: 238,   Sum Gradient Norm of pts left: 0.17018912816647064   Number of pts left: 43
-Iteration: 239,   Sum Gradient Norm of pts left: 0.1766262845329997   Number of pts left: 43
-Iteration: 240,   Sum Gradient Norm of pts left: 0.1973042801156968   Number of pts left: 43
-Iteration: 241,   Sum Gradient Norm of pts left: 0.16014294100851353   Number of pts left: 43
-Iteration: 242,   Sum Gradient Norm of pts left: 0.18801039280031243   Number of pts left: 43
-Iteration: 243,   Sum Gradient Norm of pts left: 0.18394666871515775   Number of pts left: 43
-Iteration: 244,   Sum Gradient Norm of pts left: 0.17455118721046706   Number of pts left: 43
-Iteration: 245,   Sum Gradient Norm of pts left: 0.17730314807998535   Number of pts left: 43
-Iteration: 246,   Sum Gradient Norm of pts left: 0.19305709821427366   Number of pts left: 43
-Iteration: 247,   Sum Gradient Norm of pts left: 0.15902294776685857   Number of pts left: 43
-Iteration: 248,   Sum Gradient Norm of pts left: 0.19124790841627695   Number of pts left: 43
-Iteration: 249,   Sum Gradient Norm of pts left: 0.18337947470160273   Number of pts left: 43
-Iteration: 250,   Sum Gradient Norm of pts left: 0.17074305204912885   Number of pts left: 43
-Convergence not achieved, attempt using Scipy. Number of points didn&#39;t converge: 12
-Final number of points found 450
 Is Poincare-Hopf Equation Satisfied?:  True
 </pre></div></div>
 </div>

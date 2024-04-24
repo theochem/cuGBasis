@@ -66,6 +66,8 @@
 </li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Molecule Class</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#cugbasis.Molecule"><code class="docutils literal notranslate"><span class="pre">Molecule</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#cugbasis.Molecule.atcoords"><code class="docutils literal notranslate"><span class="pre">Molecule.atcoords</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#cugbasis.Molecule.atnums"><code class="docutils literal notranslate"><span class="pre">Molecule.atnums</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#cugbasis.Molecule.compute_density"><code class="docutils literal notranslate"><span class="pre">Molecule.compute_density()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#cugbasis.Molecule.compute_electrostatic_potential"><code class="docutils literal notranslate"><span class="pre">Molecule.compute_electrostatic_potential()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#cugbasis.Molecule.compute_empirical_gradient_expansion_ked"><code class="docutils literal notranslate"><span class="pre">Molecule.compute_empirical_gradient_expansion_ked()</span></code></a></li>
@@ -84,9 +86,7 @@
 <li class="toctree-l3"><a class="reference internal" href="#cugbasis.Molecule.compute_shannon_information_density"><code class="docutils literal notranslate"><span class="pre">Molecule.compute_shannon_information_density()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#cugbasis.Molecule.compute_thomas_fermi_ked"><code class="docutils literal notranslate"><span class="pre">Molecule.compute_thomas_fermi_ked()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#cugbasis.Molecule.compute_weizsacker_ked"><code class="docutils literal notranslate"><span class="pre">Molecule.compute_weizsacker_ked()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#cugbasis.Molecule.coordinates"><code class="docutils literal notranslate"><span class="pre">Molecule.coordinates</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#cugbasis.Molecule.get_file_path"><code class="docutils literal notranslate"><span class="pre">Molecule.get_file_path()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#cugbasis.Molecule.numbers"><code class="docutils literal notranslate"><span class="pre">Molecule.numbers</span></code></a></li>
 </ul>
 </li>
 </ul>
@@ -169,9 +169,9 @@
 <dl class="field-list simple">
 <dt class="field-odd">Attributes<span class="colon">:</span></dt>
 <dd class="field-odd"><dl class="simple">
-<dt><a class="reference internal" href="#cugbasis.Molecule.coordinates" title="cugbasis.Molecule.coordinates"><code class="xref py py-obj docutils literal notranslate"><span class="pre">coordinates</span></code></a></dt><dd><p>Cartesian coordinates of the atomic centers.</p>
+<dt><a class="reference internal" href="#cugbasis.Molecule.atcoords" title="cugbasis.Molecule.atcoords"><code class="xref py py-obj docutils literal notranslate"><span class="pre">atcoords</span></code></a></dt><dd><p>Cartesian coordinates of the atomic centers.</p>
 </dd>
-<dt><a class="reference internal" href="#cugbasis.Molecule.numbers" title="cugbasis.Molecule.numbers"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numbers</span></code></a></dt><dd><p>Atomic number of atomic centers.</p>
+<dt><a class="reference internal" href="#cugbasis.Molecule.atnums" title="cugbasis.Molecule.atnums"><code class="xref py py-obj docutils literal notranslate"><span class="pre">atnums</span></code></a></dt><dd><p>Atomic number of atomic centers.</p>
 </dd>
 </dl>
 </dd>
@@ -238,6 +238,18 @@
 </tr>
 </tbody>
 </table>
+<dl class="py property">
+<dt class="sig sig-object py" id="cugbasis.Molecule.atcoords">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">atcoords</span></span><a class="headerlink" href="#cugbasis.Molecule.atcoords" title="Permalink to this definition"></a></dt>
+<dd><p>Cartesian coordinates of the atomic centers.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="cugbasis.Molecule.atnums">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">atnums</span></span><a class="headerlink" href="#cugbasis.Molecule.atnums" title="Permalink to this definition"></a></dt>
+<dd><p>Atomic number of atomic centers.</p>
+</dd></dl>
+
 <dl class="py method">
 <dt class="sig sig-object py" id="cugbasis.Molecule.compute_density">
 <span class="sig-name descname"><span class="pre">compute_density</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#cugbasis.Molecule.compute_density" title="Permalink to this definition"></a></dt>
@@ -514,22 +526,10 @@ Numpy to compute this quanity.</p>
 </dl>
 </dd></dl>
 
-<dl class="py property">
-<dt class="sig sig-object py" id="cugbasis.Molecule.coordinates">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">coordinates</span></span><a class="headerlink" href="#cugbasis.Molecule.coordinates" title="Permalink to this definition"></a></dt>
-<dd><p>Cartesian coordinates of the atomic centers.</p>
-</dd></dl>
-
 <dl class="py method">
 <dt class="sig sig-object py" id="cugbasis.Molecule.get_file_path">
 <span class="sig-name descname"><span class="pre">get_file_path</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#cugbasis.Molecule.get_file_path" title="Permalink to this definition"></a></dt>
 <dd><p>Get the wavefunction file path.</p>
-</dd></dl>
-
-<dl class="py property">
-<dt class="sig sig-object py" id="cugbasis.Molecule.numbers">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">numbers</span></span><a class="headerlink" href="#cugbasis.Molecule.numbers" title="Permalink to this definition"></a></dt>
-<dd><p>Atomic number of atomic centers.</p>
 </dd></dl>
 
 </dd></dl>
