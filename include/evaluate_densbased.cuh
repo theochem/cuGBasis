@@ -93,7 +93,7 @@ __host__ std::vector<double> compute_general_ked(
 /**
  * Compute Shannon information density
  *
- * s(\mathbf{r}) = \rho(\mathbf{r}) \log \rho(\mathbf{r}),
+ * s(\mathbf{r}) = -\rho(\mathbf{r}) \log \rho(\mathbf{r}),
  *
  * @param[in] iodata  The IOData object that stores the molecules basis.
  * @param[in] h_points Array in column-major order that stores the three-dimensional points.

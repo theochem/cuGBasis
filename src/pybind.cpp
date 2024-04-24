@@ -289,7 +289,7 @@ PYBIND11_MODULE(cugbasis, m) {
            R"pbdoc(Compute the Shannon information density."
 
     .. math::
-         s(\mathbf{r}) = \rho(\mathbf{r}) \log \rho(\mathbf{r}),
+         s(\mathbf{r}) = -\rho(\mathbf{r}) \log \rho(\mathbf{r}),
 
     where the integral gives the Shannon entropy of the electron density.
 

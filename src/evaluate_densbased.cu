@@ -214,7 +214,7 @@ __host__ std::vector<double> chemtools::compute_shannon_information_density(
   std::vector<double> log_density = density;
 
   std::transform(log_density.begin(), log_density.end(), log_density.begin(),
-                 [](auto& c){return std::log(c);});
+                 [](auto& c){return -std::log(c);});
 
   std::transform(density.begin(), density.end(), log_density.begin(),
                  density.begin(), std::multiplies<double>());
