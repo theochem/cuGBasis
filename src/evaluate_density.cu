@@ -693,12 +693,11 @@ __host__ std::vector<double> chemtools::evaluate_electron_density_on_any_grid_ha
   size_t free_mem = 0;   // in bytes
   size_t total_mem = 0;  // in bytes
   cudaError_t error_id = cudaMemGetInfo(&free_mem, &total_mem);
-  free_mem -= 500000000;
   // Calculate how much memory can fit inside a GPU memory.
-  size_t t_numb_chunks = t_highest_number_of_bytes / free_mem;
+  size_t t_numb_chunks = t_highest_number_of_bytes / (free_mem - 500000000);
   // Calculate how many points we can compute with 11.5 Gb:
   //    This is calculated by solving (2 * N M + M^2) * 8 bytes = 11.5 Gb(in bytes)  for N to get:
-  size_t t_numb_pts_of_each_chunk = ((free_mem / (sizeof(double)))  - t_nbasis * t_nbasis) / (2 * t_nbasis);
+  size_t t_numb_pts_of_each_chunk = (((free_mem - 500000000) / (sizeof(double)))  - t_nbasis * t_nbasis) / (2 * t_nbasis);
   if (t_numb_pts_of_each_chunk == 0 and t_numb_chunks > 1.0) {
     // Haven't handle this case yet
     assert(0);
@@ -807,7 +806,7 @@ __host__ std::vector<double> chemtools::evaluate_electron_density_on_any_grid_ha
 
     // Do a hadamard product between d_final and d_contraction and store it in d_final. Maximal
     dim3 threadsPerBlock2(320);
-    dim3 grid2((number_pts_iter * nbasisfuncs + threadsPerBlock.x - 1) / (threadsPerBlock.x));
+    dim3 grid2((number_pts_iter * nbasisfuncs + threadsPerBlock2.x - 1) / (threadsPerBlock2.x));
     chemtools::hadamard_product<<<grid2, threadsPerBlock2>>>(d_final, d_contractions,
         nbasisfuncs, number_pts_iter);
     cudaFree(d_contractions);  // d_contractions is no longer needed.
