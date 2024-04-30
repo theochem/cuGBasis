@@ -3,20 +3,6 @@
 Installation
 ############
 
-Downloading Code
-================
-
-The latest code can be obtained through theochem (https://github.com/qtchem/CuGBasis) in Github,
-
-.. code-block:: bash
-
-   git clone https://github.com/qtchem/CuGBasis.git
-
-   # Get the dependencies in ./libs/ folder
-   git submodule update --init --recursive
-
-
-
 Dependencies
 ============
 
@@ -25,9 +11,18 @@ The following dependencies will be necessary for cuGBasis to build properly,
 * CMake>=3.24: (https://cmake.org/)
 * CUDA/DRIVERS/NVCC/CUDA-TOOLKIT: (https://docs.nvidia.com/cuda/cuda-installation-guide-linux/index.html)
 * Python>=3.7: (http://www.python.org/)
+
+The following Python dependencies are necessary:
+
 * NumPy >= 1.16.0: http://www.numpy.org/
 * Pybind11 on python: (https://github.com/pybind/pybind11)
 * IOData on python: (https://github.com/theochem/iodata)
+
+These python dependencies can be installed via:
+
+.. code-block:: bash
+
+    pip install numpy pybind11 qc-iodata
 
 For testing the following are required to be installed on the Python system:
 
@@ -35,9 +30,34 @@ For testing the following are required to be installed on the Python system:
 * GBasis: (https://github.com/theochem/gbasis)
 * ChemTools: (https://github.com/theochem/chemtools)
 
-The following Eigen package will automatically be tried to linked if CMake could not find the package already.
+These can be installed via:
+
+.. code-block:: bash
+
+    pip install pytest
+    pip install git+https://github.com/theochem/gbasis.git
+    pip install git+https://github.com/theochem/chemtools.git
+
+
+The following Eigen package will automatically be linked if CMake could not find the package already.
 
 * Eigen>=3: (https://eigen.tuxfamily.org/index.php?title=Main_Page)
+
+
+Downloading Code
+================
+
+The user must obtain the latest code from theochem (https://github.com/theochem/cugbasis) in Github,
+As well, as obtain the dependencies from running the `git submodule` command.
+
+.. code-block:: bash
+
+   git clone https://github.com/theochem/CuGBasis.git
+
+   # Get the dependencies in ./libs/ folder
+   git submodule update --init --recursive
+
+
 
 Installation
 ============
@@ -78,7 +98,7 @@ The following is the set of instructions for creating a Python environment insid
 and installing cuGBasis. It's important to compile/install cuGBasis with a GPU enabled.
 It is recommended that CMake version be greater than 3.24 (see below).
 Note that different Cuda environments can be loaded, but here we will load Cuda 11.7 version.
-It's important to load the required depedencies before creating the python environment
+It's important to load the required dependencies before creating the python environment
 so that the same compiler is used when creating the Python virtual environment, and when
 installing (this may not be required but is hypothesized to may cause future errors).
 
