@@ -53,8 +53,8 @@
               <p class="caption" role="heading"><span class="caption-text">User documentation:</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="installation.html#downloading-code">Downloading Code</a></li>
 <li class="toctree-l2"><a class="reference internal" href="installation.html#dependencies">Dependencies</a></li>
+<li class="toctree-l2"><a class="reference internal" href="installation.html#downloading-code">Downloading Code</a></li>
 <li class="toctree-l2"><a class="reference internal" href="installation.html#id1">Installation</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="installation.html#python-binding">Python Binding</a></li>
 <li class="toctree-l3"><a class="reference internal" href="installation.html#c">C++</a></li>
@@ -107,6 +107,10 @@
 <p class="caption" role="heading"><span class="caption-text">Example Tutorials:</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="quick_start.html">Quick Start</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="quick_start.html#Installation-cuGBasis-on-Colab">Installation cuGBasis on Colab</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="quick_start.html#Enable-GPU">Enable GPU</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="quick_start.html#Constructing-Molecule-Object">Constructing Molecule Object</a></li>
 <li class="toctree-l2"><a class="reference internal" href="quick_start.html#Electron-Density">Electron Density</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="quick_start.html#Molecular-Integration-and-Dipole-Moment">Molecular Integration and Dipole Moment</a></li>
@@ -118,6 +122,11 @@
 </ul>
 </li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">QTAIM Critical Points</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#Installation-cuGBasis-on-Colab">Installation cuGBasis on Colab</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#Enable-GPU">Enable GPU</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#Load-the-Molecule">Load the Molecule</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#Using-Default-Initial-Guess">Using Default Initial Guess</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#Challenging-Cases">Challenging Cases</a></li>
 </ul>
@@ -160,10 +169,45 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <p><img alt="Open In Colab" src="https://colab.research.google.com/assets/colab-badge.svg" /></p>
+  <p><a class="reference external" href="https://colab.research.google.com/github/theochem/cuGBasis/blob/main/examples/critical_points.ipynb"><img alt="Open In Colab" src="https://colab.research.google.com/assets/colab-badge.svg" /></a></p>
 <section id="QTAIM-Critical-Points">
 <h1>QTAIM Critical Points<a class="headerlink" href="#QTAIM-Critical-Points" title="Permalink to this heading"></a></h1>
 <p>This example illustrates how to find the QTAIM critical points and bond-paths using ChemTools and cuGBasis. This is precisely when the gradient of the electron density <span class="math notranslate nohighlight">\(\nabla \rho = 0\)</span> is zero. The first step is to load the wavefunction information using cuGBasis.</p>
+<section id="Installation-cuGBasis-on-Colab">
+<h2>Installation cuGBasis on Colab<a class="headerlink" href="#Installation-cuGBasis-on-Colab" title="Permalink to this heading"></a></h2>
+<p>The user can skip this step if they aren’t using Google Colab.</p>
+<p>Installation of cuGBasis is rather simple, given that the user has CMake, and CUDA installed.</p>
+<section id="Enable-GPU">
+<h3>Enable GPU<a class="headerlink" href="#Enable-GPU" title="Permalink to this heading"></a></h3>
+<p>On Google Colab, the GPU needs to be enabled. The user should do the following:</p>
+<p>Click on Runtime -&gt; Change runtime type -&gt; T4 GPU</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre><span></span><span class="c1">#@title **Installing Horton, ChemTools and cuGBasis</span>
+<span class="c1">#@markdown It may take a few minutes! Make sure to enable GPU</span>
+<span class="o">!</span>pip<span class="w"> </span>install<span class="w"> </span>-q<span class="w"> </span>condacolab
+<span class="kn">import</span> <span class="nn">condacolab</span>
+<span class="n">condacolab</span><span class="o">.</span><span class="n">install</span><span class="p">()</span>
+<span class="o">!</span>pip<span class="w"> </span>install<span class="w"> </span>numpy<span class="w"> </span>matplotlib<span class="w"> </span>scipy<span class="w"> </span>pybind11<span class="w"> </span>qc-iodata
+<span class="o">!</span>pip<span class="w"> </span>install<span class="w"> </span>git+https://github.com/theochem/grid.git
+<span class="o">!</span>mamba<span class="w"> </span>install<span class="w"> </span>-c<span class="w"> </span>theochem<span class="w"> </span>horton
+<span class="o">!</span>pip<span class="w"> </span>install<span class="w"> </span>git+https://github.com/theochem/chemtools.git@refs/pull/59/head
+<span class="o">!</span>git<span class="w"> </span>clone<span class="w"> </span>https://www.github.com/theochem/cuGBasis
+<span class="o">%</span><span class="k">cd</span> cuGBasis
+<span class="o">!</span>git<span class="w"> </span>submodule<span class="w"> </span>update<span class="w"> </span>--init<span class="w"> </span>--recursive
+<span class="o">!</span>ls
+<span class="o">!</span>pip<span class="w"> </span>install<span class="w"> </span>-v<span class="w"> </span>.
+<span class="o">%</span><span class="k">cd</span> examples/
+</pre></div>
+</div>
+</div>
+</section>
+</section>
+<section id="Load-the-Molecule">
+<h2>Load the Molecule<a class="headerlink" href="#Load-the-Molecule" title="Permalink to this heading"></a></h2>
+<p>The first step is to load the wavefunction information using cuGBasis.</p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
 </pre></div>
@@ -182,6 +226,7 @@
 </pre></div>
 </div>
 </div>
+</section>
 <section id="Using-Default-Initial-Guess">
 <h2>Using Default Initial Guess<a class="headerlink" href="#Using-Default-Initial-Guess" title="Permalink to this heading"></a></h2>
 <p>In this example, we will provide only the atomic coordinates and it will generate initial guesses where the gradient of the electron density is close to zero. This should roughly be near the center of each atom, inbetween any two atoms and between three/four atoms. The electron density, gradient and hessian are obtained from cuGBasis and use is given to the ChemTools algorithm for efficiently finding the critical points and then find the bond-paths for all bond-critical points.</p>
@@ -309,7 +354,7 @@ Bond path 1 converged to atom 8 with coords [11.0737951  13.8082288   7.07513461
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/critical_points_7_0.png" src="_images/critical_points_7_0.png" />
+<img alt="_images/critical_points_10_0.png" src="_images/critical_points_10_0.png" />
 </div>
 </div>
 </section>
@@ -427,7 +472,7 @@ Is Poincare-Hopf Equation Satisfied?:  True
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/critical_points_12_0.png" src="_images/critical_points_12_0.png" />
+<img alt="_images/critical_points_15_0.png" src="_images/critical_points_15_0.png" />
 </div>
 </div>
 </section>

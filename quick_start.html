@@ -53,8 +53,8 @@
               <p class="caption" role="heading"><span class="caption-text">User documentation:</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="installation.html#downloading-code">Downloading Code</a></li>
 <li class="toctree-l2"><a class="reference internal" href="installation.html#dependencies">Dependencies</a></li>
+<li class="toctree-l2"><a class="reference internal" href="installation.html#downloading-code">Downloading Code</a></li>
 <li class="toctree-l2"><a class="reference internal" href="installation.html#id1">Installation</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="installation.html#python-binding">Python Binding</a></li>
 <li class="toctree-l3"><a class="reference internal" href="installation.html#c">C++</a></li>
@@ -107,6 +107,10 @@
 <p class="caption" role="heading"><span class="caption-text">Example Tutorials:</span></p>
 <ul class="current">
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Quick Start</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#Installation-cuGBasis-on-Colab">Installation cuGBasis on Colab</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#Enable-GPU">Enable GPU</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="#Constructing-Molecule-Object">Constructing Molecule Object</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#Electron-Density">Electron Density</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#Molecular-Integration-and-Dipole-Moment">Molecular Integration and Dipole Moment</a></li>
@@ -118,6 +122,11 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="critical_points.html">QTAIM Critical Points</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="critical_points.html#Installation-cuGBasis-on-Colab">Installation cuGBasis on Colab</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="critical_points.html#Enable-GPU">Enable GPU</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="critical_points.html#Load-the-Molecule">Load the Molecule</a></li>
 <li class="toctree-l2"><a class="reference internal" href="critical_points.html#Using-Default-Initial-Guess">Using Default Initial Guess</a></li>
 <li class="toctree-l2"><a class="reference internal" href="critical_points.html#Challenging-Cases">Challenging Cases</a></li>
 </ul>
@@ -160,10 +169,42 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <p><img alt="Open In Colab" src="https://colab.research.google.com/assets/colab-badge.svg" /></p>
+  <p><a class="reference external" href="https://colab.research.google.com/github/theochem/cuGBasis/blob/main/examples/quick_start.ipynb"><img alt="Open In Colab" src="https://colab.research.google.com/assets/colab-badge.svg" /></a></p>
 <section id="Quick-Start">
 <h1>Quick Start<a class="headerlink" href="#Quick-Start" title="Permalink to this heading"></a></h1>
 <p><a class="reference external" href="https://cugbasis.qcdevs.org/index.html">CuGBasis</a> is suitable for the evaluation of the electron density and its various derivatives of interest for the quantum chemistry community. It offers an easy to use functionality, being highly applicable to larger systems, and can read various popular wave-function formats. This example will illustrate various different post-processing tools that cuGBasis can be used for.</p>
+<section id="Installation-cuGBasis-on-Colab">
+<h2>Installation cuGBasis on Colab<a class="headerlink" href="#Installation-cuGBasis-on-Colab" title="Permalink to this heading"></a></h2>
+<p>The user can skip this step if they aren’t using Google Colab.</p>
+<p>Installation of cuGBasis is rather simple, given that the user has CMake, and CUDA installed.</p>
+<section id="Enable-GPU">
+<h3>Enable GPU<a class="headerlink" href="#Enable-GPU" title="Permalink to this heading"></a></h3>
+<p>On Google Colab, the GPU needs to be enabled. The user should do the following:</p>
+<p>Click on Runtime -&gt; Change runtime type -&gt; T4 GPU</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1">#@title **Installing Horton, ChemTools and cuGBasis</span>
+<span class="c1">#@markdown It may take a few minutes! Make sure to enable GPU</span>
+<span class="o">!</span>pip<span class="w"> </span>install<span class="w"> </span>-q<span class="w"> </span>condacolab
+<span class="kn">import</span> <span class="nn">condacolab</span>
+<span class="n">condacolab</span><span class="o">.</span><span class="n">install</span><span class="p">()</span>
+<span class="o">!</span>pip<span class="w"> </span>install<span class="w"> </span>numpy<span class="w"> </span>matplotlib<span class="w"> </span>scipy<span class="w"> </span>pybind11<span class="w"> </span>qc-iodata
+<span class="o">!</span>pip<span class="w"> </span>install<span class="w"> </span>git+https://github.com/theochem/grid.git
+<span class="o">!</span>mamba<span class="w"> </span>install<span class="w"> </span>-c<span class="w"> </span>theochem<span class="w"> </span>horton
+<span class="o">!</span>pip<span class="w"> </span>install<span class="w"> </span>git+https://github.com/theochem/chemtools.git
+<span class="o">!</span>git<span class="w"> </span>clone<span class="w"> </span>https://www.github.com/theochem/cuGBasis
+<span class="o">%</span><span class="k">cd</span> cuGBasis
+<span class="o">!</span>git<span class="w"> </span>submodule<span class="w"> </span>update<span class="w"> </span>--init<span class="w"> </span>--recursive
+<span class="o">!</span>ls
+<span class="o">!</span>pip<span class="w"> </span>install<span class="w"> </span>-v<span class="w"> </span>.
+<span class="o">%</span><span class="k">cd</span> examples/
+</pre></div>
+</div>
+</div>
+</section>
+</section>
 <section id="Constructing-Molecule-Object">
 <h2>Constructing Molecule Object<a class="headerlink" href="#Constructing-Molecule-Object" title="Permalink to this heading"></a></h2>
 <p>The first-step is to read the wave-function file and constructing the Molecule class.</p>
@@ -184,7 +225,7 @@
 <p>The molecule class can efficiently calculate the electron density. These examples will use <a class="reference external" href="https://grid.qcdevs.org/index.html">Grid</a> package to construct various grids for evaluation.</p>
 <section id="Molecular-Integration-and-Dipole-Moment">
 <h3>Molecular Integration and Dipole Moment<a class="headerlink" href="#Molecular-Integration-and-Dipole-Moment" title="Permalink to this heading"></a></h3>
-<p>The integration of the electorn density</p>
+<p>The integration of the electron density</p>
 <div class="math notranslate nohighlight">
 \[\int \rho(\mathbf{r}) d\mathbf{r} = N\]</div>
 <p>should provide the total number of electrons. This example will construct a Becke-Lebedev grid using <a class="reference external" href="https://grid.qcdevs.org/pyapi/grid.molgrid.html">MolGrid</a> object from grid package using <a class="reference external" href="https://grid.qcdevs.org/pyapi/grid.hirshfeld.html">Hirshfeld</a> atom-in molecules weights. Additionally, it will calculate the dipole moment of this peptide.</p>
@@ -317,7 +358,7 @@ STD  Density on isosurface: 1.6994053095993115e-06
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/quick_start_10_0.png" src="_images/quick_start_10_0.png" />
+<img alt="_images/quick_start_12_0.png" src="_images/quick_start_12_0.png" />
 </div>
 </div>
 </section>
@@ -388,7 +429,7 @@ Number of vertices: 17591
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/quick_start_13_0.png" src="_images/quick_start_13_0.png" />
+<img alt="_images/quick_start_15_0.png" src="_images/quick_start_15_0.png" />
 </div>
 </div>
 </section>
@@ -429,7 +470,7 @@ findfont: Font family [&#39;serif&#39;] not found. Falling back to DejaVu Sans.
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/quick_start_15_1.png" src="_images/quick_start_15_1.png" />
+<img alt="_images/quick_start_17_1.png" src="_images/quick_start_17_1.png" />
 </div>
 </div>
 </section>
