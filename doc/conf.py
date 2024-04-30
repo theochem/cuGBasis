@@ -35,6 +35,18 @@ extensions = [
     "nbsphinx_link",
     "IPython.sphinxext.ipython_console_highlighting",
 ]
+
+# List of arguments to be passed to the kernel that executes the notebooks:
+nbsphinx_execute_arguments = [
+    "--InlineBackend.figure_formats={'svg', 'pdf'}",
+    "--InlineBackend.rc=figure.dpi=200",
+]
+# nbsphinx_input_prompt = 'In [%s]:'
+# nbsphinx_output_prompt = 'Out[%s]:'
+# explicitly dis-/enabling notebook execution
+nbsphinx_execute = "never"
+
+
 autosummary_generate = True
 autodoc_default_options = {
     'members': None,
