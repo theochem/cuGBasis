@@ -12,7 +12,7 @@ Hermite expansion and Boys function recursion, respectively.
 shells = ["s",
           "px", "py", "pz",
           "dxx", "dyy", "dzz", "dxy", "dxz", "dyz",
-          'fxxx', 'fyyy', 'fzzz', 'fxyy', 'fxxy', 'fxxz', 'fxzz', 'fyzz', 'fyyz', 'fxyz',
+          # 'fxxx', 'fyyy', 'fzzz', 'fxyy', 'fxxy', 'fxxz', 'fxzz', 'fyzz', 'fyyz', 'fxyz',
           # COmmented this out to reduce compilation time.
           # 'gzzzz', 'gyzzz', 'gyyzz', 'gyyyz', 'gyyyy', 'gxzzz', 'gxyzz', 'gxyyz', 'gxyyy', 'gxxzz', 'gxxyz',
           #   'gxxyy', 'gxxxz', 'gxxxy', 'gxxxx'
@@ -21,13 +21,13 @@ shells = ["s",
 angmom = [(0, 0, 0),
           (1, 0, 0), (0, 1, 0), (0, 0, 1),
           (2, 0, 0), (0, 2, 0), (0, 0, 2), (1, 1, 0), (1, 0, 1), (0, 1, 1),
-          (3, 0, 0), (0, 3, 0),  (0, 0, 3),  (1, 2, 0), (2, 1, 0), (2, 0, 1), (1, 0, 2), (0, 1, 2), (0, 2, 1), (1, 1, 1),
+          # (3, 0, 0), (0, 3, 0),  (0, 0, 3),  (1, 2, 0), (2, 1, 0), (2, 0, 1), (1, 0, 2), (0, 1, 2), (0, 2, 1), (1, 1, 1),
           # (0, 0, 4), (0, 1, 3), (0, 2, 2), (0, 3, 1), (0, 4, 0), (1, 0, 3), (1, 1, 2), (1, 2, 1), (1, 3, 0), (2, 0, 2), (2, 1, 1),
           #       (2, 2, 0), (3, 0, 1), (3, 1, 0), (4, 0, 0),
           ]
 
-function_header = lambda shell1, shell2: "__device__ inline double compute_"+ shell1 + "_" + shell2 + "_nuclear_attraction_integral(const double& alpha, const double3& A_coord, const double& beta, const double3& B_coord, const double3& pt, const double3& P)"
-function_header_header = lambda shell1, shell2: "__device__ inline double compute_"+ shell1 + "_" + shell2 + "_nuclear_attraction_integral(const double& alpha, const double3& A_coord, const double& beta, const double3& B_coord, const double3& pt, const double3& P)"
+function_header = lambda shell1, shell2: "__device__  double chemtools::compute_"+ shell1 + "_" + shell2 + "_nuclear_attraction_integral(const double& alpha, const double3& A_coord, const double& beta, const double3& B_coord, const double3& pt, const double3& P)"
+function_header_header = lambda shell1, shell2: "__device__  double chemtools::compute_"+ shell1 + "_" + shell2 + "_nuclear_attraction_integral(const double& alpha, const double3& A_coord, const double& beta, const double3& B_coord, const double3& pt, const double3& P)"
 
 
 
