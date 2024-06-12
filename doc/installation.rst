@@ -126,8 +126,7 @@ installing (this may not be required but is hypothesized to may cause future err
     module load StdEnv/2020 intel/2020.1.217 cmake cuda/11.7 eigen/3.4.0
     source py39_cugbasis/bin/activate
 
-    # Go to cuGBasis folder and install it
-    cd ....
+    # Go to cuGBasis folder and install it via pip
     pip install -v .
 
 
