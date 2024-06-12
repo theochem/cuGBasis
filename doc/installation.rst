@@ -119,6 +119,10 @@ installing (this may not be required but is hypothesized to may cause future err
     pip install numpy scipy pybind11 --no-index
     pip install qc-iodata
 
+    # Get the package and dependencies
+    git clone https://github.com/theochem/CuGBasis.git
+    git submodule update --init --recursive
+
     # Enable GPU
     salloc --time=1:0:0 --account=ACCOUNT --mem=12G --gres=gpu:p100:1
 
