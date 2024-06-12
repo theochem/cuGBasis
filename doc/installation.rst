@@ -120,7 +120,7 @@ installing (this may not be required but is hypothesized to may cause future err
     pip install qc-iodata
 
     # Enable GPU
-    salloc --time=1:0:0 --acount=ACCOUNT --mem=12G --gres=gpu:p100:1
+    salloc --time=1:0:0 --account=ACCOUNT --mem=12G --gres=gpu:p100:1
 
     # Load the required dependencies
     module load StdEnv/2020 intel/2020.1.217 cmake cuda/11.7 eigen/3.4.0
