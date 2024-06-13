@@ -28,12 +28,14 @@ For testing the following are required to be installed on the Python system:
 
 * PyTest >= 5.4.3: (https://docs.pytest.org/ <https://docs.pytest.org/)
 * GBasis: (https://github.com/theochem/gbasis)
+* Horton: (https://github.com/theochem/horton)
 * ChemTools: (https://github.com/theochem/chemtools)
 
-These can be installed via:
+Horton is recommended to be installed using Mamba/Conda. These can be installed via:
 
 .. code-block:: bash
 
+    mamba install -c theochem horton
     pip install pytest
     pip install git+https://github.com/theochem/gbasis.git
     pip install git+https://github.com/theochem/chemtools.git
