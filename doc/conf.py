@@ -34,6 +34,7 @@ extensions = [
     "nbsphinx",
     "nbsphinx_link",
     "IPython.sphinxext.ipython_console_highlighting",
+    "sphinx.ext.viewcode",
 ]
 
 # List of arguments to be passed to the kernel that executes the notebooks:
