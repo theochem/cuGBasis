@@ -120,7 +120,8 @@ installing (this may not be required but is hypothesized to may cause future err
     pip install qc-iodata
 
     # Get the package and dependencies
-    git clone https://github.com/theochem/CuGBasis.git
+    git clone https://github.com/theochem/cuGBasis.git
+    cd cuGBasis
     git submodule update --init --recursive
 
     # Enable GPU
@@ -128,7 +129,7 @@ installing (this may not be required but is hypothesized to may cause future err
 
     # Load the required dependencies
     module load StdEnv/2020 intel/2020.1.217 cmake cuda/11.7 eigen/3.4.0
-    source py39_cugbasis/bin/activate
+    source ~/py39_cugbasis/bin/activate
 
     # Go to cuGBasis folder and install it via pip
     pip install -v .
