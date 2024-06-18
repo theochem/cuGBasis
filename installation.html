@@ -190,10 +190,12 @@
 <ul class="simple">
 <li><p>PyTest &gt;= 5.4.3: (<a class="reference external" href="https://docs.pytest.org/">https://docs.pytest.org/</a> &lt;<a class="reference external" href="https://docs.pytest.org/">https://docs.pytest.org/</a>)</p></li>
 <li><p>GBasis: (<a class="reference external" href="https://github.com/theochem/gbasis">https://github.com/theochem/gbasis</a>)</p></li>
+<li><p>Horton: (<a class="reference external" href="https://github.com/theochem/horton">https://github.com/theochem/horton</a>)</p></li>
 <li><p>ChemTools: (<a class="reference external" href="https://github.com/theochem/chemtools">https://github.com/theochem/chemtools</a>)</p></li>
 </ul>
-<p>These can be installed via:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>pytest
+<p>Horton is recommended to be installed using Mamba/Conda. These can be installed via:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>mamba<span class="w"> </span>install<span class="w"> </span>-c<span class="w"> </span>theochem<span class="w"> </span>horton
+pip<span class="w"> </span>install<span class="w"> </span>pytest
 pip<span class="w"> </span>install<span class="w"> </span>git+https://github.com/theochem/gbasis.git
 pip<span class="w"> </span>install<span class="w"> </span>git+https://github.com/theochem/chemtools.git
 </pre></div>
@@ -261,15 +263,19 @@ pip<span class="w"> </span>install<span class="w"> </span>--no-index<span class=
 pip<span class="w"> </span>install<span class="w"> </span>numpy<span class="w"> </span>scipy<span class="w"> </span>pybind11<span class="w"> </span>--no-index
 pip<span class="w"> </span>install<span class="w"> </span>qc-iodata
 
+<span class="c1"># Get the package and dependencies</span>
+git<span class="w"> </span>clone<span class="w"> </span>https://github.com/theochem/cuGBasis.git
+<span class="nb">cd</span><span class="w"> </span>cuGBasis
+git<span class="w"> </span>submodule<span class="w"> </span>update<span class="w"> </span>--init<span class="w"> </span>--recursive
+
 <span class="c1"># Enable GPU</span>
-salloc<span class="w"> </span>--time<span class="o">=</span><span class="m">1</span>:0:0<span class="w"> </span>--acount<span class="o">=</span>ACCOUNT<span class="w"> </span>--mem<span class="o">=</span>12G<span class="w"> </span>--gres<span class="o">=</span>gpu:p100:1
+salloc<span class="w"> </span>--time<span class="o">=</span><span class="m">1</span>:0:0<span class="w"> </span>--account<span class="o">=</span>ACCOUNT<span class="w"> </span>--mem<span class="o">=</span>12G<span class="w"> </span>--gres<span class="o">=</span>gpu:p100:1
 
 <span class="c1"># Load the required dependencies</span>
 module<span class="w"> </span>load<span class="w"> </span>StdEnv/2020<span class="w"> </span>intel/2020.1.217<span class="w"> </span>cmake<span class="w"> </span>cuda/11.7<span class="w"> </span>eigen/3.4.0
-<span class="nb">source</span><span class="w"> </span>py39_cugbasis/bin/activate
+<span class="nb">source</span><span class="w"> </span>~/py39_cugbasis/bin/activate
 
-<span class="c1"># Go to cuGBasis folder and install it</span>
-<span class="nb">cd</span><span class="w"> </span>....
+<span class="c1"># Go to cuGBasis folder and install it via pip</span>
 pip<span class="w"> </span>install<span class="w"> </span>-v<span class="w"> </span>.
 </pre></div>
 </div>
