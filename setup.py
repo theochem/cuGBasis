@@ -148,7 +148,7 @@ setup(
     license="GNU (Version 3)",
     install_requires=["numpy", "pybind11", "qc-iodata"],
     extras_require={"test": ["pytest>=6.0"]},
-    python_requires=">=3.6",
+    python_requires=">=3.9",
     long_description_content_type="text/markdown",
     url="https://github.com/qtchem/cugbasis/",
     project_urls={

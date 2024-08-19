@@ -10,7 +10,7 @@ The following dependencies will be necessary for cuGBasis to build properly,
 
 * CMake>=3.24: (https://cmake.org/)
 * CUDA/DRIVERS/NVCC/CUDA-TOOLKIT: (https://docs.nvidia.com/cuda/cuda-installation-guide-linux/index.html)
-* Python>=3.7: (http://www.python.org/)
+* Python>=3.9: (http://www.python.org/)
 
 The following Python dependencies are necessary:
 

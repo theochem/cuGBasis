@@ -20,7 +20,7 @@ endif()
 # Add pybind11 header files
 # Finding Python Needed to do this for CLION project for my own computer.
 set(PYBIND11_FINDPYTHON ON)
-SET(PYBIND11_PYTHON_VERSION 3.7)
+SET(PYBIND11_PYTHON_VERSION 3.9)
 # TODO: GIve a command-line option for CMAKE to find Python
 find_package(Python COMPONENTS Interpreter Development NumPy REQUIRED)
 add_subdirectory(./libs/pybind11)
