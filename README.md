@@ -19,7 +19,20 @@ See the website for more information: [cuGBasis](https://cugbasis.qcdevs.org)
 
 ## Citation
 Please use the following citation in any publication:
-> **"CuGBasis: High performance CUDA/Python Library For Efficient Computation
-> of Quantum Chemistry Density-Based Descriptors for Larger Systems."**,
-> A. Tehrani, M. Richer, F. Heidar‐Zadeh
->
+
+```
+ @article{cugbasis,
+    author = {Tehrani, Alireza and Richer, Michelle and Heidar-Zadeh, Farnaz},
+    title = "{CuGBasis: High-performance CUDA/Python library for efficient computation of quantum chemistry density-based descriptors for larger systems}",
+    journal = {The Journal of Chemical Physics},
+    volume = {161},
+    number = {7},
+    pages = {072501},
+    year = {2024},
+    month = {08},
+    issn = {0021-9606},
+    doi = {10.1063/5.0216781},
+    url = {https://doi.org/10.1063/5.0216781},
+}
+```
+
