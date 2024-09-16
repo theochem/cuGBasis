@@ -1,10 +1,12 @@
 
 #include <pybind11/pybind11.h>
+#include <pybind11/embed.h>
 
 #include "cublas_v2.h"
 
 #include "../include/pymolecule.cuh"
 #include "../include/basis_to_gpu.cuh"
+#include "../include/evaluate_promolecular.cuh"
 #include "../include/evaluate_densbased.cuh"
 #include "../include/evaluate_density.cuh"
 #include "../include/evaluate_gradient.cuh"
@@ -15,6 +17,110 @@
 
 namespace py = pybind11;
 
+/***
+ *
+ * ProMolecule  methods
+ *
+ */
+chemtools::ProMolecule::ProMolecule(const Eigen::Ref<MatrixX3R>& atom_coords,
+                                    const Eigen::Ref<IntVector>& atom_numbers,
+                                    int atom_length,
+                                    const std::string file_path_to_data) {
+  // Grab the atomic coordinates, numbers and length from python
+  this->natoms_ = atom_length;
+  this->coord_atoms_ = atom_coords;
+  this->atnums_ = atom_numbers;
+
+  // Using python read the numpy files, grab the promolecular coefficients/exponents and create the dictionary.
+  auto locals = py::dict();
+  std::vector<std::string> elements = {"h", "c", "n", "o", "f", "p", "s", "cl"};  // Elements that are needed
+  locals["file_path"] = file_path_to_data;
+  locals["elements"] = elements;
+  printf("Read from Python");
+  py::exec(R"(
+        # Convert to the Gaussian (.fchk) format
+        import numpy as np
+
+        promol = np.load(file_path, allow_pickle=True)
+
+        # Grab each manually, probably a easier way using dictionary -> unorder_maps
+        promol_dict = {}
+        for element in elements:
+          promol_dict[f"{element}_coeffs_s"] = promol[f"{element.capitalize()}_coeffs_s"]
+          promol_dict[f"{element}_coeffs_p"] = promol[f"{element.capitalize()}_coeffs_p"]
+          promol_dict[f"{element}_exps_s"] = promol[f"{element.capitalize()}_exps_s"]
+          promol_dict[f"{element}_exps_p"] = promol[f"{element.capitalize()}_exps_p"]
+    )", py::globals(), locals);
+  printf("Done reading from python \n");
+  // Store the promolecular coefficients and exponents with keys: ELEMENT_PARAMETER_TYPE
+  for(const auto& element: elements) {
+    for(const std::string& param : {"coeffs", "exps"}) {
+      for(const std::string& type: {"s", "p"}) {
+        // Get the array from python
+        std::string type_info = element + "_" + param + "_" + type;
+        const char* cstr = type_info.c_str();  // py::dict only accepts the char* pointer
+        py::array_t<double, py::array::c_style> pyhon_array = locals["promol_dict"][cstr].cast<py::array_t<double>>();
+        // Convert to std::vector
+        py::buffer_info buff = pyhon_array.request();
+        double* ptr = static_cast<double *>(buff.ptr);
+        size_t size = buff.size;
+        // Store it in the class's attributes
+        std::vector<double> vec(ptr, ptr + size);
+        if (param == "coeffs"){
+          this->coeffs_[element + "_" + param + "_" + type] = vec;
+        }
+        else {
+          this->exps_[element + "_" + param + "_" + type] = vec;
+        }
+      }
+    }
+  }
+}
+
+Vector chemtools::ProMolecule::compute_electron_density(const Eigen::Ref<MatrixX3R>&  points) {
+  // Accept in row-major order because it is numpy default
+  // Convert to column major order since it works better with the GPU code
+  MatrixX3C pts_col_order = points;
+  size_t nrows = points.rows();
+  std::vector<double> dens = chemtools::evaluate_promol_scalar_property_on_any_grid(
+      this->GetCoordAtoms().data(),
+      this->GetAtomicNumbers().data(),
+      this->GetNatoms(),
+      this->GetPromolCoefficients(),
+      this->GetPromolExponents(),
+      pts_col_order.data(),
+      nrows,
+      "density"
+  );
+  Vector v2 = Eigen::Map<Vector>(dens.data(), nrows);
+  return v2;
+}
+
+
+Vector chemtools::ProMolecule::compute_electrostatic_potential(const Eigen::Ref<MatrixX3R>&  points) {
+  // Accept in row-major order because it is numpy default
+  // Convert to column major order since it works better with the GPU code
+  MatrixX3C pts_col_order = points;
+  size_t nrows = points.rows();
+  std::vector<double> dens = chemtools::evaluate_promol_scalar_property_on_any_grid(
+      this->GetCoordAtoms().data(),
+      this->GetAtomicNumbers().data(),
+      this->GetNatoms(),
+      this->GetPromolCoefficients(),
+      this->GetPromolExponents(),
+      pts_col_order.data(),
+      nrows,
+      "electrostatic"
+  );
+  Vector v2 = Eigen::Map<Vector>(dens.data(), nrows);
+  return v2;
+}
+
+/***
+ *
+ * Molecule (Wave-function) methods
+ *
+ */
 chemtools::Molecule::Molecule(const std::string &file_path) {
   this->file_path = file_path;
   chemtools::IOData iodata = chemtools::get_molecular_basis_from_fchk(file_path);
