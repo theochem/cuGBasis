@@ -174,13 +174,13 @@ __host__ std::vector<double> chemtools::evaluate_promol_scalar_property_on_any_g
   size_t index_to_copy = 0;  // Index on where to start copying to h_density (start of sub-grid)
   size_t i_iter = 0;
   while (index_to_copy < knumb_points) {
-    printf("Iter %zu \n", i_iter);
+//    printf("Iter %zu \n", i_iter);
     // For each iteration, calculate number of points it should do, number of bytes it corresponds to.
     // At the last chunk,need to do the remaining number of points, hence a minimum is used here.
     size_t number_pts_iter = std::min(
         t_numb_pts - i_iter * t_numb_pts_of_each_chunk, t_numb_pts_of_each_chunk
     );
-    printf("Number of pts iter %zu \n", number_pts_iter);
+//    printf("Number of pts iter %zu \n", number_pts_iter);
 
     // Allocate device memory for output array, and set all elements to zero via cudaMemset.
     double *d_density;
@@ -216,7 +216,7 @@ __host__ std::vector<double> chemtools::evaluate_promol_scalar_property_on_any_g
           constant_mem_info[0],
           constant_mem_info[1]
       );
-      printf("Consta mem info %zu   %zu  \n", constant_mem_info[0], constant_mem_info[1]);
+//      printf("Consta mem info %zu   %zu  \n", constant_mem_info[0], constant_mem_info[1]);
 
       dim3 threadsPerBlock(1024);
       dim3 grid((number_pts_iter + threadsPerBlock.x - 1) / (threadsPerBlock.x));
@@ -257,7 +257,7 @@ __host__ std::vector<double> chemtools::evaluate_promol_scalar_property_on_any_g
 
   // Compute the point-charge
   if (property == "electrostatic") {
-    printf("Compute electrostatics \n");
+//    printf("Compute electrostatics \n");
     for(int i_pt = 0; i_pt < knumb_points; i_pt++){
       double pt_x = h_points[i_pt];
       double pt_y = h_points[knumb_points + i_pt];
