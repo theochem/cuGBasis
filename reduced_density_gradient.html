@@ -1,26 +1,25 @@
 <!DOCTYPE html>
-<html class="writer-html5" lang="en">
+<html class="writer-html5" lang="en" data-content_root="./">
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Non-Covalent Interaction Index &mdash; cugbasis  documentation</title>
-      <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
-      <link rel="stylesheet" type="text/css" href="_static/css/override.css" />
-      <link rel="stylesheet" type="text/css" href="_static/nbsphinx-code-cells.css" />
-      <link rel="stylesheet" type="text/css" href="_static/css/custom.css" />
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="_static/css/override.css?v=064c4a14" />
+      <link rel="stylesheet" type="text/css" href="_static/nbsphinx-code-cells.css?v=2aa19091" />
+      <link rel="stylesheet" type="text/css" href="_static/css/custom.css?v=9ba27866" />
 
   
   <!--[if lt IE 9]>
     <script src="_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-        <script src="_static/jquery.js"></script>
-        <script src="_static/underscore.js"></script>
-        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script src="_static/doctools.js"></script>
-        <script src="_static/sphinx_highlight.js"></script>
+        <script src="_static/jquery.js?v=5d32c60e"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="_static/documentation_options.js?v=5929fcd5"></script>
+        <script src="_static/doctools.js?v=9a2dae69"></script>
+        <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
         <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
         <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
         <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
@@ -88,6 +87,15 @@
 <li class="toctree-l3"><a class="reference internal" href="molecule.html#cugbasis.Molecule.compute_thomas_fermi_ked"><code class="docutils literal notranslate"><span class="pre">Molecule.compute_thomas_fermi_ked()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="molecule.html#cugbasis.Molecule.compute_weizsacker_ked"><code class="docutils literal notranslate"><span class="pre">Molecule.compute_weizsacker_ked()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="molecule.html#cugbasis.Molecule.get_file_path"><code class="docutils literal notranslate"><span class="pre">Molecule.get_file_path()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="molecule.html#cugbasis.Promolecule"><code class="docutils literal notranslate"><span class="pre">Promolecule</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="molecule.html#cugbasis.Promolecule.atcoords"><code class="docutils literal notranslate"><span class="pre">Promolecule.atcoords</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="molecule.html#cugbasis.Promolecule.atnums"><code class="docutils literal notranslate"><span class="pre">Promolecule.atnums</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="molecule.html#cugbasis.Promolecule.compute_density"><code class="docutils literal notranslate"><span class="pre">Promolecule.compute_density()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="molecule.html#cugbasis.Promolecule.compute_esp"><code class="docutils literal notranslate"><span class="pre">Promolecule.compute_esp()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="molecule.html#cugbasis.Promolecule.promol_coeffs"><code class="docutils literal notranslate"><span class="pre">Promolecule.promol_coeffs</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="molecule.html#cugbasis.Promolecule.promol_exps"><code class="docutils literal notranslate"><span class="pre">Promolecule.promol_exps</span></code></a></li>
 </ul>
 </li>
 </ul>
@@ -170,13 +178,13 @@
            <div itemprop="articleBody">
              
   <section id="Non-Covalent-Interaction-Index">
-<h1>Non-Covalent Interaction Index<a class="headerlink" href="#Non-Covalent-Interaction-Index" title="Permalink to this heading"></a></h1>
+<h1>Non-Covalent Interaction Index<a class="headerlink" href="#Non-Covalent-Interaction-Index" title="Link to this heading"></a></h1>
 <p>The non-covalent interaction (NCI) method uses the isosurface of reduced density gradient defined as</p>
 <div class="math notranslate nohighlight">
 \[s(\mathbf{r}) = \frac{1}{2(3\pi^2)^{1/3}} \frac{|\nabla \rho(\mathbf{r}) |}{\rho(\mathbf{r})^{4/3}}\]</div>
 <p>for identifying non-covalent interactions. This example will illustrate how to use cuGBasis to find such isosurfaces for the dipeptide example.</p>
 <section id="Constructing-Molecule-Object">
-<h2>Constructing Molecule Object<a class="headerlink" href="#Constructing-Molecule-Object" title="Permalink to this heading"></a></h2>
+<h2>Constructing Molecule Object<a class="headerlink" href="#Constructing-Molecule-Object" title="Link to this heading"></a></h2>
 <p>The first-step is to read the wave-function file and constructing the Molecule class.</p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
@@ -191,7 +199,7 @@
 </div>
 </section>
 <section id="Reduced-Density-Gradient-Isosurface">
-<h2>Reduced Density Gradient Isosurface<a class="headerlink" href="#Reduced-Density-Gradient-Isosurface" title="Permalink to this heading"></a></h2>
+<h2>Reduced Density Gradient Isosurface<a class="headerlink" href="#Reduced-Density-Gradient-Isosurface" title="Link to this heading"></a></h2>
 <p>Here, we will calculate the reduced density gradient using cuGBasis and generate the isosurface from it.</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
@@ -265,7 +273,7 @@ STD  Density on isosurface: 0.0003595601354437498
 </div>
 </section>
 <section id="NCI-Index-Using-The-Hessian">
-<h2>NCI Index Using The Hessian<a class="headerlink" href="#NCI-Index-Using-The-Hessian" title="Permalink to this heading"></a></h2>
+<h2>NCI Index Using The Hessian<a class="headerlink" href="#NCI-Index-Using-The-Hessian" title="Link to this heading"></a></h2>
 <p>The sign of the second eigenvalue of the Hessian with the product of its electron density, i.e. <span class="math notranslate nohighlight">\(sign(\lambda_2) \rho(\mathbf{r})\)</span>, can be used to further classify non-covalent interactions. The sign of the eigenvalues measures how much charge is accumulation in the perpendicular plane of the interaction. If it is negative, it is an indication of strongly attractive NCI (hydrogen bonds). If it is close to zero, it is a sign of van der Waals interactions and if it is positive it is an
 example of steric clashes. Following the previous example, here we will see that there is a strongly non-covalent interaction between water molecule and silica cluster.</p>
 <div class="nbinput docutils container">

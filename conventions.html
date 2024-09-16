@@ -1,25 +1,24 @@
 <!DOCTYPE html>
-<html class="writer-html5" lang="en">
+<html class="writer-html5" lang="en" data-content_root="./">
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Conventions &mdash; cugbasis  documentation</title>
-      <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
-      <link rel="stylesheet" type="text/css" href="_static/css/override.css" />
-      <link rel="stylesheet" type="text/css" href="_static/css/custom.css" />
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="_static/css/override.css?v=064c4a14" />
+      <link rel="stylesheet" type="text/css" href="_static/css/custom.css?v=9ba27866" />
 
   
   <!--[if lt IE 9]>
     <script src="_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-        <script src="_static/jquery.js"></script>
-        <script src="_static/underscore.js"></script>
-        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script src="_static/doctools.js"></script>
-        <script src="_static/sphinx_highlight.js"></script>
+        <script src="_static/jquery.js?v=5d32c60e"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="_static/documentation_options.js?v=5929fcd5"></script>
+        <script src="_static/doctools.js?v=9a2dae69"></script>
+        <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
         <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
         <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
         <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
@@ -87,6 +86,15 @@
 <li class="toctree-l3"><a class="reference internal" href="molecule.html#cugbasis.Molecule.compute_thomas_fermi_ked"><code class="docutils literal notranslate"><span class="pre">Molecule.compute_thomas_fermi_ked()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="molecule.html#cugbasis.Molecule.compute_weizsacker_ked"><code class="docutils literal notranslate"><span class="pre">Molecule.compute_weizsacker_ked()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="molecule.html#cugbasis.Molecule.get_file_path"><code class="docutils literal notranslate"><span class="pre">Molecule.get_file_path()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="molecule.html#cugbasis.Promolecule"><code class="docutils literal notranslate"><span class="pre">Promolecule</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="molecule.html#cugbasis.Promolecule.atcoords"><code class="docutils literal notranslate"><span class="pre">Promolecule.atcoords</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="molecule.html#cugbasis.Promolecule.atnums"><code class="docutils literal notranslate"><span class="pre">Promolecule.atnums</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="molecule.html#cugbasis.Promolecule.compute_density"><code class="docutils literal notranslate"><span class="pre">Promolecule.compute_density()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="molecule.html#cugbasis.Promolecule.compute_esp"><code class="docutils literal notranslate"><span class="pre">Promolecule.compute_esp()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="molecule.html#cugbasis.Promolecule.promol_coeffs"><code class="docutils literal notranslate"><span class="pre">Promolecule.promol_coeffs</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="molecule.html#cugbasis.Promolecule.promol_exps"><code class="docutils literal notranslate"><span class="pre">Promolecule.promol_exps</span></code></a></li>
 </ul>
 </li>
 </ul>
@@ -169,13 +177,13 @@
            <div itemprop="articleBody">
              
   <section id="conventions">
-<span id="id1"></span><h1>Conventions<a class="headerlink" href="#conventions" title="Permalink to this heading"></a></h1>
+<span id="id1"></span><h1>Conventions<a class="headerlink" href="#conventions" title="Link to this heading"></a></h1>
 <p>This following page outlines the basis-set conventions that cuGBasis uses to evaluate various quantities.</p>
 <section id="gaussian-primitives">
-<h2>Gaussian Primitives<a class="headerlink" href="#gaussian-primitives" title="Permalink to this heading"></a></h2>
+<h2>Gaussian Primitives<a class="headerlink" href="#gaussian-primitives" title="Link to this heading"></a></h2>
 <p>CuGBasis supports both Cartesian and Spherical primitive Gaussian type orbitals.</p>
 <section id="cartesian">
-<h3>Cartesian<a class="headerlink" href="#cartesian" title="Permalink to this heading"></a></h3>
+<h3>Cartesian<a class="headerlink" href="#cartesian" title="Link to this heading"></a></h3>
 <p>Normalized Cartesian primitive Gaussian with order <span class="math notranslate nohighlight">\((i, j, k)\)</span>
 centered at position <span class="math notranslate nohighlight">\(\mathbf{A} = (A_x, A_y, A_z)\)</span> is written as</p>
 <div class="math notranslate nohighlight">
@@ -184,7 +192,7 @@ centered at position <span class="math notranslate nohighlight">\(\mathbf{A} = (
 The degree <span class="math notranslate nohighlight">\(l\)</span> of a Cartesian primitive Gaussian is defined as <span class="math notranslate nohighlight">\(l = i + j + k\)</span>.</p>
 </section>
 <section id="spherical-pure">
-<h3>Spherical/Pure<a class="headerlink" href="#spherical-pure" title="Permalink to this heading"></a></h3>
+<h3>Spherical/Pure<a class="headerlink" href="#spherical-pure" title="Link to this heading"></a></h3>
 <p>Normalized spherical primitives Gaussians with degree <span class="math notranslate nohighlight">\(l\)</span> and order <span class="math notranslate nohighlight">\(m\)</span>
 centered at position <span class="math notranslate nohighlight">\(\mathbf{A} = (A_x, A_y, A_z)\)</span> is written as</p>
 <div class="math notranslate nohighlight">
@@ -204,7 +212,7 @@ the conversion from Cartesian <span class="math notranslate nohighlight">\((x, y
 </section>
 </section>
 <section id="contractions">
-<h2>Contractions<a class="headerlink" href="#contractions" title="Permalink to this heading"></a></h2>
+<h2>Contractions<a class="headerlink" href="#contractions" title="Link to this heading"></a></h2>
 <p>CuGBasis uses linear combination of primitives Gaussian as basis-functions (known as contracted Gaussian
 type-orbitals or contractions):</p>
 <div class="math notranslate nohighlight">
@@ -215,7 +223,7 @@ for all <span class="math notranslate nohighlight">\(j\)</span>.  The contractio
 are assumed to contain the normalization constant.</p>
 </section>
 <section id="basis-set-groupings-shells">
-<h2>Basis-set Groupings (Shells)<a class="headerlink" href="#basis-set-groupings-shells" title="Permalink to this heading"></a></h2>
+<h2>Basis-set Groupings (Shells)<a class="headerlink" href="#basis-set-groupings-shells" title="Link to this heading"></a></h2>
 <p>The grouping of all basis-functions/contractions <span class="math notranslate nohighlight">\(\{\Phi_i^{K_i}: 0 \leq i \leq M \}\)</span> is the basis-set. However,
 the contractions are grouped together more simply, called Generalized Contraction Shells, based on having
 identical exponents <span class="math notranslate nohighlight">\(\alpha\)</span>, and centers <span class="math notranslate nohighlight">\(A\)</span>.</p>
@@ -230,13 +238,13 @@ centers <span class="math notranslate nohighlight">\(A\)</span>, <span class="ma
 <a class="reference internal image-reference" href="_images/contracted_segmented_example.png"><img alt="_images/contracted_segmented_example.png" src="_images/contracted_segmented_example.png" style="width: 800px;" /></a>
 </section>
 <section id="basis-set-ordering">
-<h2>Basis Set Ordering<a class="headerlink" href="#basis-set-ordering" title="Permalink to this heading"></a></h2>
+<h2>Basis Set Ordering<a class="headerlink" href="#basis-set-ordering" title="Link to this heading"></a></h2>
 <p>CuGBasis follows the same basis-set ordering that Gaussian computational chemistry software uses.
 Note that for spherical orders, the positive orders <span class="math notranslate nohighlight">\(m\geq0\)</span> are associated with cosine function, denoted as c, and
 the negative orders <span class="math notranslate nohighlight">\(m&lt;0\)</span> are associated with sine function, denoted as s. Thus “s21” implies
 it is a solid harmonic with <span class="math notranslate nohighlight">\(l=2\)</span> and <span class="math notranslate nohighlight">\(m=-1\)</span>.</p>
 <table class="longtable docutils align-default" id="id2">
-<caption><span class="caption-text">Basis-set Order for Cartesian and Spherical Orders</span><a class="headerlink" href="#id2" title="Permalink to this table"></a></caption>
+<caption><span class="caption-text">Basis-set Order for Cartesian and Spherical Orders</span><a class="headerlink" href="#id2" title="Link to this table"></a></caption>
 <colgroup>
 <col style="width: 23.1%" />
 <col style="width: 38.5%" />

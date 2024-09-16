@@ -1,25 +1,24 @@
 <!DOCTYPE html>
-<html class="writer-html5" lang="en">
+<html class="writer-html5" lang="en" data-content_root="./">
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Installation &mdash; cugbasis  documentation</title>
-      <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
-      <link rel="stylesheet" type="text/css" href="_static/css/override.css" />
-      <link rel="stylesheet" type="text/css" href="_static/css/custom.css" />
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="_static/css/override.css?v=064c4a14" />
+      <link rel="stylesheet" type="text/css" href="_static/css/custom.css?v=9ba27866" />
 
   
   <!--[if lt IE 9]>
     <script src="_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-        <script src="_static/jquery.js"></script>
-        <script src="_static/underscore.js"></script>
-        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script src="_static/doctools.js"></script>
-        <script src="_static/sphinx_highlight.js"></script>
+        <script src="_static/jquery.js?v=5d32c60e"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="_static/documentation_options.js?v=5929fcd5"></script>
+        <script src="_static/doctools.js?v=9a2dae69"></script>
+        <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
         <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
@@ -85,6 +84,15 @@
 <li class="toctree-l3"><a class="reference internal" href="molecule.html#cugbasis.Molecule.compute_thomas_fermi_ked"><code class="docutils literal notranslate"><span class="pre">Molecule.compute_thomas_fermi_ked()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="molecule.html#cugbasis.Molecule.compute_weizsacker_ked"><code class="docutils literal notranslate"><span class="pre">Molecule.compute_weizsacker_ked()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="molecule.html#cugbasis.Molecule.get_file_path"><code class="docutils literal notranslate"><span class="pre">Molecule.get_file_path()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="molecule.html#cugbasis.Promolecule"><code class="docutils literal notranslate"><span class="pre">Promolecule</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="molecule.html#cugbasis.Promolecule.atcoords"><code class="docutils literal notranslate"><span class="pre">Promolecule.atcoords</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="molecule.html#cugbasis.Promolecule.atnums"><code class="docutils literal notranslate"><span class="pre">Promolecule.atnums</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="molecule.html#cugbasis.Promolecule.compute_density"><code class="docutils literal notranslate"><span class="pre">Promolecule.compute_density()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="molecule.html#cugbasis.Promolecule.compute_esp"><code class="docutils literal notranslate"><span class="pre">Promolecule.compute_esp()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="molecule.html#cugbasis.Promolecule.promol_coeffs"><code class="docutils literal notranslate"><span class="pre">Promolecule.promol_coeffs</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="molecule.html#cugbasis.Promolecule.promol_exps"><code class="docutils literal notranslate"><span class="pre">Promolecule.promol_exps</span></code></a></li>
 </ul>
 </li>
 </ul>
@@ -167,14 +175,14 @@
            <div itemprop="articleBody">
              
   <section id="installation">
-<span id="usr-installation"></span><h1>Installation<a class="headerlink" href="#installation" title="Permalink to this heading"></a></h1>
+<span id="usr-installation"></span><h1>Installation<a class="headerlink" href="#installation" title="Link to this heading"></a></h1>
 <section id="dependencies">
-<h2>Dependencies<a class="headerlink" href="#dependencies" title="Permalink to this heading"></a></h2>
+<h2>Dependencies<a class="headerlink" href="#dependencies" title="Link to this heading"></a></h2>
 <p>The following dependencies will be necessary for cuGBasis to build properly,</p>
 <ul class="simple">
 <li><p>CMake&gt;=3.24: (<a class="reference external" href="https://cmake.org/">https://cmake.org/</a>)</p></li>
 <li><p>CUDA/DRIVERS/NVCC/CUDA-TOOLKIT: (<a class="reference external" href="https://docs.nvidia.com/cuda/cuda-installation-guide-linux/index.html">https://docs.nvidia.com/cuda/cuda-installation-guide-linux/index.html</a>)</p></li>
-<li><p>Python&gt;=3.7: (<a class="reference external" href="http://www.python.org/">http://www.python.org/</a>)</p></li>
+<li><p>Python&gt;=3.9: (<a class="reference external" href="http://www.python.org/">http://www.python.org/</a>)</p></li>
 </ul>
 <p>The following Python dependencies are necessary:</p>
 <ul class="simple">
@@ -206,7 +214,7 @@ pip<span class="w"> </span>install<span class="w"> </span>git+https://github.com
 </ul>
 </section>
 <section id="downloading-code">
-<h2>Downloading Code<a class="headerlink" href="#downloading-code" title="Permalink to this heading"></a></h2>
+<h2>Downloading Code<a class="headerlink" href="#downloading-code" title="Link to this heading"></a></h2>
 <p>The user must obtain the latest code from theochem (<a class="reference external" href="https://github.com/theochem/cugbasis">https://github.com/theochem/cugbasis</a>) in Github,
 As well, as obtain the dependencies from running the <cite>git submodule</cite> command.</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/theochem/CuGBasis.git
@@ -217,9 +225,9 @@ git<span class="w"> </span>submodule<span class="w"> </span>update<span class="w
 </div>
 </section>
 <section id="id1">
-<h2>Installation<a class="headerlink" href="#id1" title="Permalink to this heading"></a></h2>
+<h2>Installation<a class="headerlink" href="#id1" title="Link to this heading"></a></h2>
 <section id="python-binding">
-<h3>Python Binding<a class="headerlink" href="#python-binding" title="Permalink to this heading"></a></h3>
+<h3>Python Binding<a class="headerlink" href="#python-binding" title="Link to this heading"></a></h3>
 <p>Once you downloaded the code, obtained the required libraries and dependencies, then one can use pip to install
 the Python bindings:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>-v<span class="w"> </span>.
@@ -231,7 +239,7 @@ the Python bindings:</p>
 </div>
 </section>
 <section id="c">
-<h3>C++<a class="headerlink" href="#c" title="Permalink to this heading"></a></h3>
+<h3>C++<a class="headerlink" href="#c" title="Link to this heading"></a></h3>
 <p>In order to build a shared library without the python bindings, particularly useful for debugging purposes,</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>cmake<span class="w"> </span>-S<span class="w"> </span>.<span class="w"> </span>-B<span class="w"> </span>./out/build/
 make<span class="w"> </span>-C<span class="w"> </span>./out/build/
@@ -240,7 +248,7 @@ make<span class="w"> </span>-C<span class="w"> </span>./out/build/
 </div>
 </section>
 <section id="compute-canada">
-<h3>Compute Canada<a class="headerlink" href="#compute-canada" title="Permalink to this heading"></a></h3>
+<h3>Compute Canada<a class="headerlink" href="#compute-canada" title="Link to this heading"></a></h3>
 <p>The following is the set of instructions for creating a Python environment inside Compute Canada
 and installing cuGBasis. It’s important to compile/install cuGBasis with a GPU enabled.
 It is recommended that CMake version be greater than 3.24 (see below).
@@ -282,7 +290,7 @@ pip<span class="w"> </span>install<span class="w"> </span>-v<span class="w"> </s
 </section>
 </section>
 <section id="installation-problems">
-<h2>Installation problems<a class="headerlink" href="#installation-problems" title="Permalink to this heading"></a></h2>
+<h2>Installation problems<a class="headerlink" href="#installation-problems" title="Link to this heading"></a></h2>
 <p>The following can help with compiling this package</p>
 <ul class="simple">
 <li><p>If CMake version is greater than 3.24, then CMake will automatically find the correct CUDA architecture based on the
@@ -330,7 +338,7 @@ cmake<span class="w"> </span>-S<span class="w"> </span>.<span class="w"> </span>
 </div>
 </section>
 <section id="building-documentation">
-<h2>Building Documentation<a class="headerlink" href="#building-documentation" title="Permalink to this heading"></a></h2>
+<h2>Building Documentation<a class="headerlink" href="#building-documentation" title="Link to this heading"></a></h2>
 <p>The following shows how to build the documentation using sphinx to the folder <cite>_build</cite>.</p>
 <blockquote>
 <div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>doc

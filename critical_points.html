@@ -1,26 +1,25 @@
 <!DOCTYPE html>
-<html class="writer-html5" lang="en">
+<html class="writer-html5" lang="en" data-content_root="./">
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>QTAIM Critical Points &mdash; cugbasis  documentation</title>
-      <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
-      <link rel="stylesheet" type="text/css" href="_static/css/override.css" />
-      <link rel="stylesheet" type="text/css" href="_static/nbsphinx-code-cells.css" />
-      <link rel="stylesheet" type="text/css" href="_static/css/custom.css" />
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="_static/css/override.css?v=064c4a14" />
+      <link rel="stylesheet" type="text/css" href="_static/nbsphinx-code-cells.css?v=2aa19091" />
+      <link rel="stylesheet" type="text/css" href="_static/css/custom.css?v=9ba27866" />
 
   
   <!--[if lt IE 9]>
     <script src="_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-        <script src="_static/jquery.js"></script>
-        <script src="_static/underscore.js"></script>
-        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script src="_static/doctools.js"></script>
-        <script src="_static/sphinx_highlight.js"></script>
+        <script src="_static/jquery.js?v=5d32c60e"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="_static/documentation_options.js?v=5929fcd5"></script>
+        <script src="_static/doctools.js?v=9a2dae69"></script>
+        <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
         <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
         <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
         <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
@@ -88,6 +87,15 @@
 <li class="toctree-l3"><a class="reference internal" href="molecule.html#cugbasis.Molecule.compute_thomas_fermi_ked"><code class="docutils literal notranslate"><span class="pre">Molecule.compute_thomas_fermi_ked()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="molecule.html#cugbasis.Molecule.compute_weizsacker_ked"><code class="docutils literal notranslate"><span class="pre">Molecule.compute_weizsacker_ked()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="molecule.html#cugbasis.Molecule.get_file_path"><code class="docutils literal notranslate"><span class="pre">Molecule.get_file_path()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="molecule.html#cugbasis.Promolecule"><code class="docutils literal notranslate"><span class="pre">Promolecule</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="molecule.html#cugbasis.Promolecule.atcoords"><code class="docutils literal notranslate"><span class="pre">Promolecule.atcoords</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="molecule.html#cugbasis.Promolecule.atnums"><code class="docutils literal notranslate"><span class="pre">Promolecule.atnums</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="molecule.html#cugbasis.Promolecule.compute_density"><code class="docutils literal notranslate"><span class="pre">Promolecule.compute_density()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="molecule.html#cugbasis.Promolecule.compute_esp"><code class="docutils literal notranslate"><span class="pre">Promolecule.compute_esp()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="molecule.html#cugbasis.Promolecule.promol_coeffs"><code class="docutils literal notranslate"><span class="pre">Promolecule.promol_coeffs</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="molecule.html#cugbasis.Promolecule.promol_exps"><code class="docutils literal notranslate"><span class="pre">Promolecule.promol_exps</span></code></a></li>
 </ul>
 </li>
 </ul>
@@ -171,14 +179,14 @@
              
   <p><a class="reference external" href="https://colab.research.google.com/github/theochem/cuGBasis/blob/main/examples/critical_points.ipynb"><img alt="Open In Colab" src="https://colab.research.google.com/assets/colab-badge.svg" /></a></p>
 <section id="QTAIM-Critical-Points">
-<h1>QTAIM Critical Points<a class="headerlink" href="#QTAIM-Critical-Points" title="Permalink to this heading"></a></h1>
+<h1>QTAIM Critical Points<a class="headerlink" href="#QTAIM-Critical-Points" title="Link to this heading"></a></h1>
 <p>This example illustrates how to find the QTAIM critical points and bond-paths using ChemTools and cuGBasis. This is precisely when the gradient of the electron density <span class="math notranslate nohighlight">\(\nabla \rho = 0\)</span> is zero. The first step is to load the wavefunction information using cuGBasis.</p>
 <section id="Installation-cuGBasis-on-Colab">
-<h2>Installation cuGBasis on Colab<a class="headerlink" href="#Installation-cuGBasis-on-Colab" title="Permalink to this heading"></a></h2>
+<h2>Installation cuGBasis on Colab<a class="headerlink" href="#Installation-cuGBasis-on-Colab" title="Link to this heading"></a></h2>
 <p>The user can skip this step if they aren’t using Google Colab.</p>
 <p>Installation of cuGBasis is rather simple, given that the user has CMake, and CUDA installed.</p>
 <section id="Enable-GPU">
-<h3>Enable GPU<a class="headerlink" href="#Enable-GPU" title="Permalink to this heading"></a></h3>
+<h3>Enable GPU<a class="headerlink" href="#Enable-GPU" title="Link to this heading"></a></h3>
 <p>On Google Colab, the GPU needs to be enabled. The user should do the following:</p>
 <p>Click on Runtime -&gt; Change runtime type -&gt; T4 GPU</p>
 <div class="nbinput nblast docutils container">
@@ -190,7 +198,7 @@
 <span class="o">!</span>pip<span class="w"> </span>install<span class="w"> </span>-q<span class="w"> </span>condacolab
 <span class="kn">import</span> <span class="nn">condacolab</span>
 <span class="n">condacolab</span><span class="o">.</span><span class="n">install</span><span class="p">()</span>
-<span class="o">!</span>pip<span class="w"> </span>install<span class="w"> </span>numpy<span class="w"> </span>matplotlib<span class="w"> </span>scipy<span class="w"> </span>pybind11<span class="w"> </span>qc-iodata
+<span class="o">!</span>pip<span class="w"> </span>install<span class="w"> </span>numpy<span class="w"> </span>scipy<span class="w"> </span>pybind11<span class="w"> </span>qc-iodata
 <span class="o">!</span>pip<span class="w"> </span>install<span class="w"> </span>git+https://github.com/theochem/grid.git
 <span class="o">!</span>mamba<span class="w"> </span>install<span class="w"> </span>-c<span class="w"> </span>theochem<span class="w"> </span>horton
 <span class="o">!</span>pip<span class="w"> </span>install<span class="w"> </span>git+https://github.com/theochem/chemtools.git@refs/pull/59/head
@@ -206,13 +214,14 @@
 </section>
 </section>
 <section id="Load-the-Molecule">
-<h2>Load the Molecule<a class="headerlink" href="#Load-the-Molecule" title="Permalink to this heading"></a></h2>
+<h2>Load the Molecule<a class="headerlink" href="#Load-the-Molecule" title="Link to this heading"></a></h2>
 <p>The first step is to load the wavefunction information using cuGBasis.</p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">cugbasis</span>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre><span></span><span class="o">%</span><span class="k">cd</span> ./cuGBasis/examples/
+<span class="kn">import</span> <span class="nn">cugbasis</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
 <span class="c1"># Load the wavefunction information</span>
@@ -228,7 +237,7 @@
 </div>
 </section>
 <section id="Using-Default-Initial-Guess">
-<h2>Using Default Initial Guess<a class="headerlink" href="#Using-Default-Initial-Guess" title="Permalink to this heading"></a></h2>
+<h2>Using Default Initial Guess<a class="headerlink" href="#Using-Default-Initial-Guess" title="Link to this heading"></a></h2>
 <p>In this example, we will provide only the atomic coordinates and it will generate initial guesses where the gradient of the electron density is close to zero. This should roughly be near the center of each atom, inbetween any two atoms and between three/four atoms. The electron density, gradient and hessian are obtained from cuGBasis and use is given to the ChemTools algorithm for efficiently finding the critical points and then find the bond-paths for all bond-critical points.</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
@@ -359,7 +368,7 @@ Bond path 1 converged to atom 8 with coords [11.0737951  13.8082288   7.07513461
 </div>
 </section>
 <section id="Challenging-Cases">
-<h2>Challenging Cases<a class="headerlink" href="#Challenging-Cases" title="Permalink to this heading"></a></h2>
+<h2>Challenging Cases<a class="headerlink" href="#Challenging-Cases" title="Link to this heading"></a></h2>
 <p>This example will illustrate a case, with a much large peptide, where the default initial guesses were not sufficient for finding all of the critical points. This can be determined from the Poincare-Hopf equation not being satisfied. In such scenario, the user will need to add more and better initial guesses.</p>
 <p>This example will use <a class="reference external" href="https://grid.qcdevs.org/pyapi/grid.atomgrid.html">Grid</a> package to construct an Becke-Lebedev grid (Atomic Grid) around each atom. This is based on constructing grids over spherical coordinates <span class="math notranslate nohighlight">\((r, \theta, \phi)\)</span>, where a radial grid is constructed over the <span class="math notranslate nohighlight">\(r\)</span> coordinate and an angular grid over the <span class="math notranslate nohighlight">\((\theta, \phi)\)</span> coordinate. Due to the large size of the format check-point file, the user will need to use git lfs to download the file via the command
 <code class="docutils literal notranslate"><span class="pre">git</span> <span class="pre">lfs</span> <span class="pre">fetch</span> <span class="pre">--all</span></code>.</p>
