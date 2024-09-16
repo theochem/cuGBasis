@@ -2,6 +2,9 @@
 #define CHEMTOOLS_CUDA_INCLUDE_BASIS_TO_GPU_H_
 
 #include <functional>
+#include <vector>
+#include <string>
+#include <unordered_map>
 
 #include "contracted_shell.h"
 
@@ -12,6 +15,13 @@ extern __constant__ double g_constant_basis[7500];
 typedef void (*d_func_t)(double*, const double*, const int, const int, const int);
 
 namespace chemtools {
+/***
+ *
+ *
+ * Wave-function
+ *
+ */
+
 /**
  * Puts molecular basis into constant memory of the NVIDIA GPU as a straight array. Useful when one
  *  just wants to iterate through the array in a row fashion, e.g. evaluating electron density/contraction array.
@@ -79,6 +89,63 @@ __host__ void evaluate_scalar_quantity(
     dim3 threadsPerBlock,
     dim3 grid,
     cudaFuncCache l1_over_shared = cudaFuncCachePreferL1
+);
+
+
+
+/***
+ *
+ * Promolecular
+ *
+ */
+
+/**
+ * Puts promolecular coefficents/exponents into constant memory of the NVIDIA GPU as a straight array.
+ *   Only has s-type and p-type Gaussians
+ *   Useful when one just wants to iterate through the array in a row fashion
+ *
+ *  So far the elemnts provided are
+ *        H  C  N  O  F  S  P  Cl
+ *
+ * @param[in] basis The molecular basis set information as a collection of contracted shells.
+ * @param[in] atom_coords Atomic coordinates of size (M, 3) in row-major order
+ * @param[in] atom_numbers Atomic atom_numbers of size(M,) used to identify what element it is
+ * @param[in] natoms The number of atoms M.
+ * @param[in] promol_coeffs The promolecular coefficients of s-type and p-type Gaussians.
+ * @param[in] promol_exps The promolecular exponents of s-type and p-type Gaussians.
+ * @param[in] i_atom_start The atomic coordinates to put in constant memory, used to terminate the process
+ * @param[in] index_atom_coords The Index within constant memory where atomic coordinates should start.
+ *                              If zero, then it means it is the first time.
+ *
+ * @param[out] array of two ints,
+ *             First int, tells the index where the promolecular basis ends, i.e. index within constant memory
+ *                where the atomic coordinates should start, needed for GPU code
+ *             Second int, tells which atom to do next in the next cycle, needed for Host Code, if this
+ *                is equal to the number of atoms, then it implies all atoms were completed.
+ * @note Every basis-set information is casted to a double.
+ * @note The following explains how memory is placed is with constant memory.
+ *          i^E := Index of element `E` within constant memory where the promolecular is listed.
+ *          M^E_S := Number of s-type coefficeints for elemenmt E
+ *          M^E_P := Number of p-type coefficeints for element E
+ *
+ *          | i^H | 4 byte blank | i^C | 4B blank | i^N | 4B blank | ... | i^Cl | 4B Blank
+ *           M^H_S | 4B  | coeff_1 | exp_1 | coeff_2 | exp_2 | ... | M^H_P | 4B byte blank | coeff_1 | exp_1 | ....
+ *           Pattern repeats for the next element, starting with M^E_S
+ *
+ *          After that the Number of atoms (denoted as M) within constant memory is placed, then
+ *          the Index of i^E is placed where E is determined from the atomic charge,
+ *          then atomic coordinates for that element E is placed.
+ *          | M | 1 (for i^C) | C_x | C_y | C_z | 0 (for i^H) | H_x | H_y | H_z | ....
+ *
+ */
+__host__ std::array<std::size_t, 2> add_promol_basis_to_constant_memory_array(
+    const double* const atom_coords,
+    const long int *const atom_numbers,
+    int natoms,
+    const std::unordered_map<std::string, std::vector<double>>& promol_coeffs,
+    const std::unordered_map<std::string, std::vector<double>>& promol_exps,
+    const std::size_t index_atom_coords = 0,
+    const std::size_t i_atom_start = 0
 );
 
 }

@@ -10,6 +10,7 @@
 
 #include <Eigen/Dense>
 #include <unsupported/Eigen/CXX11/Tensor>
+#include <vector>
 
 #include "cublas_v2.h"
 
@@ -73,5 +74,66 @@ class Molecule {
   Vector compute_shannon_information_density(const Eigen::Ref<MatrixX3R>& array);
   };
 
+
+class ProMolecule {
+  MatrixX3R coord_atoms_;                                        // Coordinates of atoms (M, 3) in row-major order
+  IntVector atnums_;                                             // Atomic number of atoms (M,)
+  int natoms_;                                                   // Number of atoms M
+  std::unordered_map<std::string, std::vector<double>> coeffs_;  // Keys: ELEMENT_PARAMETER_TYPE e.g. c_coeffs_s
+  std::unordered_map<std::string, std::vector<double>> exps_;    // Mapping from element h_exps_p to exponents
+  ProMolecule(
+      const Eigen::Ref<MatrixX3R>& atom_coords,
+      const Eigen::Ref<IntVector>& atom_numbers,
+      int atom_length,
+      const std::string file_path_to_data
+      );
+
+ public:
+  // Had difficult creating py::init with pybind11 so decided to make my own create so that I don't have to
+  //   do type declaration
+  static ProMolecule create(
+      const Eigen::Ref<MatrixX3R>& atom_coords,
+      const Eigen::Ref<IntVector>& atom_numbers,
+      int atom_length,
+      const std::string file_path_to_data)
+    {
+      return ProMolecule(atom_coords, atom_numbers, atom_length, file_path_to_data);
+    }
+
+  // Functionality
+  Vector compute_electron_density(const Eigen::Ref<MatrixX3R>&  points);
+  MatrixX3R compute_electron_density_gradient(const Eigen::Ref<MatrixX3R>&  points);
+  TensorXXXR compute_electron_density_hessian(const Eigen::Ref<MatrixX3R>&  points);
+  Vector compute_laplacian(const Eigen::Ref<MatrixX3R>&  points);
+  Vector compute_electrostatic_potential(const Eigen::Ref<MatrixX3R>&  points);
+
+  // Getters
+  MatrixX3R GetCoordAtoms() const {return coord_atoms_;}
+  int GetNatoms() const {return natoms_;}
+  const IntVector GetAtomicNumbers() const {return atnums_;}
+  const std::unordered_map<std::string, std::vector<double>> GetPromolCoefficients() {return coeffs_;}
+  const std::unordered_map<std::string, std::vector<double>> GetPromolExponents() {return exps_;}
+
+  // Get the Coefficients Based on Element_Charge
+  const std::vector<double>& GetCoefficients(const std::string& element_with_charge) {
+    auto it = coeffs_.find(element_with_charge);
+    if (it != coeffs_.end()) {
+      return it->second;
+    }
+    else {
+      throw std::out_of_range("Key not found in map .");
+    }
+  }
+  // Get the Exponents Based on Element_Charge
+  const std::vector<double>& GetExponents(const std::string& element_with_charge) {
+    auto it = exps_.find(element_with_charge);
+    if (it != exps_.end()) {
+      return it->second;
+    }
+    else {
+      throw std::out_of_range("Key not found in map. ");
+    }
+  }
+};
 }
 #endif //CHEMTOOLS_CUDA_INCLUDE_PYMOLCULE_H_
