@@ -41,6 +41,7 @@ set(SOURCES
 	src/evaluate_kinetic_dens.cu
 	src/evaluate_densbased.cu
 	src/evaluate_hessian.cu
+	src/evaluate_promolecular.cu
 	src/pymolecule.cu
 )
 set(HEADERS
@@ -54,6 +55,7 @@ set(HEADERS
 	include/evaluate_density.cuh
 	include/evaluate_gradient.cuh
 	include/evaluate_electrostatic.cuh
+	include/evaluate_promolecular.cuh
 	include/utils.h
 	include/evaluate_laplacian.cuh
 	include/evaluate_kinetic_dens.cuh
