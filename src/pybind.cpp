@@ -11,6 +11,84 @@ PYBIND11_MODULE(cugbasis, m) {
   py::options options;
   options.disable_function_signatures();
 
+  py::class_<chemtools::ProMolecule>(m, "Promolecule")
+    .def(py::init(&chemtools::ProMolecule::create), R"pbdoc(Initialize the Promolecule class.
+
+Parameters
+----------
+atom_coords: numpy(M,3)
+    Atomic Coordinates (a.u.)
+atom_nums: numpy(M,)
+    Atomic Numbers
+natoms: int
+    Number of atoms M
+path: str
+    Path to the ".npz" containing promolecular coefficients and exponents obtained from BFit.
+    This ".npz" is within the folder "./data/".
+)pbdoc")
+    .def("compute_density",
+      &chemtools::ProMolecule::compute_electron_density,
+      py::return_value_policy::reference_internal,
+      R"pbdoc(Compute promolecular density :math:`\rho^\circ(\mathbf{r})`.
+
+          .. math::
+            \rho^\circ(\mathbf{r}) = \sum_A \bigg[ \sum_i c_i \frac{\alpha}{\pi}^{3/2} e^{-\alpha r_{A} ^2} +
+            \sum_j d_j \frac{2 \alpha^{5/2}}{3 \pi^{3/2}} r_A^2 e^{-\alpha r_A^2} \bigg],
+
+          where :math:`A` is an atom, :math:`c_i, d_j` are the s-type, p-type coefficients respectively.
+          Note this is normalized. Please see the paper "An information-theoretic approach to basis-set fitting of
+          electron densities and other non-negative functions".
+
+          Parameters
+          ----------
+          points: ndarray(N, 3)
+              Cartesian coordinates of :math:`N` points in three-dimensions.
+
+          Returns
+          -------
+          ndarray(N,)
+              The promolecular density evaluated on each point.
+      )pbdoc"
+    )
+    .def("compute_esp",
+    &chemtools::ProMolecule::compute_electrostatic_potential,
+    py::return_value_policy::reference_internal,
+    R"pbdoc(Compute the electrostatic potential on :math:`\rho^\circ(\mathbf{r})`.
+
+              .. math::
+                \Phi(\mathbf{r}) = \sum_{i=1}^{N_{atom}} \frac{Z_A}{|\mathbf{r} - \mathbf{R}_A|}  -
+                 \int \frac{\rho^\circ(\mathbf{r}^\prime)}{|\mathbf{r} - \mathbf{r}^\prime| }d\mathbf{r}^\prime,
+
+              where :math:`Z_A` is the atomic number of atom A.
+
+              Parameters
+              ----------
+              points: ndarray(N, 3)
+                  Cartesian coordinates of :math:`N` points in three-dimensions.
+
+              Returns
+              -------
+              ndarray(N,)
+                  The promolecular electrostatic potential evaluated on each point.
+          )pbdoc"
+    )
+    .def_property_readonly(
+      "atcoords", &chemtools::ProMolecule::GetCoordAtoms, py::return_value_policy::reference_internal,
+      "Cartesian coordinates of the atomic centers."
+    )
+    .def_property_readonly(
+      "atnums", &chemtools::ProMolecule::GetAtomicNumbers, py::return_value_policy::reference_internal,
+      "Atomic number of atomic centers."
+    )
+    .def_property_readonly(
+    "promol_coeffs", &chemtools::ProMolecule::GetPromolCoefficients, py::return_value_policy::reference_internal,
+    "Get the coefficients as a dictionary with keys element_parameter_type (e.g. `f_coeffs_p`)."
+    )
+    .def_property_readonly(
+    "promol_exps", &chemtools::ProMolecule::GetPromolExponents, py::return_value_policy::reference_internal,
+    "Get the exponents as a dictionary with keys element_parameter_type (e.g. `f_coeffs_p`)."
+    );
+
   py::class_<chemtools::Molecule>(m, "Molecule")
       .def(py::init<const std::string &>(), R"pbdoc(Initialize the molecule class.
 
@@ -305,8 +383,8 @@ PYBIND11_MODULE(cugbasis, m) {
            R"pbdoc(Compute the molecular electrostatic potential.
 
     .. math::
-        \Phi(\mathbf{r}) = \sum_{i=1}^{N_{atom}} \frac{Z_A}{|\mathbf{r} - \mathbf{R}_A|^2}  -
-         \int \frac{\rho(\mathbf{r}^\prime)}{|\mathbf{r} - \mathbf{r}^\prime|^2 }d\mathbf{r}^\prime,
+        \Phi(\mathbf{r}) = \sum_{i=1}^{N_{atom}} \frac{Z_A}{|\mathbf{r} - \mathbf{R}_A|}  -
+         \int \frac{\rho(\mathbf{r}^\prime)}{|\mathbf{r} - \mathbf{r}^\prime| }d\mathbf{r}^\prime,
 
     Parameters
     ----------
