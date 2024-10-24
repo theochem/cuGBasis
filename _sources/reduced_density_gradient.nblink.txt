@@ -1,3 +1,0 @@
-{
-     "path": "../examples/reduced_density_gradient.ipynb"
-}

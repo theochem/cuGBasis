@@ -1,3 +1,0 @@
-{
-     "path": "../examples/generating_cube_files.ipynb"
-}

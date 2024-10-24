@@ -1,3 +1,0 @@
-{
-     "path": "../examples/quick_start.ipynb"
-}
