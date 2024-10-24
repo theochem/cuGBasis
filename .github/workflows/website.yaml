@@ -37,7 +37,12 @@ jobs:
       - name: Check nvcc version
         run: nvcc -V
 
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
 
       - name: Install development and distributions version
         run: |
