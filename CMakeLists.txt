@@ -122,7 +122,7 @@ if("${CMAKE_CUDA_ARCHITECTURES}" STREQUAL "")
 			set_property(TARGET cugbasis_lib PROPERTY CUDA_ARCHITECTURES native)
 		endif()
 	else()
-		set_property(TARGET cugbasis_lib PROPERTY CUDA_ARCHITECTURES $ENV{CMAKE_CUDA_ARCHITECTURES})
+		set_property(TARGET cugbasis_lib PROPERTY CUDA_ARCHITECTURES 52 60 61 75)  # Set a default CUDA_ARCHITECTURE
 	endif ()
 else()
 	# If the user did define the CUDA Archiecture then add it here.
@@ -159,7 +159,6 @@ if(${LINK_TO_PYTHON})
 	install(TARGETS cugbasis_lib DESTINATION ${Python3_SITEARCH})
 endif()
 
-#add_subdirectory(tests)
 # Compilation of the tests, not needed e.g. if `LINK_TO_PYTHON` IS True/ON
 set(${DONT_COMPILE_TESTS} OFF CACHE BOOL "Don't compile the tests")
 if(NOT ${DONT_COMPILE_TESTS})

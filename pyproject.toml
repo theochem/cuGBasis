@@ -1,21 +1,24 @@
 [project]
-name = "cugbasis"
+name = "qc-cuGBasis"
 version = "0.0.1"
-description = "CUDA-based molecular basis function library with Python bindings."
+description = "High performance CUDA/Python library for computing quantum chemistry density-based descriptors for larger systems using GPUs. "
 authors = [{name = "QC-Devs Community", email = "qcdevs@gmail.com"}]
 license = {file = "LICENSE"}
 readme = "README.md"
 requires-python = ">=3.9"
 keywords = ["cuda", "molecular basis functions", "high-performance computing", "quantum chemistry"]
 classifiers = [
-    "Development Status :: 3 - Alpha",
+    "Development Status :: 5 - Production/Stable",
     "Intended Audience :: Science/Research",
     "Intended Audience :: Developers",
     "Topic :: Scientific/Engineering :: Chemistry",
     "Topic :: Scientific/Engineering :: Physics",
     "Topic :: Scientific/Engineering :: Mathematics",
     "License :: OSI Approved :: GNU Version 3",
-    "Programming Language :: Python :: 3.7",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
     "ENVIRONMENT :: GPU :: NVIDIA CUDA :: 10.2",
     "ENVIRONMENT :: GPU :: NVIDIA CUDA :: 11.8",
     "ENVIRONMENT :: GPU :: NVIDIA CUDA :: 12.2"
