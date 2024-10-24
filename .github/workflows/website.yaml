@@ -1,0 +1,69 @@
+name: build_website
+
+on:
+  push:
+    branches:
+      - master
+      - website
+
+
+permissions:
+  contents: write
+  deployments: write
+  pages: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: write
+      deployments: write
+      pages: write
+
+    steps:
+      # Fetch CUDA toolkit using Jimver/cuda-toolkit
+      - name: Fetch CUDA toolkit
+        uses: Jimver/cuda-toolkit@v0.2.18
+        id: cuda-toolkit
+        with:
+          cuda: '12.1.0'
+
+      - name: Check nvcc version
+        run: nvcc -V
+
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install development and distributions version
+        run: |
+          pip install --upgrade pip
+          git submodule update --init --recursive
+          pip install .[docs]
+
+      - name: Setup pandoc
+        uses: siacodelabs/setup-pandoc@v1
+        with:
+          xelatex: true.
+
+      # didn't need to change anything here, but had to add sphinx.ext.githubpages
+      # to my conf.py extensions list. that fixes the broken uploads
+      - name: Building documentation
+        run: |
+          cd doc
+          make html
+
+      # still need to build and set the PAT to get a rebuild on the pages job,
+      # apart from that quite clean and nice
+      - name: GitHub Pages Action
+        #if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: _build/html
+          publish_branch: gh-pages
+          cname: cugbasis.qcdevs.org

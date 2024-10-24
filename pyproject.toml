@@ -1,0 +1,66 @@
+[project]
+name = "qc-cuGBasis"
+version = "1.0.1"
+description = "High performance CUDA/Python library for computing quantum chemistry density-based descriptors for larger systems using GPUs. "
+authors = [{name = "QC-Devs Community", email = "qcdevs@gmail.com"}]
+license = {file = "LICENSE"}
+readme = "README.md"
+requires-python = ">=3.9"
+keywords = ["cuda", "molecular basis functions", "high-performance computing", "quantum chemistry"]
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Intended Audience :: Science/Research",
+    "Intended Audience :: Developers",
+    "Topic :: Scientific/Engineering :: Chemistry",
+    "Topic :: Scientific/Engineering :: Physics",
+    "Topic :: Scientific/Engineering :: Mathematics",
+    "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Environment :: GPU :: NVIDIA CUDA :: 10.2",
+    "Environment :: GPU :: NVIDIA CUDA :: 11.8",
+    "Environment :: GPU :: NVIDIA CUDA :: 12 :: 12.2"
+]
+
+dependencies = [
+  "numpy >= 1.24",
+  "pybind11 >= 2.9",
+  "qc-iodata"
+]
+
+[project.urls]
+Homepage = "https://github.com/theochem/cugbasis"
+Source = "https://github.com/theochem/cugbasis"
+Issues = "https://github.com/theochem/cugbasis/issues"
+Documentation = "https://cugbasis.qcdevs.org/"
+
+[project.optional-dependencies]
+# pip install qc-cugbasis[docs]
+docs = [
+    "IPython",
+    "sphinx",
+    "sphinx-rtd-theme",
+    "numpydoc",
+    "sphinx_autodoc_typehints",
+    "nbsphinx",
+    "nbsphinx_link"
+]
+
+[build-system]
+requires = ["scikit-build-core >= 0.9.10", "cmake>=3.26", "pytest >= 6.0"]
+build-backend = "scikit_build_core.build"
+
+[tool.scikit-build]
+# No need for wheel.packages here
+#wheel.packages = ["src/"]
+#wheel.license-files = ["LICENSE"]
+# Don't include the large fchk files in source distribution
+sdist.exclude = [".github", "tests/data/*.fchk", "examples/*.fchk"]
+cmake.version = ">=3.26.1"
+cmake.build-type = "Release"
+cmake.args = [
+    "-DLINK_TO_PYTHON=ON",
+    "-DDONT_COMPILE_TESTS=ON"
+]

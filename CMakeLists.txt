@@ -1,29 +1,65 @@
 cmake_minimum_required(VERSION 3.16)
 project(cugbasis)
 enable_language(CXX)
-# TODO: Give command line option for CMAKE to find nvcc!
 enable_language(CUDA)
 set(CMAKE_CUDA_STANDARD 14)
+
+
+if(POLICY CMP0075)
+	cmake_policy(SET CMP0075 NEW)
+endif()
+
+if(POLICY CMP0077)
+	cmake_policy(SET CMP0077 NEW)
+endif()
+
+if(POLICY CMP0057)
+	cmake_policy(SET CMP0057 NEW)
+endif()
+
+if(POLICY CMP0074)
+	cmake_policy(SET CMP0074 NEW)
+endif()
+
+
+find_package(Git QUIET)
+if(GIT_FOUND AND EXISTS "${PROJECT_SOURCE_DIR}/.git")
+	# Update submodules as needed
+	option(GIT_SUBMODULE "Check submodules during build" ON)
+	if(GIT_SUBMODULE)
+		message(STATUS "Submodule update: ${CMAKE_CURRENT_SOURCE_DIR} ")
+		execute_process(COMMAND ${GIT_EXECUTABLE} submodule update --init --recursive
+				WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+				RESULT_VARIABLE GIT_SUBMOD_RESULT)
+		if(NOT GIT_SUBMOD_RESULT EQUAL "0")
+			message(FATAL_ERROR "Cloning git submodules failed with ${GIT_SUBMOD_RESULT}, please checkout submodules manually")
+		endif()
+	endif()
+endif()
 
 # Add Eigen header files
 find_package(Eigen3 3.3 QUIET)
 
 # If user wants to add the path to EIGEN themselves then they should do something like so:
 if( Eigen3_FOUND )
-	message("Eigen was found")
+	message(STATUS "Found Eigen3: ${EIGEN3_VERSION} at ${EIGEN3_INCLUDE_DIR}")
 else()
 	message("Eigen was not found: Automatically try to install")
-	add_subdirectory(libs/eigen)
+	add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/libs/eigen)
 endif()
 
 
 # Add pybind11 header files
 # Finding Python Needed to do this for CLION project for my own computer.
 set(PYBIND11_FINDPYTHON ON)
-SET(PYBIND11_PYTHON_VERSION 3.9)
-# TODO: GIve a command-line option for CMAKE to find Python
-find_package(Python COMPONENTS Interpreter Development NumPy REQUIRED)
-add_subdirectory(./libs/pybind11)
+find_package(Python3 COMPONENTS Interpreter Development REQUIRED)
+message(STATUS "Python Executable: ${Python_EXECUTABLE}")
+message(STATUS "Python Version: ${Python_VERSION}")
+message(STATUS "Python Include Dir: ${Python_INCLUDE_DIRS}")
+message(STATUS "NumPy Include Dir: ${Python_NumPy_INCLUDE_DIRS}")
+add_subdirectory(${PROJECT_SOURCE_DIR}/libs/pybind11)
+
+
 
 # Create a CUDA library chemtools_cuda using nvcc compiler that codes the entire CUDA/C++.
 set(SOURCES
@@ -86,7 +122,7 @@ if("${CMAKE_CUDA_ARCHITECTURES}" STREQUAL "")
 			set_property(TARGET cugbasis_lib PROPERTY CUDA_ARCHITECTURES native)
 		endif()
 	else()
-		set_property(TARGET cugbasis_lib PROPERTY CUDA_ARCHITECTURES $ENV{CMAKE_CUDA_ARCHITECTURES})
+		set_property(TARGET cugbasis_lib PROPERTY CUDA_ARCHITECTURES 52 60 61 75)  # Set a default CUDA_ARCHITECTURE
 	endif ()
 else()
 	# If the user did define the CUDA Archiecture then add it here.
@@ -114,13 +150,15 @@ if(${LINK_TO_PYTHON})
 	# cugbasis is compiled as a shared library and then linked via RPATH to Python package via Python_SITEARCH variable
 	#    obtained from find_package(Python ...) The other alternative is to use the compiled library that is inside
 	#    the build folder, this might be a better approach then the current.
-	set_target_properties(cugbasis PROPERTIES BUILD_WITH_INSTALL_RPATH TRUE INSTALL_RPATH "${Python_SITEARCH}")
-	message("SHARED LIBRARY INSTALLED TO Python ${Python_SITEARCH}")
+	message("SHARED LIBRARY INSTALLED TO Python ${Python3_SITEARCH}")
+	set_target_properties(cugbasis PROPERTIES INSTALL_RPATH "${Python3_SITEARCH}")
 	target_link_libraries(cugbasis PRIVATE cugbasis_lib)
 	target_link_libraries(cugbasis PRIVATE CUDA::cublas)
+
+	install(TARGETS cugbasis DESTINATION ${Python3_SITEARCH})
+	install(TARGETS cugbasis_lib DESTINATION ${Python3_SITEARCH})
 endif()
 
-#add_subdirectory(tests)
 # Compilation of the tests, not needed e.g. if `LINK_TO_PYTHON` IS True/ON
 set(${DONT_COMPILE_TESTS} OFF CACHE BOOL "Don't compile the tests")
 if(NOT ${DONT_COMPILE_TESTS})
