@@ -58,7 +58,7 @@ build-backend = "scikit_build_core.build"
 #wheel.license-files = ["LICENSE"]
 # Don't include the large fchk files in source distribution
 sdist.exclude = [".github", "tests/data/*.fchk", "examples/*.fchk"]
-cmake.version = "3.26"
+cmake.version = ">=3.26.1"
 cmake.build-type = "Release"
 cmake.args = [
     "-DLINK_TO_PYTHON=ON",
