@@ -1,0 +1,48 @@
+[project]
+name = "cugbasis"
+version = "0.0.1"
+description = "CUDA-based molecular basis function library with Python bindings."
+authors = [{name = "QC-Devs Community", email = "qcdevs@gmail.com"}]
+license = {file = "LICENSE"}
+readme = "README.md"
+requires-python = ">=3.9"
+keywords = ["cuda", "molecular basis functions", "high-performance computing", "quantum chemistry"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Science/Research",
+    "Intended Audience :: Developers",
+    "Topic :: Scientific/Engineering :: Chemistry",
+    "Topic :: Scientific/Engineering :: Physics",
+    "Topic :: Scientific/Engineering :: Mathematics",
+    "License :: OSI Approved :: GNU Version 3",
+    "Programming Language :: Python :: 3.7",
+    "ENVIRONMENT :: GPU :: NVIDIA CUDA :: 10.2",
+    "ENVIRONMENT :: GPU :: NVIDIA CUDA :: 11.8",
+    "ENVIRONMENT :: GPU :: NVIDIA CUDA :: 12.2"
+]
+
+dependencies = [
+  "numpy >= 1.24",
+  "pybind11 >= 2.9",
+  "qc-iodata"
+]
+
+[project.urls]
+Homepage = "https://github.com/theochem/cugbasis"
+Source = "https://github.com/theochem/cugbasis"
+Issues = "https://github.com/theochem/cugbasis/issues"
+Documentation = "https://cugbasis.qcdevs.org/"
+
+[build-system]
+requires = ["scikit-build-core >= 0.9.10", "cmake>=3.26", "pybind11 >= 2.9", "pytest >= 6.0"]
+build-backend = "scikit_build_core.build"
+
+[tool.scikit-build]
+wheel.packages = ["src/cugbasis"]
+wheel.license-files = ["LICENSE"]
+cmake.minimum-version = "3.26"
+cmake.build-type = "Release"
+cmake.args = [
+    "-DLINK_TO_PYTHON=ON",
+    "-DDONT_COMPILE_TESTS=ON"
+]
