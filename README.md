@@ -5,9 +5,10 @@
 [![GitHub contributors](https://img.shields.io/github/contributors/theochem/cugbasis.svg)](https://github.com/theochem/cugbasis/graphs/contributors)
 
 ## About
-CuGBasis is a free, and open-source C++/CUDA and Python library for computing various quantities efficiently 
+CuGBasis is a free, and open-source C++/CUDA and Python library for computing efficient computation of scalar, vector, and matrix quantities
 using NVIDIA GPU's in quantum chemistry. It is highly-optimized and vectorized, making it useful for cases
-where efficiency matters.
+where efficiency matters. More importantly, cuGBasis can compute the molecular orbitals, electron density (and its derivatives), electrostatic
+potentials and many other types of quantum chemistry descriptors.
 
 CuGBasis can read various wave-function formats (wfn, wfx, molden and fchk) using IOData and supports up-to g-type orbitals. 
 Please see the website for more information.
