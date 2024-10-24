@@ -44,6 +44,7 @@ jobs:
           pip install --upgrade pip
           git submodule update --init --recursive
           pip install -v .
+          python -m pip install build
 
       - name: Build Source Distribution
         run: >-
