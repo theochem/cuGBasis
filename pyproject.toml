@@ -53,7 +53,7 @@ docs = [
 ]
 
 [build-system]
-requires = ["scikit-build-core >= 0.9.10", "cmake>=3.26", "pytest >= 6.0"]
+requires = ["scikit-build-core >= 0.9.10", "cmake>=3.26", "pytest >= 6.0", "setuptools_scm>=8"]
 build-backend = "scikit_build_core.build"
 
 [tool.scikit-build]
