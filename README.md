@@ -19,6 +19,16 @@ To report any issues or ask questions, either [open an issue](
 https://github.com/theochem/cuGBasis/issues/new) or email [qcdevs@gmail.com]().
 
 
+## Installation
+
+Python 3.9 (or higher), CMake and CUDA is mandatory for installation.
+`qc-cuGBasis` can be installed using `pip`:
+
+```bash
+pip install qc-cuGBasis
+```
+For more detailed installations, please see the website.
+
 ## Citation
 Please use the following citation in any publication:
 
