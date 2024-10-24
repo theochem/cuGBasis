@@ -1,8 +1,8 @@
+<img src="./doc/cuGBasis_Logo.jpeg" alt="Image" width="300"/>
 
-[![Python Version](https://img.shields.io/badge/python-3.7%2B-blue.svg)](https://docs.python.org/3/whatsnew/3.7.html)
+[![Python Version](https://img.shields.io/badge/python-3.9%2B-blue.svg)](https://docs.python.org/3/whatsnew/3.9.html)
 [![GPLv3 License](https://img.shields.io/badge/License-GPL%20v3-yellow.svg)](https://opensource.org/licenses/)
 [![GitHub contributors](https://img.shields.io/github/contributors/theochem/cugbasis.svg)](https://github.com/theochem/cugbasis/graphs/contributors)
-![Image](./doc/cuGBasis_Logo.jpeg)
 
 ## About
 CuGBasis is a free, and open-source C++/CUDA and Python library for computing various quantities efficiently 
