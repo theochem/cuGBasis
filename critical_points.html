@@ -50,10 +50,11 @@
               <p class="caption" role="heading"><span class="caption-text">User documentation:</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="installation.html#quick-installation">Quick-Installation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="installation.html#dependencies">Dependencies</a></li>
+<li class="toctree-l2"><a class="reference internal" href="installation.html#quick-installation">Quick-Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="installation.html#detailed-installation">Detailed Installation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="installation.html#downloading-code">Downloading Code</a></li>
-<li class="toctree-l2"><a class="reference internal" href="installation.html#id1">Installation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="installation.html#id3">Installation</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="installation.html#python-binding">Python Binding</a></li>
 <li class="toctree-l3"><a class="reference internal" href="installation.html#c">C++</a></li>
 <li class="toctree-l3"><a class="reference internal" href="installation.html#compute-canada">Compute Canada</a></li>
@@ -202,11 +203,7 @@
 <span class="o">!</span>mamba<span class="w"> </span>install<span class="w"> </span>-c<span class="w"> </span>theochem<span class="w"> </span>horton
 <span class="o">!</span>pip<span class="w"> </span>install<span class="w"> </span>git+https://github.com/theochem/chemtools.git@refs/pull/59/head
 <span class="o">!</span>git<span class="w"> </span>clone<span class="w"> </span>https://www.github.com/theochem/cuGBasis
-<span class="o">%</span><span class="k">cd</span> cuGBasis
-<span class="o">!</span>git<span class="w"> </span>submodule<span class="w"> </span>update<span class="w"> </span>--init<span class="w"> </span>--recursive
-<span class="o">!</span>ls
-<span class="o">!</span>pip<span class="w"> </span>install<span class="w"> </span>-v<span class="w"> </span>.
-<span class="o">%</span><span class="k">cd</span> examples/
+<span class="o">!</span>pip<span class="w"> </span>install<span class="w"> </span>-v<span class="w"> </span>qc-cugbasis
 </pre></div>
 </div>
 </div>

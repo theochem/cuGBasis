@@ -3,12 +3,6 @@
 Installation
 ############
 
-Quick-Installation
-==================
-
-.. code-block:: bash
-
-    pip install .
 
 Dependencies
 ============
@@ -19,6 +13,17 @@ The following dependencies will be necessary for cuGBasis to build properly,
 * CUDA/DRIVERS/NVCC/CUDA-TOOLKIT: (https://docs.nvidia.com/cuda/cuda-installation-guide-linux/index.html)
 * Python>=3.9: (http://www.python.org/)
 
+
+Quick-Installation
+===================
+`CuGBasis ` can be easily installed via pip:
+
+.. code-block:: bash
+
+    pip install qc-cugbasis
+
+Detailed Installation
+======================
 The following Python dependencies are necessary:
 
 * NumPy >= 1.16.0: http://www.numpy.org/

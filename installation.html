@@ -47,10 +47,11 @@
               <p class="caption" role="heading"><span class="caption-text">User documentation:</span></p>
 <ul class="current">
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Installation</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#quick-installation">Quick-Installation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#dependencies">Dependencies</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#quick-installation">Quick-Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#detailed-installation">Detailed Installation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#downloading-code">Downloading Code</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#id1">Installation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#id3">Installation</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#python-binding">Python Binding</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#c">C++</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#compute-canada">Compute Canada</a></li>
@@ -175,12 +176,6 @@
              
   <section id="installation">
 <span id="usr-installation"></span><h1>Installation<a class="headerlink" href="#installation" title="Link to this heading"></a></h1>
-<section id="quick-installation">
-<h2>Quick-Installation<a class="headerlink" href="#quick-installation" title="Link to this heading"></a></h2>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>.
-</pre></div>
-</div>
-</section>
 <section id="dependencies">
 <h2>Dependencies<a class="headerlink" href="#dependencies" title="Link to this heading"></a></h2>
 <p>The following dependencies will be necessary for cuGBasis to build properly,</p>
@@ -189,6 +184,16 @@
 <li><p>CUDA/DRIVERS/NVCC/CUDA-TOOLKIT: (<a class="reference external" href="https://docs.nvidia.com/cuda/cuda-installation-guide-linux/index.html">https://docs.nvidia.com/cuda/cuda-installation-guide-linux/index.html</a>)</p></li>
 <li><p>Python&gt;=3.9: (<a class="reference external" href="http://www.python.org/">http://www.python.org/</a>)</p></li>
 </ul>
+</section>
+<section id="quick-installation">
+<h2>Quick-Installation<a class="headerlink" href="#quick-installation" title="Link to this heading"></a></h2>
+<p><a href="#id1"><span class="problematic" id="id2">`</span></a>CuGBasis ` can be easily installed via pip:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>qc-cugbasis
+</pre></div>
+</div>
+</section>
+<section id="detailed-installation">
+<h2>Detailed Installation<a class="headerlink" href="#detailed-installation" title="Link to this heading"></a></h2>
 <p>The following Python dependencies are necessary:</p>
 <ul class="simple">
 <li><p>NumPy &gt;= 1.16.0: <a class="reference external" href="http://www.numpy.org/">http://www.numpy.org/</a></p></li>
@@ -229,8 +234,8 @@ git<span class="w"> </span>submodule<span class="w"> </span>update<span class="w
 </pre></div>
 </div>
 </section>
-<section id="id1">
-<h2>Installation<a class="headerlink" href="#id1" title="Link to this heading"></a></h2>
+<section id="id3">
+<h2>Installation<a class="headerlink" href="#id3" title="Link to this heading"></a></h2>
 <section id="python-binding">
 <h3>Python Binding<a class="headerlink" href="#python-binding" title="Link to this heading"></a></h3>
 <p>Once you downloaded the code, obtained the required libraries and dependencies, then one can use pip to install
