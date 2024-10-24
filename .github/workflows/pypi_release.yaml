@@ -44,6 +44,7 @@ jobs:
           pip install --upgrade pip
           git submodule update --init --recursive
           pip install -v .
+          pip install "setuptools>=64.0.0" "setuptools-scm>=8.0.0"
 
       - name: Build Source Distribution
         run: >-
