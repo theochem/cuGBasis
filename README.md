@@ -1,7 +1,7 @@
 
 <div style="text-align:left">
   <!-- <h1 style="margin-right: 20px;">The cuGBasis Library</h1> -->
-  <img src="https://github.com/theochem/cugbasis/blob/master/doc/cuGBasis_Logo.jpeg?raw=true" alt="Logo" width="300">
+  <img src="https://github.com/theochem/cugbasis/blob/main/doc/cuGBasis_Logo.jpeg?raw=true" alt="Logo" width="500">
 </div>
 
 [![Python Version](https://img.shields.io/badge/python-3.9%2B-blue.svg)](https://docs.python.org/3/whatsnew/3.9.html)
