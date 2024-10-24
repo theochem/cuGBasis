@@ -3,8 +3,7 @@ name: build_website
 on:
   push:
     branches:
-      - master
-      - website
+      - main
 
 
 permissions:
