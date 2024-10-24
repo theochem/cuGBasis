@@ -57,7 +57,7 @@ message(STATUS "Python Executable: ${Python_EXECUTABLE}")
 message(STATUS "Python Version: ${Python_VERSION}")
 message(STATUS "Python Include Dir: ${Python_INCLUDE_DIRS}")
 message(STATUS "NumPy Include Dir: ${Python_NumPy_INCLUDE_DIRS}")
-add_subdirectory(./libs/pybind11)
+add_subdirectory(${PROJECT_SOURCE_DIR}/libs/pybind11)
 
 
 
