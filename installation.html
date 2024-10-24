@@ -1,0 +1,388 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Installation &mdash; cugbasis  documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="_static/css/override.css?v=064c4a14" />
+      <link rel="stylesheet" type="text/css" href="_static/css/custom.css?v=9ba27866" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=5929fcd5"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Molecule Class" href="molecule.html" />
+    <link rel="prev" title="Welcome to CuGBasis’s documentation!" href="index.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            cugbasis
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">User documentation:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Installation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#quick-installation">Quick-Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#dependencies">Dependencies</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#downloading-code">Downloading Code</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id1">Installation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#python-binding">Python Binding</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#c">C++</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#compute-canada">Compute Canada</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#installation-problems">Installation problems</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#building-documentation">Building Documentation</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="molecule.html">Molecule Class</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="molecule.html#cugbasis.Molecule"><code class="docutils literal notranslate"><span class="pre">Molecule</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="molecule.html#cugbasis.Molecule.atcoords"><code class="docutils literal notranslate"><span class="pre">Molecule.atcoords</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="molecule.html#cugbasis.Molecule.atnums"><code class="docutils literal notranslate"><span class="pre">Molecule.atnums</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="molecule.html#cugbasis.Molecule.compute_density"><code class="docutils literal notranslate"><span class="pre">Molecule.compute_density()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="molecule.html#cugbasis.Molecule.compute_electrostatic_potential"><code class="docutils literal notranslate"><span class="pre">Molecule.compute_electrostatic_potential()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="molecule.html#cugbasis.Molecule.compute_empirical_gradient_expansion_ked"><code class="docutils literal notranslate"><span class="pre">Molecule.compute_empirical_gradient_expansion_ked()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="molecule.html#cugbasis.Molecule.compute_general_gradient_expansion_ked"><code class="docutils literal notranslate"><span class="pre">Molecule.compute_general_gradient_expansion_ked()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="molecule.html#cugbasis.Molecule.compute_general_ked"><code class="docutils literal notranslate"><span class="pre">Molecule.compute_general_ked()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="molecule.html#cugbasis.Molecule.compute_general_kinetic_energy_density"><code class="docutils literal notranslate"><span class="pre">Molecule.compute_general_kinetic_energy_density()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="molecule.html#cugbasis.Molecule.compute_gradient"><code class="docutils literal notranslate"><span class="pre">Molecule.compute_gradient()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="molecule.html#cugbasis.Molecule.compute_gradient_expansion_ked"><code class="docutils literal notranslate"><span class="pre">Molecule.compute_gradient_expansion_ked()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="molecule.html#cugbasis.Molecule.compute_hessian"><code class="docutils literal notranslate"><span class="pre">Molecule.compute_hessian()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="molecule.html#cugbasis.Molecule.compute_laplacian"><code class="docutils literal notranslate"><span class="pre">Molecule.compute_laplacian()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="molecule.html#cugbasis.Molecule.compute_molecular_orbitals"><code class="docutils literal notranslate"><span class="pre">Molecule.compute_molecular_orbitals()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="molecule.html#cugbasis.Molecule.compute_norm_of_vector"><code class="docutils literal notranslate"><span class="pre">Molecule.compute_norm_of_vector()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="molecule.html#cugbasis.Molecule.compute_positive_definite_kinetic_energy_density"><code class="docutils literal notranslate"><span class="pre">Molecule.compute_positive_definite_kinetic_energy_density()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="molecule.html#cugbasis.Molecule.compute_reduced_density_gradient"><code class="docutils literal notranslate"><span class="pre">Molecule.compute_reduced_density_gradient()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="molecule.html#cugbasis.Molecule.compute_schrodinger_ked"><code class="docutils literal notranslate"><span class="pre">Molecule.compute_schrodinger_ked()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="molecule.html#cugbasis.Molecule.compute_shannon_information_density"><code class="docutils literal notranslate"><span class="pre">Molecule.compute_shannon_information_density()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="molecule.html#cugbasis.Molecule.compute_thomas_fermi_ked"><code class="docutils literal notranslate"><span class="pre">Molecule.compute_thomas_fermi_ked()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="molecule.html#cugbasis.Molecule.compute_weizsacker_ked"><code class="docutils literal notranslate"><span class="pre">Molecule.compute_weizsacker_ked()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="molecule.html#cugbasis.Molecule.get_file_path"><code class="docutils literal notranslate"><span class="pre">Molecule.get_file_path()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="molecule.html#cugbasis.Promolecule"><code class="docutils literal notranslate"><span class="pre">Promolecule</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="molecule.html#cugbasis.Promolecule.atcoords"><code class="docutils literal notranslate"><span class="pre">Promolecule.atcoords</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="molecule.html#cugbasis.Promolecule.atnums"><code class="docutils literal notranslate"><span class="pre">Promolecule.atnums</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="molecule.html#cugbasis.Promolecule.compute_density"><code class="docutils literal notranslate"><span class="pre">Promolecule.compute_density()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="molecule.html#cugbasis.Promolecule.compute_esp"><code class="docutils literal notranslate"><span class="pre">Promolecule.compute_esp()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="molecule.html#cugbasis.Promolecule.promol_coeffs"><code class="docutils literal notranslate"><span class="pre">Promolecule.promol_coeffs</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="molecule.html#cugbasis.Promolecule.promol_exps"><code class="docutils literal notranslate"><span class="pre">Promolecule.promol_exps</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="conventions.html">Conventions</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="conventions.html#gaussian-primitives">Gaussian Primitives</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="conventions.html#cartesian">Cartesian</a></li>
+<li class="toctree-l3"><a class="reference internal" href="conventions.html#spherical-pure">Spherical/Pure</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="conventions.html#contractions">Contractions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="conventions.html#basis-set-groupings-shells">Basis-set Groupings (Shells)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="conventions.html#basis-set-ordering">Basis Set Ordering</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Example Tutorials:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="quick_start.html">Quick Start</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="quick_start.html#Installation-cuGBasis-on-Colab">Installation cuGBasis on Colab</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="quick_start.html#Enable-GPU">Enable GPU</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="quick_start.html#Constructing-Molecule-Object">Constructing Molecule Object</a></li>
+<li class="toctree-l2"><a class="reference internal" href="quick_start.html#Electron-Density">Electron Density</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="quick_start.html#Molecular-Integration-and-Dipole-Moment">Molecular Integration and Dipole Moment</a></li>
+<li class="toctree-l3"><a class="reference internal" href="quick_start.html#Isosurface-and-Cube-Files">Isosurface and Cube Files</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="quick_start.html#Electron-Localization-Function-(ELF)">Electron Localization Function (ELF)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="quick_start.html#Non-Covalent-Interactions-(NCI)">Non-Covalent Interactions (NCI)</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="critical_points.html">QTAIM Critical Points</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="critical_points.html#Installation-cuGBasis-on-Colab">Installation cuGBasis on Colab</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="critical_points.html#Enable-GPU">Enable GPU</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="critical_points.html#Load-the-Molecule">Load the Molecule</a></li>
+<li class="toctree-l2"><a class="reference internal" href="critical_points.html#Using-Default-Initial-Guess">Using Default Initial Guess</a></li>
+<li class="toctree-l2"><a class="reference internal" href="critical_points.html#Challenging-Cases">Challenging Cases</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="reduced_density_gradient.html">Non-Covalent Interaction Index</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="reduced_density_gradient.html#Constructing-Molecule-Object">Constructing Molecule Object</a></li>
+<li class="toctree-l2"><a class="reference internal" href="reduced_density_gradient.html#Reduced-Density-Gradient-Isosurface">Reduced Density Gradient Isosurface</a></li>
+<li class="toctree-l2"><a class="reference internal" href="reduced_density_gradient.html#NCI-Index-Using-The-Hessian">NCI Index Using The Hessian</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="generating_cube_files.html">Generating Cube Files</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="generating_cube_files.html#Density">Density</a></li>
+<li class="toctree-l2"><a class="reference internal" href="generating_cube_files.html#Laplacian">Laplacian</a></li>
+<li class="toctree-l2"><a class="reference internal" href="generating_cube_files.html#Reduced-Density-Gradient">Reduced Density Gradient</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">cugbasis</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Installation</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/installation.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="installation">
+<span id="usr-installation"></span><h1>Installation<a class="headerlink" href="#installation" title="Link to this heading"></a></h1>
+<section id="quick-installation">
+<h2>Quick-Installation<a class="headerlink" href="#quick-installation" title="Link to this heading"></a></h2>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>.
+</pre></div>
+</div>
+</section>
+<section id="dependencies">
+<h2>Dependencies<a class="headerlink" href="#dependencies" title="Link to this heading"></a></h2>
+<p>The following dependencies will be necessary for cuGBasis to build properly,</p>
+<ul class="simple">
+<li><p>CMake&gt;=3.24: (<a class="reference external" href="https://cmake.org/">https://cmake.org/</a>)</p></li>
+<li><p>CUDA/DRIVERS/NVCC/CUDA-TOOLKIT: (<a class="reference external" href="https://docs.nvidia.com/cuda/cuda-installation-guide-linux/index.html">https://docs.nvidia.com/cuda/cuda-installation-guide-linux/index.html</a>)</p></li>
+<li><p>Python&gt;=3.9: (<a class="reference external" href="http://www.python.org/">http://www.python.org/</a>)</p></li>
+</ul>
+<p>The following Python dependencies are necessary:</p>
+<ul class="simple">
+<li><p>NumPy &gt;= 1.16.0: <a class="reference external" href="http://www.numpy.org/">http://www.numpy.org/</a></p></li>
+<li><p>Pybind11 on python: (<a class="reference external" href="https://github.com/pybind/pybind11">https://github.com/pybind/pybind11</a>)</p></li>
+<li><p>IOData on python: (<a class="reference external" href="https://github.com/theochem/iodata">https://github.com/theochem/iodata</a>)</p></li>
+</ul>
+<p>These python dependencies can be installed via:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>numpy<span class="w"> </span>pybind11<span class="w"> </span>qc-iodata
+</pre></div>
+</div>
+<p>For testing the following are required to be installed on the Python system:</p>
+<ul class="simple">
+<li><p>PyTest &gt;= 5.4.3: (<a class="reference external" href="https://docs.pytest.org/">https://docs.pytest.org/</a> &lt;<a class="reference external" href="https://docs.pytest.org/">https://docs.pytest.org/</a>)</p></li>
+<li><p>GBasis: (<a class="reference external" href="https://github.com/theochem/gbasis">https://github.com/theochem/gbasis</a>)</p></li>
+<li><p>Horton: (<a class="reference external" href="https://github.com/theochem/horton">https://github.com/theochem/horton</a>)</p></li>
+<li><p>ChemTools: (<a class="reference external" href="https://github.com/theochem/chemtools">https://github.com/theochem/chemtools</a>)</p></li>
+</ul>
+<p>Horton is recommended to be installed using Mamba/Conda. These can be installed via:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>mamba<span class="w"> </span>install<span class="w"> </span>-c<span class="w"> </span>theochem<span class="w"> </span>horton
+pip<span class="w"> </span>install<span class="w"> </span>pytest
+pip<span class="w"> </span>install<span class="w"> </span>git+https://github.com/theochem/gbasis.git
+pip<span class="w"> </span>install<span class="w"> </span>git+https://github.com/theochem/chemtools.git
+</pre></div>
+</div>
+<p>The following Eigen package will automatically be linked if CMake could not find the package already.</p>
+<ul class="simple">
+<li><p>Eigen&gt;=3: (<a class="reference external" href="https://eigen.tuxfamily.org/index.php?title=Main_Page">https://eigen.tuxfamily.org/index.php?title=Main_Page</a>)</p></li>
+</ul>
+</section>
+<section id="downloading-code">
+<h2>Downloading Code<a class="headerlink" href="#downloading-code" title="Link to this heading"></a></h2>
+<p>The user must obtain the latest code from theochem (<a class="reference external" href="https://github.com/theochem/cugbasis">https://github.com/theochem/cugbasis</a>) in Github,
+As well, as obtain the dependencies from running the <cite>git submodule</cite> command.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/theochem/CuGBasis.git
+
+<span class="c1"># Get the dependencies in ./libs/ folder</span>
+git<span class="w"> </span>submodule<span class="w"> </span>update<span class="w"> </span>--init<span class="w"> </span>--recursive
+</pre></div>
+</div>
+</section>
+<section id="id1">
+<h2>Installation<a class="headerlink" href="#id1" title="Link to this heading"></a></h2>
+<section id="python-binding">
+<h3>Python Binding<a class="headerlink" href="#python-binding" title="Link to this heading"></a></h3>
+<p>Once you downloaded the code, obtained the required libraries and dependencies, then one can use pip to install
+the Python bindings:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>-v<span class="w"> </span>.
+</pre></div>
+</div>
+<p>In order to see if it successfully installed, run the following</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pytest<span class="w"> </span>-v<span class="w"> </span>./tests/*.py
+</pre></div>
+</div>
+</section>
+<section id="c">
+<h3>C++<a class="headerlink" href="#c" title="Link to this heading"></a></h3>
+<p>In order to build a shared library without the python bindings, particularly useful for debugging purposes,</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>cmake<span class="w"> </span>-S<span class="w"> </span>.<span class="w"> </span>-B<span class="w"> </span>./out/build/
+make<span class="w"> </span>-C<span class="w"> </span>./out/build/
+./out/build/tests/tests<span class="w">  </span><span class="c1"># Run the C++/CUDA tests</span>
+</pre></div>
+</div>
+</section>
+<section id="compute-canada">
+<h3>Compute Canada<a class="headerlink" href="#compute-canada" title="Link to this heading"></a></h3>
+<p>The following is the set of instructions for creating a Python environment inside Compute Canada
+and installing cuGBasis. It’s important to compile/install cuGBasis with a GPU enabled.
+It is recommended that CMake version be greater than 3.24 (see below).
+Note that different Cuda environments can be loaded, but here we will load Cuda 11.7 version.
+It’s important to load the required dependencies before creating the python environment
+so that the same compiler is used when creating the Python virtual environment, and when
+installing (this may not be required but is hypothesized to may cause future errors).</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Load the dependencies for cuGBasis and Python environment</span>
+module<span class="w"> </span>load<span class="w"> </span>StdEnv/2020<span class="w"> </span>intel/2020.1.217<span class="w"> </span>cmake<span class="w"> </span>cuda/11.7<span class="w"> </span>eigen/3.4.0
+module<span class="w"> </span>load<span class="w"> </span>python/3.9
+
+<span class="c1"># Create Python environment</span>
+virtualenv<span class="w"> </span>--no-download<span class="w"> </span>py39_cugbasis
+
+<span class="c1"># Activate Environment</span>
+<span class="nb">source</span><span class="w"> </span>./py39_cugbasis/bin/activate
+
+<span class="c1"># Install dependencies</span>
+pip<span class="w"> </span>install<span class="w"> </span>--no-index<span class="w"> </span>--upgrade<span class="w"> </span>pip
+pip<span class="w"> </span>install<span class="w"> </span>numpy<span class="w"> </span>scipy<span class="w"> </span>pybind11<span class="w"> </span>--no-index
+pip<span class="w"> </span>install<span class="w"> </span>qc-iodata
+
+<span class="c1"># Get the package and dependencies</span>
+git<span class="w"> </span>clone<span class="w"> </span>https://github.com/theochem/cuGBasis.git
+<span class="nb">cd</span><span class="w"> </span>cuGBasis
+git<span class="w"> </span>submodule<span class="w"> </span>update<span class="w"> </span>--init<span class="w"> </span>--recursive
+
+<span class="c1"># Enable GPU</span>
+salloc<span class="w"> </span>--time<span class="o">=</span><span class="m">1</span>:0:0<span class="w"> </span>--account<span class="o">=</span>ACCOUNT<span class="w"> </span>--mem<span class="o">=</span>12G<span class="w"> </span>--gres<span class="o">=</span>gpu:p100:1
+
+<span class="c1"># Load the required dependencies</span>
+module<span class="w"> </span>load<span class="w"> </span>StdEnv/2020<span class="w"> </span>intel/2020.1.217<span class="w"> </span>cmake<span class="w"> </span>cuda/11.7<span class="w"> </span>eigen/3.4.0
+<span class="nb">source</span><span class="w"> </span>~/py39_cugbasis/bin/activate
+
+<span class="c1"># Go to cuGBasis folder and install it via pip</span>
+pip<span class="w"> </span>install<span class="w"> </span>-v<span class="w"> </span>.
+</pre></div>
+</div>
+</section>
+</section>
+<section id="installation-problems">
+<h2>Installation problems<a class="headerlink" href="#installation-problems" title="Link to this heading"></a></h2>
+<p>The following can help with compiling this package</p>
+<ul class="simple">
+<li><p>If CMake version is greater than 3.24, then CMake will automatically find the correct CUDA architecture based on the
+user’s NVIDIA GPU.
+If not, the user will need to set the correct GPU architecture (e.g. compute capability 6.0). This can be
+found through the <a class="reference external" href="https://developer.nvidia.com/cuda-gpus">NVIDIA website</a>. Once it is found, then one can
+add an environment variable to indicate to compile using the correct CUDA architecture.</p></li>
+</ul>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># if pip:</span>
+<span class="nv">CMAKE_CUDA_ARCHITECTURES</span><span class="o">=</span><span class="m">60</span><span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>-v<span class="w"> </span>.
+<span class="c1"># if cmake:</span>
+cmake<span class="w"> </span>-S<span class="w"> </span>.<span class="w"> </span>-B<span class="w"> </span>./out/build/<span class="w"> </span>-DCMAKE_CUDA_ARCHITECTURES<span class="o">=</span><span class="m">60</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>If CUBLAS, CURAND are not found, add the following flag to the correct path.
+See <a class="reference external" href="https://cmake.org/cmake/help/latest/module/FindCUDAToolkit.html">here</a> for more information on how to modify CMake.</p></li>
+</ul>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># If pip:</span>
+<span class="nv">CUDATOOLkit_ROOT</span><span class="o">=</span>/some/path<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>-v<span class="w"> </span>.
+<span class="c1"># If cmake:</span>
+cmake<span class="w"> </span>-S<span class="w"> </span>.<span class="w"> </span>-B<span class="w"> </span>./out/build/<span class="w"> </span>-DCUDAToolkit_ROOT<span class="o">=</span>/some/path
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>If NVCC compiler is not found, add the following flag to correct path</p></li>
+</ul>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># If pip:</span>
+<span class="nv">CUDACXX</span><span class="o">=</span>/some/path/bin/nvcc<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>-v<span class="w"> </span>.
+<span class="c1"># If cmake:</span>
+cmake<span class="w"> </span>-S<span class="w"> </span>.<span class="w"> </span>-B<span class="w"> </span>./out/build/<span class="w"> </span>-DCUDACXX<span class="o">=</span>/some/path/bin/nvcc
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>Eigen is added in the lib folder and CMake will first initially try to find if Eigen was installed.
+If Eigen is not found, then it will try to link it by itself.
+If these still don’t work, then add the following flag to the path containing the Eigen3*.cmake files. See
+<a class="reference external" href="https://eigen.tuxfamily.org/dox/TopicCMakeGuide.html">here</a> for more information.</p></li>
+</ul>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># if pip:</span>
+<span class="nv">CMAKE_PREFIX_PATH</span><span class="o">=</span><span class="s2">&quot;</span><span class="nv">$CMAKE_PREFIX_PATH</span><span class="s2">:/opt/eigen/3.3&quot;</span><span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>-v<span class="w"> </span>.
+<span class="c1"># if cmake:</span>
+cmake<span class="w"> </span>-S<span class="w"> </span>.<span class="w"> </span>-B<span class="w"> </span>./out/build/<span class="w"> </span>-DEigen3_DIR<span class="o">=</span>/some/path/share/eigen3/cmake/
+</pre></div>
+</div>
+</section>
+<section id="building-documentation">
+<h2>Building Documentation<a class="headerlink" href="#building-documentation" title="Link to this heading"></a></h2>
+<p>The following shows how to build the documentation using sphinx to the folder <cite>_build</cite>.</p>
+<blockquote>
+<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>doc
+make<span class="w"> </span>html
+</pre></div>
+</div>
+</div></blockquote>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="index.html" class="btn btn-neutral float-left" title="Welcome to CuGBasis’s documentation!" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="molecule.html" class="btn btn-neutral float-right" title="Molecule Class" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, QC-Devs.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
