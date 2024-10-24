@@ -1,6 +1,6 @@
 [project]
 name = "qc-cuGBasis"
-version = "0.0.1"
+version = "1.0.0"
 description = "High performance CUDA/Python library for computing quantum chemistry density-based descriptors for larger systems using GPUs. "
 authors = [{name = "QC-Devs Community", email = "qcdevs@gmail.com"}]
 license = {file = "LICENSE"}
@@ -14,14 +14,14 @@ classifiers = [
     "Topic :: Scientific/Engineering :: Chemistry",
     "Topic :: Scientific/Engineering :: Physics",
     "Topic :: Scientific/Engineering :: Mathematics",
-    "License :: OSI Approved :: GNU Version 3",
+    "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
     "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
-    "ENVIRONMENT :: GPU :: NVIDIA CUDA :: 10.2",
-    "ENVIRONMENT :: GPU :: NVIDIA CUDA :: 11.8",
-    "ENVIRONMENT :: GPU :: NVIDIA CUDA :: 12.2"
+    "Environment :: GPU :: NVIDIA CUDA :: 10.2",
+    "Environment :: GPU :: NVIDIA CUDA :: 11.8",
+    "Environment :: GPU :: NVIDIA CUDA :: 12 :: 12.2"
 ]
 
 dependencies = [
@@ -37,12 +37,13 @@ Issues = "https://github.com/theochem/cugbasis/issues"
 Documentation = "https://cugbasis.qcdevs.org/"
 
 [build-system]
-requires = ["scikit-build-core >= 0.9.10", "cmake>=3.26", "pybind11 >= 2.9", "pytest >= 6.0"]
+requires = ["scikit-build-core >= 0.9.10", "cmake>=3.26", "pytest >= 6.0"]
 build-backend = "scikit_build_core.build"
 
 [tool.scikit-build]
-wheel.packages = ["src/cugbasis"]
-wheel.license-files = ["LICENSE"]
+# No need for wheel.packages here
+#wheel.packages = ["src/"]
+#wheel.license-files = ["LICENSE"]
 cmake.minimum-version = "3.26"
 cmake.build-type = "Release"
 cmake.args = [

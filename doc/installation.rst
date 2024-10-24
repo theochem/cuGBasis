@@ -3,6 +3,13 @@
 Installation
 ############
 
+Quick-Installation
+==================
+
+.. code-block:: bash
+
+    pip install .
+
 Dependencies
 ============
 
