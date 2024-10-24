@@ -1,6 +1,5 @@
 [project]
 name = "qc-cuGBasis"
-version = "1.0.1"
 description = "High performance CUDA/Python library for computing quantum chemistry density-based descriptors for larger systems using GPUs. "
 authors = [{name = "QC-Devs Community", email = "qcdevs@gmail.com"}]
 license = {file = "LICENSE"}
@@ -23,6 +22,13 @@ classifiers = [
     "Environment :: GPU :: NVIDIA CUDA :: 11.8",
     "Environment :: GPU :: NVIDIA CUDA :: 12 :: 12.2"
 ]
+
+# for setuptools_scm
+dynamic = [
+    "dependencies",
+    "optional-dependencies",
+    "version",
+    ]
 
 dependencies = [
   "numpy >= 1.24",
@@ -64,3 +70,6 @@ cmake.args = [
     "-DLINK_TO_PYTHON=ON",
     "-DDONT_COMPILE_TESTS=ON"
 ]
+
+[tool.setuptools_scm]
+# can be empty if no extra settings are needed, presence enables setuptools-scm
