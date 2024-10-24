@@ -39,6 +39,7 @@ Documentation = "https://cugbasis.qcdevs.org/"
 [project.optional-dependencies]
 # pip install qc-cugbasis[docs]
 docs = [
+    "IPython",
     "sphinx",
     "sphinx-rtd-theme",
     "numpydoc",
@@ -57,7 +58,7 @@ build-backend = "scikit_build_core.build"
 #wheel.license-files = ["LICENSE"]
 # Don't include the large fchk files in source distribution
 sdist.exclude = [".github", "tests/data/*.fchk", "examples/*.fchk"]
-cmake.minimum-version = "3.26"
+cmake.version = "3.26"
 cmake.build-type = "Release"
 cmake.args = [
     "-DLINK_TO_PYTHON=ON",
