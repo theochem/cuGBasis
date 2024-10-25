@@ -1,0 +1,37 @@
+cff-version: 1.2.0
+message: "If you use cuGBasis, please cite it as below."
+authors:
+- family-names: "Tehrani"
+  given-names: "Alireza"
+  orcid: "https://orcid.org/0000-0003-1308-8614"
+- family-names: "Richer"
+  given-names: "Michelle"
+  orcid: "https://orcid.org/0009-0001-2563-4603"
+- family-names: "Heidar-Zadeh"
+  given-names: "Farnaz"
+  orcid: "https://orcid.org/0000-0002-2069-050X"
+title: "CuGBasis: High-performance CUDA/Python library for efficient computation of quantum chemistry density-based descriptors for larger systems"
+
+version: 1.0.1
+date-released: 2024-10-25
+url: "https://github.com/theochem/cuGBasis"
+preferred-citation:
+  type: article
+  authors:
+    - family-names: "Tehrani"
+      given-names: "Alireza"
+      orcid: "https://orcid.org/0000-0003-1308-8614"
+    - family-names: "Richer"
+      given-names: "Michelle"
+      orcid: "https://orcid.org/0009-0001-2563-4603"
+    - family-names: "Heidar-Zadeh"
+      given-names: "Farnaz"
+      orcid: "https://orcid.org/0000-0002-2069-050X"
+  doi: "10.1063/5.0216781"
+  journal: "The Journal of Chemical Physics"
+  month: 8
+  pages: 072501
+  title: "CuGBasis: High-performance CUDA/Python library for efficient computation of quantum chemistry density-based descriptors for larger systems"
+  issue: 7
+  volume: 161
+  year: 2024
