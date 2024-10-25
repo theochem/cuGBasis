@@ -182,7 +182,7 @@ R(const double &alpha, const double3 &P_coord, const double &beta, const double3
   double y = P_coord.y - C_coord.y;
   double z = P_coord.z - C_coord.z;
   double param = p * (x * x + y * y + z * z);
-  return pow(-2.0 * p, __int2double_rn(N)) * chemtools::boys_function<N>(param);
+  return pow(-2.0 * p, __int2double_rn(N)) * chemtools::boys(N, param);
 }
 
 template<int N, int T, int U, int V>

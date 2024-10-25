@@ -10273,7 +10273,7 @@ __host__ std::vector<double> chemtools::compute_electrostatic_potential_over_poi
     if (disp) {
       printf("Compute point charge integrals\n");
     }
-    dim3 threadsPerBlock32(96); // 128, 96 same as 320 speed, 1024 one second slower, 64 is really slow.
+    dim3 threadsPerBlock32(64); // 128, 96 same as 320 speed, 1024 one second slower, 64 is really slow.
     // 256 -> 40 seconds
     // 64  -> 27 seconds
     // 1024 -> 132 seconds

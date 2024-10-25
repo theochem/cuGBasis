@@ -64,7 +64,7 @@ add_subdirectory(${PROJECT_SOURCE_DIR}/libs/pybind11)
 # Create a CUDA library chemtools_cuda using nvcc compiler that codes the entire CUDA/C++.
 set(SOURCES
 	src/basis_to_gpu.cu
-#	src/boys_functions.cu
+	src/boys_functions.cu
 	src/iodata.cpp
 	src/cuda_basis_utils.cu
 	src/cuda_utils.cu
@@ -101,16 +101,16 @@ set(HEADERS
 )
 find_package(CUDAToolkit REQUIRED)  # The point of this is to call CUDA code from C++ but without including CUDA code.
                                     #  see stackexchange - "linking of cuda library in cmake
-set_source_files_properties(
-  ./src/integral_coeffs.cu
-  PROPERTIES
-  COMPILE_FLAGS "-G -g"
-)
-set_source_files_properties(
-	./src/evaluate_electrostatic.cu
-	PROPERTIES
-	COMPILE_FLAGS "-G -g"
-	)
+#set_source_files_properties(
+#  ./src/integral_coeffs.cu
+#  PROPERTIES
+#  COMPILE_FLAGS "-G -g"
+#)
+#set_source_files_properties(
+#	./src/evaluate_electrostatic.cu
+#	PROPERTIES
+#	COMPILE_FLAGS "-G -g"
+#	)
 
 add_library(cugbasis_lib SHARED ${HEADERS} ${SOURCES})
 set_target_properties(cugbasis_lib PROPERTIES CUDA_SEPARABLE_COMPILATION ON)
