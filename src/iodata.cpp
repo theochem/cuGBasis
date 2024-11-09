@@ -157,7 +157,10 @@ chemtools::IOData chemtools::get_molecular_basis_from_fchk(const std::string& fc
   py::exec(R"(
         # Convert to the Gaussian (.fchk) format
         import numpy as np
-        from iodata.convert import convert_conventions, HORTON2_CONVENTIONS
+        try:
+            from iodata.convert import convert_conventions, HORTON2_CONVENTIONS
+        except (ImportError, ModuleNotFoundError):
+            from iodata.basis import convert_conventions, HORTON2_CONVENTIONS
 
         conventions = HORTON2_CONVENTIONS
         conventions[(0, 'c')] = ['1']
