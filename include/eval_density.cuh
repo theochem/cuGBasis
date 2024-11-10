@@ -34,7 +34,7 @@ __device__ extern d_func_t p_eval_AOs;
  * @param i_contr_start Index on where it starts to update the rows/contractions in `d_AO_vals`. Should
  *                      match what's in constant memory.
  */
-__device__ void eval_AOs(
+__device__ __forceinline__ void eval_AOs(
     double* d_AO_vals, const double3& pt, const int& n_pts, unsigned int& idx, const int& iorb_start = 0
 );
 
@@ -53,8 +53,8 @@ __device__ void eval_AOs(
  * @param n_cshells  Not needed but total number of contractions to update d_AO_vals.
  * @param iorb_start   Not needed but index of where to start updating the contractions over the rows M.
  */
-__device__ void eval_AOs_from_constant_memory_on_any_grid(
-    double* d_AO_vals, const double* const d_points, const int n_pts, const int n_cshells,
+__global__ void eval_AOs_from_constant_memory_on_any_grid(
+    double* __restrict__ d_AO_vals, const double* __restrict__ d_points, const int n_pts, const int n_cshells,
     const int iorb_start = 0
 );
 
