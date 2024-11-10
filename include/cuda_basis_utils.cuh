@@ -6,7 +6,20 @@
 #include "../include/cuda_basis_utils.cuh"
 #include "../include/cuda_utils.cuh"
 
+
+
 namespace chemtools {
+// Orbital Type (Angular Momentum)
+enum {
+    S_TYPE = 0,
+    P_TYPE = 1,
+    D_TYPE = 2,
+    F_TYPE = 3,
+    G_TYPE = 4,
+    DP_TYPE = -2,
+    SF_TYPE = -3,
+    SG_TYPE = -4
+};
 
 /// Compute the normalization constant of a single primitive Cartesian Gaussian, S-type only.
 __device__ inline double normalization_primitive_s(double alpha) {
@@ -113,7 +126,7 @@ __device__ inline double normalization_primitive_pure_g(double alpha) {
 }
 
 /// Compute the Pure/Harmonic basis functions for d-type shells.
-__device__ inline double solid_harmonic_function_d(int m, double r_Ax, double r_Ay, double r_Az) {
+__device__ inline double solid_harmonic_d(int m, double r_Ax, double r_Ay, double r_Az) {
     //  In the literature, e.g. in the book Molecular Electronic-Structure Theory by Helgaker, Jørgensen and Olsen,
     //          negative magnetic quantum numbers for pure functions are usually referring to sine-like functions.
     // so m=-2,-1 are sin functions.
@@ -143,7 +156,7 @@ __device__ inline double solid_harmonic_function_d(int m, double r_Ax, double r_
 }
 
 /// Compute the Pure/Harmonic basis functions for f-type shells.
-__device__ inline double solid_harmonic_function_f(int m, double r_Ax, double r_Ay, double r_Az) {
+__device__ inline double solid_harmonic_f(int m, double r_Ax, double r_Ay, double r_Az) {
     //  In the literature, e.g. in the book Molecular Electronic-Structure Theory by Helgaker, Jørgensen and Olsen,
     //          negative magnetic quantum numbers for pure functions are usually referring to sine-like functions.
     // so m=-2,-1 are sin functions.
@@ -181,7 +194,7 @@ __device__ inline double solid_harmonic_function_f(int m, double r_Ax, double r_
 
 
 /// Compute the Pure/Harmonic basis functions for g-type shells.
-__device__ inline double solid_harmonic_function_g(int m, double r_Ax, double r_Ay, double r_Az) {
+__device__ inline double solid_harmonic_g(int m, double r_Ax, double r_Ay, double r_Az) {
     if (m == 4) {
         return sqrt(35.0) * ((r_Ax * r_Ax * r_Ax * r_Ax) - 6.0 * (r_Ax * r_Ax) * (r_Ay * r_Ay) + (r_Ay * r_Ay * r_Ay * r_Ay)) / 8.0;
     }
