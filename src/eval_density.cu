@@ -14,7 +14,7 @@ using namespace chemtools;
 
 __device__ d_func_t chemtools::p_eval_AOs = eval_AOs_from_constant_memory_on_any_grid;
 
-__device__ void chemtools::eval_AOs(
+__device__ __forceinline__ void chemtools::eval_AOs(
           double*  d_AO_vals,
     const double3& pt,
     const int&     n_pts,
@@ -150,9 +150,9 @@ __device__ void chemtools::eval_AOs(
             } else if (L == SG_TYPE) {
                 #pragma unroll 1
                 for (int i_prim = 0; i_prim < n_prims; i_prim++) {
-                    double c          = g_constant_basis[ibasis + n_prims * (iseg + 1) + i_prim + 1 + iseg];
-                    double a          = g_constant_basis[ibasis + i_prim];
-                    double ce         = c * exp(-a * (r_A.x * r_A.x + r_A.y * r_A.y + r_A.z * r_A.z));
+                    double c   = g_constant_basis[ibasis + n_prims * (iseg + 1) + i_prim + 1 + iseg];
+                    double a   = g_constant_basis[ibasis + i_prim];
+                    double ce  = c * exp(-a * (r_A.x * r_A.x + r_A.y * r_A.y + r_A.z * r_A.z));
                     // ['c0', 'c1', 's1', 'c2', 's2', 'c3', 's3', 'c4', 's4']
                     double norm_const = normalization_primitive_pure_g(a);
                     AO1.x += norm_const * solid_harmonic_g(0, r_A.x, r_A.y, r_A.z) * ce;
@@ -268,9 +268,9 @@ __device__ void chemtools::eval_AOs(
 }
 
 
-__device__ void chemtools::eval_AOs_from_constant_memory_on_any_grid(
-          double* d_AO_vals,
-    const double* d_points,
+__global__ void chemtools::eval_AOs_from_constant_memory_on_any_grid(
+          double* __restrict__ d_AO_vals,
+    const double* __restrict__ d_points,
     const int     n_pts,
     const int     n_cshells,
     const int     iorb_start
@@ -318,10 +318,6 @@ __host__ std::vector<double> chemtools::evaluate_electron_density_on_any_grid_ha
         }
     );
     
-    // Get contraction function pointer
-    d_func_t h_contractions_func;
-    cudaMemcpyFromSymbol(&h_contractions_func, p_eval_AOs, sizeof(d_func_t));
-    
     // Resulting electron density
     std::vector<double> h_rho(n_pts);
     
@@ -358,11 +354,10 @@ __host__ std::vector<double> chemtools::evaluate_electron_density_on_any_grid_ha
         constexpr int THREADS_PER_BLOCK = 128;
         dim3 threads(THREADS_PER_BLOCK);
         dim3 blocks((npts_iter + THREADS_PER_BLOCK - 1) / (THREADS_PER_BLOCK));
-        evaluate_scalar_quantity(
+        evaluate_scalar_quantity_density(
             molbasis,
             false,
             false,
-            h_contractions_func,
             d_AOs,
             d_pts,
             npts_iter,
