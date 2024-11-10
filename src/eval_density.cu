@@ -268,7 +268,7 @@ __device__ __forceinline__ void chemtools::eval_AOs(
 }
 
 
-__global__ void chemtools::eval_AOs_from_constant_memory_on_any_grid(
+__global__ __launch_bounds__(128) void chemtools::eval_AOs_from_constant_memory_on_any_grid(
           double* __restrict__ d_AO_vals,
     const double* __restrict__ d_points,
     const int     n_pts,
@@ -311,11 +311,14 @@ __host__ std::vector<double> chemtools::evaluate_electron_density_on_any_grid_ha
     const int            n_basis  = molbasis.numb_basis_functions();
     
     // Calculate Optimal Memory Chunks
+    const size_t MAX_PTS_PER_ITER = 64 * 64 * 32  ;
     auto   chunks     = GpuMemoryPartitioner::compute(
         n_basis,
         [](size_t mem, size_t numb_basis){
-            return (((mem - 500000000) / (sizeof(double)))  - numb_basis * numb_basis) / (2 * numb_basis);
-        }
+            return ((mem / sizeof(double))  - numb_basis * numb_basis) / (2 * numb_basis);
+        },
+        n_pts,
+        MAX_PTS_PER_ITER
     );
     
     // Resulting electron density
@@ -330,6 +333,7 @@ __host__ std::vector<double> chemtools::evaluate_electron_density_on_any_grid_ha
             n_pts - i_iter * chunks.pts_per_iter,
             chunks.pts_per_iter
         );
+        printf("Numbe rof points per iter %zu %zu \n", npts_iter, chunks.pts_per_iter);
         size_t AO_data_size = npts_iter * n_basis * sizeof(double);
         
         // Allocate device memory for contractions row-major (M, N)

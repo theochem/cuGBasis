@@ -53,7 +53,7 @@ __device__ __forceinline__ void eval_AOs(
  * @param n_cshells  Not needed but total number of contractions to update d_AO_vals.
  * @param iorb_start   Not needed but index of where to start updating the contractions over the rows M.
  */
-__global__ void eval_AOs_from_constant_memory_on_any_grid(
+__global__ __launch_bounds__(128) void eval_AOs_from_constant_memory_on_any_grid(
     double* __restrict__ d_AO_vals, const double* __restrict__ d_points, const int n_pts, const int n_cshells,
     const int iorb_start = 0
 );
