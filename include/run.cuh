@@ -53,15 +53,16 @@ struct GpuMemoryPartitioner {
 
 
   __host__ void evaluate_scalar_quantity_density(
-      const chemtools::MolecularBasis &basis,
-      bool do_segmented_basis,
-      const bool disp,
-      double *d_output_iter,
-      const double *d_points_iter,
-      const int knumb_points_iter,
-      const int k_total_numb_contractions,
-      dim3 threadsPerBlock,
-      dim3 grid,
+      const MolecularBasis& basis,
+      bool            do_segmented_basis,
+      const bool            disp,
+      const std::string&     type,
+      double*         d_output_iter,
+      const double*         d_points_iter,
+      const int             knumb_points_iter,
+      const int             k_total_numb_contractions,
+      dim3            threadsPerBlock,
+      dim3            grid,
       cudaFuncCache l1_over_shared = cudaFuncCachePreferL1
   );
 }

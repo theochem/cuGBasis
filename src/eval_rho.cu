@@ -4,7 +4,7 @@
 
 #include "cublas_v2.h"
 
-#include "eval_density.cuh"
+#include "eval_rho.cuh"
 #include "cuda_utils.cuh"
 #include "cuda_basis_utils.cuh"
 #include "basis_to_gpu.cuh"
@@ -333,7 +333,6 @@ __host__ std::vector<double> chemtools::evaluate_electron_density_on_any_grid_ha
             n_pts - i_iter * chunks.pts_per_iter,
             chunks.pts_per_iter
         );
-        printf("Numbe rof points per iter %zu %zu \n", npts_iter, chunks.pts_per_iter);
         size_t AO_data_size = npts_iter * n_basis * sizeof(double);
         
         // Allocate device memory for contractions row-major (M, N)
@@ -362,6 +361,7 @@ __host__ std::vector<double> chemtools::evaluate_electron_density_on_any_grid_ha
             molbasis,
             false,
             false,
+            "rho",
             d_AOs,
             d_pts,
             npts_iter,
