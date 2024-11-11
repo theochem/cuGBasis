@@ -18,7 +18,7 @@ namespace chemtools {
 __device__ extern d_func_t p_evaluate_deriv_contractions;
 
 /**
- * Evaluate the derivative of contractions from any grid of points.
+ * Device helper function for evaluating a contractions on a single point (corresponding to a single thread).
  *
  * Assumes basis set information is stored in GPU constant memory via basis_to_gpu.cu file.
  *
@@ -28,23 +28,44 @@ __device__ extern d_func_t p_evaluate_deriv_contractions;
  * and that the derivative of this is \frac{\partial G_i}{\partial x} = i G_{i - 1}(a, x_A) - 2 a G_{i+1}(a, x_A)
  *
  * @param[in,out] g_d_constant_basis Pointer to the the output.
- * @param[out] d_deriv_contracs  The device pointer to the contractions array of size (3, M, N) where M is
+ * @param[out] d_AO_derivs  The device pointer to the contractions array of size (3, M, N) where M is
  *                  the number of contractions and N is the number of points. This is in row-major order, i.e.
  *                  Derivatives first, then contractions then points.
  *                  Values should be set to zero before using.
  * @param[in] d_points The device pointer to the grid points of size (N, 3) stored in column-major order.
  * @param[in] d_knumb_points The number of points in the grid.
- * @param[in] knumb_contractions Total number of contractions, note this may be different on whats in constant memory
- * @param[in] i_contr_start Index of where to start updating contractions, should match whats in constant memory.
+ * @param[in] n_cshells Total number of contractions, note this may be different on whats in constant memory
+ * @param[in] iorb_start Index of where to start updating contractions, should match whats in constant memory.
  */
-__device__ void evaluate_derivatives_contractions_from_constant_memory(
-    double* d_deriv_contracs, const double* const d_points, const int knumb_points, const int knumb_contractions,
-    const int i_contr_start = 0
+__device__ __forceinline__ void eval_AOs_deriv(
+    double*        d_AO_derivs,
+    const double3  pt,
+    const int      n_pts,
+    const int      n_cshells,
+    uint&          idx,
+    const int      iorb_start
 );
 
+/**
+ * Evaluate contractions derivatives on any grid.
+ *
+ * @param[in, out] d_AO_derivs  he device pointer to the contractions array of size (3, M, N) where M is
+ *                  the number of contractions and N is the number of points. This is in row-major order, i.e.
+ *                  Derivatives first, then contractions then points.
+ *                  Values should be set to zero before using.
+ * @param d_points  The points in three-dimensions of shape (N, 3) stored in column-major order.
+ * @param n_pts  The number of points in the grid
+ * @param n_cshells   Total number of contractions, note this may be different on whats in constant memory
+ * @param iorb_start  Index of where to start updating contractions, should match whats in constant memory.
+ */
+__global__ void eval_AOs_derivs_on_any_grid(
+          double* __restrict__ d_AO_derivs,
+    const double* __restrict__ d_points,
+    const int                  n_pts,
+    const int                  n_cshells,
+    const int                  iorb_start
+);
 
-//__device__ static d_func_t p_evaluate_deriv_contractions;
-//__device__ static d_func_t p_evaluate_contractions;
 
 /**
  * HOST FUNCTIONS
@@ -100,8 +121,7 @@ __host__ std::vector<double> evaluate_electron_density_gradient(
  * Wrapper function over evaluate_electron_density_gradient, faster if cublas handler was initialized previously.
  */
 __host__ std::vector<double> evaluate_electron_density_gradient_handle(
-    // Initializer of cublas and set to prefer L1 cache ove rshared memory since it doens't use it.
-    cublasHandle_t& handle, chemtools::IOData& iodata, const double* h_points, int knumb_points, bool return_row
+    cublasHandle_t& handle, chemtools::IOData& iodata, const double* h_points, int n_pts, bool return_row
 );
 }
 
