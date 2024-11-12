@@ -9,7 +9,7 @@
 #include "cuda_utils.cuh"
 #include "cuda_basis_utils.cuh"
 #include "basis_to_gpu.cuh"
-#include "run.cuh"
+#include "eval.cuh"
 
 using namespace chemtools;
 
@@ -955,7 +955,7 @@ __device__ __forceinline__ void chemtools::eval_AOs_deriv(
 }
 
 
-__global__ void chemtools::eval_AOs_derivs_on_any_grid(
+__global__ __launch_bounds__(128) void chemtools::eval_AOs_derivs_on_any_grid(
           double* __restrict__ d_AO_derivs,
     const double* __restrict__ d_points,
     const int     n_pts,
@@ -1055,8 +1055,10 @@ __host__ std::vector<double> chemtools::evaluate_electron_density_gradient_handl
     const size_t MAX_PTS_PER_ITER = 64 * 64 * 32  ;
     auto   chunks     = GpuMemoryPartitioner::compute(
         n_basis,
-        [](size_t mem, size_t numb_basis){
-          return ((mem / sizeof(double))  - numb_basis * numb_basis) / (4 * numb_basis + 3);
+        [return_row](size_t mem, size_t numb_basis){
+            // Return_row has addition 3N, so 3->6
+          return return_row ? ((mem / sizeof(double))  - numb_basis - numb_basis * numb_basis) / (5 * numb_basis + 6):
+          ((mem / sizeof(double))  - numb_basis - numb_basis * numb_basis) / (5 * numb_basis + 3);
         },
         n_pts,
         MAX_PTS_PER_ITER
@@ -1065,18 +1067,58 @@ __host__ std::vector<double> chemtools::evaluate_electron_density_gradient_handl
     // Resulting electron density gradient
     std::vector<double> h_grad_rho(3 * n_pts);
     
+    // Allocate All Device Variables, It is actually faster than doing per iteration
+    double *d_one_rdm = nullptr;
+    CUDA_CHECK(cudaMalloc((double **) &d_one_rdm, n_basis * n_basis * sizeof(double)));
+    CUBLAS_CHECK(cublasSetMatrix(
+        iodata.GetOneRdmShape(),
+        iodata.GetOneRdmShape(),
+        sizeof(double),
+        iodata.GetMOOneRDM(),
+        iodata.GetOneRdmShape(),
+        d_one_rdm,
+        iodata.GetOneRdmShape()
+    ));
+    thrust::device_vector<double> all_ones(sizeof(double) * n_basis, 1.0);
+    double *deviceVecPtr = thrust::raw_pointer_cast(all_ones.data());
+    double *d_pts_all = nullptr;
+    CUDA_CHECK(cudaMalloc((double **) &d_pts_all, sizeof(double) * 3 * chunks.pts_per_iter));
+    // Allocate device memory for contractions row-major (M, N)
+    double *d_AOs_all = nullptr;
+    CUDA_CHECK(cudaMalloc((double **) &d_AOs_all, sizeof(double) * n_basis * chunks.pts_per_iter));
+    // Temp array matrix multiplication of one_rdm and contraction array.
+    double *d_temp_all = nullptr;
+    CUDA_CHECK(cudaMalloc((double **) &d_temp_all, sizeof(double) * n_basis * chunks.pts_per_iter));
+    double *d_AOs_deriv_all = nullptr;
+    CUDA_CHECK(cudaMalloc((double **) &d_AOs_deriv_all, sizeof(double) * 3 * chunks.pts_per_iter * n_basis));
+    
+    // Create temporary points so that it is easy to update the last iteration
+    double *d_pts = d_pts_all, *d_AOs = d_AOs_all;
+    double *d_temp = d_temp_all, *d_AOs_deriv = d_AOs_deriv_all;
+    
     // Iterate through every chunk of the row
-    size_t index_to_copy = 0;  // Index on where to start copying to h_electron_density
+    size_t index_to_copy = 0;
     size_t i_iter        = 0;
     while(index_to_copy < n_pts) {
         size_t npts_iter = std::min(
               n_pts - i_iter * chunks.pts_per_iter,
               chunks.pts_per_iter
         );
+        // If it is the last iteration, I'll need to move the pointers to fit new size
+        if (npts_iter != chunks.pts_per_iter) {
+            d_pts = d_pts + 3 * (chunks.pts_per_iter - npts_iter);
+            d_AOs = d_AOs + n_basis * (chunks.pts_per_iter - npts_iter);
+            d_temp = d_temp + n_basis * (chunks.pts_per_iter - npts_iter);
+            d_AOs_deriv = d_AOs_deriv + 3 * n_basis * (chunks.pts_per_iter - npts_iter);
+        }
+        
+        // Set Zero to the atomic and derivative orbitals.
+        if (i_iter > 0) {
+            cudaMemsetAsync(d_AOs, 0.0,       sizeof(double) * n_basis * npts_iter);
+            cudaMemsetAsync(d_AOs_deriv, 0.0, sizeof(double) * 3 * n_basis * npts_iter);
+        }
         
         // Allocate points and copy grid points column-order
-        double *d_pts;
-        CUDA_CHECK(cudaMalloc((double **) &d_pts, sizeof(double) * 3 * npts_iter));
         #pragma unroll
         for(int coord = 0; coord < 3; coord++) {
             CUDA_CHECK(cudaMemcpyAsync(
@@ -1086,10 +1128,6 @@ __host__ std::vector<double> chemtools::evaluate_electron_density_gradient_handl
                 cudaMemcpyHostToDevice)
             );
         }
-        
-        // Allocate device memory for contractions row-major (M, N)
-        double *d_AOs = nullptr;
-        CUDA_CHECK(cudaMalloc((double **) &d_AOs, sizeof(double) * n_basis * npts_iter));
         
         // Evaluate Atomic Orbitals
         constexpr int THREADS_PER_BLOCK = 128;
@@ -1108,23 +1146,6 @@ __host__ std::vector<double> chemtools::evaluate_electron_density_gradient_handl
             blocks
         );
         
-        // Allocate device memory for the one_rdm. Number AO = Number MO
-        double *d_one_rdm;
-        CUDA_CHECK(cudaMalloc((double **) &d_one_rdm, n_basis * n_basis * sizeof(double)));
-        CUBLAS_CHECK(cublasSetMatrix(
-            iodata.GetOneRdmShape(),
-            iodata.GetOneRdmShape(),
-            sizeof(double),
-            iodata.GetMOOneRDM(),
-            iodata.GetOneRdmShape(),
-            d_one_rdm,
-            iodata.GetOneRdmShape()
-        ));
-          
-        // Temp array matrix multiplication of one_rdm and contraction array.
-        double *d_temp;
-        CUDA_CHECK(cudaMalloc((double **) &d_temp, sizeof(double) * npts_iter * n_basis));
-        
         // Matrix mult. of one rdm with the contractions array. Everything is in row major order.
         double alpha = 1.0, beta = 0.0;
         CUBLAS_CHECK(cublasDgemm(
@@ -1136,12 +1157,8 @@ __host__ std::vector<double> chemtools::evaluate_electron_density_gradient_handl
             &beta,
             d_temp, npts_iter
         ));
-        cudaFree(d_one_rdm);
-        cudaFree(d_AOs);
         
         // Evaluate derivatives of AOs (3, M, N) row-order
-        double *d_AOs_deriv;
-        CUDA_CHECK(cudaMalloc((double **) &d_AOs_deriv, sizeof(double) * 3 * npts_iter * n_basis));
         evaluate_scalar_quantity_density(
             molbasis,
             false,
@@ -1154,30 +1171,28 @@ __host__ std::vector<double> chemtools::evaluate_electron_density_gradient_handl
             threads,
             blocks
         );
-        cudaFree(d_pts);
         
-        // Gradient electron density col-order
-        double *d_grad_rho;
-        CUDA_CHECK(cudaMalloc((double **) &d_grad_rho, sizeof(double) * 3 * npts_iter));
+        // Gradient electron density col-order (Re-Use Pointer)
+        double *d_grad_rho = d_pts;
+        
+        // Hadamard d_temp and each derv in d_AOs_deriv and multiply by two since
+        //   electron density = sum | mo-contractions |^2
+        constexpr int HADAMARD_THREADS = 1024;
+        dim3 hadamard_threads(HADAMARD_THREADS);
+        dim3 hadamard_blocks(
+            (npts_iter * n_basis + HADAMARD_THREADS - 1) / HADAMARD_THREADS
+        );
+        hadamard_product_tensor_with_mat_with_multiply_by_two<3><<<hadamard_blocks, hadamard_threads>>>(
+            d_AOs_deriv, d_temp, n_basis * npts_iter
+        );
         
         // For each derivative, calculate the derivative of electron density seperately.
+        #pragma unroll 3
         for (int i_deriv = 0; i_deriv < 3; i_deriv++) {
             // Ith deriv of AOs (M, N) row-order
             double *d_ith_deriv = &d_AOs_deriv[i_deriv * npts_iter * n_basis];
-
-            // Hadamard d_temp and d_ith_deriv and store it in d_ith_deriv
-            constexpr int HADAMARD_THREADS = 320;
-            dim3 hadamard_threads(HADAMARD_THREADS);
-            dim3 hadamard_blocks(
-                (npts_iter * n_basis + HADAMARD_THREADS - 1) / HADAMARD_THREADS
-            );
-            hadamard_product<<<hadamard_blocks, hadamard_threads>>>(
-                d_ith_deriv, d_temp, n_basis, npts_iter
-            );
-        
-            // Take the sum of rows to get gradient
-            thrust::device_vector<double> all_ones(sizeof(double) * n_basis, 1.0);
-            double *deviceVecPtr = thrust::raw_pointer_cast(all_ones.data());
+            
+            // Summation of rows
             CUBLAS_CHECK(cublasDgemv(
                 handle, CUBLAS_OP_N, npts_iter, n_basis,
                 &alpha,
@@ -1185,18 +1200,7 @@ __host__ std::vector<double> chemtools::evaluate_electron_density_gradient_handl
                 &beta,
                 &d_grad_rho[i_deriv * npts_iter], 1)
             );
-            
-            // Free up memory
-            all_ones.clear();
-            all_ones.shrink_to_fit();
         }
-        cudaFree(d_temp);
-        cudaFree(d_AOs_deriv);
-        
-        // Multiply the derivative by two since electron density = sum | mo-contractions |^2
-        dim3 threadsPerBlock3(320);
-        dim3 grid3((3 * npts_iter + threadsPerBlock3.x - 1) / (threadsPerBlock3.x));
-        multiply_scalar<<< grid3, threadsPerBlock3>>>(d_grad_rho, 2.0, 3 * npts_iter);
         
         // Transfer from column-major to row-major order
         if(return_row){
@@ -1218,7 +1222,6 @@ __host__ std::vector<double> chemtools::evaluate_electron_density_gradient_handl
                 &beta,
                 d_grad_rho, 3, d_grad_clone, 3)
             );
-            cudaFree(d_grad_rho);
         
             // Transfer the gradient of device memory to host memory in row-major order.
             CUDA_CHECK(cudaMemcpy(&h_grad_rho[3 * index_to_copy],
@@ -1239,13 +1242,21 @@ __host__ std::vector<double> chemtools::evaluate_electron_density_gradient_handl
             CUDA_CHECK(cudaMemcpy(&h_grad_rho[2 * n_pts + index_to_copy],
                                                &d_grad_rho[2 * npts_iter],
                                                sizeof(double) * npts_iter, cudaMemcpyDeviceToHost));
-            cudaFree(d_grad_rho);
         }
         
         // Update lower-bound of the grid for the next iteration
         index_to_copy += npts_iter;
         i_iter++;
     }
+    
+    // Deallocate all variables
+    cudaFree(d_one_rdm);
+    cudaFree(d_AOs_all);
+    all_ones.clear();
+    all_ones.shrink_to_fit();
+    cudaFree(d_temp_all);
+    cudaFree(d_AOs_deriv_all);
+    cudaFree(d_pts_all);
 
   return h_grad_rho;
 }
