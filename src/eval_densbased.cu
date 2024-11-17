@@ -1,11 +1,12 @@
 #include <algorithm>
 
-#include "../include/evaluate_density.cuh"
-#include "../include/evaluate_densbased.cuh"
-#include "../include/evaluate_gradient.cuh"
-#include "../include/evaluate_laplacian.cuh"
-#include "../include/evaluate_kinetic_dens.cuh"
-#include "../include/cuda_utils.cuh"
+#include "eval_rho.cuh"
+#include "eval_densbased.cuh"
+#include "eval_rho_grad.cuh"
+#include "eval_lap.cuh"
+#include "eval_kin_energ.cuh"
+#include "cuda_utils.cuh"
+
 
 __host__ std::vector<double> chemtools::compute_norm_of_3d_vector(double *h_points, const int knumb_pts){
   std::vector<double> h_norm(knumb_pts);
