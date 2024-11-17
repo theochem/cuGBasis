@@ -1,11 +1,11 @@
 #include <stdio.h>
 #include <thrust/device_vector.h>
 
-#include "../include/basis_to_gpu.cuh"
-#include "../include/cuda_basis_utils.cuh"
-#include "../include/cuda_utils.cuh"
-#include "../include/evaluate_electrostatic.cuh"
-#include "../include/integral_coeffs.cuh"
+#include "basis_to_gpu.cuh"
+#include "cuda_basis_utils.cuh"
+#include "cuda_utils.cuh"
+#include "eval_esp.cuh"
+#include "integral_coeffs.cuh"
 
 /**
 * @Section Computing the electrostatic potential.
