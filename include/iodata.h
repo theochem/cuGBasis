@@ -17,17 +17,16 @@ namespace chemtools {
  */
 class IOData {
  private:
-  chemtools::MolecularBasis orbital_basis_;
-  double* coord_atoms_;      // Row-order
-  int natoms;
-  long int* charges_;             // Charge of atom.
-  long int* atnums_;              // Atomic Numbers of atom
-  double* one_rdm_;         // Row-order
-  std::array<int, 2> one_rdm_shape_;
-  double* mo_coeffs_;       // Row-order
-  double* mo_occupations_;
-  // Row-order, this is (mo_coeffs_ * mo_occupations).dot(mo_coeffs_). Used to evaluate Electron Density.
-  double* mo_one_rdm_;
+  MolecularBasis      orbital_basis_;        // Basis-Set
+  double*             coord_atoms_;          // Row-order
+  int                 natoms;
+  long int*           charges_;              // Charge of atom.
+  long int*           atnums_;               // Atomic Numbers of atom
+  double*             one_rdm_;              // Row-order
+  std::array<int, 2>  one_rdm_shape_;
+  double*             mo_coeffs_;            // Row-order
+  double*             mo_occupations_;
+  double*             mo_one_rdm_;           // MO transformation matrix.
 
 
  public:

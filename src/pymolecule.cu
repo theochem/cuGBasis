@@ -4,16 +4,16 @@
 
 #include "cublas_v2.h"
 
-#include "../include/pymolecule.cuh"
-#include "../include/basis_to_gpu.cuh"
-#include "../include/evaluate_promolecular.cuh"
-#include "../include/evaluate_densbased.cuh"
-#include "../include/evaluate_density.cuh"
-#include "../include/evaluate_gradient.cuh"
-#include "../include/evaluate_hessian.cuh"
-#include "../include/evaluate_laplacian.cuh"
-#include "../include/evaluate_kinetic_dens.cuh"
-#include "../include/evaluate_electrostatic.cuh"
+#include "pymolecule.cuh"
+#include "eval_promol.cuh"
+#include "eval_densbased.cuh"
+#include "eval_rho.cuh"
+#include "eval_mo.cuh"
+#include "eval_rho_grad.cuh"
+#include "eval_rho_hess.cuh"
+#include "eval_lap.cuh"
+#include "eval_kin_energ.cuh"
+#include "eval_esp.cuh"
 
 namespace py = pybind11;
 
@@ -128,14 +128,6 @@ chemtools::Molecule::Molecule(const std::string &file_path) {
   this->iodata_ = new chemtools::IOData(iodata);
 }
 
-void chemtools::Molecule::basis_set_to_constant_memory(bool do_segmented_basis){
-  // Convert from fchk file to IODATA object
-  const chemtools::IOData* iodata = getIOData();
-
-  // Transfer molecular basis to constant memory
-  chemtools::MolecularBasis molecular_basis = iodata->GetOrbitalBasis();
-  chemtools::add_mol_basis_to_constant_memory_array(molecular_basis, do_segmented_basis, false);
-}
 
 const MatrixX3R chemtools::Molecule::getCoordinates() const {
   const double* pts_row_order = iodata_->GetCoordAtoms();
@@ -171,20 +163,6 @@ MatrixXXC chemtools::Molecule::compute_molecular_orbitals(const Eigen::Ref<Matri
       *iodata_, pts_col_order.data(), ncols
   );
   MatrixXXC v2 = Eigen::Map<MatrixXXC>(dens.data(), nrows, ncols);
-  return v2;
-}
-
-TensorXXXR chemtools::Molecule::compute_electron_density_cubic(
-    const Vector3D& klower_bnd, const Matrix33R& kaxes, const IntVector3D& knumb_points, const bool disp
-) {
-  Matrix33C kaxes_col_order = kaxes;
-  size_t numb_pts = knumb_points[0] * knumb_points[1] * knumb_points[2];
-  std::vector<double> dens = chemtools::evaluate_electron_density_on_cubic(
-      *iodata_, {klower_bnd[0], klower_bnd[1], klower_bnd[2]}, kaxes_col_order.data(),
-      {knumb_points[0], knumb_points[1], knumb_points[2]}, disp
-  );
-  /// Eigen Tensor doesn't work with pybind11, so the trick here would be to use array_t to convert them
-  TensorXXXR v2 = Eigen::TensorMap<TensorXXXR>(dens.data(), knumb_points[0], knumb_points[1], knumb_points[2]);
   return v2;
 }
 

@@ -1,9 +1,7 @@
 #include <vector>
 #include <cassert>
-#include <exception>
 #include <stdexcept>
 
-#include "../include/contracted_shell.h"
 #include "../include/basis_to_gpu.cuh"
 #include "../include/cuda_utils.cuh"
 
