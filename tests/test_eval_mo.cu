@@ -4,7 +4,7 @@
 #include <pybind11/numpy.h>
 
 #include "../include/iodata.h"
-#include "../include/evaluate_density.cuh"
+#include "../include/eval_mo.cuh"
 #include "../include/cuda_utils.cuh"
 #include "../include/basis_to_gpu.cuh"
 #include "../include/utils.h"
