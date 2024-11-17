@@ -5,8 +5,6 @@
 
 #include "iodata.h"
 
-// Create a function pointer type definition
-typedef void (*d_func_t)(double*, const double*, const int, const int, const int);
 
 namespace chemtools {
 
@@ -14,33 +12,34 @@ namespace chemtools {
  * DEVICE FUNCTIONS
  * ---------------------------------------------------------------------------------------------------------------
  */
-// This points to the correct __device__ function that evaluates over contractions
-__device__ extern d_func_t p_evaluate_sum_sec_derivs;
-
+ 
 /**
  * Device helper function for evaluating the sum of second derivative of each contractions
  *
  * Assumes basis set information is stored in GPU constant memory via basis_to_gpu.cu file.
  *
- *
- * @param[in, out] d_contractions_array The device pointer to the contractions array of size (M, N) where M is
+ * @param[in, out] d_lap The device pointer to the contractions array of size (M, N) where M is
  *                  the number of contractions and N is the number of points. This is in row-major order.
  *                  Values should be set to zero before using.
- * @param grid_x The grid point in the x-axis.
- * @param grid_y  The grid point in the y-axis.
- * @param grid_z  The grid point in the z-axis.
- * @param knumb_points  The number of points.
- * @param global_index  The global index of the thread, which also corresponds to the point.
+ * @param pt The 4f grid point
+ * @param n_pts  The number of points.
+ * @param idx  The global index of the thread, which also corresponds to the point.
+ * @param iorb_start Where to start computing the atomic orbitals, see eval.cu
  */
-__device__ void evaluate_sum_of_second_derivative_contractions_from_constant_memory(
-    double *d_contractions_array, const double &grid_x, const double &grid_y, const double &grid_z,
-    const int &knumb_points, unsigned int &global_index, const int& i_contr_start = 0
-);
+__device__ __forceinline__ void eval_AOs_lap(
+    double *d_lap,
+    const double3& pt,
+    const int &n_pts,
+    uint &idx,
+    const int &iorb_start);
 
 
-__device__ void evaluate_sum_of_second_contractions_from_constant_memory_on_any_grid(
-    double* d_contractions_array, const double* d_points, const int knumb_points, const int knumb_contractions,
-    const int i_const_start = 0
+__global__ void eval_AOs_lap_from_constant_memory_on_any_grid(
+          double* __restrict__ d_lap,
+    const double* __restrict__ d_points,
+    const int     n_pts,
+    const int     n_cshells,
+    const int     iorb_start
 );
 
 
@@ -81,7 +80,7 @@ __host__ void compute_first_term(
 );
 
 __host__ std::vector<double> evaluate_laplacian_on_any_grid_handle(
-    cublasHandle_t& handle, chemtools::IOData& iodata, const double* h_points, const int knumb_points
+    cublasHandle_t& handle, IOData &iodata, const double* h_points, const int n_pts
 );
 
 /**
