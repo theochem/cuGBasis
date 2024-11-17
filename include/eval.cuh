@@ -1,11 +1,8 @@
-//
-// Created by ali-tehrani on 07/11/24.
-//
-
-#ifndef CUGBASIS_INCLUDE_RUN_CUH_
-#define CUGBASIS_INCLUDE_RUN_CUH_
+#ifndef CUGBASIS_INCLUDE_EVAL_CUH_
+#define CUGBASIS_INCLUDE_EVAL_CUH_
 
 #include "contracted_shell.h"
+#include "cuda_utils.cuh"
 
 namespace chemtools {
 struct GpuMemoryPartitioner {
@@ -66,4 +63,4 @@ struct GpuMemoryPartitioner {
       cudaFuncCache l1_over_shared = cudaFuncCachePreferL1
   );
 }
-#endif //CUGBASIS_INCLUDE_RUN_CUH_
+#endif //CUGBASIS_INCLUDE_EVAL_CUH_
