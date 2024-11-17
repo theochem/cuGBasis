@@ -9,7 +9,10 @@
 
 namespace chemtools {
 __host__ std::vector<double> evaluate_pos_def_kinetic_density_on_any_grid_handle(
-    cublasHandle_t &handle, chemtools::IOData &iodata, const double *h_points, const int knumb_points
+    cublasHandle_t &handle,
+    IOData         &iodata,
+    const double   *h_points,
+          int      n_pts
 );
 
 /**
@@ -21,11 +24,11 @@ __host__ std::vector<double> evaluate_pos_def_kinetic_density_on_any_grid_handle
  *
  * @param[in] iodata  The IOData object that stores the molecules basis.
  * @param[in] h_points Array in column-major order that stores the three-dimensional points.
- * @param[in] knumb_points Number of points in d_points.
+ * @param[in] n_pts Number of points in d_points.
  * @return h_kinetic_energy_density The kinetic energy density evaluated on each point.
  */
 __host__ std::vector<double> evaluate_positive_definite_kinetic_density(
-    chemtools::IOData &iodata, const double *h_points, const int knumb_points
+    IOData &iodata, const double *h_points, int n_pts
 );
 
 
@@ -39,11 +42,14 @@ __host__ std::vector<double> evaluate_positive_definite_kinetic_density(
  * @param[in] iodata  The IOData object that stores the molecules basis.
  * @param[in] h_points Array in column-major order that stores the three-dimensional points.
  * @param[in] alpha Parameter of the general form of the kinetic energy density.
- * @param[in] knumb_points Number of points in d_points.
+ * @param[in] n_pts Number of points in d_points.
  * @return h_gen_kinetic_density The general form of the kinetic energy density evaluated on each point.
  */
 __host__ std::vector<double> evaluate_general_kinetic_energy_density(
-    chemtools::IOData &iodata, const double alpha, const double *h_points, const int knumb_points
+    IOData &iodata,
+    double alpha,
+    const double *h_points,
+    int    n_pts
 );
 } // chemtools
 #endif //CHEMTOOLS_CUDA_INCLUDE_EVALUATE_KINETIC_DENS_CUH_
