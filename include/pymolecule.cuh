@@ -14,7 +14,7 @@
 
 #include "cublas_v2.h"
 
-#include "../include/iodata.h"
+#include "iodata.h"
 
 namespace py = pybind11;
 using MatrixX3C = Eigen::Matrix<double, Eigen::Dynamic, 3, Eigen::ColMajor>;
@@ -51,11 +51,8 @@ class Molecule {
   const IntVector getNumbers() const;
 
   // Methods
-  void basis_set_to_constant_memory(bool do_segmented_basis);
   Vector compute_electron_density(const Eigen::Ref<MatrixX3R>&  points);
   MatrixXXC compute_molecular_orbitals(const Eigen::Ref<MatrixX3R>&  points);
-  TensorXXXR compute_electron_density_cubic(
-      const Vector3D& klower_bnd, const Matrix33R& kaxes, const IntVector3D& knumb_points, const bool disp = false);
   Vector compute_laplacian(const Eigen::Ref<MatrixX3R>&  points);
   Vector compute_positive_definite_kinetic_energy(const Eigen::Ref<MatrixX3R>&  points);
   Vector compute_general_kinetic_energy(const Eigen::Ref<MatrixX3R>&  points, const double alpha);
