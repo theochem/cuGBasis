@@ -13,8 +13,6 @@
 
 using namespace chemtools;
 
-__device__ extern d_func_t chemtools::p_evaluate_deriv_contractions = chemtools::eval_AOs_derivs_on_any_grid;
-
 __device__ __forceinline__ void chemtools::eval_AOs_deriv(
           double*  d_AO_derivs,
     const double3  pt,
@@ -977,53 +975,45 @@ __global__ __launch_bounds__(128) void chemtools::eval_AOs_derivs_on_any_grid(
 __host__ std::vector<double> chemtools::evaluate_contraction_derivatives(
     chemtools::IOData& iodata, const double* h_points, const int knumb_points
 ) {
+    // Get the molecular basis from iodata and put it in constant memory of the gpu.
+    const MolecularBasis molbasis = iodata.GetOrbitalBasis();
+    const int            n_basis  = molbasis.numb_basis_functions();
 
-  // Get the molecular basis from iodata and put it in constant memory of the gpu.
-  MolecularBasis molecular_basis = iodata.GetOrbitalBasis();
-  add_mol_basis_to_constant_memory_array(molecular_basis, false);
-  int knbasisfuncs = molecular_basis.numb_basis_functions();
-  printf("Number of basis-functions %d \n", knbasisfuncs);
+    // The output of the contractions in column-major order with shape (3, M, N).
+    std::vector<double> h_contractions(3 * n_basis * knumb_points);
+    
+    // Transfer grid points to GPU, this is in column order with shape (N, 3)
+    double* d_points;
+    cuda_check_errors(cudaMalloc((double **) &d_points, sizeof(double) * 3 * knumb_points));
+    cuda_check_errors(cudaMemcpy(d_points, h_points,sizeof(double) * 3 * knumb_points, cudaMemcpyHostToDevice));
+    
+    // Evaluate derivatives of each contraction this is in row-order (3, M, N), where M =number of basis-functions.
+    double* d_deriv_contractions;
+    cuda_check_errors(cudaMalloc((double **) &d_deriv_contractions, sizeof(double) * 3 * knumb_points * n_basis));
+    dim3 threadsPerBlock(128);
+    dim3 grid((knumb_points + threadsPerBlock.x - 1) / (threadsPerBlock.x));
+    evaluate_scalar_quantity_density(
+        molbasis,
+        false,
+        false,
+        "rho_deriv",
+        d_deriv_contractions,
+        d_points,
+        knumb_points,
+        n_basis,
+        threadsPerBlock,
+        grid
+    );
 
-  // The output of the contractions in column-major order with shape (3, M, N).
-  std::vector<double> h_contractions(3 * knbasisfuncs * knumb_points);
-
-  // Declare Function Pointers
-  d_func_t h_deriv_contractions_func;
-  cudaMemcpyFromSymbol(&h_deriv_contractions_func, p_evaluate_deriv_contractions, sizeof(d_func_t));
-
-  // Transfer grid points to GPU, this is in column order with shape (N, 3)
-  double* d_points;
-  cuda_check_errors(cudaMalloc((double **) &d_points, sizeof(double) * 3 * knumb_points));
-  cuda_check_errors(cudaMemcpy(d_points, h_points,sizeof(double) * 3 * knumb_points, cudaMemcpyHostToDevice));
-
-  // Evaluate derivatives of each contraction this is in row-order (3, M, N), where M =number of basis-functions.
-  double* d_deriv_contractions;
-  printf("Evaluate derivative \n");
-  cuda_check_errors(cudaMalloc((double **) &d_deriv_contractions, sizeof(double) * 3 * knumb_points * knbasisfuncs));
-  dim3 threadsPerBlock(128);
-  dim3 grid((knumb_points + threadsPerBlock.x - 1) / (threadsPerBlock.x));
-  evaluate_scalar_quantity_density(
-      molecular_basis,
-      false,
-      false,
-      "rho_deriv",
-      d_deriv_contractions,
-      d_points,
-      knumb_points,
-      knbasisfuncs,
-      threadsPerBlock,
-      grid
-  );
-  printf("Transfer \n");
-  // Transfer from device memory to host memory
-  cuda_check_errors(cudaMemcpy(&h_contractions[0],
+    // Transfer from device memory to host memory
+    cuda_check_errors(cudaMemcpy(&h_contractions[0],
                                        d_deriv_contractions,
-                                       sizeof(double) * 3 * knumb_points * knbasisfuncs, cudaMemcpyDeviceToHost));
-
-  cudaFree(d_points);
-  cudaFree(d_deriv_contractions);
-
-  return h_contractions;
+                                       sizeof(double) * 3 * knumb_points * n_basis, cudaMemcpyDeviceToHost));
+    
+    cudaFree(d_points);
+    cudaFree(d_deriv_contractions);
+    
+    return h_contractions;
 }
 
 
@@ -1252,11 +1242,11 @@ __host__ std::vector<double> chemtools::evaluate_electron_density_gradient_handl
     // Deallocate all variables
     cudaFree(d_one_rdm);
     cudaFree(d_AOs_all);
-    all_ones.clear();
-    all_ones.shrink_to_fit();
     cudaFree(d_temp_all);
     cudaFree(d_AOs_deriv_all);
     cudaFree(d_pts_all);
+    all_ones.clear();
+    all_ones.shrink_to_fit();
 
   return h_grad_rho;
 }

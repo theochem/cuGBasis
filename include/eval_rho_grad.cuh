@@ -6,16 +6,12 @@
 #include "contracted_shell.h"
 #include "iodata.h"
 
-using d_func_t = void (*)(double*, const double*, const int, const int, const int);
-
 namespace chemtools {
 
 /**
  * DEVICE FUNCTIONS
  * ---------------------------------------------------------------------------------------------------------------
  */
-// This points to the correct __device__ function that evaluates over contractions
-__device__ extern d_func_t p_evaluate_deriv_contractions;
 
 /**
  * Device helper function for evaluating a contractions on a single point (corresponding to a single thread).
@@ -63,7 +59,7 @@ __global__ void eval_AOs_derivs_on_any_grid(
     const double* __restrict__ d_points,
     const int                  n_pts,
     const int                  n_cshells,
-    const int                  iorb_start
+    const int                  iorb_start = 0
 );
 
 
