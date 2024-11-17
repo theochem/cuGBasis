@@ -6,16 +6,8 @@
 #include "contracted_shell.h"
 #include "iodata.h"
 
-#define N 7500  // Number of blocks needs to be less than 64,000 kilobytes. 7500 = 60,000 kB/ 8 bytes for double
-
-// Create a function pointer type definition for evaluating anything over contractions
-typedef void (*d_func_t)(double*, const double*, const int, const int, const int);
-
 
 namespace chemtools {
-
-// This points to the correct __device__ function that evaluates over contractions
-__device__ extern d_func_t p_eval_AOs;
 
 /**
  * DEVICE FUNCTIONS
