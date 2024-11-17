@@ -8,11 +8,9 @@
 #include "cuda_utils.cuh"
 #include "cuda_basis_utils.cuh"
 #include "basis_to_gpu.cuh"
-#include "run.cuh"
+#include "eval.cuh"
 
 using namespace chemtools;
-
-__device__ d_func_t chemtools::p_eval_AOs = eval_AOs_from_constant_memory_on_any_grid;
 
 __device__ __forceinline__ void chemtools::eval_AOs(
           double*  d_AO_vals,
