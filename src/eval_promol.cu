@@ -1,4 +1,4 @@
-#include "../include/evaluate_promolecular.cuh"
+#include "../include/eval_promol.cuh"
 #include "../include/basis_to_gpu.cuh"
 #include "../include/cuda_utils.cuh"
 
