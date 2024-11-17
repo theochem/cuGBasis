@@ -6,9 +6,6 @@
 #include "contracted_shell.h"
 #include "iodata.h"
 
-// Create a function pointer type definition
-typedef void (*d_func_t)(double*, const double*, const int, const int, const int);
-
 
 namespace chemtools {
 
@@ -16,11 +13,8 @@ namespace chemtools {
  * DEVICE FUNCTIONS
  * ---------------------------------------------------------------------------------------------------------------
  */
-// This points to the correct __device__ function that evaluates over contractions
-__device__ extern d_func_t p_evaluate_sec_contractions;
-
 /**
- * Evaluate the second derivative of contractions from any grid of points.
+ * Evaluate the second derivative of contractions
  *
  * Assumes basis set information is stored in GPU constant memory via basis_to_gpu.cu file.
  *
@@ -28,18 +22,46 @@ __device__ extern d_func_t p_evaluate_sec_contractions;
  * The derivatives are stored with the order "xx, xy, xz, yy, yz, zz".
  *
  * @param[in,out] g_d_constant_basis Pointer to the the output.
- * @param[out] d_sec_deriv_contracs  The device pointer to the second contractions array of size (6, M, N) where M is
+ * @param[out] d_AOs_hess  The device pointer to the second contractions array of size (6, M, N) where M is
+ *                  the number of contractions and N is the number of points. This is in row-major order, i.e.
+ *                  Derivatives first, then contractions then points.
+ *                  Values should be set to zero before using.
+ * @param[in] pt Single pt
+ * @param[in] n_pts The number of points in the grid.
+ * @param[in] n_cshells Total number of contracted shells, should match M
+ * @param[in] idx  The thread index in one-dimension
+ * @param[in] iorb_start Index of where to start updating contractions, should match whats in constant memory.
+ */
+__device__ __forceinline__ void eval_AOs_hess(
+          double*  d_AOs_hess,
+    const double3  pt,
+    const int      n_pts,
+    const int      n_cshells,
+    uint&          idx,
+    const int      iorb_start
+);
+
+/**
+ * Evaluate the second derivative of contractions from any grid of points.
+ *
+ * The calculation of the derivatives is given by the file "./generate_hessian_cont.py".
+ * The derivatives are stored with the order "xx, xy, xz, yy, yz, zz".
+ *
+ * @param[in,out] g_d_constant_basis Pointer to the the output.
+ * @param[out] d_AOs_hess  The device pointer to the second contractions array of size (6, M, N) where M is
  *                  the number of contractions and N is the number of points. This is in row-major order, i.e.
  *                  Derivatives first, then contractions then points.
  *                  Values should be set to zero before using.
  * @param[in] d_points The device pointer to the grid points of size (N, 3) stored in column-major order.
  * @param[in] d_knumb_points The number of points in the grid.
  */
-__device__ void evaluate_sec_deriv_contractions_from_constant_memory(
-    double* d_sec_deriv_contracs, const double* const d_points, const int knumb_points, const int knumb_contractions,
-    const int i_contr_start = 0
+__global__ void eval_AOs_hess_on_any_grid(
+          double* __restrict__ d_AO_hess,
+    const double* __restrict__ d_points,
+    const int  n_pts,
+    const int  n_cshells,
+    const int  iorb_start = 0
 );
-
 
 /**
  * HOST FUNCTIONS
@@ -63,9 +85,16 @@ __host__ std::vector<double> evaluate_contraction_second_derivative(
  * \sum_{k, l}  c_{k, l} \bigg[
  *          \frac{\partial \phi_k(r)}{\partial x_n} \frac{\partial \phi_l(r)}{\partial x_m}
  */
-__host__ static void evaluate_first_term(
-    cublasHandle_t& handle, const chemtools::MolecularBasis& basis, double* d_hessian, const double* const d_points,
-    const double* const h_one_rdm, const size_t& numb_pts_iter, const size_t& knbasisfuncs
+__host__ static __forceinline__ void evaluate_first_term(
+    cublasHandle_t&            handle,
+    const chemtools::MolecularBasis& basis,
+    double*                    d_hessian,
+    const double* const              d_pts,
+    const double* const              d_one_rdm,
+    const double* const              d_all_ones,
+    std::vector<double*>&            d_pointers,
+    const size_t&                    npts_iter,
+    const size_t&                    nbasis
 );
 
 /**
