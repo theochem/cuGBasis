@@ -31,13 +31,17 @@ __global__ void chemtools::hadamard_product(
   }
 }
 
-__global__ void chemtools::hadamard_product_outplace(double* d_output, double* d_array1, double* d_array2, int numb_row, int numb_col) {
-  int global_index = blockIdx.x * blockDim.x + threadIdx.x;
-  if(global_index < numb_row * numb_col) {
-    d_output[global_index] = d_array1[global_index] * d_array2[global_index];
-  }
-}
 
+__global__ void chemtools::hadamard_product_outplace(
+    double* __restrict__ d_output,
+    const double* __restrict__ d_array1,
+    const double* __restrict__ d_array2,
+    int size) {
+    int global_index = blockIdx.x * blockDim.x + threadIdx.x;
+    if(global_index < size) {
+        d_output[global_index] = d_array1[global_index] * d_array2[global_index];
+    }
+}
 
 __global__ void chemtools::multiply_scalar(double* d_array, double scalar, int numb_elements) {
   unsigned int global_index = blockIdx.x * blockDim.x + threadIdx.x;
