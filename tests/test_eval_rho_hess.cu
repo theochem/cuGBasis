@@ -12,7 +12,7 @@
 #include "../include/utils.h"
 #include "../include/cuda_utils.cuh"
 #include "../include/basis_to_gpu.cuh"
-#include "../include/evaluate_hessian.cuh"
+#include "../include/eval_rho_hess.cuh"
 
 namespace py = pybind11;
 using namespace py::literals;
@@ -54,7 +54,6 @@ TEST_CASE( "Test Second Derivative of Contractions Against gbasis", "[evaluate_c
     std::generate(points.begin(), points.end(), gen);
 
     // Calculate Gradient
-    chemtools::add_mol_basis_to_constant_memory_array(iodata.GetOrbitalBasis(), false, false);
     std::vector<double> sec_deriv = chemtools::evaluate_contraction_second_derivative(iodata, points.data(), numb_pts);
 
     // COnvert them (with copy) to python objects so that they can be transfered.
@@ -132,7 +131,6 @@ TEST_CASE( "Test Hessian (Row-Order) of Electron Density Against gbasis", "[eval
     std::generate(points.begin(), points.end(), gen);
 
     // Calculate Gradient
-    chemtools::add_mol_basis_to_constant_memory_array(iodata.GetOrbitalBasis(), false, false);
     std::vector<double> hessian_result = chemtools::evaluate_electron_density_hessian(iodata, points.data(), numb_pts, true);
     // COnvert them (with copy) to python objects so that they can be transfered.
     pybind11::array_t<double, pybind11::array::c_style | pybind11::array::forcecast>
@@ -172,7 +170,7 @@ assert np.all(error < 1e-10), "Hessian on electron density on GPU doesn't match 
 }
 
 
-TEST_CASE( "Test Hessian (Col-Order) of Electron Density Against gbasis", "[evaluate_electron_density_hessian_row]" ) {
+TEST_CASE( "Test Hessian (Col-Order) of Electron Density Against gbasis", "[evaluate_electron_density_hessian_col]" ) {
   {  // Need this so that the python object doesn't outline the interpretor.
     // Get the IOdata object from the fchk file.
     std::string fchk_file = GENERATE(
@@ -208,7 +206,6 @@ TEST_CASE( "Test Hessian (Col-Order) of Electron Density Against gbasis", "[eval
     std::generate(points.begin(), points.end(), gen);
 
     // Calculate Gradient
-    chemtools::add_mol_basis_to_constant_memory_array(iodata.GetOrbitalBasis(), false, false);
     std::vector<double> hessian_result = chemtools::evaluate_electron_density_hessian(iodata, points.data(), numb_pts, false);
     // COnvert them (with copy) to python objects so that they can be transfered.
     pybind11::array_t<double, pybind11::array::c_style | pybind11::array::forcecast>
@@ -227,7 +224,7 @@ from gbasis.evals.density import evaluate_deriv_basis, evaluate_basis
 from iodata import load_one
 from gbasis.wrappers import from_iodata
 
-true_result = true_result.reshape((numb_pts, 3, 3), order="F")  # Row-major order
+true_result = true_result.reshape((numb_pts, 3, 3), order="F")
 
 iodata = load_one(fchk_path)
 basis = from_iodata(iodata)
@@ -235,12 +232,14 @@ rdm = (iodata.mo.coeffs * iodata.mo.occs).dot(iodata.mo.coeffs.T)
 points = points.reshape((numb_pts, 3), order="F")
 points = np.array(points, dtype=np.float64)
 
-indices_to_compute = np.random.choice(np.arange(len(points)), size=10000)
+indices_to_compute = np.unique(np.random.choice(np.arange(len(points)), size=10000))
 true_result = true_result[indices_to_compute, :]
 points = points[indices_to_compute, :]
 
 hessian = evaluate_density_hessian(rdm, basis, points)
 error = np.abs(hessian - true_result)
+print(hessian[0])
+print(true_result[0])
 print("Max, Mean, STD , Min error ", np.max(error), np.mean(error), np.std(error), np.min(error))
 assert np.all(error < 1e-10), "Hessian on electron density on GPU doesn't match gbasis."
     )", py::globals(), locals);

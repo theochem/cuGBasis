@@ -11,7 +11,7 @@
 #include "../include/utils.h"
 #include "../include/cuda_utils.cuh"
 #include "../include/basis_to_gpu.cuh"
-#include "../include/evaluate_kinetic_dens.cuh"
+#include "../include/eval_kin_energ.cuh"
 
 namespace py = pybind11;
 using namespace py::literals;

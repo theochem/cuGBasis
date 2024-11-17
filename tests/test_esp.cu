@@ -12,7 +12,7 @@
 #include "../include/utils.h"
 #include "../include/cuda_utils.cuh"
 #include "../include/basis_to_gpu.cuh"
-#include "../include/evaluate_electrostatic.cuh"
+#include "../include/eval_esp.cuh"
 
 namespace py = pybind11;
 using namespace py::literals;

@@ -8,7 +8,7 @@
 #include <pybind11/numpy.h>
 
 #include "../include/basis_to_gpu.cuh"
-#include "../include/evaluate_densbased.cuh"
+#include "../include/eval_densbased.cuh"
 #include "../include/iodata.h"
 #include "../include/utils.h"
 
