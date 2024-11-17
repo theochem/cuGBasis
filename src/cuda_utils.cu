@@ -104,7 +104,7 @@ __host__ void chemtools::array_transpose(
     cublasHandle_t& handle, double* d_output_col, double* d_input_row, const int numb_rows, const int numb_cols) {
   double const alpha(1.0);
   double const beta(0.0);
-  chemtools::cublas_check_errors(
+  CUBLAS_CHECK(
       cublasDgeam( handle, CUBLAS_OP_T, CUBLAS_OP_N, numb_rows, numb_cols, &alpha, d_input_row, numb_cols, &beta, d_input_row,
                    numb_rows, d_output_col, numb_rows )
   );
