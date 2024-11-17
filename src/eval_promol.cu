@@ -14,71 +14,42 @@ __global__ void chemtools::evaluate_promol_density_from_constant_memory_on_any_g
 ) {
   unsigned int global_index = blockIdx.x * blockDim.x + threadIdx.x;
   if (global_index < knumb_points) {
-//    if (global_index == 0) {
-//      for(int i =0; i < index_atom_coords_start + 5; i++) {
-//        printf(" %f  ", g_constant_basis[i]);
-//      }
-//    }
-//    printf("Global index %u \n", global_index);
-//    for(int i =0; i < 100; i++) {
-//      printf(" %f  ", g_constant_basis[i]);
-//    }
     int iconst = index_atom_coords_start;  // Index to go over the atomic coordinates
-//    printf("iconst %d \n", iconst);
+
     // Get the grid points where `d_points` is in column-major order with shape (N, 3)
     double grid_x = d_points[global_index];
     double grid_y = d_points[global_index + knumb_points];
     double grid_z = d_points[global_index + knumb_points * 2];
-//    printf("Index %u  Pt %f   %f  %f \n", global_index, grid_x, grid_y, grid_z);
-
+    
     // Evaluate the density value and store it in constant memory
-//    printf("Number of atoms %f \n ", g_constant_basis[iconst]);
     int knatom = (int) g_constant_basis[iconst++]; // Get the number of atoms within constant mem
-//    if(global_index == 0) {
-//      printf("Number of atoms %d \n ", knatom);
-//    }
+
     for(int i_atom = 0; i_atom < knatom; i_atom++) {
       // Get the Type of Atom and Atomic Coordinates for this atom
       int index_of_index_of_element = (int) g_constant_basis[iconst++];   // Should point to i^E, see basis_to_gpu.cuh
       double r_A_x = (grid_x - g_constant_basis[iconst++]);
       double r_A_y = (grid_y - g_constant_basis[iconst++]);
       double r_A_z = (grid_z - g_constant_basis[iconst++]);
-//      printf("Index of index %d \n", index_of_index_of_element);
 
       // Gets the index where promolecular coefficient for this atom starts
       int index_of_promol_coeffs = (int) g_constant_basis[index_of_index_of_element];  // Should be i^E
-//      printf("Index of Coeffcients %d \n", index_of_promol_coeffs);
 
       // Evaluate-S type Gaussians
-//      printf("Number of s-type Gaussians %f \n", g_constant_basis[index_of_promol_coeffs]);
-
       int number_s_type_gaussians = (int) g_constant_basis[index_of_promol_coeffs++];
-//      printf("Number of s-type Gaussians %d \n", number_s_type_gaussians);
       for(int i = 0; i < number_s_type_gaussians; i++) {
         double coeff = g_constant_basis[index_of_promol_coeffs++];  // Get Coefficient of Gaussian
         double exponent = g_constant_basis[index_of_promol_coeffs++];    // Get Exponent of Gaussian
-//        double normalization = (exponent / CUDART_PI_D);
-//        normalization = normalization * normalization * normalization;
-//        normalization = sqrt(normalization);
         double normalization = pow(exponent / CUDART_PI_D, 1.5);
-//        if((global_index == 0) & (i_atom == 0) ){
-//          printf("Coeff Exponent  %f  %f  \n", coeff, exponent);
-//        }
         d_density_array[global_index] += coeff * normalization * exp(-exponent * ( r_A_x * r_A_x + r_A_y * r_A_y + r_A_z * r_A_z));
       }
 
       // Evaluate P-type Gaussians
       int number_p_type_gaussians = (int) g_constant_basis[index_of_promol_coeffs++];
-//      printf("Number of p-type Gaussians %d \n", number_p_type_gaussians);
       for(int i = 0; i < number_p_type_gaussians; i++) {
         double coeff = g_constant_basis[index_of_promol_coeffs++];  // Get Coefficient of Gaussian
         double exponent = g_constant_basis[index_of_promol_coeffs++];    // Get Exponent of Gaussian
         double r_sq =  ( r_A_x * r_A_x + r_A_y * r_A_y + r_A_z * r_A_z);
-//        double normalization = (exponent * exponent / CUDART_PI_D);
-//        normalization = normalization * normalization * normalization;
-//        normalization = 2.0 * sqrt(normalization) / 3.0;
         double normalization = (2.0 * pow(exponent, 2.5)) / (3.0 * pow(CUDART_PI_D, 1.5));
-//        printf("Coeff Exponent  %f  %f  \n", coeff, exponent);
         d_density_array[global_index] += coeff * normalization * r_sq * exp(-exponent * r_sq);
       }
     }
@@ -138,13 +109,12 @@ __global__ void chemtools::evaluate_promol_electrostatic_from_constant_memory_on
     }
   }
 }
+
 /***
  *
  * Host Functions
  *
  */
-
-
 __host__ std::vector<double> chemtools::evaluate_promol_scalar_property_on_any_grid(
     const double* const atom_coords,
     const long int *const atom_numbers,
