@@ -70,7 +70,7 @@ set_source_files_properties(
   COMPILE_FLAGS "-G -g"
 )
 set_source_files_properties(
-	./src/evaluate_electrostatic.cu
+		src/eval_esp.cu
 	PROPERTIES
 	COMPILE_FLAGS "-G -g"
 	)
@@ -78,7 +78,7 @@ set_source_files_properties(
 add_library(cugbasis_lib SHARED ${HEADERS} ${SOURCES})
 set_target_properties(cugbasis_lib PROPERTIES CUDA_SEPARABLE_COMPILATION ON)
 # If the user didn't define CUDA architecture
-if("$$ENV{CMAKE_CUDA_ARCHITECTURES}" STREQUAL "")
+if("$ENV{CMAKE_CUDA_ARCHITECTURES}" STREQUAL "")
 	# If cmake version is greater than 3.24, automatically find the right CUDA Architecture
 	if("$ENV{CMAKE_CUDA_ARCHITECTURES}" STREQUAL "")
 		if(CMAKE_VERSION VERSION_GREATER_EQUAL "3.24")
@@ -92,7 +92,7 @@ else()
 	set_property(TARGET cugbasis_lib PROPERTY CUDA_ARCHITECTURES $ENV{CMAKE_CUDA_ARCHITECTURES})
 endif()
 target_compile_options(cugbasis_lib PRIVATE $<$<COMPILE_LANGUAGE:CUDA>:
-        -rdc=true --expt-relaxed-constexpr -v
+        -rdc=true --expt-relaxed-constexpr -v -Xptxas=-v
 	>) # -rdc=true  std=c++14 isn't needed since CMAKE_CUDA_STANDARD already set Debuging -G -g turns off optimization, -O3 turns on optmization, -gencode=arch=compute_35,code=sm_35
 # --expt-relaxed-constexpr is needed for Boys_function.h to work.
 target_link_libraries(cugbasis_lib PRIVATE ${CUDA_cudadevrt_LIBRARY})
@@ -125,11 +125,13 @@ endif()
 
 # Compilation of the tests, not needed e.g. if `LINK_TO_PYTHON` IS True/ON
 #add_subdirectory(tests)
+add_subdirectory(tests)
 set(${DONT_COMPILE_TESTS} OFF CACHE BOOL "Don't compile the tests")
 if(NOT ${DONT_COMPILE_TESTS})
 	add_subdirectory(tests)
 endif()
 
+add_subdirectory(benchmark)
 #add_executable (main_c main.cu)
 #target_link_libraries(main_c PRIVATE chemtools_cuda_lib)
 #target_link_libraries(main_c PUBLIC pybind11::embed)
