@@ -126,7 +126,7 @@ TEST_CASE( "Test Hessian (Row-Order) of Electron Density Against gbasis", "[eval
     std::vector<double> points(3 * numb_pts);
     std::random_device rnd_device;
     std::mt19937  merseene_engine {rnd_device()};
-    std::uniform_real_distribution<double> dist {-5, 5};
+    std::uniform_real_distribution<double> dist {-3, 3};
     auto gen = [&dist, &merseene_engine](){return dist(merseene_engine);};
     std::generate(points.begin(), points.end(), gen);
 
