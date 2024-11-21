@@ -1763,11 +1763,11 @@ __host__ std::vector<double> chemtools::evaluate_electron_density_hessian(
     IOData& iodata, const double* h_points, int n_pts, bool return_row
 ) {
   cublasHandle_t handle;
-  cublasCreate(&handle);
+  CUBLAS_CHECK(cublasCreate(&handle));
   std::vector<double> hessian = evaluate_electron_density_hessian_handle(
       handle, iodata, h_points, n_pts, return_row
   );
-  cublasDestroy(handle);
+  CUBLAS_CHECK(cublasDestroy(handle));
   return hessian;
 }
 

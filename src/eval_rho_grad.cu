@@ -1021,11 +1021,11 @@ __host__ std::vector<double> chemtools::evaluate_electron_density_gradient(
     IOData& iodata, const double* h_points, const int knumb_points, const bool return_row
 ) {
   cublasHandle_t handle;
-  cublasCreate(&handle);
+  CUBLAS_CHECK(cublasCreate(&handle));
   std::vector<double> gradient = evaluate_electron_density_gradient_handle(
       handle, iodata, h_points, knumb_points, return_row
   );
-  cublasDestroy(handle);
+  CUBLAS_CHECK(cublasDestroy(handle));
   return gradient;
 }
 
