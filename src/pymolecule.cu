@@ -159,12 +159,29 @@ MatrixXXC chemtools::Molecule::compute_molecular_orbitals(const Eigen::Ref<Matri
   MatrixX3C pts_col_order = points;
   size_t ncols = points.rows();
   size_t nrows = iodata_->GetOrbitalBasis().numb_basis_functions();
-  std::vector<double> dens = chemtools::evaluate_molecular_orbitals_on_any_grid(
+  std::vector<double> dens = chemtools::eval_MOs(
       *iodata_, pts_col_order.data(), ncols
   );
-  MatrixXXC v2 = Eigen::Map<MatrixXXC>(dens.data(), nrows, ncols);
-  return v2;
+  // Input (dens) is by default column-major
+  MatrixXXC v_col = Eigen::Map<MatrixXXC>(dens.data(), nrows, ncols);
+  // Convert it to Row major by copying and moving indices
+  MatrixXXR v_row = v_col;
+  dens.shrink_to_fit();  // Force deallocation of vector, just in case
+  return v_row;
 }
+
+//TensorXXXR chemtools::compute_molecular_orbitals_deriv(const Eigen::Ref<MatrixX3R>&  points) {
+//    MatrixX3C pts_col_order = points;
+//    size_t ncols = points.rows();
+//    size_t nrows = iodata_->GetOrbitalBasis().numb_basis_functions();
+//    std::vector<double> hessian_row = chemtools::evaluate_electron_density_hessian(
+//        *iodata_, pts_col_order.data(), nrows, true
+//    );
+//    adsadsa
+//    /// Eigen Tensor doesn't work with pybind11, so the trick here would be to use array_t to convert them
+//    TensorXXXR v2 = Eigen::TensorMap<TensorXXXR>(hessian_row.data(), nrows, 3, 3);
+//    return v2;
+//}
 
 
 MatrixX3R chemtools::Molecule::compute_electron_density_gradient(const Eigen::Ref<MatrixX3R>&  points) {
