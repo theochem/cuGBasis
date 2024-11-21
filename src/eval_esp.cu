@@ -10191,7 +10191,7 @@ __host__ std::vector<double> chemtools::compute_electrostatic_potential_over_poi
   }
   // Create the handles for using cublas.
   cublasHandle_t handle;
-  cublasCreate(&handle);
+  CUBLAS_CHECK(cublasCreate(&handle));
 
   // Allocate one_rdm, identity matrix and the intermediate array called d_final. This is fixed throughout.
   double *d_one_rdm, *d_identity, *d_intermed;
@@ -10204,7 +10204,7 @@ __host__ std::vector<double> chemtools::compute_electrostatic_potential_over_poi
   dim3 blockDim(nbasisfuncs, nbasisfuncs);
   dim3 gridDim (1, 1);
   chemtools::set_identity_row_major<<<blockDim, gridDim>>>(d_identity, nbasisfuncs, nbasisfuncs);
-  chemtools::cublas_check_errors(cublasSetMatrix (t_nbasis, t_nbasis, sizeof(double), iodata.GetMOOneRDM(),
+  CUBLAS_CHECK(cublasSetMatrix (t_nbasis, t_nbasis, sizeof(double), iodata.GetMOOneRDM(),
                                                t_nbasis, d_one_rdm, t_nbasis));
   //printf("Print ideti t\n");
   //print_firstt_ten_elements<<<1, 1>>>(d_identity);
@@ -10298,7 +10298,7 @@ __host__ std::vector<double> chemtools::compute_electrostatic_potential_over_poi
 
     // Transpose point_charge from (Z, Y, X) (col-major) to (Y, X, Z), where Z=number of points, Y, X are the contractions.
     chemtools::cuda_check_errors(cudaMalloc((double **)&d_point_charge_transpose, t_total_size_integrals_ith_iter_bytes));
-    chemtools::cublas_check_errors(cublasDgeam(handle, CUBLAS_OP_T, CUBLAS_OP_T,
+    CUBLAS_CHECK(cublasDgeam(handle, CUBLAS_OP_T, CUBLAS_OP_T,
                                             nbasisfuncs * (nbasisfuncs + 1) / 2, (int) t_numb_pts_ith_iter,
                                             &alpha, d_point_charge, (int) t_numb_pts_ith_iter,
                                             &beta, d_point_charge, (int) t_numb_pts_ith_iter,
@@ -10319,7 +10319,7 @@ __host__ std::vector<double> chemtools::compute_electrostatic_potential_over_poi
     // Go through each grid point and calculate one component of the electrostatic potential.
     for(size_t i = 0; i < t_numb_pts_ith_iter; i++) {
       //  Conversion from the triangular packed format to the triangular format
-      chemtools::cublas_check_errors(cublasDtpttr(handle, CUBLAS_FILL_MODE_LOWER,
+      CUBLAS_CHECK(cublasDtpttr(handle, CUBLAS_FILL_MODE_LOWER,
                                                nbasisfuncs,
                                                &d_point_charge_transpose[i * t_nbasis * (t_nbasis + 1) / 2],
                                                d_triangular_format,
@@ -10327,7 +10327,7 @@ __host__ std::vector<double> chemtools::compute_electrostatic_potential_over_poi
       ));
       // Symmetric Matrix multiplication by the identity matrix to convert it to a full-matrix
       //  TODO: THIS PART IS SLOW, IT COULD BE SOMEHOW REMOVED>
-      chemtools::cublas_check_errors(cublasDsymm(handle, CUBLAS_SIDE_RIGHT, CUBLAS_FILL_MODE_LOWER,
+      CUBLAS_CHECK(cublasDsymm(handle, CUBLAS_SIDE_RIGHT, CUBLAS_FILL_MODE_LOWER,
                                               nbasisfuncs, nbasisfuncs,
                                               &alpha, d_triangular_format, nbasisfuncs,  // A
                                               d_identity, nbasisfuncs,                   // B
@@ -10350,7 +10350,7 @@ __host__ std::vector<double> chemtools::compute_electrostatic_potential_over_poi
     cudaFree(d_point_charge_transpose);
     cudaFree(d_triangular_format);
   }
-  cublasDestroy(handle);  // cublas handle is no longer needed infact most of
+  CUBLAS_CHECK(cublasDestroy(handle));  // cublas handle is no longer needed infact most of
   cudaFree(d_one_rdm);
   cudaFree(d_identity);
   cudaFree(d_intermed);

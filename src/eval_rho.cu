@@ -290,11 +290,11 @@ __host__ std::vector<double> chemtools::evaluate_electron_density_on_any_grid(
     IOData& iodata, const double* h_points, const int n_pts)
 {
     cublasHandle_t handle;
-    cublasCreate(&handle);
+    CUBLAS_CHECK(cublasCreate(&handle));
     std::vector<double> density = evaluate_electron_density_on_any_grid_handle(
       handle, iodata, h_points, n_pts
     );
-    cublasDestroy(handle); // cublas handle is no longer needed infact most of
+    CUBLAS_CHECK(cublasDestroy(handle)); // cublas handle is no longer needed infact most of
     return density;
 }
 

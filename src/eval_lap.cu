@@ -816,10 +816,10 @@ __host__ std::vector<double> chemtools::evaluate_laplacian(
     IOData& iodata, const double* h_points, const int knumb_points)
 {
   cublasHandle_t handle;
-  cublasCreate(&handle);
+  CUBLAS_CHECK(cublasCreate(&handle));
   std::vector<double> laplacian = evaluate_laplacian_on_any_grid_handle(
       handle, iodata, h_points, knumb_points
   );
-  cublasDestroy(handle);
+  CUBLAS_CHECK(cublasDestroy(handle));
   return laplacian;
 }

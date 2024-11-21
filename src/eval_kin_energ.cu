@@ -175,11 +175,11 @@ __host__ std::vector<double> chemtools::evaluate_positive_definite_kinetic_densi
           int    n_pts
 ) {
   cublasHandle_t handle;
-  cublasCreate(&handle);
+  CUBLAS_CHECK(cublasCreate(&handle));
   std::vector<double> kinetic_density = evaluate_pos_def_kinetic_density_on_any_grid_handle(
       handle, iodata, h_points, n_pts
   );
-  cublasDestroy(handle);
+  CUBLAS_CHECK(cublasDestroy(handle));
   return kinetic_density;
 }
 

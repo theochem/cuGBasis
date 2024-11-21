@@ -124,12 +124,12 @@ __host__ double* chemtools::sum_rows_of_matrix(cublasHandle_t& handle, double* d
 //  double *deviceVecPtr = thrust::raw_pointer_cast(all_ones.data());
 
   if (order == "row"){
-    chemtools::cublas_check_errors(cublasDgemv(handle, CUBLAS_OP_T, numb_cols, numb_rows,
+    CUBLAS_CHECK(cublasDgemv(handle, CUBLAS_OP_T, numb_cols, numb_rows,
                                             &alpha, d_matrix, numb_cols, all_ones_ptr, 1, &beta,
                                             d_row_sums, 1));
   }
   else if (order == "col") {
-    chemtools::cublas_check_errors(cublasDgemv(handle, CUBLAS_OP_N, numb_rows, numb_cols,
+    CUBLAS_CHECK(cublasDgemv(handle, CUBLAS_OP_N, numb_rows, numb_cols,
                                             &alpha, d_matrix, numb_rows, all_ones_ptr, 1, &beta,
                                             d_row_sums, 1));
   }
