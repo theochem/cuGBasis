@@ -64,6 +64,23 @@ file(GLOB HEADERS "./include/*.h" "./include/*.cuh")
 
 find_package(CUDAToolkit REQUIRED)  # The point of this is to call CUDA code from C++ but without including CUDA code.
                                     #  see stackexchange - "linking of cuda library in cmake
+# Print CUDA and cuBLAS information
+if(CUDAToolkit_FOUND)
+	message(STATUS "CUDA Found:")
+	message(STATUS "  CUDA Version: ${CUDAToolkit_VERSION}")
+	message(STATUS "  CUDA Include Path: ${CUDAToolkit_INCLUDE_DIRS}")
+	message(STATUS "  CUDA Library Path: ${CUDAToolkit_LIBRARY_DIR}")
+
+	# Check specifically for cuBLAS
+	if(TARGET CUDA::cublas)
+		message(STATUS "  cuBLAS Found: ${CUDAToolkit_LIBRARY_DIR}/libcublas.so")
+	else()
+		message(FATAL_ERROR "cuBLAS not found!")
+	endif()
+else()
+	message(FATAL_ERROR "CUDA not found!")
+endif()
+
 set_source_files_properties(
   ./src/integral_coeffs.cu
   PROPERTIES
