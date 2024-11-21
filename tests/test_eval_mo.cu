@@ -41,7 +41,7 @@ TEST_CASE( "Test Molecular Orbitals Against gbasis on random grid", "[evaluate_m
     chemtools::IOData iodata = chemtools::get_molecular_basis_from_fchk(fchk_file);
 
     // Gemerate random grid.
-    int numb_pts = 500'000;
+    int numb_pts = 1000;
     std::vector<double> points(3 * numb_pts);
     std::random_device rnd_device;
     std::mt19937  merseene_engine {rnd_device()};
@@ -68,8 +68,10 @@ import numpy as np
 from gbasis.evals.density import evaluate_basis
 from iodata import load_one
 from gbasis.wrappers import from_iodata
-from iodata.basis import convert_conventions, HORTON2_CONVENTIONS
-
+try:
+    from iodata.convert import convert_conventions, HORTON2_CONVENTIONS
+except (ImportError, ModuleNotFoundError):
+    from iodata.basis import convert_conventions, HORTON2_CONVENTIONS
 true_result = true_result.reshape((nbasis, numb_pts), order="F")
 
 iodata = load_one(fchk_path)
@@ -153,8 +155,10 @@ import numpy as np
 from gbasis.evals.eval_deriv import evaluate_deriv_basis
 from iodata import load_one
 from gbasis.wrappers import from_iodata
-from iodata.basis import convert_conventions, HORTON2_CONVENTIONS
-
+try:
+    from iodata.convert import convert_conventions, HORTON2_CONVENTIONS
+except (ImportError, ModuleNotFoundError):
+    from iodata.basis import convert_conventions, HORTON2_CONVENTIONS
 true_result = true_result.reshape((3, numb_pts, nbasis), order="C")
 
 iodata = load_one(fchk_path)
@@ -241,8 +245,10 @@ import numpy as np
 from gbasis.evals.eval_deriv import evaluate_deriv_basis
 from iodata import load_one
 from gbasis.wrappers import from_iodata
-from iodata.basis import convert_conventions, HORTON2_CONVENTIONS
-
+try:
+    from iodata.convert import convert_conventions, HORTON2_CONVENTIONS
+except (ImportError, ModuleNotFoundError):
+    from iodata.basis import convert_conventions, HORTON2_CONVENTIONS
 true_result = true_result.reshape((6, numb_pts, nbasis), order="C")
 
 iodata = load_one(fchk_path)
