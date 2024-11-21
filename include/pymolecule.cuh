@@ -19,6 +19,7 @@
 namespace py = pybind11;
 using MatrixX3C = Eigen::Matrix<double, Eigen::Dynamic, 3, Eigen::ColMajor>;
 using MatrixXXC = Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic, Eigen::ColMajor>;
+using MatrixXXR = Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic, Eigen::RowMajor>;
 using MatrixX3R = Eigen::Matrix<double, Eigen::Dynamic, 3, Eigen::RowMajor>;
 using Vector = Eigen::Matrix<double, 1, Eigen::Dynamic>;
 using Vector3D = Eigen::Matrix<double, 1, 3>;
@@ -30,46 +31,45 @@ using TensorXXXR = Eigen::Tensor<double, 3, Eigen::RowMajor>;
 
 namespace chemtools {
 /// Transfer basis-set object to constant memory.
-
 class Molecule {
-  std::string file_path;
-  chemtools::IOData* iodata_;
-  /// cublasHandle_t handle; Couldn't figure out how to fix this, only works once,
-
- public:
-  /**
-   * Construct Molecule class
-   *
-   * @param file_path: File path of the wavefunction file.
-   */
-  Molecule(const std::string &file_path);
-
-  // Getters and Setters
-  const std::string &getFilePath() const { return file_path; }
-  const chemtools::IOData *getIOData() const { return iodata_; }
-  const MatrixX3R getCoordinates() const;
-  const IntVector getNumbers() const;
-
-  // Methods
-  Vector compute_electron_density(const Eigen::Ref<MatrixX3R>&  points);
-  MatrixXXC compute_molecular_orbitals(const Eigen::Ref<MatrixX3R>&  points);
-  Vector compute_laplacian(const Eigen::Ref<MatrixX3R>&  points);
-  Vector compute_positive_definite_kinetic_energy(const Eigen::Ref<MatrixX3R>&  points);
-  Vector compute_general_kinetic_energy(const Eigen::Ref<MatrixX3R>&  points, const double alpha);
-  MatrixX3R compute_electron_density_gradient(const Eigen::Ref<MatrixX3R>&  points);
-  TensorXXXR compute_electron_density_hessian(const Eigen::Ref<MatrixX3R>&  points);
-  Vector compute_electrostatic_potential(const Eigen::Ref<MatrixX3R>&  points);
-  Vector compute_norm_of_vector(const Eigen::Ref<MatrixX3R>& array);
-  Vector compute_reduced_density_gradient(const Eigen::Ref<MatrixX3R>& array);
-  Vector compute_weizsacker_ked(const Eigen::Ref<MatrixX3R>& array);
-  Vector compute_thomas_fermi_ked(const Eigen::Ref<MatrixX3R>& array);
-  Vector compute_general_gradient_expansion_ked(const Eigen::Ref<MatrixX3R>& array, double a, double b);
-  Vector compute_empirical_gradient_expansion_ked(const Eigen::Ref<MatrixX3R>& array);
-  Vector compute_gradient_expansion_ked(const Eigen::Ref<MatrixX3R>& array);
-  Vector compute_general_ked(const Eigen::Ref<MatrixX3R>& array, const double a);
-  Vector compute_hamiltonian_ked(const Eigen::Ref<MatrixX3R>& array);
-  Vector compute_shannon_information_density(const Eigen::Ref<MatrixX3R>& array);
-  };
+    std::string file_path;
+    chemtools::IOData* iodata_;
+    
+    public:
+        /**
+        * Construct Molecule class
+        *
+        * @param file_path: File path of the wavefunction file.
+        */
+        Molecule(const std::string &file_path);
+        
+        // Getters and Setters
+        const std::string &getFilePath() const { return file_path; }
+        const chemtools::IOData *getIOData() const { return iodata_; }
+        const MatrixX3R getCoordinates() const;
+        const IntVector getNumbers() const;
+        
+        // Methods
+        Vector compute_electron_density(const Eigen::Ref<MatrixX3R>&  points);
+        MatrixXXC compute_molecular_orbitals(const Eigen::Ref<MatrixX3R>&  points);
+        TensorXXXR compute_molecular_orbitals_deriv(const Eigen::Ref<MatrixX3R>&  points);
+        Vector compute_laplacian(const Eigen::Ref<MatrixX3R>&  points);
+        Vector compute_positive_definite_kinetic_energy(const Eigen::Ref<MatrixX3R>&  points);
+        Vector compute_general_kinetic_energy(const Eigen::Ref<MatrixX3R>&  points, const double alpha);
+        MatrixX3R compute_electron_density_gradient(const Eigen::Ref<MatrixX3R>&  points);
+        TensorXXXR compute_electron_density_hessian(const Eigen::Ref<MatrixX3R>&  points);
+        Vector compute_electrostatic_potential(const Eigen::Ref<MatrixX3R>&  points);
+        Vector compute_norm_of_vector(const Eigen::Ref<MatrixX3R>& array);
+        Vector compute_reduced_density_gradient(const Eigen::Ref<MatrixX3R>& array);
+        Vector compute_weizsacker_ked(const Eigen::Ref<MatrixX3R>& array);
+        Vector compute_thomas_fermi_ked(const Eigen::Ref<MatrixX3R>& array);
+        Vector compute_general_gradient_expansion_ked(const Eigen::Ref<MatrixX3R>& array, double a, double b);
+        Vector compute_empirical_gradient_expansion_ked(const Eigen::Ref<MatrixX3R>& array);
+        Vector compute_gradient_expansion_ked(const Eigen::Ref<MatrixX3R>& array);
+        Vector compute_general_ked(const Eigen::Ref<MatrixX3R>& array, const double a);
+        Vector compute_hamiltonian_ked(const Eigen::Ref<MatrixX3R>& array);
+        Vector compute_shannon_information_density(const Eigen::Ref<MatrixX3R>& array);
+};
 
 
 class ProMolecule {
