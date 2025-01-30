@@ -3,7 +3,6 @@ import cugbasis
 from chemtools.wrappers import Molecule
 import pytest
 
-
 @pytest.mark.parametrize("fchk",
                          [
                              "./tests/data/atom_01_H_N01_M2_ub3lyp_ccpvtz_g09.fchk",
@@ -12,8 +11,7 @@ import pytest
                              "./tests/data/h2o.fchk",
                              "./tests/data/ch4.fchk",
                              "./tests/data/qm9_000092_HF_cc-pVDZ.fchk"
-                         ]
-                         )
+                         ])
 def test_electrostatic_potential_against_horton(fchk):
     mol = cugbasis.Molecule(fchk)
     grid_pts = np.random.uniform(-2, 2, size=(2000, 3))
