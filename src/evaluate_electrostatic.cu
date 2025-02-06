@@ -10224,7 +10224,7 @@ __host__ std::vector<double> chemtools::compute_electrostatic_potential_over_poi
   free_mem -= 500000000;  // Substract 0.5 Gb for safe measures
   size_t t_numb_chunks = t_total_bytes / free_mem;
   // Maximal number of points to do each iteration to achieve 11 GB of GPU memory.
-  size_t t_numb_pts_of_each_chunk = free_mem / (sizeof(double) * (t_nbasis * (t_nbasis + 1) + 3));
+  size_t t_numb_pts_of_each_chunk = static_cast<size_t>(((free_mem / sizeof(double)) - (5.0 * t_nbasis * t_nbasis)) / (1.5 * t_nbasis * (t_nbasis + 1)));
   //size_t t_numb_pts_of_each_chunk = 11000000000  / (3 * 8 + 8 * t_nbasis * (t_nbasis + 1));  // Solving 11Gb = Number of Pts * 3 * 8 + 2 * (number of integrals)
   size_t t_index_of_grid_at_ith_iter = 0;
   if (disp) {
