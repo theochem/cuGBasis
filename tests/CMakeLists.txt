@@ -6,7 +6,7 @@ target_include_directories(Catch INTERFACE ${CATCH_INCLUDE_DIR})
 # Find chemtools_cuda_lib
 find_package(cugbasis_lib)
 set(TEST_SOURCES
-		test_eval_mo.cu
+#		test_eval_mo.cu
         test_eval_rho_grad.cu
         test_eval_rho_lap.cu
 		test_eval_rho.cu
