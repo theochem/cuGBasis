@@ -264,7 +264,7 @@ points = np.array(points, dtype=np.float64)
 density = evaluate_density(rdm, basis, points)
 
 # Calculate general ked
-output = density * np.log(density)
+output = -density * np.log(density)
 
 error = np.abs(output - true_result)
 print("Max, Mean, STD , Min error ", np.max(error), np.mean(error), np.std(error), np.min(error))
