@@ -35,7 +35,9 @@ __global__ void compute_point_charge_integrals(
  * @notes The point charge integrals uses the GPU. The one rdm hadamard product also uses the GPU.
  */
 __host__ std::vector<double> compute_electrostatic_potential_over_points(
-    chemtools::IOData &iodata, double *gridm, int knumb_pts, const double screen_tol=1e-11, const bool disp = false);
+    chemtools::IOData &iodata, double *gridm, int knumb_pts, const double screen_tol=1e-11, const bool disp = false,
+    const std::string& spin = "ab"
+    );
 
 }
 #endif //CHEMTOOLS_CUDA_INCLUDE_EVALUATE_ELECTROSTATIC_H_

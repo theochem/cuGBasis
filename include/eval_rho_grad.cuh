@@ -107,17 +107,21 @@ __host__ std::vector<double> evaluate_contraction_derivatives(
  * @param[in] h_points Array in column-major order that stores the three-dimensional points.
  * @param[in] knumb_points Number of points in d_points.
  * @param[in] return_row If true, then return in row-major order (default), else return column-major.
+ * @param[in] type Type of occupied spin orbitals which can be either "a" (for alpha), "b" (for
+               beta), and "ab" (for alpha + beta).
  * @return Return the gradient of electron density of size (knumb_points, 3) in row-major order.
  */
 __host__ std::vector<double> evaluate_electron_density_gradient(
-    chemtools::IOData& iodata, const double* h_points, int knumb_points, bool return_row = true
+    IOData& iodata, const double* h_points, int knumb_points, bool return_row = true,
+    const std::string& spin = "ab"
 );
 
 /**
  * Wrapper function over evaluate_electron_density_gradient, faster if cublas handler was initialized previously.
  */
 __host__ std::vector<double> evaluate_electron_density_gradient_handle(
-    cublasHandle_t& handle, chemtools::IOData& iodata, const double* h_points, int n_pts, bool return_row
+    cublasHandle_t& handle, IOData& iodata, const double* h_points, int n_pts, bool return_row,
+    const std::string& spin = "ab"
 );
 }
 

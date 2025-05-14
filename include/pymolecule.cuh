@@ -50,15 +50,16 @@ class Molecule {
         const IntVector getNumbers() const;
         
         // Methods
-        Vector compute_electron_density(const Eigen::Ref<MatrixX3R>&  points);
-        MatrixXXC compute_molecular_orbitals(const Eigen::Ref<MatrixX3R>&  points);
+        Vector compute_electron_density(const Eigen::Ref<MatrixX3R>&  points, const std::string& spin = "ab");
+        MatrixX3R compute_electron_density_gradient(const Eigen::Ref<MatrixX3R>&  points, const std::string& spin = "ab");
+        TensorXXXR compute_electron_density_hessian(const Eigen::Ref<MatrixX3R>&  points, const std::string& spin = "ab");
+        MatrixXXC compute_molecular_orbitals(const Eigen::Ref<MatrixX3R>&  points, const std::string& spin = "ab");
         TensorXXXR compute_molecular_orbitals_deriv(const Eigen::Ref<MatrixX3R>&  points);
-        Vector compute_laplacian(const Eigen::Ref<MatrixX3R>&  points);
+        Vector compute_laplacian(const Eigen::Ref<MatrixX3R>&  points, const std::string& spin = "ab");
+        Vector compute_electrostatic_potential(const Eigen::Ref<MatrixX3R>&  points, const std::string& spin = "ab");
+
         Vector compute_positive_definite_kinetic_energy(const Eigen::Ref<MatrixX3R>&  points);
         Vector compute_general_kinetic_energy(const Eigen::Ref<MatrixX3R>&  points, const double alpha);
-        MatrixX3R compute_electron_density_gradient(const Eigen::Ref<MatrixX3R>&  points);
-        TensorXXXR compute_electron_density_hessian(const Eigen::Ref<MatrixX3R>&  points);
-        Vector compute_electrostatic_potential(const Eigen::Ref<MatrixX3R>&  points);
         Vector compute_norm_of_vector(const Eigen::Ref<MatrixX3R>& array);
         Vector compute_reduced_density_gradient(const Eigen::Ref<MatrixX3R>& array);
         Vector compute_weizsacker_ked(const Eigen::Ref<MatrixX3R>& array);

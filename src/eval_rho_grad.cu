@@ -1018,15 +1018,15 @@ __host__ std::vector<double> chemtools::evaluate_contraction_derivatives(
 
 
 __host__ std::vector<double> chemtools::evaluate_electron_density_gradient(
-    IOData& iodata, const double* h_points, const int knumb_points, const bool return_row
+    IOData& iodata, const double* h_points, const int knumb_points, const bool return_row, const std::string& spin
 ) {
-  cublasHandle_t handle;
-  CUBLAS_CHECK(cublasCreate(&handle));
-  std::vector<double> gradient = evaluate_electron_density_gradient_handle(
-      handle, iodata, h_points, knumb_points, return_row
-  );
-  CUBLAS_CHECK(cublasDestroy(handle));
-  return gradient;
+    cublasHandle_t handle;
+    CUBLAS_CHECK(cublasCreate(&handle));
+    std::vector<double> gradient = evaluate_electron_density_gradient_handle(
+      handle, iodata, h_points, knumb_points, return_row, spin
+    );
+    CUBLAS_CHECK(cublasDestroy(handle));
+    return gradient;
 }
 
 
@@ -1035,7 +1035,8 @@ __host__ std::vector<double> chemtools::evaluate_electron_density_gradient_handl
           IOData&         iodata,
     const double*         h_points,
     const int             n_pts,
-    const bool            return_row
+    const bool            return_row,
+    const std::string&    spin
 ) {
     const MolecularBasis molbasis = iodata.GetOrbitalBasis();
     const int            n_basis  = molbasis.numb_basis_functions();
@@ -1064,7 +1065,7 @@ __host__ std::vector<double> chemtools::evaluate_electron_density_gradient_handl
         iodata.GetOneRdmShape(),
         iodata.GetOneRdmShape(),
         sizeof(double),
-        iodata.GetMOOneRDM(),
+        iodata.GetMOOneRDM(spin),
         iodata.GetOneRdmShape(),
         d_one_rdm,
         iodata.GetOneRdmShape()

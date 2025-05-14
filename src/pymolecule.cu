@@ -141,26 +141,27 @@ const IntVector chemtools::Molecule::getNumbers() const {
   return atomic_numbs;
 }
 
-Vector chemtools::Molecule::compute_electron_density(const Eigen::Ref<MatrixX3R>& points) {
+Vector chemtools::Molecule::compute_electron_density(const Eigen::Ref<MatrixX3R>& points, const std::string& spin) {
   // Accept in row-major order because it is numpy default
   // Convert to column major order since it works better with the GPU code
   MatrixX3C pts_col_order = points;
   size_t nrows = points.rows();
   std::vector<double> dens = chemtools::evaluate_electron_density_on_any_grid(
-      *iodata_, pts_col_order.data(), nrows
+      *iodata_, pts_col_order.data(), nrows, spin
       );
   Vector v2 = Eigen::Map<Vector>(dens.data(), nrows);
   return v2;
 }
 
-MatrixXXC chemtools::Molecule::compute_molecular_orbitals(const Eigen::Ref<MatrixX3R>& points) {
+
+MatrixXXC chemtools::Molecule::compute_molecular_orbitals(const Eigen::Ref<MatrixX3R>& points, const std::string& spin) {
   // Accept in row-major order because it is numpy default
   // Convert to column major order since it works better with the GPU code
   MatrixX3C pts_col_order = points;
   size_t ncols = points.rows();
   size_t nrows = iodata_->GetOrbitalBasis().numb_basis_functions();
   std::vector<double> dens = chemtools::eval_MOs(
-      *iodata_, pts_col_order.data(), ncols
+      *iodata_, pts_col_order.data(), ncols, spin
   );
   // Input (dens) is by default column-major
   MatrixXXC v_col = Eigen::Map<MatrixXXC>(dens.data(), nrows, ncols);
@@ -184,34 +185,34 @@ MatrixXXC chemtools::Molecule::compute_molecular_orbitals(const Eigen::Ref<Matri
 //}
 
 
-MatrixX3R chemtools::Molecule::compute_electron_density_gradient(const Eigen::Ref<MatrixX3R>&  points) {
+MatrixX3R chemtools::Molecule::compute_electron_density_gradient(const Eigen::Ref<MatrixX3R>&  points, const std::string& spin) {
   MatrixX3C pts_col_order = points;
   size_t nrows = points.rows();
   std::vector<double> grad = chemtools::evaluate_electron_density_gradient(
-      *iodata_, pts_col_order.data(), nrows
+      *iodata_, pts_col_order.data(), nrows, true, spin
   );
   MatrixX3R v2 = Eigen::Map<MatrixX3R>(grad.data(), nrows, 3);
   return v2;
 }
 
-TensorXXXR chemtools::Molecule::compute_electron_density_hessian(const Eigen::Ref<MatrixX3R>&  points) {
+TensorXXXR chemtools::Molecule::compute_electron_density_hessian(const Eigen::Ref<MatrixX3R>&  points, const std::string& spin) {
   MatrixX3C pts_col_order = points;
   size_t nrows = points.rows();
   std::vector<double> hessian_row = chemtools::evaluate_electron_density_hessian(
-      *iodata_, pts_col_order.data(), nrows, true
+      *iodata_, pts_col_order.data(), nrows, true, spin
   );
   /// Eigen Tensor doesn't work with pybind11, so the trick here would be to use array_t to convert them
   TensorXXXR v2 = Eigen::TensorMap<TensorXXXR>(hessian_row.data(), nrows, 3, 3);
   return v2;
 }
 
-Vector chemtools::Molecule::compute_laplacian(const Eigen::Ref<MatrixX3R>&  points) {
+Vector chemtools::Molecule::compute_laplacian(const Eigen::Ref<MatrixX3R>&  points, const std::string& spin) {
   // Accept in row-major order because it is numpy default
   // Convert to column major order since it works better with the GPU code
   MatrixX3C pts_col_order = points;
   size_t nrows = points.rows();
   std::vector<double> laplacian = chemtools::evaluate_laplacian(
-      *iodata_, pts_col_order.data(), nrows
+      *iodata_, pts_col_order.data(), nrows, spin
   );
   Vector v2 = Eigen::Map<Vector>(laplacian.data(), nrows);
   return v2;
@@ -239,13 +240,13 @@ Vector chemtools::Molecule::compute_general_kinetic_energy(const Eigen::Ref<Matr
   return v2;
 }
 
-Vector chemtools::Molecule::compute_electrostatic_potential(const Eigen::Ref<MatrixX3R>&  points) {
+Vector chemtools::Molecule::compute_electrostatic_potential(const Eigen::Ref<MatrixX3R>&  points, const std::string& spin) {
   // Accept in row-major order because it is numpy default
   // Convert to column major order since it works better with the GPU code
   MatrixX3R pts_row_order = points;
   size_t nrows = points.rows();
   std::vector<double> esp = chemtools::compute_electrostatic_potential_over_points(
-      *iodata_, pts_row_order.data(), nrows, 1e-11, false
+      *iodata_, pts_row_order.data(), nrows, 1e-11, true, spin
       );
   Vector v2 = Eigen::Map<Vector>(esp.data(), nrows);
   return v2;

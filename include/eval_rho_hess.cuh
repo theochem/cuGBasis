@@ -112,10 +112,13 @@ __host__ static __forceinline__ void evaluate_first_term(
  * @param[in] h_points Array in column-major order that stores the three-dimensional points.
  * @param[in] knumb_points Number of points in d_points.
  * @param[in] return_row If true, then return in row-major order (default), else return column-major.
+ * @param[in] type Type of occupied spin orbitals which can be either "a" (for alpha), "b" (for
+                    beta), and "ab" (for alpha + beta).
  * @return Return the Hessian of electron density of size (knumb_points, 9) in row-major order.
  */
 __host__ std::vector<double> evaluate_electron_density_hessian(
-    chemtools::IOData& iodata, const double* h_points, int knumb_points, bool return_row = true
+    chemtools::IOData& iodata, const double* h_points, int knumb_points, bool return_row = true,
+    const std::string& spin = "ab"
 );
 
 /**
@@ -123,7 +126,8 @@ __host__ std::vector<double> evaluate_electron_density_hessian(
  */
 __host__ std::vector<double> evaluate_electron_density_hessian_handle(
     // Initializer of cublas and set to prefer L1 cache ove rshared memory since it doens't use it.
-    cublasHandle_t& handle, chemtools::IOData& iodata, const double* h_points, int knumb_points, bool return_row
+    cublasHandle_t& handle, chemtools::IOData& iodata, const double* h_points, int knumb_points, bool return_row,
+    const std::string& spin = "ab"
 );
 }
 
