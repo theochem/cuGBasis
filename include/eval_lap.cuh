@@ -80,21 +80,23 @@ __host__ void compute_first_term(
 );
 
 __host__ std::vector<double> evaluate_laplacian_on_any_grid_handle(
-    cublasHandle_t& handle, IOData &iodata, const double* h_points, const int n_pts
+    cublasHandle_t& handle, IOData &iodata, const double* h_points, const int n_pts, const std::string& spin = "ab"
 );
 
 /**
- * Evaluate the Laplacian of the electorn density on a grid of points.
+ * Evaluate the Laplacian of the electron density on a grid of points.
  *
  * The Laplacian is the sum of the second derivatives of the electron density.
  *
  * @param[in] iodata  The IOData object that stores the molecules basis.
  * @param[in] h_points Array in column-major order that stores the three-dimensional points.
  * @param[in] knumb_points Number of points in d_points.
+ * @param[in] type Type of occupied spin orbitals which can be either "a" (for alpha), "b" (for
+                        beta), and "ab" (for alpha + beta).
  * @return h_laplacian The Laplacian of the electron density evaluated on each point.
  */
 __host__ std::vector<double> evaluate_laplacian(
-    chemtools::IOData& iodata, const double* h_points, const int knumb_points
+    chemtools::IOData& iodata, const double* h_points, const int knumb_points, const std::string& type = "ab"
 );
 }
 #endif //CHEMTOOLS_CUDA_INCLUDE_EVALUATE_LAPLACIAN_CUH_

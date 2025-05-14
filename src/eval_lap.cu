@@ -578,7 +578,7 @@ __host__ std::vector<double> chemtools::evaluate_sum_of_second_derivative_contra
 
 
 __host__ std::vector<double> chemtools::evaluate_laplacian_on_any_grid_handle(
-    cublasHandle_t& handle, IOData &iodata, const double* h_points, const int n_pts
+    cublasHandle_t& handle, IOData &iodata, const double* h_points, const int n_pts, const std::string& spin
 ) {
     const MolecularBasis molbasis = iodata.GetOrbitalBasis();
     const int            nbasis   = molbasis.numb_basis_functions();
@@ -606,7 +606,7 @@ __host__ std::vector<double> chemtools::evaluate_laplacian_on_any_grid_handle(
         iodata.GetOneRdmShape(),
         iodata.GetOneRdmShape(),
         sizeof(double),
-        iodata.GetMOOneRDM(),
+        iodata.GetMOOneRDM(spin),
         iodata.GetOneRdmShape(),
         d_one_rdm,
         iodata.GetOneRdmShape()
@@ -813,12 +813,12 @@ __host__ std::vector<double> chemtools::evaluate_laplacian_on_any_grid_handle(
 }
 
 __host__ std::vector<double> chemtools::evaluate_laplacian(
-    IOData& iodata, const double* h_points, const int knumb_points)
+    IOData& iodata, const double* h_points, const int knumb_points, const std::string& spin)
 {
   cublasHandle_t handle;
   CUBLAS_CHECK(cublasCreate(&handle));
   std::vector<double> laplacian = evaluate_laplacian_on_any_grid_handle(
-      handle, iodata, h_points, knumb_points
+      handle, iodata, h_points, knumb_points, spin
   );
   CUBLAS_CHECK(cublasDestroy(handle));
   return laplacian;

@@ -7,7 +7,7 @@
 using namespace chemtools;
 
 __host__ std::vector<double> chemtools::eval_MOs(
-    IOData& iodata, const double* h_points, const int n_pts
+    IOData& iodata, const double* h_points, int n_pts, const std::string& spin
 ) {
     cublasHandle_t handle;
     cublasCreate(&handle);
@@ -77,22 +77,22 @@ __host__ std::vector<double> chemtools::eval_MOs(
         cudaFree(d_pts);
         
         // Allocate device memory for the one_rdm. Number AO = Number MO
-        double *d_one_rdm;
-        CUDA_CHECK(cudaMalloc((double **) &d_one_rdm, n_basis * n_basis * sizeof(double)));
+        double *d_MO_coeffs;
+        CUDA_CHECK(cudaMalloc((double **) &d_MO_coeffs, n_basis * n_basis * sizeof(double)));
         CUBLAS_CHECK(cublasSetMatrix(
             iodata.GetOneRdmShape(),
             iodata.GetOneRdmShape(),
             sizeof(double),
-            iodata.GetMOOneRDM(),
+            iodata.GetMOCoeffs(spin),
             iodata.GetOneRdmShape(),
-            d_one_rdm,
+            d_MO_coeffs,
             iodata.GetOneRdmShape()
         ));
-        
+
         // Molecular Orbitals (M, N) row
         double *d_MOs;
         CUDA_CHECK(cudaMalloc((double **) &d_MOs, AO_data_size));
-        
+
         // Matrix mult. of one rdm with the contractions array. Everything is in row major order.
         double alpha = 1.0, beta = 0.0;
         CUBLAS_CHECK(cublasDgemm(
@@ -100,11 +100,11 @@ __host__ std::vector<double> chemtools::eval_MOs(
             npts_iter, iodata.GetOneRdmShape(), iodata.GetOneRdmShape(),
             &alpha,
             d_AOs, npts_iter,
-            d_one_rdm, iodata.GetOneRdmShape(),
+            d_MO_coeffs, iodata.GetOneRdmShape(),
             &beta,
             d_MOs, npts_iter
         ));
-        cudaFree(d_one_rdm);
+        cudaFree(d_MO_coeffs);
         
         // Transfer electron density from device memory to host memory.
         //    Since I'm computing a sub-grid at a time, need to update the index h_electron_density, accordingly.

@@ -10159,7 +10159,7 @@ __global__ void chemtools::compute_point_charge_integrals(
 
 
 __host__ std::vector<double> chemtools::compute_electrostatic_potential_over_points(
-    chemtools::IOData& iodata, double* grid, int knumb_pts, const double screen_tol, const bool disp) {
+    chemtools::IOData& iodata, double* grid, int knumb_pts, const double screen_tol, const bool disp, const std::string& spin) {
   // Place it into constant memory. The second argument must be true, as the decontracted basis set must be used.
   chemtools::MolecularBasis molecular_basis = iodata.GetOrbitalBasis();
   int nbasisfuncs = molecular_basis.numb_basis_functions();
@@ -10204,7 +10204,7 @@ __host__ std::vector<double> chemtools::compute_electrostatic_potential_over_poi
   dim3 blockDim(nbasisfuncs, nbasisfuncs);
   dim3 gridDim (1, 1);
   chemtools::set_identity_row_major<<<blockDim, gridDim>>>(d_identity, nbasisfuncs, nbasisfuncs);
-  CUBLAS_CHECK(cublasSetMatrix (t_nbasis, t_nbasis, sizeof(double), iodata.GetMOOneRDM(),
+  CUBLAS_CHECK(cublasSetMatrix (t_nbasis, t_nbasis, sizeof(double), iodata.GetMOOneRDM(spin),
                                                t_nbasis, d_one_rdm, t_nbasis));
   //printf("Print ideti t\n");
   //print_firstt_ten_elements<<<1, 1>>>(d_identity);
@@ -10224,7 +10224,7 @@ __host__ std::vector<double> chemtools::compute_electrostatic_potential_over_poi
   free_mem -= 500000000;  // Substract 0.5 Gb for safe measures
   size_t t_numb_chunks = t_total_bytes / free_mem;
   // Maximal number of points to do each iteration to achieve 11 GB of GPU memory.
-  size_t t_numb_pts_of_each_chunk = free_mem / (sizeof(double) * (t_nbasis * (t_nbasis + 1) + 3));
+  size_t t_numb_pts_of_each_chunk = static_cast<size_t>(((free_mem / sizeof(double)) - (5.0 * t_nbasis * t_nbasis)) / (1.5 * t_nbasis * (t_nbasis + 1)));
   //size_t t_numb_pts_of_each_chunk = 11000000000  / (3 * 8 + 8 * t_nbasis * (t_nbasis + 1));  // Solving 11Gb = Number of Pts * 3 * 8 + 2 * (number of integrals)
   size_t t_index_of_grid_at_ith_iter = 0;
   if (disp) {
@@ -10262,9 +10262,9 @@ __host__ std::vector<double> chemtools::compute_electrostatic_potential_over_poi
     chemtools::cuda_check_errors(cudaMemcpy(d_grid, portion_grid_col, t_numb_pts_ith_iter_bytes,
                                          cudaMemcpyHostToDevice));
     delete[] portion_grid_col;
-//    printf("Print grid \n");
+    printf("Print grid \n");
 //    chemtools::print_first_ten_elements<<<1, 1>>>(d_grid);
-//    cudaDeviceSynchronize();
+    cudaDeviceSynchronize();
 
     // Allocate one-point charge integral array, stored as integrals then points, and set it to zero.
     chemtools::cuda_check_errors(cudaMalloc((double **)&d_point_charge, t_total_size_integrals_ith_iter_bytes));
@@ -10289,24 +10289,28 @@ __host__ std::vector<double> chemtools::compute_electrostatic_potential_over_poi
     chemtools::compute_point_charge_integrals<<<grid32, threadsPerBlock32>>>(
         d_point_charge, d_grid, (int) t_numb_pts_ith_iter, nbasisfuncs, screen_tol
         );
-//    printf("Print d_point charge \n");
+    cudaDeviceSynchronize();
+    printf("Print d_point charge \n");
 //    chemtools::print_first_ten_elements<<<1, 1>>>(d_point_charge);
 //    chemtools::print_all<<<1, 1>>>(d_point_charge, t_nbasis * (t_nbasis + 1) / 2);
-//    cudaDeviceSynchronize();
+    cudaDeviceSynchronize();
     // Free Grid in Device
     cudaFree(d_grid);
 
     // Transpose point_charge from (Z, Y, X) (col-major) to (Y, X, Z), where Z=number of points, Y, X are the contractions.
+    cudaDeviceSynchronize();
     chemtools::cuda_check_errors(cudaMalloc((double **)&d_point_charge_transpose, t_total_size_integrals_ith_iter_bytes));
+    printf("Dp d_point charge transpose \n");
+    cudaDeviceSynchronize();
     CUBLAS_CHECK(cublasDgeam(handle, CUBLAS_OP_T, CUBLAS_OP_T,
                                             nbasisfuncs * (nbasisfuncs + 1) / 2, (int) t_numb_pts_ith_iter,
                                             &alpha, d_point_charge, (int) t_numb_pts_ith_iter,
                                             &beta, d_point_charge, (int) t_numb_pts_ith_iter,
                                             d_point_charge_transpose, nbasisfuncs * (nbasisfuncs + 1) / 2));
-    //printf("Print d point charge transpose \n");
+    printf("Print d point charge transpose \n");
     //print_final_ten_elements<<<1, 1>>>(d_point_charge_transpose, t_total_numb_integrals_ith_iter);
 //    chemtools::print_first_ten_elements<<<1, 1>>>(d_point_charge_transpose);
-//    cudaDeviceSynchronize();
+    cudaDeviceSynchronize();
     //print_firstt_ten_elements<<<1, 1>>>(d_point_charge_transpose);
 
     // Free up d_point_charge

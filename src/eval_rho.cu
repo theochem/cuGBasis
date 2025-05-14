@@ -287,12 +287,12 @@ __global__ __launch_bounds__(128) void chemtools::eval_AOs_from_constant_memory_
 
 
 __host__ std::vector<double> chemtools::evaluate_electron_density_on_any_grid(
-    IOData& iodata, const double* h_points, const int n_pts)
+    IOData& iodata, const double* h_points, const int n_pts, const std::string& spin)
 {
     cublasHandle_t handle;
     CUBLAS_CHECK(cublasCreate(&handle));
     std::vector<double> density = evaluate_electron_density_on_any_grid_handle(
-      handle, iodata, h_points, n_pts
+      handle, iodata, h_points, n_pts, spin
     );
     CUBLAS_CHECK(cublasDestroy(handle)); // cublas handle is no longer needed infact most of
     return density;
@@ -303,7 +303,8 @@ __host__ std::vector<double> chemtools::evaluate_electron_density_on_any_grid_ha
           cublasHandle_t& handle,
           IOData&         iodata,
     const double*         h_points,
-    const int             n_pts
+    const int             n_pts,
+    const std::string&    spin
 ) {
     const MolecularBasis molbasis = iodata.GetOrbitalBasis();
     const int            n_basis  = molbasis.numb_basis_functions();
@@ -376,7 +377,7 @@ __host__ std::vector<double> chemtools::evaluate_electron_density_on_any_grid_ha
             iodata.GetOneRdmShape(),
             iodata.GetOneRdmShape(),
             sizeof(double),
-            iodata.GetMOOneRDM(),
+            iodata.GetMOOneRDM(spin),
             iodata.GetOneRdmShape(),
             d_one_rdm,
             iodata.GetOneRdmShape()

@@ -10,13 +10,15 @@ namespace chemtools {
 /**
  * Evaluate the molecular orbitals from storing molecular basis in constant memory over any grid.
  *
+ * @param[in] iodata IOData object
  * @param[in] h_points Array in column-major order that stores the `N` three-dimensional points.
  * @param[in] n_pts Number of points in d_points.
- * @param[in] nbasisfuncs The number of basis functions.
+ * @param[in] spin String inThe type of occupied spin orbitals. Options are "a" (for alpha), "b" (for beta), and
+           "ab" (for alpha + beta).
  * @return h_mol_orbitals The molecular orbitals (M, N) coloumn-order evaluated on each point.
  */
 __host__ std::vector<double> eval_MOs(
-    IOData& iodata, const double* h_points, const int n_pts
+    IOData& iodata, const double* h_points, int n_pts, const std::string& spin = "ab"
 );
 
 
