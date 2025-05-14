@@ -89,6 +89,13 @@ path: str
     "Get the exponents as a dictionary with keys element_parameter_type (e.g. `f_coeffs_p`)."
     );
 
+
+
+
+
+
+
+
   py::class_<chemtools::Molecule>(m, "Molecule")
       .def(py::init<const std::string &>(), R"pbdoc(Initialize the molecule class.
 
@@ -99,6 +106,8 @@ path: str
 )pbdoc")
       .def("compute_density",
            &chemtools::Molecule::compute_electron_density,
+           py::arg("points"),
+           py::arg("spin") = "ab",
            py::return_value_policy::reference_internal,
            R"pbdoc(Compute electron density :math:`\rho(\mathbf{r})`.
 
@@ -115,6 +124,8 @@ path: str
            )
       .def("compute_molecular_orbitals",
            &chemtools::Molecule::compute_molecular_orbitals,
+           py::arg("points"),
+           py::arg("spin") = "ab",
            py::return_value_policy::reference_internal,
            R"pbdoc(Compute Molecular Orbitals
 
@@ -131,6 +142,8 @@ path: str
       )
       .def("compute_gradient",
            &chemtools::Molecule::compute_electron_density_gradient,
+           py::arg("points"),
+           py::arg("spin") = "ab",
            py::return_value_policy::reference_internal,
            R"pbdoc(Compute the gradient of the electron density.
 
@@ -151,6 +164,8 @@ path: str
       )
       .def("compute_hessian",
            &chemtools::Molecule::compute_electron_density_hessian,
+           py::arg("points"),
+           py::arg("spin") = "ab",
            py::return_value_policy::move,
            R"pbdoc(Compute the Hessian of the electron density.
 
@@ -167,6 +182,8 @@ path: str
       )
       .def("compute_laplacian",
            &chemtools::Molecule::compute_laplacian,
+           py::arg("points"),
+           py::arg("spin") = "ab",
            py::return_value_policy::reference_internal,
            R"pbdoc(Compute the Laplacian of the electron density.
 
@@ -379,6 +396,8 @@ path: str
       )
       .def("compute_electrostatic_potential",
            &chemtools::Molecule::compute_electrostatic_potential,
+           py::arg("points"),
+           py::arg("spin") = "ab",
            py::return_value_policy::reference_internal,
            R"pbdoc(Compute the molecular electrostatic potential.
 
@@ -390,6 +409,8 @@ path: str
     ----------
     points: ndarray(N, 3)
         Cartesian coordinates of :math:`N` points in three-dimensions.
+     spin: str, optional
+         Spin specification, e.g., "alpha", "beta", or "ab" (default).
 )pbdoc"
       )
       // Properties

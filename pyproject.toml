@@ -53,7 +53,7 @@ docs = [
 ]
 
 [build-system]
-requires = ["scikit-build-core >= 0.9.10", "cmake>=3.26", "pytest >= 6.0", "setuptools_scm>=8"]
+requires = ["scikit-build-core >= 0.9.10", "pytest >= 6.0", "setuptools_scm>=8"]
 build-backend = "scikit_build_core.build"
 
 [tool.scikit-build]
@@ -62,7 +62,7 @@ build-backend = "scikit_build_core.build"
 #wheel.license-files = ["LICENSE"]
 # Don't include the large fchk files in source distribution
 sdist.exclude = [".github", "tests/data/*.fchk", "examples/*.fchk"]
-cmake.version = ">=3.26.1"
+cmake.version = ">=3.5"
 cmake.build-type = "Release"
 cmake.args = [
     "-DLINK_TO_PYTHON=ON",

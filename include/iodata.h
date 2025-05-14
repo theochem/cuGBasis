@@ -12,7 +12,8 @@
 namespace py = pybind11;
 
 namespace chemtools {
-/**
+
+  /**
  * IOData object that holds the atomic orbital, molecular obitals and one_rdm information.
  */
 class IOData {
@@ -24,28 +25,91 @@ class IOData {
   long int*           atnums_;               // Atomic Numbers of atom
   double*             one_rdm_;              // Row-order
   std::array<int, 2>  one_rdm_shape_;
-  double*             mo_coeffs_;            // Row-order
+  /// Column-order is done to make it easy to do matrix-matrix multiplcation with Transpose C^T
+  double*             mo_coeffs_col_;            // Col-order AO->MO Transformation
+  double*             mo_coeffs_col_a_;          // Col-order AO->MO (Spin-Alpha) Transformation
+  double*             mo_coeffs_col_b_;          // Col-order AO->MO (Spin-Beta) Transformation
+  std::array<int, 2>  mo_coeffs_col_shape_;
   double*             mo_occupations_;
-  double*             mo_one_rdm_;           // MO transformation matrix.
-
+  double*             mo_one_rdm_;           // Both Spins One-RDM matrix (symmetric).
+  double*             mo_one_rdm_a_;         // Spin-Alpha One-RDM matrix (symmetric).
+  double*             mo_one_rdm_b_;         // Spin-Beta One-RDM matrix (symmetric).
 
  public:
-  IOData(chemtools::MolecularBasis basis, double* coord, int natoms,
-         double* one_rdm, std::array<int, 2> shape, double* coeffs, double* occs, long int* charges, long int* atnums,
-         double* mo_one_rdm) :
-      orbital_basis_(basis), coord_atoms_(coord), natoms(natoms), one_rdm_(one_rdm), one_rdm_shape_(shape),
-      mo_coeffs_(coeffs), mo_occupations_(occs), charges_(charges), atnums_(atnums), mo_one_rdm_(mo_one_rdm) {}
+  IOData(
+    MolecularBasis basis,
+    double* coord,
+    int natoms,
+    double* one_rdm,
+    std::array<int, 2> shape,
+    double* coeffs,
+    double* coeffs_a,
+    double* coeffs_b,
+    std::array<int, 2> mo_coeffs_col_shape,
+    double* occs,
+    long int* charges,
+    long int* atnums,
+    double* mo_one_rdm,
+    double* mo_one_rdm_a,
+    double* mo_one_rdm_b
+    ) :
+      orbital_basis_(basis),
+      coord_atoms_(coord),
+      natoms(natoms),
+      one_rdm_(one_rdm),
+      one_rdm_shape_(shape),
+      mo_coeffs_col_(coeffs),
+      mo_coeffs_col_a_(coeffs_a),
+      mo_coeffs_col_b_(coeffs_b),
+      mo_coeffs_col_shape_(mo_coeffs_col_shape),
+      mo_occupations_(occs),
+      charges_(charges),
+      atnums_(atnums),
+      mo_one_rdm_(mo_one_rdm),
+      mo_one_rdm_a_(mo_one_rdm_a),
+      mo_one_rdm_b_(mo_one_rdm_b) {}
   ~IOData() {
-    delete one_rdm_; delete mo_coeffs_; delete mo_occupations_; delete coord_atoms_; delete charges_;
-    delete atnums_; delete mo_one_rdm_;
+    delete one_rdm_; delete mo_coeffs_col_; delete mo_coeffs_col_a_; delete mo_coeffs_col_b_;
+    delete mo_occupations_; delete coord_atoms_; delete charges_;
+    delete atnums_; delete mo_one_rdm_; delete mo_one_rdm_a_; delete mo_one_rdm_b_;
   }
-  IOData(const IOData& copy);
+
+  IOData(const IOData& copy):
+    natoms(copy.natoms), one_rdm_shape_(copy.one_rdm_shape_)
+  {
+    int nbasis = copy.orbital_basis_.numb_basis_functions();
+    orbital_basis_ = chemtools::MolecularBasis(copy.orbital_basis_);
+    charges_ = new long int[natoms];
+    std::memcpy(charges_, copy.charges_, sizeof(long int) * natoms);
+    atnums_ = new long int[natoms];
+    std::memcpy(atnums_, copy.atnums_, sizeof(long int) * natoms);
+    coord_atoms_ = new double[3 * natoms];
+    std::memcpy(coord_atoms_, copy.coord_atoms_, sizeof(double) * 3 * natoms);
+    one_rdm_ = new double[copy.one_rdm_shape_[0] * copy.one_rdm_shape_[0]];
+    std::memcpy(one_rdm_, copy.one_rdm_, sizeof(double) * copy.one_rdm_shape_[0] * copy.one_rdm_shape_[0]);
+    //TODO: Bug here because the shape of mo_coeffs_col_ is not correct it is (M, 2M)
+    mo_coeffs_col_ = new double[copy.one_rdm_shape_[0] * copy.one_rdm_shape_[1]];
+    std::memcpy(mo_coeffs_col_, copy.mo_coeffs_col_, sizeof(double) * copy.one_rdm_shape_[0] * copy.one_rdm_shape_[1]);
+    mo_coeffs_col_a_ = new double[copy.one_rdm_shape_[0] * copy.one_rdm_shape_[1]];
+    std::memcpy(mo_coeffs_col_a_, copy.mo_coeffs_col_a_, sizeof(double) * copy.one_rdm_shape_[0] * copy.one_rdm_shape_[1]);
+    mo_coeffs_col_b_ = new double[copy.one_rdm_shape_[0] * copy.one_rdm_shape_[1]];
+    std::memcpy(mo_coeffs_col_b_, copy.mo_coeffs_col_b_, sizeof(double) * copy.one_rdm_shape_[0] * copy.one_rdm_shape_[1]);
+    mo_occupations_ = new double[one_rdm_shape_[1]];
+    std::memcpy(mo_occupations_, copy.mo_occupations_, sizeof(double) * one_rdm_shape_[1]);
+
+    mo_one_rdm_ = new double[one_rdm_shape_[0] * one_rdm_shape_[0]];
+    std::memcpy(mo_one_rdm_, copy.mo_one_rdm_, sizeof(double) * one_rdm_shape_[0] * one_rdm_shape_[0]);
+    mo_one_rdm_a_ = new double[one_rdm_shape_[0] * one_rdm_shape_[0]];
+    std::memcpy(mo_one_rdm_a_, copy.mo_one_rdm_a_, sizeof(double) * one_rdm_shape_[0] * one_rdm_shape_[0]);
+    mo_one_rdm_b_ = new double[one_rdm_shape_[0] * one_rdm_shape_[0]];
+    std::memcpy(mo_one_rdm_b_, copy.mo_one_rdm_b_, sizeof(double) * one_rdm_shape_[0] * one_rdm_shape_[0]);
+  }
 
   inline void print_molecular_coefficients(){
     // mo coefficients is in row-major order
     for(int i = 0; i < one_rdm_shape_[0]; i++) {
       for(int j = 0; j < one_rdm_shape_[1]; j++){
-        printf(" %f ", mo_coeffs_[j + i * one_rdm_shape_[1]]);
+        printf(" %f ", mo_coeffs_col_[j + i * one_rdm_shape_[1]]);
       }
       printf("\n");
     }
@@ -76,16 +140,41 @@ class IOData {
   const MolecularBasis &GetOrbitalBasis() const {return orbital_basis_;}
   double *GetCoordAtoms() const {return coord_atoms_;}
   int GetNatoms() const {return natoms;}
-  const double *GetOneRdm() const {return one_rdm_;}
-  const double *GetMOOneRDM() const {return mo_one_rdm_;}
+
+  /// One-RDM of different spin-types
+  const double *GetOneRdm(std::string type ) const {return one_rdm_;}
+  const double *GetMOOneRDM(std::string type = "ab") const {
+    if (type == "ab") {
+      return mo_one_rdm_;
+    }
+    if (type == "a") {
+      return mo_one_rdm_a_;
+    }
+    if (type == "b") {
+      return mo_one_rdm_b_;
+    }
+    throw std::runtime_error("IOData::GetMOOneRDM: Unknown type");
+  }
   int GetOneRdmShape() const {return one_rdm_shape_[0];}
-  const double *GetMoCoeffs() const {return mo_coeffs_;}
+  const double *GetMOCoeffs(std::string type = "ab") const {
+    if (type == "ab")
+      return mo_coeffs_col_;
+    if (type == "a")
+      return mo_coeffs_col_a_;
+    if (type == "b")
+      return mo_coeffs_col_b_;
+    throw std::runtime_error("IOData::GetOneRdm: Unknown type");
+  }
+  int GetMOCoeffsRow() const {return mo_coeffs_col_shape_[0];}
+  int GetMOCoeffsCol() const {return mo_coeffs_col_shape_[1];}
   const double *GetMoOccupations() const {return mo_occupations_;}
   const long int*  GetCharges() const {return charges_;}
   const long int* GetAtomicNumbers() const {return atnums_;}
 
   // Setters
   //void SetCoordAtoms(double *coord_atoms) {IOData::coord_atoms_ = coord_atoms;}
+
+
 };
 
 /**
