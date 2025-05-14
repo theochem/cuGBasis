@@ -76,8 +76,8 @@ true_result = true_result.reshape((nbasis, numb_pts), order="F")
 
 iodata = load_one(fchk_path)
 basis = from_iodata(iodata)
-coeffs = iodata.mo.coeffs
-rdm = (coeffs * iodata.mo.occs).dot(coeffs.T)
+coeffs = iodata.mo.coeffsa
+rdm = coeffs.T
 
 points = points.reshape((numb_pts, 3), order="F")
 points = np.array(points, dtype=np.float64)

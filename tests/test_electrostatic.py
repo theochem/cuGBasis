@@ -13,10 +13,12 @@ import pytest
                              "./tests/data/qm9_000092_HF_cc-pVDZ.fchk"
                          ])
 def test_electrostatic_potential_against_horton(fchk):
+    spin = np.random.choice(["ab", "a", "b"], size=1)[0]
+
     mol = cugbasis.Molecule(fchk)
     grid_pts = np.random.uniform(-2, 2, size=(2000, 3))
     grid_pts = np.array(grid_pts, dtype=np.float64, order="C")
-    gpu_esp = mol.compute_electrostatic_potential(grid_pts)
+    gpu_esp = mol.compute_electrostatic_potential(grid_pts, spin)
     mol2 = Molecule.from_file(fchk)
-    cpu_esp = mol2.compute_esp(grid_pts)
+    cpu_esp = mol2.compute_esp(grid_pts, spin)
     assert np.all(np.abs(cpu_esp - gpu_esp) < 1e-8)
