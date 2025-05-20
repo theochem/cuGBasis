@@ -43,13 +43,13 @@ __host__ std::vector<double> chemtools::compute_norm_of_3d_vector(double *h_poin
 
 
 __host__ std::vector<double> chemtools::compute_reduced_density_gradient(
-    chemtools::IOData& iodata, const double* h_points, const int knumb_points
+    chemtools::IOData& iodata, const double* h_points, const int knumb_points, const std::string& spin
 ) {
   std::vector<double> reduced_dens_grad(knumb_points);
 
   // Compute the density and norm of the gradient (in column-order)
-  std::vector<double> density = chemtools::evaluate_electron_density_on_any_grid(iodata, h_points, knumb_points);
-  std::vector<double> gradient = chemtools::evaluate_electron_density_gradient(iodata, h_points, knumb_points, false);
+  std::vector<double> density = chemtools::evaluate_electron_density_on_any_grid(iodata, h_points, knumb_points, spin);
+  std::vector<double> gradient = chemtools::evaluate_electron_density_gradient(iodata, h_points, knumb_points, false, spin);
   std::vector<double> norm_grad = chemtools::compute_norm_of_3d_vector(gradient.data(), knumb_points);
 
   // Transfer the norm to the d_reduced_dens_grad GPU
@@ -90,13 +90,13 @@ __host__ std::vector<double> chemtools::compute_reduced_density_gradient(
 }
 
 __host__ std::vector<double> chemtools::compute_weizsacker_ked(
-    chemtools::IOData& iodata, const double* h_points, const int knumb_points
+    chemtools::IOData& iodata, const double* h_points, const int knumb_points, const std::string& spin
 ){
   std::vector<double> weizsacker_ked(knumb_points);
 
   // Compute the density and norm of the gradient (in column-order)
-  std::vector<double> density = chemtools::evaluate_electron_density_on_any_grid(iodata, h_points, knumb_points);
-  std::vector<double> gradient = chemtools::evaluate_electron_density_gradient(iodata, h_points, knumb_points, false);
+  std::vector<double> density = chemtools::evaluate_electron_density_on_any_grid(iodata, h_points, knumb_points, spin);
+  std::vector<double> gradient = chemtools::evaluate_electron_density_gradient(iodata, h_points, knumb_points, false, spin);
 
   // Transfer the gradient to GPU
   double *d_gradient;
@@ -141,12 +141,12 @@ __host__ std::vector<double> chemtools::compute_weizsacker_ked(
 }
 
 __host__ std::vector<double> chemtools::compute_thomas_fermi_energy_density(
-    chemtools::IOData& iodata, const double* h_points, int knumb_points
+    chemtools::IOData& iodata, const double* h_points, int knumb_points, const std::string& spin
 ){
   std::vector<double> thomas_fermi(knumb_points);
 
   // Compute the density
-  std::vector<double> density = chemtools::evaluate_electron_density_on_any_grid(iodata, h_points, knumb_points);
+  std::vector<double> density = chemtools::evaluate_electron_density_on_any_grid(iodata, h_points, knumb_points, spin);
 
   // Transfer density to GPU
   double *d_density;
@@ -174,11 +174,11 @@ __host__ std::vector<double> chemtools::compute_thomas_fermi_energy_density(
 }
 
 __host__ std::vector<double> chemtools::compute_ked_gradient_expansion_general(
-    chemtools::IOData& iodata, const double* h_points, int knumb_points, double a, double b
+    chemtools::IOData& iodata, const double* h_points, int knumb_points, double a, double b, const std::string& spin
 ) {
-  std::vector<double> thomas_fermi_ked = chemtools::compute_thomas_fermi_energy_density(iodata, h_points, knumb_points);
-  std::vector<double> weizsacker_ked = chemtools::compute_weizsacker_ked(iodata, h_points, knumb_points);
-  std::vector<double> laplacian = chemtools::evaluate_laplacian(iodata, h_points, knumb_points);
+  std::vector<double> thomas_fermi_ked = chemtools::compute_thomas_fermi_energy_density(iodata, h_points, knumb_points, spin);
+  std::vector<double> weizsacker_ked = chemtools::compute_weizsacker_ked(iodata, h_points, knumb_points, spin);
+  std::vector<double> laplacian = chemtools::evaluate_laplacian(iodata, h_points, knumb_points, spin);
 
   std::transform(weizsacker_ked.begin(), weizsacker_ked.end(), weizsacker_ked.begin(),
                  [&a](auto& c){return c * a;});
@@ -194,10 +194,10 @@ __host__ std::vector<double> chemtools::compute_ked_gradient_expansion_general(
 }
 
 __host__ std::vector<double> chemtools::compute_general_ked(
-    chemtools::IOData& iodata, const double* h_points, int knumb_points, double a
+    chemtools::IOData& iodata, const double* h_points, int knumb_points, double a, const std::string& spin
 ) {
-  std::vector<double> pdf_ked = chemtools::evaluate_positive_definite_kinetic_density(iodata, h_points, knumb_points);
-  std::vector<double> laplacian = chemtools::evaluate_laplacian(iodata, h_points, knumb_points);
+  std::vector<double> pdf_ked = chemtools::evaluate_positive_definite_kinetic_density(iodata, h_points, knumb_points, spin);
+  std::vector<double> laplacian = chemtools::evaluate_laplacian(iodata, h_points, knumb_points, spin);
 
   double param = (a - 1.0) / 4.0;
   std::transform(laplacian.begin(), laplacian.end(), laplacian.begin(),
@@ -209,9 +209,9 @@ __host__ std::vector<double> chemtools::compute_general_ked(
 }
 
 __host__ std::vector<double> chemtools::compute_shannon_information_density(
-    chemtools::IOData& iodata, const double* h_points, int knumb_points
+    chemtools::IOData& iodata, const double* h_points, int knumb_points, const std::string& spin
 ) {
-  std::vector<double> density = chemtools::evaluate_electron_density_on_any_grid(iodata, h_points, knumb_points);
+  std::vector<double> density = chemtools::evaluate_electron_density_on_any_grid(iodata, h_points, knumb_points, spin);
   std::vector<double> log_density = density;
 
   std::transform(log_density.begin(), log_density.end(), log_density.begin(),

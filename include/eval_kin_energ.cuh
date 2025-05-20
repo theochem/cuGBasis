@@ -9,10 +9,11 @@
 
 namespace chemtools {
 __host__ std::vector<double> evaluate_pos_def_kinetic_density_on_any_grid_handle(
-    cublasHandle_t &handle,
-    IOData         &iodata,
-    const double   *h_points,
-          int      n_pts
+    cublasHandle_t      &handle,
+    IOData              &iodata,
+    const double        *h_points,
+          int           n_pts,
+    const std::string   &spin = "ab"
 );
 
 /**
@@ -28,7 +29,7 @@ __host__ std::vector<double> evaluate_pos_def_kinetic_density_on_any_grid_handle
  * @return h_kinetic_energy_density The kinetic energy density evaluated on each point.
  */
 __host__ std::vector<double> evaluate_positive_definite_kinetic_density(
-    IOData &iodata, const double *h_points, int n_pts
+    IOData &iodata, const double *h_points, int n_pts, const std::string& spin = "ab"
 );
 
 
@@ -46,10 +47,11 @@ __host__ std::vector<double> evaluate_positive_definite_kinetic_density(
  * @return h_gen_kinetic_density The general form of the kinetic energy density evaluated on each point.
  */
 __host__ std::vector<double> evaluate_general_kinetic_energy_density(
-    IOData &iodata,
-    double alpha,
-    const double *h_points,
-    int    n_pts
+    IOData             &iodata,
+    double             alpha,
+    const double       *h_points,
+    int                n_pts,
+    const std::string  &spin = "ab"
 );
 } // chemtools
 #endif //CHEMTOOLS_CUDA_INCLUDE_EVALUATE_KINETIC_DENS_CUH_

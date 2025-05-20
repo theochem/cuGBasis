@@ -29,7 +29,7 @@ __host__ std::vector<double> compute_norm_of_3d_vector(double *h_points, int knu
  * @return Return the reduced density gradient.
  */
 __host__ std::vector<double> compute_reduced_density_gradient(
-    chemtools::IOData& iodata, const double* h_points, const int knumb_points
+    chemtools::IOData& iodata, const double* h_points, const int knumb_points, const std::string& spin = "ab"
     );
 
 /**
@@ -45,7 +45,7 @@ __host__ std::vector<double> compute_reduced_density_gradient(
  * @return Return the reduced density gradient.
  */
 __host__ std::vector<double> compute_weizsacker_ked(
-    chemtools::IOData& iodata, const double* h_points, const int knumb_points
+    chemtools::IOData& iodata, const double* h_points, const int knumb_points, const std::string& spin = "ab"
 );
 
 /**
@@ -59,7 +59,7 @@ __host__ std::vector<double> compute_weizsacker_ked(
  * @return Return the Thomas-Fermi kinetic energy density
  */
 __host__ std::vector<double> compute_thomas_fermi_energy_density(
-    chemtools::IOData& iodata, const double* h_points, int knumb_points
+    chemtools::IOData& iodata, const double* h_points, int knumb_points, const std::string& spin = "ab"
 );
 
 /**
@@ -72,7 +72,7 @@ __host__ std::vector<double> compute_thomas_fermi_energy_density(
  * @return Return the general gradient expansion approximation of kinetic energy density
  */
 __host__ std::vector<double> compute_ked_gradient_expansion_general(
-    chemtools::IOData& iodata, const double* h_points, int knumb_points, double a, double b
+    chemtools::IOData& iodata, const double* h_points, int knumb_points, double a, double b, const std::string& spin = "ab"
 );
 
 /**
@@ -87,7 +87,7 @@ __host__ std::vector<double> compute_ked_gradient_expansion_general(
  * @return Return general(ish) kinetic energy density.
  */
 __host__ std::vector<double> compute_general_ked(
-    chemtools::IOData& iodata, const double* h_points, int knumb_points, double a
+    chemtools::IOData& iodata, const double* h_points, int knumb_points, double a, const std::string& spin = "ab"
 );
 
 /**
@@ -101,7 +101,7 @@ __host__ std::vector<double> compute_general_ked(
  * @return Return Shannon information density
  */
 __host__ std::vector<double> compute_shannon_information_density(
-    chemtools::IOData& iodata, const double* h_points, int knumb_points
+    chemtools::IOData& iodata, const double* h_points, int knumb_points, const std::string& spin = "ab"
 );
 }
 #endif //CHEMTOOLS_CUDA_INCLUDE_EVALUATE_DENSBASED_CUH_
