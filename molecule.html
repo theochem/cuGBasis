@@ -7,7 +7,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Molecule Class &mdash; cugbasis  documentation</title>
-      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="_static/css/override.css?v=064c4a14" />
       <link rel="stylesheet" type="text/css" href="_static/css/custom.css?v=9ba27866" />
 
@@ -273,7 +273,10 @@
 <dd><p>Compute electron density <span class="math notranslate nohighlight">\(\rho(\mathbf{r})\)</span>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>points</strong> (<em>ndarray</em><em>(</em><em>N</em><em>, </em><em>3</em><em>)</em>) – Cartesian coordinates of <span class="math notranslate nohighlight">\(N\)</span> points in three-dimensions.</p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>points</strong> (<em>ndarray</em><em>(</em><em>N</em><em>, </em><em>3</em><em>)</em>) – Cartesian coordinates of <span class="math notranslate nohighlight">\(N\)</span> points in three-dimensions.</p></li>
+<li><p><strong>spin</strong> (<em>str</em><em>, </em><em>optional</em>) – Spin specification, e.g., “alpha”, “beta”, or both “ab” (default).</p></li>
+</ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>The electron density evaluated on each point.</p>
@@ -293,7 +296,10 @@
  \int \frac{\rho(\mathbf{r}^\prime)}{|\mathbf{r} - \mathbf{r}^\prime| }d\mathbf{r}^\prime,\]</div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>points</strong> (<em>ndarray</em><em>(</em><em>N</em><em>, </em><em>3</em><em>)</em>) – Cartesian coordinates of <span class="math notranslate nohighlight">\(N\)</span> points in three-dimensions.</p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>points</strong> (<em>ndarray</em><em>(</em><em>N</em><em>, </em><em>3</em><em>)</em>) – Cartesian coordinates of <span class="math notranslate nohighlight">\(N\)</span> points in three-dimensions.</p></li>
+<li><p><strong>spin</strong> (<em>str</em><em>, </em><em>optional</em>) – Spin specification, e.g., “alpha”, “beta”, or both “ab” (default).</p></li>
+</ul>
 </dd>
 </dl>
 </dd></dl>
@@ -307,7 +313,10 @@
 \frac{1}{6} \nabla^2 \rho(\mathbf{r})\]</div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>points</strong> (<em>ndarray</em><em>(</em><em>N</em><em>, </em><em>3</em><em>)</em>) – Cartesian coordinates of <span class="math notranslate nohighlight">\(N\)</span> points in three-dimensions.</p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>points</strong> (<em>ndarray</em><em>(</em><em>N</em><em>, </em><em>3</em><em>)</em>) – Cartesian coordinates of <span class="math notranslate nohighlight">\(N\)</span> points in three-dimensions.</p></li>
+<li><p><strong>spin</strong> (<em>str</em><em>, </em><em>optional</em>) – Spin specification, e.g., “alpha”, “beta”, or both “ab” (default).</p></li>
+</ul>
 </dd>
 </dl>
 </dd></dl>
@@ -324,6 +333,7 @@
 <li><p><strong>points</strong> (<em>ndarray</em><em>(</em><em>N</em><em>, </em><em>3</em><em>)</em>) – Cartesian coordinates of <span class="math notranslate nohighlight">\(N\)</span> points in three-dimensions.</p></li>
 <li><p><strong>alpha</strong> (<em>float</em>) – Constant parameter.</p></li>
 <li><p><strong>beta</strong> (<em>float</em>) – Constant parameter.</p></li>
+<li><p><strong>spin</strong> (<em>str</em><em>, </em><em>optional</em>) – Spin specification, e.g., “alpha”, “beta”, or both “ab” (default).</p></li>
 </ul>
 </dd>
 </dl>
@@ -342,6 +352,7 @@
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>points</strong> (<em>ndarray</em><em>(</em><em>N</em><em>, </em><em>3</em><em>)</em>) – Cartesian coordinates of <span class="math notranslate nohighlight">\(N\)</span> points in three-dimensions.</p></li>
 <li><p><strong>alpha</strong> (<em>float</em>) – The constant parameter.</p></li>
+<li><p><strong>spin</strong> (<em>str</em><em>, </em><em>optional</em>) – Spin specification, e.g., “alpha”, “beta”, or both “ab” (default).</p></li>
 </ul>
 </dd>
 </dl>
@@ -360,6 +371,7 @@
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>points</strong> (<em>ndarray</em><em>(</em><em>N</em><em>, </em><em>3</em><em>)</em>) – Cartesian coordinates of <span class="math notranslate nohighlight">\(N\)</span> points in three-dimensions.</p></li>
 <li><p><strong>alpha</strong> (<em>float</em>) – Constant parameter.</p></li>
+<li><p><strong>spin</strong> (<em>str</em><em>, </em><em>optional</em>) – Spin specification, e.g., “alpha”, “beta”, or both “ab” (default).</p></li>
 </ul>
 </dd>
 </dl>
@@ -374,7 +386,10 @@
 \frac{\partial \rho}{\partial z} \bigg),\]</div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>points</strong> (<em>ndarray</em><em>(</em><em>N</em><em>, </em><em>3</em><em>)</em>) – Cartesian coordinates of <span class="math notranslate nohighlight">\(N\)</span> points in three-dimensions.</p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>points</strong> (<em>ndarray</em><em>(</em><em>N</em><em>, </em><em>3</em><em>)</em>) – Cartesian coordinates of <span class="math notranslate nohighlight">\(N\)</span> points in three-dimensions.</p></li>
+<li><p><strong>spin</strong> (<em>str</em><em>, </em><em>optional</em>) – Spin specification, e.g., “alpha”, “beta”, or both “ab” (default).</p></li>
+</ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>The gradient of the electron density evaluated on each point.</p>
@@ -394,7 +409,10 @@
 \frac{1}{6} \nabla^2 \rho(\mathbf{r})\]</div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>points</strong> (<em>ndarray</em><em>(</em><em>N</em><em>, </em><em>3</em><em>)</em>) – Cartesian coordinates of <span class="math notranslate nohighlight">\(N\)</span> points in three-dimensions.</p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>points</strong> (<em>ndarray</em><em>(</em><em>N</em><em>, </em><em>3</em><em>)</em>) – Cartesian coordinates of <span class="math notranslate nohighlight">\(N\)</span> points in three-dimensions.</p></li>
+<li><p><strong>spin</strong> (<em>str</em><em>, </em><em>optional</em>) – Spin specification, e.g., “alpha”, “beta”, or both “ab” (default).</p></li>
+</ul>
 </dd>
 </dl>
 </dd></dl>
@@ -405,7 +423,10 @@
 <dd><p>Compute the Hessian of the electron density.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>points</strong> (<em>ndarray</em><em>(</em><em>N</em><em>, </em><em>3</em><em>)</em>) – Cartesian coordinates of <span class="math notranslate nohighlight">\(N\)</span> points in three-dimensions.</p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>points</strong> (<em>ndarray</em><em>(</em><em>N</em><em>, </em><em>3</em><em>)</em>) – Cartesian coordinates of <span class="math notranslate nohighlight">\(N\)</span> points in three-dimensions.</p></li>
+<li><p><strong>spin</strong> (<em>str</em><em>, </em><em>optional</em>) – Spin specification, e.g., “alpha”, “beta”, or both “ab” (default).</p></li>
+</ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>The Hessian of the electron density evaluated on each point.</p>
@@ -425,7 +446,10 @@
  \bigg(\frac{\partial \rho}{\partial y} \bigg)^2 + \bigg(\frac{\partial \rho}{\partial z} \bigg)^2}\]</div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>points</strong> (<em>ndarray</em><em>(</em><em>N</em><em>, </em><em>3</em><em>)</em>) – Cartesian coordinates of <span class="math notranslate nohighlight">\(N\)</span> points in three-dimensions.</p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>points</strong> (<em>ndarray</em><em>(</em><em>N</em><em>, </em><em>3</em><em>)</em>) – Cartesian coordinates of <span class="math notranslate nohighlight">\(N\)</span> points in three-dimensions.</p></li>
+<li><p><strong>spin</strong> (<em>str</em><em>, </em><em>optional</em>) – Spin specification, e.g., “alpha”, “beta”, or both “ab” (default).</p></li>
+</ul>
 </dd>
 </dl>
 </dd></dl>
@@ -436,7 +460,10 @@
 <dd><p>Compute Molecular Orbitals</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>points</strong> (<em>ndarray</em><em>(</em><em>N</em><em>, </em><em>3</em><em>)</em>) – Cartesian coordinates of <span class="math notranslate nohighlight">\(N\)</span> points in three-dimensions.</p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>points</strong> (<em>ndarray</em><em>(</em><em>N</em><em>, </em><em>3</em><em>)</em>) – Cartesian coordinates of <span class="math notranslate nohighlight">\(N\)</span> points in three-dimensions.</p></li>
+<li><p><strong>spin</strong> (<em>str</em><em>, </em><em>optional</em>) – Spin specification, e.g., “alpha”, “beta”, or both “ab” (default).</p></li>
+</ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>The M molecular orbitals evaluated on each point.</p>
@@ -468,7 +495,10 @@
 <span class="math notranslate nohighlight">\(G(\mathbf{r})\)</span>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>points</strong> (<em>ndarray</em><em>(</em><em>N</em><em>, </em><em>3</em><em>)</em>) – Cartesian coordinates of <span class="math notranslate nohighlight">\(N\)</span> points in three-dimensions.</p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>points</strong> (<em>ndarray</em><em>(</em><em>N</em><em>, </em><em>3</em><em>)</em>) – Cartesian coordinates of <span class="math notranslate nohighlight">\(N\)</span> points in three-dimensions.</p></li>
+<li><p><strong>spin</strong> (<em>str</em><em>, </em><em>optional</em>) – Spin specification, e.g., “alpha”, “beta”, or both “ab” (default).</p></li>
+</ul>
 </dd>
 </dl>
 </dd></dl>
@@ -483,7 +513,10 @@
 Numpy to compute this quanity.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>points</strong> (<em>ndarray</em><em>(</em><em>N</em><em>, </em><em>3</em><em>)</em>) – Cartesian coordinates of <span class="math notranslate nohighlight">\(N\)</span> points in three-dimensions.</p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>points</strong> (<em>ndarray</em><em>(</em><em>N</em><em>, </em><em>3</em><em>)</em>) – Cartesian coordinates of <span class="math notranslate nohighlight">\(N\)</span> points in three-dimensions.</p></li>
+<li><p><strong>spin</strong> (<em>str</em><em>, </em><em>optional</em>) – Spin specification, e.g., “alpha”, “beta”, or both “ab” (default).</p></li>
+</ul>
 </dd>
 </dl>
 </dd></dl>
@@ -498,7 +531,10 @@ Numpy to compute this quanity.</p>
 <p>In the QTAIM community, this is denoted as <span class="math notranslate nohighlight">\(K(\mathbf{r})\)</span>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>points</strong> (<em>ndarray</em><em>(</em><em>N</em><em>, </em><em>3</em><em>)</em>) – Cartesian coordinates of <span class="math notranslate nohighlight">\(N\)</span> points in three-dimensions.</p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>points</strong> (<em>ndarray</em><em>(</em><em>N</em><em>, </em><em>3</em><em>)</em>) – Cartesian coordinates of <span class="math notranslate nohighlight">\(N\)</span> points in three-dimensions.</p></li>
+<li><p><strong>spin</strong> (<em>str</em><em>, </em><em>optional</em>) – Spin specification, e.g., “alpha”, “beta”, or both “ab” (default).</p></li>
+</ul>
 </dd>
 </dl>
 </dd></dl>
@@ -512,7 +548,10 @@ Numpy to compute this quanity.</p>
 <p>where the integral gives the Shannon entropy of the electron density.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>points</strong> (<em>ndarray</em><em>(</em><em>N</em><em>, </em><em>3</em><em>)</em>) – Cartesian coordinates of <span class="math notranslate nohighlight">\(N\)</span> points in three-dimensions.</p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>points</strong> (<em>ndarray</em><em>(</em><em>N</em><em>, </em><em>3</em><em>)</em>) – Cartesian coordinates of <span class="math notranslate nohighlight">\(N\)</span> points in three-dimensions.</p></li>
+<li><p><strong>spin</strong> (<em>str</em><em>, </em><em>optional</em>) – Spin specification, e.g., “alpha”, “beta”, or both “ab” (default).</p></li>
+</ul>
 </dd>
 </dl>
 </dd></dl>
@@ -525,7 +564,10 @@ Numpy to compute this quanity.</p>
 \[\tau_{TF}(\mathbf{r}) = \frac{3}{10} (3\pi)^{2/3} \rho(\mathbf{r})^{5/3}\]</div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>points</strong> (<em>ndarray</em><em>(</em><em>N</em><em>, </em><em>3</em><em>)</em>) – Cartesian coordinates of <span class="math notranslate nohighlight">\(N\)</span> points in three-dimensions.</p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>points</strong> (<em>ndarray</em><em>(</em><em>N</em><em>, </em><em>3</em><em>)</em>) – Cartesian coordinates of <span class="math notranslate nohighlight">\(N\)</span> points in three-dimensions.</p></li>
+<li><p><strong>spin</strong> (<em>str</em><em>, </em><em>optional</em>) – Spin specification, e.g., “alpha”, “beta”, or both “ab” (default).</p></li>
+</ul>
 </dd>
 </dl>
 </dd></dl>
@@ -538,7 +580,10 @@ Numpy to compute this quanity.</p>
 \[\tau_W(\mathbf{r}) = \frac{\big|\nabla \rho(\mathbf{r}) \big|^2}{8\rho(\mathbf{r})}\]</div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>points</strong> (<em>ndarray</em><em>(</em><em>N</em><em>, </em><em>3</em><em>)</em>) – Cartesian coordinates of <span class="math notranslate nohighlight">\(N\)</span> points in three-dimensions.</p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>points</strong> (<em>ndarray</em><em>(</em><em>N</em><em>, </em><em>3</em><em>)</em>) – Cartesian coordinates of <span class="math notranslate nohighlight">\(N\)</span> points in three-dimensions.</p></li>
+<li><p><strong>spin</strong> (<em>str</em><em>, </em><em>optional</em>) – Spin specification, e.g., “alpha”, “beta”, or both “ab” (default).</p></li>
+</ul>
 </dd>
 </dl>
 </dd></dl>

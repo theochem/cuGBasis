@@ -7,7 +7,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Generating Cube Files &mdash; cugbasis  documentation</title>
-      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="_static/css/override.css?v=064c4a14" />
       <link rel="stylesheet" type="text/css" href="_static/nbsphinx-code-cells.css?v=2aa19091" />
       <link rel="stylesheet" type="text/css" href="_static/css/custom.css?v=9ba27866" />
@@ -183,10 +183,10 @@
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">cugbasis</span> <span class="kn">import</span> <span class="n">Molecule</span>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre><span></span>from cugbasis import Molecule
 
-<span class="n">file_path</span> <span class="o">=</span> <span class="sa">r</span><span class="s2">&quot;./ALA_ALA_peptide_uwb97xd_def2svpd.fchk&quot;</span>
-<span class="n">mol</span> <span class="o">=</span> <span class="n">Molecule</span><span class="p">(</span><span class="n">file_path</span><span class="p">)</span>
+file_path = r&quot;./ALA_ALA_peptide_uwb97xd_def2svpd.fchk&quot;
+mol = Molecule(file_path)
 </pre></div>
 </div>
 </div>
@@ -194,13 +194,13 @@
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">grid.cubic</span> <span class="kn">import</span> <span class="n">UniformGrid</span>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre><span></span>from grid.cubic import UniformGrid
 
-<span class="n">grid</span> <span class="o">=</span> <span class="n">UniformGrid</span><span class="o">.</span><span class="n">from_molecule</span><span class="p">(</span><span class="n">mol</span><span class="o">.</span><span class="n">atnums</span><span class="p">,</span> <span class="n">mol</span><span class="o">.</span><span class="n">atcoords</span><span class="p">,</span> <span class="n">spacing</span><span class="o">=</span><span class="mf">0.13</span><span class="p">,</span> <span class="n">extension</span><span class="o">=</span><span class="mf">10.0</span><span class="p">,</span> <span class="n">weight</span><span class="o">=</span><span class="s2">&quot;Rectangle&quot;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Origin of grid:   </span><span class="si">{</span><span class="n">grid</span><span class="o">.</span><span class="n">origin</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Cubic Grid Axes:  </span><span class="si">{</span><span class="n">grid</span><span class="o">.</span><span class="n">axes</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Cubic Grid Shape: </span><span class="si">{</span><span class="n">grid</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Number of Points: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">grid</span><span class="o">.</span><span class="n">points</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+grid = UniformGrid.from_molecule(mol.atnums, mol.atcoords, spacing=0.13, extension=10.0, weight=&quot;Rectangle&quot;)
+print(f&quot;Origin of grid:   {grid.origin}&quot;)
+print(f&quot;Cubic Grid Axes:  {grid.axes}&quot;)
+print(f&quot;Cubic Grid Shape: {grid.shape}&quot;)
+print(f&quot;Number of Points: {len(grid.points)}&quot;)
 <br/></pre></div>
 </div>
 </div>
@@ -223,21 +223,21 @@ Number of Points: 13602645
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre><span></span>import numpy as np
 
-<span class="n">dens</span> <span class="o">=</span> <span class="n">mol</span><span class="o">.</span><span class="n">compute_density</span><span class="p">(</span><span class="n">grid</span><span class="o">.</span><span class="n">points</span><span class="p">)</span>
+dens = mol.compute_density(grid.points)
 
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Total number of electrons:       </span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">mol</span><span class="o">.</span><span class="n">atnums</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Integration of electron density: </span><span class="si">{</span><span class="n">grid</span><span class="o">.</span><span class="n">integrate</span><span class="p">(</span><span class="n">dens</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+print(f&quot;Total number of electrons:       {np.sum(mol.atnums)}&quot;)
+print(f&quot;Integration of electron density: {grid.integrate(dens)}&quot;)
 
-<span class="c1"># Generate cube file for the density</span>
-<span class="n">grid</span><span class="o">.</span><span class="n">generate_cube</span><span class="p">(</span><span class="s2">&quot;density_ala_ala.cube&quot;</span><span class="p">,</span> <span class="n">dens</span><span class="p">,</span> <span class="n">mol</span><span class="o">.</span><span class="n">atcoords</span><span class="p">,</span> <span class="n">mol</span><span class="o">.</span><span class="n">atnums</span><span class="p">)</span>
+# Generate cube file for the density
+grid.generate_cube(&quot;density_ala_ala.cube&quot;, dens, mol.atcoords, mol.atnums)
 
-<span class="c1"># Load the cube file</span>
-<span class="n">grid_2</span><span class="p">,</span> <span class="n">grid_data</span> <span class="o">=</span> <span class="n">UniformGrid</span><span class="o">.</span><span class="n">from_cube</span><span class="p">(</span><span class="s2">&quot;./density_ala_ala.cube&quot;</span><span class="p">,</span> <span class="n">weight</span><span class="o">=</span><span class="s2">&quot;Rectangle&quot;</span><span class="p">,</span> <span class="n">return_data</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+# Load the cube file
+grid_2, grid_data = UniformGrid.from_cube(&quot;./density_ala_ala.cube&quot;, weight=&quot;Rectangle&quot;, return_data=True)
 
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Integration Using Loaded Cube:   </span><span class="si">{</span><span class="n">grid_2</span><span class="o">.</span><span class="n">integrate</span><span class="p">(</span><span class="n">grid_data</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">])</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Do both densities match:         </span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">dens</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">grid_data</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">])</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mf">1e-3</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+print(f&quot;Integration Using Loaded Cube:   {grid_2.integrate(grid_data[&#39;data&#39;])}&quot;)
+print(f&quot;Do both densities match:         {np.all(np.abs(dens - grid_data[&#39;data&#39;]) &lt; 1e-3)}&quot;)
 </pre></div>
 </div>
 </div>
@@ -259,14 +259,14 @@ Do both densities match:         True
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre><span></span><span class="n">lap</span> <span class="o">=</span> <span class="n">mol</span><span class="o">.</span><span class="n">compute_laplacian</span><span class="p">(</span><span class="n">grid</span><span class="o">.</span><span class="n">points</span><span class="p">)</span>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre><span></span>lap = mol.compute_laplacian(grid.points)
 
-<span class="c1"># Generate cube file for the density</span>
-<span class="n">grid</span><span class="o">.</span><span class="n">generate_cube</span><span class="p">(</span><span class="s2">&quot;lap_ala_ala.cube&quot;</span><span class="p">,</span> <span class="n">lap</span><span class="p">,</span> <span class="n">mol</span><span class="o">.</span><span class="n">atcoords</span><span class="p">,</span> <span class="n">mol</span><span class="o">.</span><span class="n">atnums</span><span class="p">)</span>
+# Generate cube file for the density
+grid.generate_cube(&quot;lap_ala_ala.cube&quot;, lap, mol.atcoords, mol.atnums)
 
-<span class="c1"># Load the cube file</span>
-<span class="c1">#grid_2, grid_data = UniformGrid.from_cube(&quot;./lap_ala_ala.cube&quot;, weight=&quot;Rectangle&quot;, return_data=True)</span>
-<span class="c1">#lap_2 = grid_data[&quot;data&quot;]</span>
+# Load the cube file
+#grid_2, grid_data = UniformGrid.from_cube(&quot;./lap_ala_ala.cube&quot;, weight=&quot;Rectangle&quot;, return_data=True)
+#lap_2 = grid_data[&quot;data&quot;]
 </pre></div>
 </div>
 </div>
@@ -277,14 +277,14 @@ Do both densities match:         True
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre><span></span><span class="n">rdg</span> <span class="o">=</span> <span class="n">mol</span><span class="o">.</span><span class="n">compute_reduced_density_gradient</span><span class="p">(</span><span class="n">grid</span><span class="o">.</span><span class="n">points</span><span class="p">)</span>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre><span></span>rdg = mol.compute_reduced_density_gradient(grid.points)
 
-<span class="c1"># Generate cube file for the density</span>
-<span class="n">grid</span><span class="o">.</span><span class="n">generate_cube</span><span class="p">(</span><span class="s2">&quot;rdg_ala_ala.cube&quot;</span><span class="p">,</span> <span class="n">rdg</span><span class="p">,</span> <span class="n">mol</span><span class="o">.</span><span class="n">atcoords</span><span class="p">,</span> <span class="n">mol</span><span class="o">.</span><span class="n">atnums</span><span class="p">)</span>
+# Generate cube file for the density
+grid.generate_cube(&quot;rdg_ala_ala.cube&quot;, rdg, mol.atcoords, mol.atnums)
 
-<span class="c1"># Load the cube file</span>
-<span class="c1">#grid_2, grid_data = UniformGrid.from_cube(&quot;./rdg_ala_ala.cube&quot;, weight=&quot;Rectangle&quot;, return_data=True)</span>
-<span class="c1">#rdg_2 = grid_data[&quot;data&quot;]</span>
+# Load the cube file
+#grid_2, grid_data = UniformGrid.from_cube(&quot;./rdg_ala_ala.cube&quot;, weight=&quot;Rectangle&quot;, return_data=True)
+#rdg_2 = grid_data[&quot;data&quot;]
 </pre></div>
 </div>
 </div>
