@@ -27,7 +27,7 @@ jobs:
         id: cuda-toolkit
         with:
           cuda: '12.8.1'
-          use-github-cache: true
+          use-local-cache: false
 
       - name: Check nvcc version
         run: nvcc -V
