@@ -14,7 +14,8 @@ __host__ std::vector<double> chemtools::evaluate_pos_def_kinetic_density_on_any_
           cublasHandle_t &handle,
           IOData         &iodata,
     const double         *h_points,
-          int            n_pts
+          int            n_pts,
+    const std::string&   spin
 ) {
     const MolecularBasis molbasis = iodata.GetOrbitalBasis();
     const int            n_basis  = molbasis.numb_basis_functions();
@@ -43,7 +44,7 @@ __host__ std::vector<double> chemtools::evaluate_pos_def_kinetic_density_on_any_
         iodata.GetOneRdmShape(),
         iodata.GetOneRdmShape(),
         sizeof(double),
-        iodata.GetMOOneRDM(),
+        iodata.GetMOOneRDM(spin),
         iodata.GetOneRdmShape(),
         d_one_rdm,
         iodata.GetOneRdmShape()
@@ -170,14 +171,15 @@ __host__ std::vector<double> chemtools::evaluate_pos_def_kinetic_density_on_any_
 
 
 __host__ std::vector<double> chemtools::evaluate_positive_definite_kinetic_density(
-          IOData &iodata,
-    const double *h_points,
-          int    n_pts
+          IOData       &iodata,
+    const double       *h_points,
+          int          n_pts,
+    const std::string  &spin
 ) {
   cublasHandle_t handle;
   CUBLAS_CHECK(cublasCreate(&handle));
   std::vector<double> kinetic_density = evaluate_pos_def_kinetic_density_on_any_grid_handle(
-      handle, iodata, h_points, n_pts
+      handle, iodata, h_points, n_pts, spin
   );
   CUBLAS_CHECK(cublasDestroy(handle));
   return kinetic_density;
@@ -185,19 +187,20 @@ __host__ std::vector<double> chemtools::evaluate_positive_definite_kinetic_densi
 
 
 __host__ std::vector<double> chemtools::evaluate_general_kinetic_energy_density(
-          IOData &iodata,
-          double alpha,
-    const double *h_points,
-          int    n_pts
+          IOData      &iodata,
+          double      alpha,
+    const double      *h_points,
+          int         n_pts,
+    const std::string &spin
 ){
   // Evaluate \nabla^2 \rho
   std::vector<double> h_laplacian = evaluate_laplacian(
-      iodata, h_points, n_pts
+      iodata, h_points, n_pts, spin
       );
 
   //  Evaluate t_{+}
   std::vector<double> h_pos_def_kinetic_energy = evaluate_positive_definite_kinetic_density(
-      iodata, h_points, n_pts
+      iodata, h_points, n_pts, spin
       );
 
   // Add them t_{+} + \alpha \nabla^2 \rho

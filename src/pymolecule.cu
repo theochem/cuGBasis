@@ -218,23 +218,23 @@ Vector chemtools::Molecule::compute_laplacian(const Eigen::Ref<MatrixX3R>&  poin
   return v2;
 }
 
-Vector chemtools::Molecule::compute_positive_definite_kinetic_energy(const Eigen::Ref<MatrixX3R>&  points) {
+Vector chemtools::Molecule::compute_positive_definite_kinetic_energy(const Eigen::Ref<MatrixX3R>&  points, const std::string& spin) {
   // Accept in row-major order because it is numpy default
   // Convert to column major order since it works better with the GPU code
   MatrixX3C pts_col_order = points;
   size_t nrows = points.rows();
   std::vector<double> kinetic_dens = chemtools::evaluate_positive_definite_kinetic_density(
-      *iodata_, pts_col_order.data(), nrows
+      *iodata_, pts_col_order.data(), nrows, spin
   );
   Vector v2 = Eigen::Map<Vector>(kinetic_dens.data(), nrows);
   return v2;
 }
 
-Vector chemtools::Molecule::compute_general_kinetic_energy(const Eigen::Ref<MatrixX3R>&  points, const double alpha) {
+Vector chemtools::Molecule::compute_general_kinetic_energy(const Eigen::Ref<MatrixX3R>&  points, const double alpha, const std::string& spin) {
   MatrixX3C pts_col_order = points;
   size_t nrows = points.rows();
   std::vector<double> kinetic_dens = chemtools::evaluate_general_kinetic_energy_density(
-      *iodata_, alpha, pts_col_order.data(), nrows
+      *iodata_, alpha, pts_col_order.data(), nrows, spin
   );
   Vector v2 = Eigen::Map<Vector>(kinetic_dens.data(), nrows);
   return v2;
@@ -260,87 +260,87 @@ Vector chemtools::Molecule::compute_norm_of_vector(const Eigen::Ref<MatrixX3R>& 
   return v2;
 }
 
-Vector chemtools::Molecule::compute_reduced_density_gradient(const Eigen::Ref<MatrixX3R>& array){
+Vector chemtools::Molecule::compute_reduced_density_gradient(const Eigen::Ref<MatrixX3R>& array, const std::string& spin){
   MatrixX3C pts_row_order = array;
   size_t nrows = array.rows();
-  std::vector<double> reduced = chemtools::compute_reduced_density_gradient(*iodata_, pts_row_order.data(), nrows);
+  std::vector<double> reduced = chemtools::compute_reduced_density_gradient(*iodata_, pts_row_order.data(), nrows, spin);
   Vector v2 = Eigen::Map<Vector>(reduced.data(), nrows);
   return v2;
 }
 
-Vector chemtools::Molecule::compute_weizsacker_ked(const Eigen::Ref<MatrixX3R>& array){
+Vector chemtools::Molecule::compute_weizsacker_ked(const Eigen::Ref<MatrixX3R>& array, const std::string& spin){
   MatrixX3C pts_row_order = array;
   size_t nrows = array.rows();
-  std::vector<double> w_ked = chemtools::compute_weizsacker_ked(*iodata_, pts_row_order.data(), nrows);
+  std::vector<double> w_ked = chemtools::compute_weizsacker_ked(*iodata_, pts_row_order.data(), nrows, spin);
   Vector v2 = Eigen::Map<Vector>(w_ked.data(), nrows);
   return v2;
 }
 
-Vector chemtools::Molecule::compute_thomas_fermi_ked(const Eigen::Ref<MatrixX3R>& array){
+Vector chemtools::Molecule::compute_thomas_fermi_ked(const Eigen::Ref<MatrixX3R>& array, const std::string& spin){
   MatrixX3C pts_row_order = array;
   size_t nrows = array.rows();
-  std::vector<double> tf_ked = chemtools::compute_thomas_fermi_energy_density(*iodata_, pts_row_order.data(), nrows);
+  std::vector<double> tf_ked = chemtools::compute_thomas_fermi_energy_density(*iodata_, pts_row_order.data(), nrows, spin);
   Vector v2 = Eigen::Map<Vector>(tf_ked.data(), nrows);
   return v2;
 }
 
 Vector chemtools::Molecule::compute_general_gradient_expansion_ked(
-    const Eigen::Ref<MatrixX3R>& array, const double a, const double b
+    const Eigen::Ref<MatrixX3R>& array, const double a, const double b, const std::string& spin
     ){
   MatrixX3C pts_row_order = array;
   size_t nrows = array.rows();
   std::vector<double> tf_ked = chemtools::compute_ked_gradient_expansion_general(
-      *iodata_, pts_row_order.data(), nrows, a, b
+      *iodata_, pts_row_order.data(), nrows, a, b, spin
       );
   Vector v2 = Eigen::Map<Vector>(tf_ked.data(), nrows);
   return v2;
 }
 
-Vector chemtools::Molecule::compute_empirical_gradient_expansion_ked(const Eigen::Ref<MatrixX3R>& array){
+Vector chemtools::Molecule::compute_empirical_gradient_expansion_ked(const Eigen::Ref<MatrixX3R>& array, const std::string& spin){
   MatrixX3C pts_row_order = array;
   size_t nrows = array.rows();
   std::vector<double> e_ked = chemtools::compute_ked_gradient_expansion_general(
-      *iodata_, pts_row_order.data(), nrows, 1.0 / 5.0, 1.0 / 6.0
+      *iodata_, pts_row_order.data(), nrows, 1.0 / 5.0, 1.0 / 6.0, spin
   );
   Vector v2 = Eigen::Map<Vector>(e_ked.data(), nrows);
   return v2;
 }
 
-Vector chemtools::Molecule::compute_gradient_expansion_ked(const Eigen::Ref<MatrixX3R>& array){
+Vector chemtools::Molecule::compute_gradient_expansion_ked(const Eigen::Ref<MatrixX3R>& array, const std::string& spin){
   MatrixX3C pts_row_order = array;
   size_t nrows = array.rows();
   std::vector<double> e_ked = chemtools::compute_ked_gradient_expansion_general(
-      *iodata_, pts_row_order.data(), nrows, 1.0 / 9.0, 1.0 / 6.0
+      *iodata_, pts_row_order.data(), nrows, 1.0 / 9.0, 1.0 / 6.0, spin
   );
   Vector v2 = Eigen::Map<Vector>(e_ked.data(), nrows);
   return v2;
 }
 
-Vector chemtools::Molecule::compute_general_ked(const Eigen::Ref<MatrixX3R>& array, const double a){
+Vector chemtools::Molecule::compute_general_ked(const Eigen::Ref<MatrixX3R>& array, const double a, const std::string& spin){
   MatrixX3C pts_row_order = array;
   size_t nrows = array.rows();
   std::vector<double> gen_ked = chemtools::compute_general_ked(
-      *iodata_, pts_row_order.data(), nrows, a
+      *iodata_, pts_row_order.data(), nrows, a, spin
   );
   Vector v2 = Eigen::Map<Vector>(gen_ked.data(), nrows);
   return v2;
 }
 
-Vector chemtools::Molecule::compute_hamiltonian_ked(const Eigen::Ref<MatrixX3R>& array){
+Vector chemtools::Molecule::compute_hamiltonian_ked(const Eigen::Ref<MatrixX3R>& array, const std::string& spin){
   MatrixX3C pts_row_order = array;
   size_t nrows = array.rows();
   std::vector<double> ham_ked = chemtools::compute_general_ked(
-      *iodata_, pts_row_order.data(), nrows, 0.0
+      *iodata_, pts_row_order.data(), nrows, 0.0, spin
   );
   Vector v2 = Eigen::Map<Vector>(ham_ked.data(), nrows);
   return v2;
 }
 
-Vector chemtools::Molecule::compute_shannon_information_density(const Eigen::Ref<MatrixX3R>& array){
+Vector chemtools::Molecule::compute_shannon_information_density(const Eigen::Ref<MatrixX3R>& array, const std::string& spin){
   MatrixX3C pts_row_order = array;
   size_t nrows = array.rows();
   std::vector<double> entropy = chemtools::compute_shannon_information_density(
-      *iodata_, pts_row_order.data(), nrows
+      *iodata_, pts_row_order.data(), nrows, spin
   );
   Vector v2 = Eigen::Map<Vector>(entropy.data(), nrows);
   return v2;

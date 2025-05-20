@@ -57,19 +57,19 @@ class Molecule {
         TensorXXXR compute_molecular_orbitals_deriv(const Eigen::Ref<MatrixX3R>&  points);
         Vector compute_laplacian(const Eigen::Ref<MatrixX3R>&  points, const std::string& spin = "ab");
         Vector compute_electrostatic_potential(const Eigen::Ref<MatrixX3R>&  points, const std::string& spin = "ab");
-
-        Vector compute_positive_definite_kinetic_energy(const Eigen::Ref<MatrixX3R>&  points);
-        Vector compute_general_kinetic_energy(const Eigen::Ref<MatrixX3R>&  points, const double alpha);
+        Vector compute_positive_definite_kinetic_energy(const Eigen::Ref<MatrixX3R>&  points, const std::string& spin = "ab");
+        Vector compute_general_kinetic_energy(const Eigen::Ref<MatrixX3R>&  points, double alpha, const std::string& spin = "ab");
         Vector compute_norm_of_vector(const Eigen::Ref<MatrixX3R>& array);
-        Vector compute_reduced_density_gradient(const Eigen::Ref<MatrixX3R>& array);
-        Vector compute_weizsacker_ked(const Eigen::Ref<MatrixX3R>& array);
-        Vector compute_thomas_fermi_ked(const Eigen::Ref<MatrixX3R>& array);
-        Vector compute_general_gradient_expansion_ked(const Eigen::Ref<MatrixX3R>& array, double a, double b);
-        Vector compute_empirical_gradient_expansion_ked(const Eigen::Ref<MatrixX3R>& array);
-        Vector compute_gradient_expansion_ked(const Eigen::Ref<MatrixX3R>& array);
-        Vector compute_general_ked(const Eigen::Ref<MatrixX3R>& array, const double a);
-        Vector compute_hamiltonian_ked(const Eigen::Ref<MatrixX3R>& array);
-        Vector compute_shannon_information_density(const Eigen::Ref<MatrixX3R>& array);
+        Vector compute_reduced_density_gradient(const Eigen::Ref<MatrixX3R>& array, const std::string& spin = "ab");
+
+        Vector compute_weizsacker_ked(const Eigen::Ref<MatrixX3R>& array, const std::string& spin = "ab");
+        Vector compute_thomas_fermi_ked(const Eigen::Ref<MatrixX3R>& array, const std::string& spin = "ab");
+        Vector compute_general_gradient_expansion_ked(const Eigen::Ref<MatrixX3R>& array, double a, double b, const std::string& spin = "ab");
+        Vector compute_empirical_gradient_expansion_ked(const Eigen::Ref<MatrixX3R>& array, const std::string& spin = "ab");
+        Vector compute_gradient_expansion_ked(const Eigen::Ref<MatrixX3R>& array, const std::string& spin = "ab");
+        Vector compute_general_ked(const Eigen::Ref<MatrixX3R>& array, const double a, const std::string& spin = "ab");
+        Vector compute_hamiltonian_ked(const Eigen::Ref<MatrixX3R>& array, const std::string& spin = "ab");
+        Vector compute_shannon_information_density(const Eigen::Ref<MatrixX3R>& array, const std::string& spin = "ab");
 };
 
 

@@ -96,6 +96,15 @@ path: str
 
 
 
+
+
+
+
+  /**
+   *
+   * Molecule class
+   *
+   */
   py::class_<chemtools::Molecule>(m, "Molecule")
       .def(py::init<const std::string &>(), R"pbdoc(Initialize the molecule class.
 
@@ -115,6 +124,8 @@ path: str
     ----------
     points: ndarray(N, 3)
         Cartesian coordinates of :math:`N` points in three-dimensions.
+    spin: str, optional
+         Spin specification, e.g., "alpha", "beta", or both "ab" (default).
 
     Returns
     -------
@@ -133,6 +144,8 @@ path: str
     ----------
     points: ndarray(N, 3)
         Cartesian coordinates of :math:`N` points in three-dimensions.
+    spin: str, optional
+         Spin specification, e.g., "alpha", "beta", or both "ab" (default).
 
     Returns
     -------
@@ -155,6 +168,8 @@ path: str
     ----------
     points: ndarray(N, 3)
         Cartesian coordinates of :math:`N` points in three-dimensions.
+    spin: str, optional
+         Spin specification, e.g., "alpha", "beta", or both "ab" (default).
 
     Returns
     -------
@@ -173,6 +188,8 @@ path: str
     ----------
     points: ndarray(N, 3)
         Cartesian coordinates of :math:`N` points in three-dimensions.
+    spin: str, optional
+         Spin specification, e.g., "alpha", "beta", or both "ab" (default).
 
     Returns
     -------
@@ -195,11 +212,14 @@ path: str
     ----------
     points: ndarray(N, 3)
         Cartesian coordinates of :math:`N` points in three-dimensions.
-
+    spin: str, optional
+         Spin specification, e.g., "alpha", "beta", or both "ab" (default).
 )pbdoc"
       )
       .def("compute_positive_definite_kinetic_energy_density",
-           &chemtools::Molecule::compute_positive_definite_kinetic_energy,
+      &chemtools::Molecule::compute_positive_definite_kinetic_energy,
+           py::arg("points"),
+           py::arg("spin") = "ab",
            py::return_value_policy::reference_internal,
            R"pbdoc(Compute the positive definite kinetic energy density on a grid of points.
 
@@ -213,11 +233,15 @@ path: str
     ----------
     points: ndarray(N, 3)
         Cartesian coordinates of :math:`N` points in three-dimensions.
-
+    spin: str, optional
+         Spin specification, e.g., "alpha", "beta", or both "ab" (default).
 )pbdoc"
       )
       .def("compute_general_kinetic_energy_density",
            &chemtools::Molecule::compute_general_ked,
+           py::arg("points"),
+           py::arg("alpha"),
+           py::arg("spin") = "ab",
            py::return_value_policy::reference_internal,
            R"pbdoc(Compute the general kinetic energy density on a grid of points.
 
@@ -233,6 +257,8 @@ path: str
         Cartesian coordinates of :math:`N` points in three-dimensions.
     alpha: float
         Constant parameter.
+    spin: str, optional
+         Spin specification, e.g., "alpha", "beta", or both "ab" (default).
 )pbdoc"
       )
       .def("compute_norm_of_vector",
@@ -249,6 +275,8 @@ path: str
       )
       .def("compute_reduced_density_gradient",
            &chemtools::Molecule::compute_reduced_density_gradient,
+           py::arg("points"),
+           py::arg("spin") = "ab",
            py::return_value_policy::reference_internal,
            R"pbdoc(Compute the reduced density gradient.
 
@@ -262,11 +290,14 @@ path: str
     ----------
     points: ndarray(N, 3)
         Cartesian coordinates of :math:`N` points in three-dimensions.
-
+    spin: str, optional
+         Spin specification, e.g., "alpha", "beta", or both "ab" (default).
 )pbdoc"
       )
       .def("compute_weizsacker_ked",
            &chemtools::Molecule::compute_weizsacker_ked,
+           py::arg("points"),
+           py::arg("spin") = "ab",
            py::return_value_policy::reference_internal,
            R"pbdoc(Compute the Weizsacker Kinetic energy density.
 
@@ -277,10 +308,14 @@ path: str
     ----------
     points: ndarray(N, 3)
         Cartesian coordinates of :math:`N` points in three-dimensions.
+    spin: str, optional
+         Spin specification, e.g., "alpha", "beta", or both "ab" (default).
 )pbdoc"
       )
       .def("compute_thomas_fermi_ked",
            &chemtools::Molecule::compute_thomas_fermi_ked,
+           py::arg("points"),
+           py::arg("spin") = "ab",
            py::return_value_policy::reference_internal,
            R"pbdoc(Compute the Thomas-Fermi kinetic energy density.
 
@@ -291,10 +326,16 @@ path: str
     ----------
     points: ndarray(N, 3)
         Cartesian coordinates of :math:`N` points in three-dimensions.
+    spin: str, optional
+         Spin specification, e.g., "alpha", "beta", or both "ab" (default).
 )pbdoc"
       )
       .def("compute_general_gradient_expansion_ked",
            &chemtools::Molecule::compute_general_gradient_expansion_ked,
+           py::arg("points"),
+           py::arg("alpha"),
+           py::arg("beta"),
+           py::arg("spin") = "ab",
            py::return_value_policy::reference_internal,
            R"pbdoc(Compute the general gradient expansion approximation of kinetic energy density.
 
@@ -309,10 +350,14 @@ path: str
         Constant parameter.
     beta: float
         Constant parameter.
+    spin: str, optional
+         Spin specification, e.g., "alpha", "beta", or both "ab" (default).
 )pbdoc"
       )
       .def("compute_gradient_expansion_ked",
            &chemtools::Molecule::compute_gradient_expansion_ked,
+           py::arg("points"),
+           py::arg("spin") = "ab",
            py::return_value_policy::reference_internal,
            R"pbdoc(Compute the gradient expansion approximation of kinetic energy density
 
@@ -324,10 +369,14 @@ path: str
     ----------
     points: ndarray(N, 3)
         Cartesian coordinates of :math:`N` points in three-dimensions.
+    spin: str, optional
+         Spin specification, e.g., "alpha", "beta", or both "ab" (default).
 )pbdoc"
       )
       .def("compute_empirical_gradient_expansion_ked",
            &chemtools::Molecule::compute_empirical_gradient_expansion_ked,
+           py::arg("points"),
+           py::arg("spin") = "ab",
            py::return_value_policy::reference_internal,
            R"pbdoc(Compute the empirical gradient expansion approximation of kinetic energy density.
 
@@ -339,10 +388,15 @@ path: str
     ----------
     points: ndarray(N, 3)
         Cartesian coordinates of :math:`N` points in three-dimensions.
+    spin: str, optional
+         Spin specification, e.g., "alpha", "beta", or both "ab" (default).
 )pbdoc"
       )
       .def("compute_general_ked",
            &chemtools::Molecule::compute_general_ked,
+           py::arg("points"),
+           py::arg("alpha"),
+           py::arg("spin") = "ab",
            py::return_value_policy::reference_internal,
            R"pbdoc(Compute the general(ish) kinetic energy density.
 
@@ -358,10 +412,14 @@ path: str
         Cartesian coordinates of :math:`N` points in three-dimensions.
     alpha: float
         The constant parameter.
+    spin: str, optional
+         Spin specification, e.g., "alpha", "beta", or both "ab" (default).
 )pbdoc"
       )
       .def("compute_schrodinger_ked",
            &chemtools::Molecule::compute_hamiltonian_ked,
+           py::arg("points"),
+           py::arg("spin") = "ab",
            py::return_value_policy::reference_internal,
            R"pbdoc(Compute the Schrödinger kinetic energy density.
 
@@ -376,10 +434,14 @@ path: str
     ----------
     points: ndarray(N, 3)
         Cartesian coordinates of :math:`N` points in three-dimensions.
+    spin: str, optional
+         Spin specification, e.g., "alpha", "beta", or both "ab" (default).
 )pbdoc"
       )
       .def("compute_shannon_information_density",
            &chemtools::Molecule::compute_shannon_information_density,
+           py::arg("points"),
+           py::arg("spin") = "ab",
            py::return_value_policy::reference_internal,
            R"pbdoc(Compute the Shannon information density."
 
@@ -392,6 +454,8 @@ path: str
     ----------
     points: ndarray(N, 3)
         Cartesian coordinates of :math:`N` points in three-dimensions.
+    spin: str, optional
+         Spin specification, e.g., "alpha", "beta", or both "ab" (default).
 )pbdoc"
       )
       .def("compute_electrostatic_potential",
@@ -409,8 +473,8 @@ path: str
     ----------
     points: ndarray(N, 3)
         Cartesian coordinates of :math:`N` points in three-dimensions.
-     spin: str, optional
-         Spin specification, e.g., "alpha", "beta", or "ab" (default).
+    spin: str, optional
+         Spin specification, e.g., "alpha", "beta", or both "ab" (default).
 )pbdoc"
       )
       // Properties
