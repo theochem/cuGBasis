@@ -24,10 +24,11 @@ jobs:
     steps:
       # Fetch CUDA toolkit using Jimver/cuda-toolkit
       - name: Fetch CUDA toolkit
-        uses: Jimver/cuda-toolkit@v0.2.18
+        uses: Jimver/cuda-toolkit@master
         id: cuda-toolkit
         with:
-          cuda: '12.1.0'
+          cuda: '12.8.1'
+          use-local-cache: false
 
       - name: Check nvcc version
         run: nvcc -V
