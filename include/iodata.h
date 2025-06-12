@@ -31,6 +31,8 @@ class IOData {
   double*             mo_coeffs_col_b_;          // Col-order AO->MO (Spin-Beta) Transformation
   std::array<int, 2>  mo_coeffs_col_shape_;
   double*             mo_occupations_;
+  double*             mo_occs_a_;            // Orbital occupation of alpha electrons.
+  double*             mo_occs_b_;            // Orbital occupation of beta electrons.
   double*             mo_one_rdm_;           // Both Spins One-RDM matrix (symmetric).
   double*             mo_one_rdm_a_;         // Spin-Alpha One-RDM matrix (symmetric).
   double*             mo_one_rdm_b_;         // Spin-Beta One-RDM matrix (symmetric).
@@ -47,6 +49,8 @@ class IOData {
     double* coeffs_b,
     std::array<int, 2> mo_coeffs_col_shape,
     double* occs,
+    double* occs_a,
+    double* occs_b,
     long int* charges,
     long int* atnums,
     double* mo_one_rdm,
@@ -63,6 +67,8 @@ class IOData {
       mo_coeffs_col_b_(coeffs_b),
       mo_coeffs_col_shape_(mo_coeffs_col_shape),
       mo_occupations_(occs),
+      mo_occs_a_(occs_a),
+      mo_occs_b_(occs_b),
       charges_(charges),
       atnums_(atnums),
       mo_one_rdm_(mo_one_rdm),
@@ -70,12 +76,12 @@ class IOData {
       mo_one_rdm_b_(mo_one_rdm_b) {}
   ~IOData() {
     delete one_rdm_; delete mo_coeffs_col_; delete mo_coeffs_col_a_; delete mo_coeffs_col_b_;
-    delete mo_occupations_; delete coord_atoms_; delete charges_;
+    delete mo_occupations_; delete coord_atoms_; delete charges_; delete mo_occs_a_; delete mo_occs_b_;
     delete atnums_; delete mo_one_rdm_; delete mo_one_rdm_a_; delete mo_one_rdm_b_;
   }
 
   IOData(const IOData& copy):
-    natoms(copy.natoms), one_rdm_shape_(copy.one_rdm_shape_)
+    natoms(copy.natoms), one_rdm_shape_(copy.one_rdm_shape_), mo_coeffs_col_shape_(copy.mo_coeffs_col_shape_)
   {
     int nbasis = copy.orbital_basis_.numb_basis_functions();
     orbital_basis_ = chemtools::MolecularBasis(copy.orbital_basis_);
@@ -96,6 +102,11 @@ class IOData {
     std::memcpy(mo_coeffs_col_b_, copy.mo_coeffs_col_b_, sizeof(double) * copy.one_rdm_shape_[0] * copy.one_rdm_shape_[1]);
     mo_occupations_ = new double[one_rdm_shape_[1]];
     std::memcpy(mo_occupations_, copy.mo_occupations_, sizeof(double) * one_rdm_shape_[1]);
+
+    mo_occs_a_ = new double[mo_coeffs_col_shape_[1]];
+    std::memcpy(mo_occs_a_, copy.mo_occs_a_, sizeof(double) * mo_coeffs_col_shape_[1]);
+    mo_occs_b_ = new double[mo_coeffs_col_shape_[1]];
+    std::memcpy(mo_occs_b_, copy.mo_occs_b_, sizeof(double) * mo_coeffs_col_shape_[1]);
 
     mo_one_rdm_ = new double[one_rdm_shape_[0] * one_rdm_shape_[0]];
     std::memcpy(mo_one_rdm_, copy.mo_one_rdm_, sizeof(double) * one_rdm_shape_[0] * one_rdm_shape_[0]);
@@ -168,13 +179,65 @@ class IOData {
   int GetMOCoeffsRow() const {return mo_coeffs_col_shape_[0];}
   int GetMOCoeffsCol() const {return mo_coeffs_col_shape_[1];}
   const double *GetMoOccupations() const {return mo_occupations_;}
+  const double *GetMoAlphaOccupations() const {return mo_occs_a_;}
+  const double *GetMoBetaOccupations() const {return mo_occs_b_;}
   const long int*  GetCharges() const {return charges_;}
   const long int* GetAtomicNumbers() const {return atnums_;}
 
   // Setters
   //void SetCoordAtoms(double *coord_atoms) {IOData::coord_atoms_ = coord_atoms;}
 
-
+  int GetHOMOIndex(std::string type = "a") {
+    // Returns the (0-based) index for HOMO orbitals
+    int index = one_rdm_shape_[1] - 1;
+    if (type == "a") {
+      for (int i = 0; i < one_rdm_shape_[1]; i++) {
+        if (mo_occs_a_[i] < 1E-6) {
+          index = i - 1;
+          break;
+        }
+      }
+    }
+    else if (type == "b") {
+      for (int i = 0; i < one_rdm_shape_[1]; i++) {
+        if (mo_occs_b_[i] < 1E-6) {
+          index = i - 1;
+          break;
+        }
+      }
+    }
+    else {
+      throw std::runtime_error("IOData::GetOneRdm: Unknown spin type");
+    }
+    return index;
+  }
+  int GetLUMOIndex(std::string type = "a") {
+    // Returns the (0-based) index for LUMO orbitals
+    int index = -1;
+    if (type == "a") {
+      for (int i = 0; i < this->GetMOCoeffsCol(); i++) {
+        if (mo_occs_a_[i] < 1E-6) {
+          index = i;
+          break;
+        }
+      }
+    }
+    else if (type == "b") {
+      for (int i = 0; i < this->GetMOCoeffsCol(); i++) {
+        if (mo_occs_b_[i] < 1E-6) {
+          index = i;
+          break;
+        }
+      }
+    }
+    else {
+      throw std::runtime_error("IOData::GetOneRdm: Unknown spin type");
+    }
+    if (index == -1) {
+      throw std::runtime_error("IOData::GetLUMOIndex: LUMOIndex not found");
+    }
+    return index;
+  }
 };
 
 /**

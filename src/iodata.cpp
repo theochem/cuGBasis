@@ -188,12 +188,17 @@ chemtools::IOData chemtools::get_molecular_basis_from_fchk(const std::string& fc
 
   // Store the transformation matrix form AO to MO
   py::array_t<double, py::array::c_style> occs = local["occs"].cast<py::array_t<double>>();
+  py::array_t<double, py::array::c_style> occs_a = local["occs_a"].cast<py::array_t<double>>();
+  py::array_t<double, py::array::c_style> occs_b = local["occs_b"].cast<py::array_t<double>>();
   py::array_t<double, py::array::c_style> mo_coeffs   = local["coeffs"].cast<py::array_t<double>>();
   py::array_t<double, py::array::c_style> mo_coeffs_a = local["coeffs_a"].cast<py::array_t<double>>();
   py::array_t<double, py::array::c_style> mo_coeffs_b = local["coeffs_b"].cast<py::array_t<double>>();
   int one_rdm_shape_row = mo_one_rdm.shape()[0];   // Symmetric square matrix
   int one_rdm_shape_col = mo_one_rdm.shape()[1];
   int mo_coefficients_col_a = mo_coeffs_a.shape()[1];
+  int mo_coefficients_col_b = mo_coeffs_b.shape()[1];
+  assert(mo_coefficients_col_a == mo_coefficients_col_b &&
+    "Mismatch in number of molecular orbitals between alpha and beta spins");
   int mo_coefficients_row_a = mo_coeffs_a.shape()[0];
 
   // Get the coordinates of the atoms.
@@ -217,12 +222,13 @@ chemtools::IOData chemtools::get_molecular_basis_from_fchk(const std::string& fc
   auto* h_coeffs_col_a  = new double[mo_coefficients_row_a * mo_coefficients_col_a];
   auto* h_coeffs_col_b  = new double[mo_coefficients_row_a * mo_coefficients_col_a];
   auto* h_occs          = new double[mo_coeffs.shape()[1]];
+  auto* h_occs_a        = new double[mo_coefficients_col_a];
+  auto* h_occs_b        = new double[mo_coefficients_col_a];
   auto* h_coords_atoms  = new double[natoms * 3];
   auto* h_one_rdm       = new double[one_rdm_shape_row * one_rdm_shape_row];
   auto* h_mo_one_rdm    = new double[one_rdm_shape_row * one_rdm_shape_row];
   auto* h_mo_one_rdm_a  = new double[one_rdm_shape_row * one_rdm_shape_row];
   auto* h_mo_one_rdm_b  = new double[one_rdm_shape_row * one_rdm_shape_row];
-
   for(int i = 0; i < one_rdm_shape_row; i++){
     // Iterate coefficients in row-major order h_coeffs(row-major order)
     for (int k = 0; k < mo_coeffs.shape()[1]; k++) {
@@ -250,6 +256,10 @@ chemtools::IOData chemtools::get_molecular_basis_from_fchk(const std::string& fc
       }
     }
   }
+  for(int i = 0; i < mo_coefficients_col_a; i++) {
+    h_occs_a[i] = occs_a.at(i);
+    h_occs_b[i] = occs_b.at(i);
+  }
   for(int i = 0; i < mo_coeffs.shape()[1]; i++) {
     h_occs[i] = occs.at(i);
   }
@@ -263,6 +273,6 @@ chemtools::IOData chemtools::get_molecular_basis_from_fchk(const std::string& fc
   return {chemtools::MolecularBasis(molecular_basis), h_coords_atoms, natoms,
           h_one_rdm, {one_rdm_shape_row, one_rdm_shape_col}, h_coeffs_col, h_coeffs_col_a,
           h_coeffs_col_b, {mo_coefficients_row_a, mo_coefficients_col_a},
-          h_occs, charges, atnums, h_mo_one_rdm,
+          h_occs, h_occs_a, h_occs_b, charges, atnums, h_mo_one_rdm,
     h_mo_one_rdm_a, h_mo_one_rdm_b};
 }
