@@ -316,6 +316,14 @@ cmake<span class="w"> </span>-S<span class="w"> </span>.<span class="w"> </span>
 </pre></div>
 </div>
 <ul class="simple">
+<li><p>To install with support for multiple CUDA architectures, use the following command. Note: This syntax requires
+CMake ≥ 3.18.</p></li>
+</ul>
+<p>..code-block:: bash</p>
+<blockquote>
+<div><p>CMAKE_CUDA_ARCHITECTURES=”70;75” pip install -v .</p>
+</div></blockquote>
+<ul class="simple">
 <li><p>If CUBLAS, CURAND are not found, add the following flag to the correct path.
 See <a class="reference external" href="https://cmake.org/cmake/help/latest/module/FindCUDAToolkit.html">here</a> for more information on how to modify CMake.</p></li>
 </ul>

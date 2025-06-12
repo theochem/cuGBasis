@@ -167,6 +167,14 @@ The following can help with compiling this package
     # if cmake:
     cmake -S . -B ./out/build/ -DCMAKE_CUDA_ARCHITECTURES=60
 
+- To install with support for multiple CUDA architectures, use the following command. Note: This syntax requires
+  CMake ≥ 3.18.
+
+..code-block:: bash
+
+    CMAKE_CUDA_ARCHITECTURES="70;75" pip install -v .
+
+
 - If CUBLAS, CURAND are not found, add the following flag to the correct path.
   See `here <https://cmake.org/cmake/help/latest/module/FindCUDAToolkit.html>`_ for more information on how to modify CMake.
 
