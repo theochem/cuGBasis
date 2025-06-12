@@ -125,7 +125,7 @@ path: str
     points: ndarray(N, 3)
         Cartesian coordinates of :math:`N` points in three-dimensions.
     spin: str, optional
-         Spin specification, e.g., "alpha", "beta", or both "ab" (default).
+         Spin specification, e.g., "a" (alpha), "b" (beta), or both "ab" (default).
 
     Returns
     -------
@@ -145,7 +145,7 @@ path: str
     points: ndarray(N, 3)
         Cartesian coordinates of :math:`N` points in three-dimensions.
     spin: str, optional
-         Spin specification, e.g., "alpha", "beta", or both "ab" (default).
+         Spin specification, e.g., "a" (alpha), "b" (beta), or both "ab" (default).
 
     Returns
     -------
@@ -169,7 +169,7 @@ path: str
     points: ndarray(N, 3)
         Cartesian coordinates of :math:`N` points in three-dimensions.
     spin: str, optional
-         Spin specification, e.g., "alpha", "beta", or both "ab" (default).
+         Spin specification, e.g., "a" (alpha), "b" (beta), or both "ab" (default).
 
     Returns
     -------
@@ -189,7 +189,7 @@ path: str
     points: ndarray(N, 3)
         Cartesian coordinates of :math:`N` points in three-dimensions.
     spin: str, optional
-         Spin specification, e.g., "alpha", "beta", or both "ab" (default).
+         Spin specification, e.g., "a" (alpha), "b" (beta), or both "ab" (default).
 
     Returns
     -------
@@ -213,7 +213,7 @@ path: str
     points: ndarray(N, 3)
         Cartesian coordinates of :math:`N` points in three-dimensions.
     spin: str, optional
-         Spin specification, e.g., "alpha", "beta", or both "ab" (default).
+         Spin specification, e.g., "a" (alpha), "b" (beta), or both "ab" (default).
 )pbdoc"
       )
       .def("compute_positive_definite_kinetic_energy_density",
@@ -234,7 +234,7 @@ path: str
     points: ndarray(N, 3)
         Cartesian coordinates of :math:`N` points in three-dimensions.
     spin: str, optional
-         Spin specification, e.g., "alpha", "beta", or both "ab" (default).
+         Spin specification, e.g., "a" (alpha), "b" (beta), or both "ab" (default).
 )pbdoc"
       )
       .def("compute_general_kinetic_energy_density",
@@ -258,7 +258,7 @@ path: str
     alpha: float
         Constant parameter.
     spin: str, optional
-         Spin specification, e.g., "alpha", "beta", or both "ab" (default).
+         Spin specification, e.g., "a" (alpha), "b" (beta), or both "ab" (default).
 )pbdoc"
       )
       .def("compute_norm_of_vector",
@@ -291,7 +291,7 @@ path: str
     points: ndarray(N, 3)
         Cartesian coordinates of :math:`N` points in three-dimensions.
     spin: str, optional
-         Spin specification, e.g., "alpha", "beta", or both "ab" (default).
+         Spin specification, e.g., "a" (alpha), "b" (beta), or both "ab" (default).
 )pbdoc"
       )
       .def("compute_weizsacker_ked",
@@ -309,7 +309,7 @@ path: str
     points: ndarray(N, 3)
         Cartesian coordinates of :math:`N` points in three-dimensions.
     spin: str, optional
-         Spin specification, e.g., "alpha", "beta", or both "ab" (default).
+         Spin specification, e.g., "a" (alpha), "b" (beta), or both "ab" (default).
 )pbdoc"
       )
       .def("compute_thomas_fermi_ked",
@@ -327,7 +327,7 @@ path: str
     points: ndarray(N, 3)
         Cartesian coordinates of :math:`N` points in three-dimensions.
     spin: str, optional
-         Spin specification, e.g., "alpha", "beta", or both "ab" (default).
+         Spin specification, e.g., "a" (alpha), "b" (beta), or both "ab" (default).
 )pbdoc"
       )
       .def("compute_general_gradient_expansion_ked",
@@ -351,7 +351,7 @@ path: str
     beta: float
         Constant parameter.
     spin: str, optional
-         Spin specification, e.g., "alpha", "beta", or both "ab" (default).
+         Spin specification, e.g., "a" (alpha), "b" (beta), or both "ab" (default).
 )pbdoc"
       )
       .def("compute_gradient_expansion_ked",
@@ -370,7 +370,7 @@ path: str
     points: ndarray(N, 3)
         Cartesian coordinates of :math:`N` points in three-dimensions.
     spin: str, optional
-         Spin specification, e.g., "alpha", "beta", or both "ab" (default).
+         Spin specification, e.g., "a" (alpha), "b" (beta), or both "ab" (default).
 )pbdoc"
       )
       .def("compute_empirical_gradient_expansion_ked",
@@ -389,7 +389,7 @@ path: str
     points: ndarray(N, 3)
         Cartesian coordinates of :math:`N` points in three-dimensions.
     spin: str, optional
-         Spin specification, e.g., "alpha", "beta", or both "ab" (default).
+         Spin specification, e.g., "a" (alpha), "b" (beta), or both "ab" (default).
 )pbdoc"
       )
       .def("compute_general_ked",
@@ -413,7 +413,7 @@ path: str
     alpha: float
         The constant parameter.
     spin: str, optional
-         Spin specification, e.g., "alpha", "beta", or both "ab" (default).
+         Spin specification, e.g., "a" (alpha), "b" (beta), or both "ab" (default).
 )pbdoc"
       )
       .def("compute_schrodinger_ked",
@@ -435,7 +435,7 @@ path: str
     points: ndarray(N, 3)
         Cartesian coordinates of :math:`N` points in three-dimensions.
     spin: str, optional
-         Spin specification, e.g., "alpha", "beta", or both "ab" (default).
+         Spin specification, e.g., "a" (alpha), "b" (beta), or both "ab" (default).
 )pbdoc"
       )
       .def("compute_shannon_information_density",
@@ -455,7 +455,7 @@ path: str
     points: ndarray(N, 3)
         Cartesian coordinates of :math:`N` points in three-dimensions.
     spin: str, optional
-         Spin specification, e.g., "alpha", "beta", or both "ab" (default).
+         Spin specification, e.g., "a" (alpha), "b" (beta), or both "ab" (default).
 )pbdoc"
       )
       .def("compute_electrostatic_potential",
@@ -474,9 +474,33 @@ path: str
     points: ndarray(N, 3)
         Cartesian coordinates of :math:`N` points in three-dimensions.
     spin: str, optional
-         Spin specification, e.g., "alpha", "beta", or both "ab" (default).
+         Spin specification, e.g., "a" (alpha), "b" (beta), or both "ab" (default).
 )pbdoc"
       )
+    .def("get_HOMO_index",
+        &chemtools::Molecule::getHOMOIndex,
+        py::arg("spin") = "a",
+        py::return_value_policy::reference_internal,
+        R"pbdoc(Index of alpha and beta HOMO orbital.
+
+    Parameters
+    ----------
+    spin: str, optional
+         Spin specification, e.g., "a" (Alpha), or "b" (Beta).
+)pbdoc"
+        )
+        .def("get_LUMO_index",
+            &chemtools::Molecule::getLUMOIndex,
+            py::arg("spin") = "a",
+            py::return_value_policy::reference_internal,
+            R"pbdoc(Index of alpha and beta LUMO orbital.
+
+    Parameters
+    ----------
+    spin: str, optional
+         Spin specification, e.g., "a" (Alpha), or "b" (Beta).
+)pbdoc"
+        )
       // Properties
       .def_property_readonly(
           "atcoords", &chemtools::Molecule::getCoordinates, py::return_value_policy::reference_internal,
@@ -485,6 +509,14 @@ path: str
       .def_property_readonly(
           "atnums", &chemtools::Molecule::getNumbers, py::return_value_policy::reference_internal,
           "Atomic number of atomic centers."
+        )
+      .def_property_readonly(
+          "occs_a", &chemtools::Molecule::getAlphaOccNumbers, py::return_value_policy::reference_internal,
+          "Obtain occupation numbers for spin alpha electrons."
+          )
+      .def_property_readonly(
+          "occs_b", &chemtools::Molecule::getBetaOccNumbers, py::return_value_policy::reference_internal,
+          "Obtain occupation numbers for spin beta electrons."
       )
       .def("get_file_path", &chemtools::Molecule::getFilePath, "Get the wavefunction file path.");
 }

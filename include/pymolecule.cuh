@@ -48,6 +48,10 @@ class Molecule {
         const chemtools::IOData *getIOData() const { return iodata_; }
         const MatrixX3R getCoordinates() const;
         const IntVector getNumbers() const;
+        const Vector getAlphaOccNumbers() const;
+        const Vector getBetaOccNumbers() const;
+        const int getHOMOIndex(std::string type) const { return iodata_->GetHOMOIndex(type); }
+        const int getLUMOIndex(std::string type) const { return iodata_->GetLUMOIndex(type); }
         
         // Methods
         Vector compute_electron_density(const Eigen::Ref<MatrixX3R>&  points, const std::string& spin = "ab");

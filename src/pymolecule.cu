@@ -141,6 +141,19 @@ const IntVector chemtools::Molecule::getNumbers() const {
   return atomic_numbs;
 }
 
+const Vector chemtools::Molecule::getAlphaOccNumbers() const {
+  const double* alpha_occs = iodata_->GetMoAlphaOccupations();
+  Vector alpha_occs_nums = Eigen::Map<const Vector>(alpha_occs, iodata_->GetMOCoeffsCol());
+  return alpha_occs_nums;
+}
+
+const Vector chemtools::Molecule::getBetaOccNumbers() const {
+  const double* beta_occs = iodata_->GetMoBetaOccupations();
+  Vector beta_occs_nums = Eigen::Map<const Vector>(beta_occs, iodata_->GetMOCoeffsCol());
+  return beta_occs_nums;
+}
+
+
 Vector chemtools::Molecule::compute_electron_density(const Eigen::Ref<MatrixX3R>& points, const std::string& spin) {
   // Accept in row-major order because it is numpy default
   // Convert to column major order since it works better with the GPU code
