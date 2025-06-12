@@ -94,20 +94,23 @@ set_source_files_properties(
 
 add_library(cugbasis_lib SHARED ${HEADERS} ${SOURCES})
 set_target_properties(cugbasis_lib PROPERTIES CUDA_SEPARABLE_COMPILATION ON)
+
+
 # If the user didn't define CUDA architecture
-if("$ENV{CMAKE_CUDA_ARCHITECTURES}" STREQUAL "")
-	# If cmake version is greater than 3.24, automatically find the right CUDA Architecture
-	if("$ENV{CMAKE_CUDA_ARCHITECTURES}" STREQUAL "")
-		if(CMAKE_VERSION VERSION_GREATER_EQUAL "3.24")
-			set_property(TARGET cugbasis_lib PROPERTY CUDA_ARCHITECTURES native)
-		endif()
+if(NOT DEFINED ENV{CMAKE_CUDA_ARCHITECTURES} OR "$ENV{CMAKE_CUDA_ARCHITECTURES}" STREQUAL "")
+	# If cmake version >= 3.24, use native detection
+	if(CMAKE_VERSION VERSION_GREATER_EQUAL "3.24")
+		set_property(TARGET cugbasis_lib PROPERTY CUDA_ARCHITECTURES native)
 	else()
-		set_property(TARGET cugbasis_lib PROPERTY CUDA_ARCHITECTURES 52 60 61 75)  # Set a default CUDA_ARCHITECTURE
-	endif ()
+		# Otherwise, set a conservative default
+		set_property(TARGET cugbasis_lib PROPERTY CUDA_ARCHITECTURES 52 60 61 75)
+	endif()
 else()
-	# If the user did define the CUDA Archiecture then add it here.
+	# Use user-provided value
 	set_property(TARGET cugbasis_lib PROPERTY CUDA_ARCHITECTURES $ENV{CMAKE_CUDA_ARCHITECTURES})
 endif()
+
+
 target_compile_options(cugbasis_lib PRIVATE $<$<COMPILE_LANGUAGE:CUDA>:
         -rdc=true --expt-relaxed-constexpr -v -Xptxas=-v
 	>) # -rdc=true  std=c++14 isn't needed since CMAKE_CUDA_STANDARD already set Debuging -G -g turns off optimization, -O3 turns on optmization, -gencode=arch=compute_35,code=sm_35
