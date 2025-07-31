@@ -125,11 +125,12 @@ __host__ void evaluate_scalar_quantity(
  * @note Every basis-set information is casted to a double.
  * @note The following explains how memory is placed is with constant memory.
  *          i^E := Index of element `E` within constant memory where the promolecular is listed.
+ *          A_i = ith unique atom
  *          M^E_S := Number of s-type coefficeints for elemenmt E
  *          M^E_P := Number of p-type coefficeints for element E
  *
- *          | i^H | 4 byte blank | i^C | 4B blank | i^N | 4B blank | ... | i^Cl | 4B Blank
- *           M^H_S | 4B  | coeff_1 | exp_1 | coeff_2 | exp_2 | ... | M^H_P | 4B byte blank | coeff_1 | exp_1 | ....
+ *          | i^{A_1} | 4 byte blank | i^{A_2} | 4B blank | i^{A_3} | 4B blank | ... | i^{A_K} | 4B Blank
+ *           M^{{A_1}_S} | 4B  | coeff_1 | exp_1 | coeff_2 | exp_2 | ... | M^{{A_1}_P} | 4B byte blank | coeff_1 | exp_1 | ....
  *           Pattern repeats for the next element, starting with M^E_S
  *
  *          After that the Number of atoms (denoted as M) within constant memory is placed, then

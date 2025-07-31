@@ -22,10 +22,12 @@ namespace py = pybind11;
  * ProMolecule  methods
  *
  */
-chemtools::ProMolecule::ProMolecule(const Eigen::Ref<MatrixX3R>& atom_coords,
-                                    const Eigen::Ref<IntVector>& atom_numbers,
-                                    int atom_length,
-                                    const std::string file_path_to_data) {
+chemtools::ProMolecule::ProMolecule(
+  const Eigen::Ref<MatrixX3R>& atom_coords,
+  const Eigen::Ref<IntVector>& atom_numbers,
+        int                    atom_length,
+  const std::string            file_path_to_data
+  ) {
   // Grab the atomic coordinates, numbers and length from python
   this->natoms_ = atom_length;
   this->coord_atoms_ = atom_coords;
@@ -33,10 +35,23 @@ chemtools::ProMolecule::ProMolecule(const Eigen::Ref<MatrixX3R>& atom_coords,
 
   // Using python read the numpy files, grab the promolecular coefficients/exponents and create the dictionary.
   auto locals = py::dict();
-  std::vector<std::string> elements = {"h", "c", "n", "o", "f", "p", "s", "cl"};  // Elements that are needed
+  static std::array<std::string, 119> SYM_BY_Z = {
+    "",  // 0 unused
+    "h","he","li","be","b","c","n","o","f","ne","na","mg","al","si","p","s","cl","ar","k","ca",
+    "sc","ti","v","cr","mn","fe","co","ni","cu","zn","ga","ge","as","se","br","kr","rb","sr","y","zr",
+    "nb","mo","tc","ru","rh","pd","ag","cd","in","sn","sb","te","i","xe","cs","ba","la","ce","pr","nd",
+    "pm","sm","eu","gd","tb","dy","ho","er","tm","yb","lu","hf","ta","w","re","os","ir","pt","au","hg",
+    "tl","pb","bi","po","at","rn","fr","ra","ac","th","pa","u","np","pu","am","cm","bk","cf","es","fm",
+    "md","no","lr","rf","db","sg","bh","hs","mt","ds","rg","cn","nh","fl","mc","lv","ts","og"
+  };
+  std::unordered_set<std::string> uniqElements;
+  for(auto x: atom_numbers) {
+    uniqElements.insert(SYM_BY_Z[x]);  // Points to 8th index where hydrogen starts
+  }
+  std::vector<std::string> elements = std::vector<std::string>(uniqElements.begin(), uniqElements.end());
+
   locals["file_path"] = file_path_to_data;
   locals["elements"] = elements;
-  printf("Read from Python");
   py::exec(R"(
         # Convert to the Gaussian (.fchk) format
         import numpy as np
@@ -51,7 +66,7 @@ chemtools::ProMolecule::ProMolecule(const Eigen::Ref<MatrixX3R>& atom_coords,
           promol_dict[f"{element}_exps_s"] = promol[f"{element.capitalize()}_exps_s"]
           promol_dict[f"{element}_exps_p"] = promol[f"{element.capitalize()}_exps_p"]
     )", py::globals(), locals);
-  printf("Done reading from python \n");
+
   // Store the promolecular coefficients and exponents with keys: ELEMENT_PARAMETER_TYPE
   for(const auto& element: elements) {
     for(const std::string& param : {"coeffs", "exps"}) {
