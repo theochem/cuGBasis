@@ -3,6 +3,8 @@ import cugbasis
 import pytest
 from iodata import load_one
 from scipy.special import erf
+from grid.molgrid import MolGrid
+from grid.hirshfeld import HirshfeldWeights
 from chemtools.wrappers import Molecule
 
 class Promolecular:
@@ -137,6 +139,84 @@ def test_promolecular_density(molecule):
     density_cpu = promol_cpu.compute_density(random_pts)
 
     assert np.all(np.abs(density_gpu - density_cpu) < 1e-8)
+
+
+@pytest.mark.parametrize("molecule", [
+    "./tests/data/atom_o.fchk",
+    "./tests/data/atom_c_g_pure_orbital.fchk",
+    "./tests/data/h2o.fchk",
+    "./tests/data/ch4.fchk",
+    "./tests/data/test.fchk",
+    "./tests/data/test2.fchk",
+    "./tests/data/qm9_000092_HF_cc-pVDZ.fchk"
+])
+def test_atomic_promolecular_densities_on_variety_of_systems(molecule):
+    mol_iodata = load_one(molecule)
+    atcoords = mol_iodata.atcoords
+    atnums = mol_iodata.atnums
+
+    promol_gpu = cugbasis.Promolecule(atcoords, atnums, len(atnums),
+                                      "./data/result_kl_fpi_method_cugbasis_atomdb_hci_slater.npz")
+
+    random_pts = np.random.uniform(low=-1, high=1, size=(100000, 3)) + np.mean(atcoords, axis=0)
+    atomic_density = promol_gpu.compute_atomic_densities(random_pts)
+    promol_density = promol_gpu.compute_density(random_pts)
+    assert np.all(np.abs(np.sum(atomic_density, axis=1) - promol_density) < 1e-8)
+
+
+def test_atomic_promolecular_with_many_atoms():
+    SIZE = 10000
+    atcoords = np.zeros((SIZE, 3))
+    atcoords[:, 0] = np.arange(1, SIZE + 1)
+    atnums = np.ones(atcoords.shape[0], dtype=int)
+    promol_gpu =  cugbasis.Promolecule(atcoords, atnums, len(atnums),
+                                       "./data/result_kl_fpi_method_cugbasis_atomdb_hci_slater.npz")
+
+    random_pts = np.random.uniform(0.0, SIZE, size=(SIZE, 3))
+    random_pts[:, 1] = 0.0
+    random_pts[:, 2] = 0.0
+    random_pts[:, 0] = np.linspace(1, SIZE + 1, num=SIZE)
+    atomic_density = promol_gpu.compute_atomic_densities(random_pts)
+    promol_density = promol_gpu.compute_density(random_pts)
+    sum_promol = np.sum(atomic_density, axis=1)
+    assert np.all(np.abs(sum_promol - promol_density) < 1e-6)
+
+
+def test_promolecular_integral_with_interpolation_params():
+    SIZE = 10
+    atcoords = np.zeros((SIZE, 3))
+    atcoords[:, 0] = np.arange(1, SIZE + 1)
+    atnums = np.ones(atcoords.shape[0], dtype=int)
+    promol =  cugbasis.Promolecule(atcoords, atnums, len(atnums),
+                                   "./data/result_kl_fpi_method_cugbasis_atomdb_hci_slater.npz")
+    mol_grid = MolGrid.from_preset(
+        atnums=atnums,
+        atcoords=atcoords,
+        preset="coarse",
+        aim_weights=HirshfeldWeights(),
+        store=True,
+    )
+
+    interpolation_params = np.array([1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 10.0])
+    density = promol.compute_density(mol_grid.points, interpolation_params)
+    assert np.abs(mol_grid.integrate(density) - np.sum(interpolation_params)) < 1e-3
+
+
+def test_promolecular_with_many_atoms():
+    SIZE = 10000
+    atcoords = np.zeros((SIZE, 3))
+    atcoords[:, 0] = np.arange(1, SIZE + 1)
+    atnums = np.ones(atcoords.shape[0], dtype=int)
+    promol_gpu =  cugbasis.Promolecule(atcoords, atnums, len(atnums),
+                                   "./data/result_kl_fpi_method_cugbasis_atomdb_hci_slater.npz")
+    promol_cpu =  Promolecular(atnums, atcoords)
+
+    random_pts = np.random.uniform(0.0, SIZE, size=(10000, 3))
+    random_pts[:, 1] = 0.0
+    random_pts[:, 2] = 0.0
+    dens_gpu = promol_gpu.compute_density(random_pts)
+    dens_cpu = promol_cpu.compute_density(random_pts)
+    assert np.all(np.abs(dens_gpu - dens_cpu) < 1e-7)
 
 
 @pytest.mark.parametrize("molecule", [

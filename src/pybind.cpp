@@ -27,15 +27,28 @@ path: str
     This ".npz" is within the folder "./data/".
 )pbdoc")
     .def("compute_density",
-      &chemtools::ProMolecule::compute_electron_density,
-      py::return_value_policy::reference_internal,
+    [](chemtools::ProMolecule &self,
+       const Eigen::Ref<MatrixX3R> &points,
+       py::object interParams = py::none()
+       ) -> Vector {
+      Eigen::VectorXd interParamsEigen;
+      if (interParams.is_none()) {
+        interParamsEigen = Eigen::VectorXd::Ones(self.GetNatoms());
+      } else {
+        interParamsEigen = interParams.cast<Eigen::VectorXd>();
+      }
+      return self.compute_electron_density(points, interParamsEigen);
+    },
+    py::arg("points"),
+    py::arg("interParams") = py::none(),
       R"pbdoc(Compute promolecular density :math:`\rho^\circ(\mathbf{r})`.
 
           .. math::
-            \rho^\circ(\mathbf{r}) = \sum_A \bigg[ \sum_i c_i \frac{\alpha}{\pi}^{3/2} e^{-\alpha r_{A} ^2} +
+            \rho^\circ(\mathbf{r}) = \sum_A k_i \bigg[ \sum_i c_i \frac{\alpha}{\pi}^{3/2} e^{-\alpha r_{A} ^2} +
             \sum_j d_j \frac{2 \alpha^{5/2}}{3 \pi^{3/2}} r_A^2 e^{-\alpha r_A^2} \bigg],
 
-          where :math:`A` is an atom, :math:`c_i, d_j` are the s-type, p-type coefficients respectively.
+          where :math:`A` is an atom, :math:`c_i, d_j` are the s-type, p-type coefficients respectively, and
+          :math:`k_i` are the atomic charges.
           Note this is normalized. Please see the paper "An information-theoretic approach to basis-set fitting of
           electron densities and other non-negative functions".
 
@@ -43,6 +56,8 @@ path: str
           ----------
           points: ndarray(N, 3)
               Cartesian coordinates of :math:`N` points in three-dimensions.
+          interParams: ndarray(M,), optional
+              Interpolation parameters :math:`\lambda_i` to multiply each `M` atom. Default is all ones.
 
           Returns
           -------
@@ -51,25 +66,106 @@ path: str
       )pbdoc"
     )
     .def("compute_esp",
-    &chemtools::ProMolecule::compute_electrostatic_potential,
-    py::return_value_policy::reference_internal,
-    R"pbdoc(Compute the electrostatic potential on :math:`\rho^\circ(\mathbf{r})`.
+        // &chemtools::ProMolecule::compute_electrostatic_potential,
+        [](chemtools::ProMolecule& self,
+         const Eigen::Ref<MatrixX3R>&  points,
+         py::object interParams_py
+         ) {
+            Eigen::VectorXd interParams;
+            if (interParams_py.is_none()) {
+              interParams = Eigen::VectorXd::Ones(self.GetNatoms());
+            }
+            else {
+                interParams = interParams_py.cast<Eigen::VectorXd>();
+            }
+            return self.compute_electrostatic_potential(points, interParams);
+        },
+        py::arg("points"),
+        py::arg("interParams") = py::none(),
+        py::return_value_policy::reference_internal,
+        R"pbdoc(Compute the electrostatic potential on :math:`\rho^\circ(\mathbf{r})`.
 
-              .. math::
-                \Phi(\mathbf{r}) = \sum_{i=1}^{N_{atom}} \frac{Z_A}{|\mathbf{r} - \mathbf{R}_A|}  -
-                 \int \frac{\rho^\circ(\mathbf{r}^\prime)}{|\mathbf{r} - \mathbf{r}^\prime| }d\mathbf{r}^\prime,
+                  .. math::
+                    \Phi(\mathbf{r}) = \sum_{i=1}^{N_{atom}} \lambda_i \frac{Z_A}{|\mathbf{r} - \mathbf{R}_A|}  -
+                     \int \frac{\rho^\circ(\mathbf{r}^\prime)}{|\mathbf{r} - \mathbf{r}^\prime| }d\mathbf{r}^\prime,
 
-              where :math:`Z_A` is the atomic number of atom A.
+                  where :math:`Z_A` is the atomic number of atom A.
+
+                  Parameters
+                  ----------
+                  points: ndarray(N, 3)
+                      Cartesian coordinates of :math:`N` points in three-dimensions.
+                  interParams: ndarray(M,), optional
+                      Interpolation parameters :math:`\lambda_i` to multiply each `M` atom. Default is all ones.
+
+                  Returns
+                  -------
+                  ndarray(N,)
+                      The promolecular electrostatic potential evaluated on each point.
+              )pbdoc"
+    )
+    .def("compute_gradient",
+        [](chemtools::ProMolecule& self,
+         const Eigen::Ref<MatrixX3R>&  points,
+         py::object interParams_py
+         ) {
+            Eigen::VectorXd interParams;
+            if (interParams_py.is_none()) {
+              interParams = Eigen::VectorXd::Ones(self.GetNatoms());
+            }
+            else {
+                interParams = interParams_py.cast<Eigen::VectorXd>();
+            }
+            return self.compute_electron_density_gradient(points, interParams);
+        },
+        py::arg("points"),
+        py::arg("interParams") = py::none(),
+        py::return_value_policy::reference_internal,
+        R"pbdoc(Compute the gradient of the promolecular density :math:`\rho^\circ(\mathbf{r})`.
 
               Parameters
               ----------
               points: ndarray(N, 3)
                   Cartesian coordinates of :math:`N` points in three-dimensions.
+              interParams: ndarray(M,), optional
+                  Interpolation parameters :math:`\lambda_i` to multiply each `M` atom. Default is all ones.
 
               Returns
               -------
               ndarray(N,)
-                  The promolecular electrostatic potential evaluated on each point.
+                  The gradient of the promolecular density evaluated on each point.
+          )pbdoc"
+    )
+    .def("compute_atomic_densities",
+        [](chemtools::ProMolecule& self,
+         const Eigen::Ref<MatrixX3R>&  points,
+         py::object interParams_py
+         ) {
+            Eigen::VectorXd interParams;
+            if (interParams_py.is_none()) {
+              interParams = Eigen::VectorXd::Ones(self.GetNatoms());
+            }
+            else {
+                interParams = interParams_py.cast<Eigen::VectorXd>();
+            }
+            return self.compute_atomic_electron_density(points, interParams);
+        },
+        py::arg("points"),
+        py::arg("interParams") = py::none(),
+        py::return_value_policy::reference_internal,
+        R"pbdoc(Compute the atomic promolecular density :math:`\rho^A(\mathbf{r})` of all atoms :math:`A`.
+
+          Parameters
+          ----------
+          points: ndarray(N, 3)
+              Cartesian coordinates of :math:`N` points in three-dimensions.
+          interParams: ndarray(M,), optional
+              Interpolation parameters :math:`\lambda_i` to multiply each `M` atom. Default is all ones.
+
+          Returns
+          -------
+          ndarray(N,M)
+              The atomic promolecular densities of each atom evaluated on each point.
           )pbdoc"
     )
     .def_property_readonly(

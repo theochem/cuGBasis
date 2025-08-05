@@ -110,6 +110,7 @@ __host__ void evaluate_scalar_quantity(
  * @param[in] basis The molecular basis set information as a collection of contracted shells.
  * @param[in] atom_coords Atomic coordinates of size (M, 3) in row-major order
  * @param[in] atom_numbers Atomic atom_numbers of size(M,) used to identify what element it is
+ * @param[in] atom_interpolation Atomic interpolation weights lambda_i of size (M,) to multiply each atomic promolecular
  * @param[in] natoms The number of atoms M.
  * @param[in] promol_coeffs The promolecular coefficients of s-type and p-type Gaussians.
  * @param[in] promol_exps The promolecular exponents of s-type and p-type Gaussians.
@@ -135,13 +136,15 @@ __host__ void evaluate_scalar_quantity(
  *
  *          After that the Number of atoms (denoted as M) within constant memory is placed, then
  *          the Index of i^E is placed where E is determined from the atomic charge,
+ *          then the interpolation parameter lambda_i is placed that multiples atomic promolecular \rho_E
  *          then atomic coordinates for that element E is placed.
- *          | M | 1 (for i^C) | C_x | C_y | C_z | 0 (for i^H) | H_x | H_y | H_z | ....
+ *          | M | 1 (for i^C) | \lambda_0 | C_x | C_y | C_z | 0 (for i^H) | \lambda_1 | H_x | H_y | H_z | ....
  *
  */
 __host__ std::array<std::size_t, 2> add_promol_basis_to_constant_memory_array(
     const double* const atom_coords,
     const long int *const atom_numbers,
+    const double* const atom_interpolation,
     int natoms,
     const std::unordered_map<std::string, std::vector<double>>& promol_coeffs,
     const std::unordered_map<std::string, std::vector<double>>& promol_exps,

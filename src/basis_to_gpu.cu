@@ -225,6 +225,7 @@ __host__ void chemtools::evaluate_scalar_quantity(
 __host__ std::array<std::size_t, 2> chemtools::add_promol_basis_to_constant_memory_array(
     const double*   const                                       atom_coords,
     const long int* const                                       atom_numbers,
+    const double*   const                                       atom_interpolation,
           int                                                   natoms,
     const std::unordered_map<std::string, std::vector<double>>& promol_coeffs,
     const std::unordered_map<std::string, std::vector<double>>& promol_exps,
@@ -247,14 +248,14 @@ __host__ std::array<std::size_t, 2> chemtools::add_promol_basis_to_constant_memo
   // First put in the promolecular coefficients and exponents but only do it if `index_atom_coords` is zero.
   std::size_t new_index_atom_coords = index_atom_coords;  // This is used to update index_atom_coords when it is zero
   std::vector<std::string> elements;
-  if (index_atom_coords == 0){
-    // These set of unique elements for the molecule
-    std::unordered_set<std::string> uniqElements;
-    for (std::size_t i = 0; i < natoms; ++i) {
-      uniqElements.insert(SYM_BY_Z[atom_numbers[i]]);  // Points to 8th index where hydrogen starts
-    }
-    elements = std::vector<std::string>(uniqElements.begin(), uniqElements.end());
+  // These set of unique elements for the molecule
+  std::unordered_set<std::string> uniqElements;
+  for (std::size_t i = 0; i < natoms; ++i) {
+    uniqElements.insert(SYM_BY_Z[atom_numbers[i]]);  // Points to 8th index where hydrogen starts
+  }
+  elements = std::vector<std::string>(uniqElements.begin(), uniqElements.end());
 
+  if (index_atom_coords == 0){
     // The length of these tells where the coefficients of the hydrogen should start.
     for(auto x: elements) {
       h_information.push_back((double) elements.size());  // Points to 8th index where hydrogen starts
@@ -301,13 +302,12 @@ __host__ std::array<std::size_t, 2> chemtools::add_promol_basis_to_constant_memo
       //     To calculate the index, first sum the previous element index, now add the number of s-type and p-type
       //     parameters (multiply by two because coeff & exp) then add two because we have to store the number of
       //     coefficients/exponents for s-type and p-type.
-//      printf("Number s-type %d and p-type %d \n ", n_stype, n_ptype);
-//      printf("Number s-type %f, %d and p-type %d \n ", h_information[n_elements_counter - 1], 2 * n_stype, 2 * n_ptype);
-//      printf("n_elemnnets %d \n", n_elements_counter);
+      // printf("Number s-type %d and p-type %d \n ", n_stype, n_ptype);
+      // printf("n_elemnnets %d \n", n_elements_counter);
       if (n_elements_counter != elements.size()){  // Skip the last element
         h_information[n_elements_counter] = h_information[n_elements_counter - 1] + 2.0 * n_stype + 2.0 * n_ptype + 2.0;
       }
-//      printf("\n");
+      // printf("\n");
 
       // Move to the next element
       n_elements_counter += 1;
@@ -321,9 +321,9 @@ __host__ std::array<std::size_t, 2> chemtools::add_promol_basis_to_constant_memo
   // Place the atomic coordinates and atomic numbers inside constant memory
   //    Only go up to the amount of information that you are able to.
   std::size_t curr_atom_index = i_atom_start;  // Start at the specified atom
-  // Keep iterating through the next atomic number (size 1) and  coordinate (size 3) if it doesn't exceed
+  // Keep iterating through the next atomic number (size 1), parameter and  coordinate (size 3) if it doesn't exceed
   //  constant memory
-  //  Recall `index_atom_coords` is the index where the atomic coordinates sohuld be places and
+  //  Recall `index_atom_coords` is the index where the atomic coordinates should be placed and
   //  h_information.size() Should be non-zero only when index_atom_coords is zero
   //  Add 3 since atomic coordinate has three elements
   int index_number_atoms_chunk;
@@ -333,9 +333,10 @@ __host__ std::array<std::size_t, 2> chemtools::add_promol_basis_to_constant_memo
   else {
     index_number_atoms_chunk = 0;  // The first element updates
   }
+
   h_information.push_back(0.0);  // This is suppose to hold the number of atoms inside constant memory.
-//  printf("Index number atoms chunk %d \n ", index_number_atoms_chunk);
-  while(index_atom_coords + h_information.size() + 4 <= 7500 & curr_atom_index < natoms) {
+  // printf("Index number atoms chunk %d \n ", index_number_atoms_chunk);
+  while(index_atom_coords + h_information.size() + 5 <= 7500 && curr_atom_index < natoms) {
     // Instead of placing the atomic number, this instead places the index within constant memory
     //    where one would find the index where the promolecular coefficeints for that atom starts
     //    This should match the order within
@@ -357,6 +358,9 @@ __host__ std::array<std::size_t, 2> chemtools::add_promol_basis_to_constant_memo
     // Push the index of the atom where the coefficients and exponents are
     h_information.push_back(idx);
 
+    // Push the interpolation parameter
+    h_information.push_back(atom_interpolation[curr_atom_index]);
+
     //h_information.push_back(static_cast<double>());               // Atomic-Number
     h_information.push_back(atom_coords[curr_atom_index * 3]);      // X-Coordinate
     h_information.push_back(atom_coords[curr_atom_index * 3 + 1]);  // Y-Coordinate
@@ -367,23 +371,23 @@ __host__ std::array<std::size_t, 2> chemtools::add_promol_basis_to_constant_memo
   }
   // At the end if curr_atom_index < natoms was the termination, then curr_atom_index == natoms
   // Thus you know you at completion when curr_atom_index == natoms.
-//  for(int i = 0;i < h_information[0];i++){
-//    printf(" %f ", h_information[i]);
-//  }
-//  printf("\n\n");
-//  for(int i = h_information[1]; i < h_information[2] + 3; i++){
-//    printf(" %f ", h_information[i]);
-//  }
-//  printf("\n\n");
-//  for(int i = index_number_atoms_chunk; i < h_information.size(); i++){
-//    printf(" %f ", h_information[i]);
-//  }
-//  printf("\n\n");
-//
-//  for(double x : h_information) {
-//    printf(" %f ", x);
-//  }
-//  printf("\n index_number_atoms_chunk %f \n\n", h_information[new_index_atom_coords]);
+  // for(int i = 0; i < h_information[0]; i++){
+  //   printf(" %f ", h_information[i]);
+  // }
+  // printf("\n\n");
+  // for(int i = h_information[1]; i < h_information[2] + 3; i++){
+  //   printf(" %f ", h_information[i]);
+  // }
+  // printf("\n\n");
+  // for(int i = index_number_atoms_chunk; i < h_information.size(); i++){
+  //   printf(" %f ", h_information[i]);
+  // }
+  // printf("\n\n");
+  //
+  // for(double x : h_information) {
+  //   printf(" %f ", x);
+  // }
+  // printf("\n index_number_atoms_chunk %f \n\n", h_information[new_index_atom_coords]);
 
   // Copy that array over to constant memory but if only from index_atom_coords to later
   double* h_info = h_information.data();

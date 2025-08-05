@@ -92,7 +92,10 @@ chemtools::ProMolecule::ProMolecule(
   }
 }
 
-Vector chemtools::ProMolecule::compute_electron_density(const Eigen::Ref<MatrixX3R>&  points) {
+Vector chemtools::ProMolecule::compute_electron_density(
+  const Eigen::Ref<MatrixX3R>&  points,
+  const Eigen::Ref<Vector>& interParams
+  ) {
   // Accept in row-major order because it is numpy default
   // Convert to column major order since it works better with the GPU code
   MatrixX3C pts_col_order = points;
@@ -100,6 +103,7 @@ Vector chemtools::ProMolecule::compute_electron_density(const Eigen::Ref<MatrixX
   std::vector<double> dens = chemtools::evaluate_promol_scalar_property_on_any_grid(
       this->GetCoordAtoms().data(),
       this->GetAtomicNumbers().data(),
+      interParams.data(),
       this->GetNatoms(),
       this->GetPromolCoefficients(),
       this->GetPromolExponents(),
@@ -112,7 +116,10 @@ Vector chemtools::ProMolecule::compute_electron_density(const Eigen::Ref<MatrixX
 }
 
 
-Vector chemtools::ProMolecule::compute_electrostatic_potential(const Eigen::Ref<MatrixX3R>&  points) {
+Vector chemtools::ProMolecule::compute_electrostatic_potential(
+  const Eigen::Ref<MatrixX3R>&  points,
+  const Eigen::Ref<Vector>& interParams
+  ) {
   // Accept in row-major order because it is numpy default
   // Convert to column major order since it works better with the GPU code
   MatrixX3C pts_col_order = points;
@@ -120,6 +127,7 @@ Vector chemtools::ProMolecule::compute_electrostatic_potential(const Eigen::Ref<
   std::vector<double> dens = chemtools::evaluate_promol_scalar_property_on_any_grid(
       this->GetCoordAtoms().data(),
       this->GetAtomicNumbers().data(),
+      interParams.data(),
       this->GetNatoms(),
       this->GetPromolCoefficients(),
       this->GetPromolExponents(),
@@ -130,6 +138,55 @@ Vector chemtools::ProMolecule::compute_electrostatic_potential(const Eigen::Ref<
   Vector v2 = Eigen::Map<Vector>(dens.data(), nrows);
   return v2;
 }
+
+
+MatrixX3R chemtools::ProMolecule::compute_electron_density_gradient(
+  const Eigen::Ref<MatrixX3R>&  points,
+  const Eigen::Ref<Vector>& interParams
+  ) {
+  // Accept in row-major order because it is numpy default
+  // Convert to column major order since it works better with the GPU code
+  MatrixX3C pts_col_order = points;
+  size_t nrows = points.rows();
+  std::vector<double> grad = chemtools::evaluate_promol_scalar_property_on_any_grid(
+      this->GetCoordAtoms().data(),
+      this->GetAtomicNumbers().data(),
+      interParams.data(),
+      this->GetNatoms(),
+      this->GetPromolCoefficients(),
+      this->GetPromolExponents(),
+      pts_col_order.data(),
+      nrows,
+      "gradient"
+  );
+  MatrixX3R v2 = Eigen::Map<MatrixX3R>(grad.data(), nrows, 3);
+  return v2;
+}
+
+
+MatrixXXR chemtools::ProMolecule::compute_atomic_electron_density(
+  const Eigen::Ref<MatrixX3R>&  points,
+  const Eigen::Ref<Vector>& interParams
+  ) {
+  // Accept in row-major order because it is numpy default
+  // Convert to column major order since it works better with the GPU code
+  MatrixX3C pts_col_order = points;
+  size_t nrows = points.rows();
+  std::vector<double> atomic_promol = chemtools::evaluate_promol_scalar_property_on_any_grid(
+      this->GetCoordAtoms().data(),
+      this->GetAtomicNumbers().data(),
+      interParams.data(),
+      this->GetNatoms(),
+      this->GetPromolCoefficients(),
+      this->GetPromolExponents(),
+      pts_col_order.data(),
+      nrows,
+      "atomic"
+  );
+  MatrixXXR v2 = Eigen::Map<MatrixXXR>(atomic_promol.data(), nrows, this->GetNatoms());
+  return v2;
+}
+
 
 /***
  *
