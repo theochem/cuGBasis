@@ -65,8 +65,46 @@ path: str
               The promolecular density evaluated on each point.
       )pbdoc"
     )
+    .def("compute_laplacian",
+    [](chemtools::ProMolecule &self,
+       const Eigen::Ref<MatrixX3R> &points,
+       py::object interParams = py::none()
+       ) -> Vector {
+      Eigen::VectorXd interParamsEigen;
+      if (interParams.is_none()) {
+        interParamsEigen = Eigen::VectorXd::Ones(self.GetNatoms());
+      } else {
+        interParamsEigen = interParams.cast<Eigen::VectorXd>();
+      }
+      return self.compute_laplacian(points, interParamsEigen);
+    },
+    py::arg("points"),
+    py::arg("interParams") = py::none(),
+      R"pbdoc(Compute the Laplacian ofthe promolecular density.
+
+          .. math::
+            \frac{\partial ^2 \rho^\circ(\mathbf{r})}{\partial x^2} +
+            \frac{\partial ^2 \rho^\circ(\mathbf{r})}{\partial y^2} +
+            \frac{\partial ^2 \rho^\circ(\mathbf{r})}{\partial z^2}
+
+
+          Note this is normalized. Please see the paper "An information-theoretic approach to basis-set fitting of
+          electron densities and other non-negative functions".
+
+          Parameters
+          ----------
+          points: ndarray(N, 3)
+              Cartesian coordinates of :math:`N` points in three-dimensions.
+          interParams: ndarray(M,), optional
+              Interpolation parameters :math:`\lambda_i` to multiply each `M` atom. Default is all ones.
+
+          Returns
+          -------
+          ndarray(N,)
+              The Laplacian of the promolecular density evaluated on each point.
+          )pbdoc"
+    )
     .def("compute_esp",
-        // &chemtools::ProMolecule::compute_electrostatic_potential,
         [](chemtools::ProMolecule& self,
          const Eigen::Ref<MatrixX3R>&  points,
          py::object interParams_py

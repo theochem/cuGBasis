@@ -112,6 +112,60 @@ __global__ void chemtools::evaluate_promol_electrostatic_from_constant_memory_on
   }
 }
 
+__global__ void chemtools::evaluate_promol_laplacian_from_constant_memory_on_any_grid(
+  double *d_density_array, const double *const d_points, const int knumb_points, const int index_atom_coords_start
+  ) {
+  unsigned int global_index = blockIdx.x * blockDim.x + threadIdx.x;
+  if (global_index < knumb_points) {
+    int iconst = index_atom_coords_start;  // Index to go over the atomic coordinates
+
+    // Get the grid points where `d_points` is in column-major order with shape (N, 3)
+    double grid_x = d_points[global_index];
+    double grid_y = d_points[global_index + knumb_points];
+    double grid_z = d_points[global_index + knumb_points * 2];
+
+    // Evaluate the laplacian value and store it in constant memory
+    int knatom = (int) g_constant_basis[iconst++]; // Get the number of atoms within constant mem
+    for(int i_atom = 0; i_atom < knatom; i_atom++) {
+      // Get the Type of Atom and Atomic Coordinates for this atom
+      int index_of_index_of_element = (int) g_constant_basis[iconst++];   // Should point to i^E, see basis_to_gpu.cuh
+      double interpol_param = g_constant_basis[iconst++];                 // Interpolation parameter
+      double r_A_x = (grid_x - g_constant_basis[iconst++]);
+      double r_A_y = (grid_y - g_constant_basis[iconst++]);
+      double r_A_z = (grid_z - g_constant_basis[iconst++]);
+
+      // Gets the index where promolecular coefficient for this atom starts
+      int index_of_promol_coeffs = (int) g_constant_basis[index_of_index_of_element];  // Should be i^E
+
+      // Evaluate-S type Gaussians
+      int number_s_type_gaussians = (int) g_constant_basis[index_of_promol_coeffs++];
+      for(int i = 0; i < number_s_type_gaussians; i++) {
+        double coeff = g_constant_basis[index_of_promol_coeffs++];  // Get Coefficient of Gaussian
+        double exponent = g_constant_basis[index_of_promol_coeffs++];    // Get Exponent of Gaussian
+        double r_sq =  sqrt(r_A_x * r_A_x + r_A_y * r_A_y + r_A_z * r_A_z);
+        double lap_gaussian = (4.0 * exponent * exponent * r_sq - 6.0 * exponent);
+        double normalization = pow(exponent / CUDART_PI_D, 1.5);
+
+        d_density_array[global_index] += coeff * interpol_param * normalization * lap_gaussian * exp(-exponent * ( r_A_x * r_A_x + r_A_y * r_A_y + r_A_z * r_A_z));
+      }
+
+      // Evaluate P-type Gaussians, derived by taking the derivative of exponent and Leibniz Rule
+      int number_p_type_gaussians = (int) g_constant_basis[index_of_promol_coeffs++];
+      for(int i = 0; i < number_p_type_gaussians; i++) {
+        double coeff = g_constant_basis[index_of_promol_coeffs++];  // Get Coefficient of Gaussian
+        double exponent = g_constant_basis[index_of_promol_coeffs++];    // Get Exponent of Gaussian
+        double r_sq =  ( r_A_x * r_A_x + r_A_y * r_A_y + r_A_z * r_A_z);
+
+        double exponential = exp(-exponent * r_sq);
+        double lap_gaussian = (4.0 * exponent * exponent * r_sq * r_sq - 14.0 * exponent * r_sq + 6.0);
+        double normalization = (2.0 * pow(exponent, 2.5)) / (3.0 * pow(CUDART_PI_D, 1.5));
+        d_density_array[global_index] += coeff * interpol_param * normalization * lap_gaussian * exponential;
+      }
+
+    }
+  }
+}
+
 __global__ void chemtools::evaluate_promol_gradient_from_constant_memory_on_any_grid(
     double* d_gradient_array_row, const double* const d_points, const int knumb_points, const int index_atom_coords_start
 ) {
@@ -250,6 +304,7 @@ __host__ std::vector<double> chemtools::evaluate_promol_scalar_property_on_any_g
     multiplier = static_cast<size_t>(natoms);
   }
   else {
+    // electrostatic, density, laplacian are all 1 * N
     multiplier = 1;
   }
   std::vector<double> h_promol_property(knumb_points * multiplier);
@@ -337,6 +392,11 @@ __host__ std::vector<double> chemtools::evaluate_promol_scalar_property_on_any_g
       else if (property == "atomic") {
         chemtools::evaluate_atomic_promol_from_constant_memory_on_any_grid<<<grid, threadsPerBlock>>>(
           d_property, d_points, number_pts_iter, constant_mem_info[0], i_start_atom, natoms
+        );
+      }
+      else if (property == "laplacian") {
+        chemtools::evaluate_promol_laplacian_from_constant_memory_on_any_grid<<<grid, threadsPerBlock>>>(
+          d_property, d_points, number_pts_iter, constant_mem_info[0]
         );
       }
       else {

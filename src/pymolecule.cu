@@ -115,6 +115,29 @@ Vector chemtools::ProMolecule::compute_electron_density(
   return v2;
 }
 
+Vector chemtools::ProMolecule::compute_laplacian(
+  const Eigen::Ref<MatrixX3R> &points,
+  const Eigen::Ref<Vector>& interParams
+  ) {
+  // Accept in row-major order because it is numpy default
+  // Convert to column major order since it works better with the GPU code
+  MatrixX3C pts_col_order = points;
+  size_t nrows = points.rows();
+  std::vector<double> lap = chemtools::evaluate_promol_scalar_property_on_any_grid(
+      this->GetCoordAtoms().data(),
+      this->GetAtomicNumbers().data(),
+      interParams.data(),
+      this->GetNatoms(),
+      this->GetPromolCoefficients(),
+      this->GetPromolExponents(),
+      pts_col_order.data(),
+      nrows,
+      "laplacian"
+  );
+  Vector v2 = Eigen::Map<Vector>(lap.data(), nrows);
+  return v2;
+}
+
 
 Vector chemtools::ProMolecule::compute_electrostatic_potential(
   const Eigen::Ref<MatrixX3R>&  points,

@@ -48,6 +48,14 @@ __global__ void evaluate_promol_electrostatic_from_constant_memory_on_any_grid(
 
 
 /**
+ * Evaluate the Laplacian of the promolecular density on any grid
+ * Same parameters as above
+ */
+__global__ void evaluate_promol_laplacian_from_constant_memory_on_any_grid(
+    double* d_density_array, const double* const d_points, const int knumb_points, const int index_atom_coords_start
+);
+
+/**
  * Evaluate the gradient of the promolecular density on any grid.
  *
  * Each thread is associated to the row/number of points in `d_density_array`.
