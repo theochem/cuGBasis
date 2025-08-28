@@ -186,6 +186,26 @@ MatrixX3R chemtools::ProMolecule::compute_electron_density_gradient(
   return v2;
 }
 
+TensorXXXR chemtools::ProMolecule::compute_electron_density_hessian(
+  const Eigen::Ref<MatrixX3R>&  points, const Eigen::Ref<Vector>& interParams
+  ) {
+  MatrixX3C pts_col_order = points;
+  size_t nrows = points.rows();
+  std::vector<double> hessian_row = chemtools::evaluate_promol_scalar_property_on_any_grid(
+      this->GetCoordAtoms().data(),
+      this->GetAtomicNumbers().data(),
+      interParams.data(),
+      this->GetNatoms(),
+      this->GetPromolCoefficients(),
+      this->GetPromolExponents(),
+      pts_col_order.data(),
+      nrows,
+      "hessian"
+  );
+  /// Eigen Tensor doesn't work with pybind11, so the trick here would be to use array_t to convert them
+  TensorXXXR v2 = Eigen::TensorMap<TensorXXXR>(hessian_row.data(), nrows, 3, 3);
+  return v2;
+}
 
 MatrixXXR chemtools::ProMolecule::compute_atomic_electron_density(
   const Eigen::Ref<MatrixX3R>&  points,

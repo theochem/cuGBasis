@@ -174,6 +174,38 @@ path: str
                   The gradient of the promolecular density evaluated on each point.
           )pbdoc"
     )
+    .def("compute_hessian",
+    [](chemtools::ProMolecule& self,
+     const Eigen::Ref<MatrixX3R>&  points,
+     py::object interParams_py
+     ) {
+        Eigen::VectorXd interParams;
+        if (interParams_py.is_none()) {
+          interParams = Eigen::VectorXd::Ones(self.GetNatoms());
+        }
+        else {
+            interParams = interParams_py.cast<Eigen::VectorXd>();
+        }
+        return self.compute_electron_density_hessian(points, interParams);
+    },
+    py::arg("points"),
+    py::arg("interParams") = py::none(),
+    py::return_value_policy::reference_internal,
+    R"pbdoc(Compute the Hessian of the promolecular density :math:`\rho^\circ(\mathbf{r})`.
+
+              Parameters
+              ----------
+              points: ndarray(N, 3)
+                  Cartesian coordinates of :math:`N` points in three-dimensions.
+              interParams: ndarray(M,), optional
+                  Interpolation parameters :math:`\lambda_i` to multiply each `M` atom. Default is all ones.
+
+              Returns
+              -------
+              ndarray(N, 3, 3)
+                  The Hessian of the promolecular density evaluated on each point.
+          )pbdoc"
+    )
     .def("compute_atomic_densities",
         [](chemtools::ProMolecule& self,
          const Eigen::Ref<MatrixX3R>&  points,
