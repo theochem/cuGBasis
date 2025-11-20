@@ -27,8 +27,10 @@ jobs:
         uses: Jimver/cuda-toolkit@master
         id: cuda-toolkit
         with:
-          cuda: '12.9.0'
+          cuda: '12.8.1'
           use-local-cache: false
+          # https://github.com/Jimver/cuda-toolkit/issues/392
+          method: 'network'
 
       - name: Check nvcc version
         run: nvcc -V
