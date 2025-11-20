@@ -27,7 +27,7 @@ jobs:
         uses: Jimver/cuda-toolkit@master
         id: cuda-toolkit
         with:
-          cuda: '12.9.0'
+          cuda: '13.0.2'
           use-local-cache: false
 
       - name: Check nvcc version
