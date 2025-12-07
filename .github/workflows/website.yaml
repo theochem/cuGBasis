@@ -7,8 +7,6 @@ on:
   pull_request:
     branches:
       - main
-    types:
-      - closed
 
 
 permissions:
@@ -36,9 +34,10 @@ jobs:
 
       - name: Install development and distributions version
         run: |
-          pip install --upgrade pip
+          pip install --upgrade pip pip-tools
           git submodule update --init --recursive
-          pip install ".[docs]"
+          pip-compile pyproject.toml --extra docs -o requirements_docs.txt
+          pip install -r requirements_docs.txt
 
       # - name: Setup pandoc
       #   uses: siacodelabs/setup-pandoc@v1
@@ -60,12 +59,7 @@ jobs:
       # still need to build and set the PAT to get a rebuild on the pages job,
       # apart from that quite clean and nice
       - name: GitHub Pages Action
-        if: |
-          (github.event_name == 'push' && github.ref == 'refs/heads/main') ||
-          (github.event_name == 'pull_request' &&
-           github.event.action == 'closed' &&
-           github.event.pull_request.merged == true &&
-           github.event.pull_request.base.ref == 'main')
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
