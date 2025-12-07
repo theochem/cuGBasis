@@ -4,9 +4,6 @@ on:
   push:
     branches:
       - main
-  pull_request:
-    branches:
-      - main
 
 
 permissions:
@@ -24,8 +21,20 @@ jobs:
       pages: write
 
     steps:
+      # fetch CUDA toolkit using Jimver/cuda-toolkit
+      - name: Fetch CUDA toolkit
+        uses: Jimver/cuda-toolkit@master
+        id: cuda-toolkit
+        with:
+          cuda: '12.8.1'
+          use-local-cache: false
+          # https://github.com/Jimver/cuda-toolkit/issues/392
+          method: 'network'
 
-      - uses: actions/checkout@v4
+      - name: Check nvcc version
+        run: nvcc -V
+
+      - uses: actions/checkout@v5
 
       - name: Set up Python
         uses: actions/setup-python@v6
@@ -34,18 +43,12 @@ jobs:
 
       - name: Install development and distributions version
         run: |
-          pip install --upgrade pip pip-tools
+          pip install --upgrade pip
           git submodule update --init --recursive
-          pip-compile pyproject.toml --extra docs -o requirements_docs.txt
-          pip install -r requirements_docs.txt
+          pip install .[docs]
 
-      # - name: Setup pandoc
-      #   uses: siacodelabs/setup-pandoc@v1
-      #   with:
-      #     xelatex: true
       - name: Install pandoc
         uses: pandoc/actions/setup@v1
-
       - name: Run pandoc
         run: pandoc --version
 
@@ -59,8 +62,8 @@ jobs:
       # still need to build and set the PAT to get a rebuild on the pages job,
       # apart from that quite clean and nice
       - name: GitHub Pages Action
-        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-        uses: peaceiris/actions-gh-pages@v4
+        #if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
+        uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./doc/_build/html
