@@ -7,8 +7,6 @@ on:
   pull_request:
     branches:
       - main
-    types:
-      - closed
 
 
 permissions:
@@ -62,9 +60,7 @@ jobs:
       - name: GitHub Pages Action
         if: |
           (github.event_name == 'push' && github.ref == 'refs/heads/main') ||
-          (github.event_name == 'pull_request' &&
-           github.event.action == 'closed' &&
-           github.event.pull_request.merged == true &&
+          (github.event.pull_request.merged == true &&
            github.event.pull_request.base.ref == 'main')
         uses: peaceiris/actions-gh-pages@v4
         with:
