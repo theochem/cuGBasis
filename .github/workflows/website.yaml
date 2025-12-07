@@ -21,34 +21,29 @@ jobs:
       pages: write
 
     steps:
-      # Fetch CUDA toolkit using Jimver/cuda-toolkit
-      - name: Fetch CUDA toolkit
-        uses: Jimver/cuda-toolkit@master
-        id: cuda-toolkit
-        with:
-          cuda: '12.8.1'
-          use-local-cache: false
-
-      - name: Check nvcc version
-        run: nvcc -V
 
       - uses: actions/checkout@v4
 
       - name: Set up Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v6
         with:
-          python-version: '3.11'
+          python-version: '3.12'
 
       - name: Install development and distributions version
         run: |
           pip install --upgrade pip
           git submodule update --init --recursive
-          pip install .[docs]
+          pip install ".[docs]"
 
-      - name: Setup pandoc
-        uses: siacodelabs/setup-pandoc@v1
-        with:
-          xelatex: true.
+      # - name: Setup pandoc
+      #   uses: siacodelabs/setup-pandoc@v1
+      #   with:
+      #     xelatex: true
+      - name: Install pandoc
+        uses: pandoc/actions/setup@v1
+
+      - name: Run pandoc
+        run: pandoc --version
 
       # didn't need to change anything here, but had to add sphinx.ext.githubpages
       # to my conf.py extensions list. that fixes the broken uploads
@@ -61,7 +56,7 @@ jobs:
       # apart from that quite clean and nice
       - name: GitHub Pages Action
         #if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
-        uses: peaceiris/actions-gh-pages@v3
+        uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./doc/_build/html
