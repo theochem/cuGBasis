@@ -22,10 +22,12 @@ namespace py = pybind11;
  * ProMolecule  methods
  *
  */
-chemtools::ProMolecule::ProMolecule(const Eigen::Ref<MatrixX3R>& atom_coords,
-                                    const Eigen::Ref<IntVector>& atom_numbers,
-                                    int atom_length,
-                                    const std::string file_path_to_data) {
+chemtools::ProMolecule::ProMolecule(
+  const Eigen::Ref<MatrixX3R>& atom_coords,
+  const Eigen::Ref<IntVector>& atom_numbers,
+        int                    atom_length,
+  const std::string            file_path_to_data
+  ) {
   // Grab the atomic coordinates, numbers and length from python
   this->natoms_ = atom_length;
   this->coord_atoms_ = atom_coords;
@@ -33,10 +35,23 @@ chemtools::ProMolecule::ProMolecule(const Eigen::Ref<MatrixX3R>& atom_coords,
 
   // Using python read the numpy files, grab the promolecular coefficients/exponents and create the dictionary.
   auto locals = py::dict();
-  std::vector<std::string> elements = {"h", "c", "n", "o", "f", "p", "s", "cl"};  // Elements that are needed
+  static std::array<std::string, 119> SYM_BY_Z = {
+    "",  // 0 unused
+    "h","he","li","be","b","c","n","o","f","ne","na","mg","al","si","p","s","cl","ar","k","ca",
+    "sc","ti","v","cr","mn","fe","co","ni","cu","zn","ga","ge","as","se","br","kr","rb","sr","y","zr",
+    "nb","mo","tc","ru","rh","pd","ag","cd","in","sn","sb","te","i","xe","cs","ba","la","ce","pr","nd",
+    "pm","sm","eu","gd","tb","dy","ho","er","tm","yb","lu","hf","ta","w","re","os","ir","pt","au","hg",
+    "tl","pb","bi","po","at","rn","fr","ra","ac","th","pa","u","np","pu","am","cm","bk","cf","es","fm",
+    "md","no","lr","rf","db","sg","bh","hs","mt","ds","rg","cn","nh","fl","mc","lv","ts","og"
+  };
+  std::unordered_set<std::string> uniqElements;
+  for(auto x: atom_numbers) {
+    uniqElements.insert(SYM_BY_Z[x]);  // Points to 8th index where hydrogen starts
+  }
+  std::vector<std::string> elements = std::vector<std::string>(uniqElements.begin(), uniqElements.end());
+
   locals["file_path"] = file_path_to_data;
   locals["elements"] = elements;
-  printf("Read from Python");
   py::exec(R"(
         # Convert to the Gaussian (.fchk) format
         import numpy as np
@@ -51,7 +66,7 @@ chemtools::ProMolecule::ProMolecule(const Eigen::Ref<MatrixX3R>& atom_coords,
           promol_dict[f"{element}_exps_s"] = promol[f"{element.capitalize()}_exps_s"]
           promol_dict[f"{element}_exps_p"] = promol[f"{element.capitalize()}_exps_p"]
     )", py::globals(), locals);
-  printf("Done reading from python \n");
+
   // Store the promolecular coefficients and exponents with keys: ELEMENT_PARAMETER_TYPE
   for(const auto& element: elements) {
     for(const std::string& param : {"coeffs", "exps"}) {
@@ -77,7 +92,10 @@ chemtools::ProMolecule::ProMolecule(const Eigen::Ref<MatrixX3R>& atom_coords,
   }
 }
 
-Vector chemtools::ProMolecule::compute_electron_density(const Eigen::Ref<MatrixX3R>&  points) {
+Vector chemtools::ProMolecule::compute_electron_density(
+  const Eigen::Ref<MatrixX3R>&  points,
+  const Eigen::Ref<Vector>& interParams
+  ) {
   // Accept in row-major order because it is numpy default
   // Convert to column major order since it works better with the GPU code
   MatrixX3C pts_col_order = points;
@@ -85,6 +103,7 @@ Vector chemtools::ProMolecule::compute_electron_density(const Eigen::Ref<MatrixX
   std::vector<double> dens = chemtools::evaluate_promol_scalar_property_on_any_grid(
       this->GetCoordAtoms().data(),
       this->GetAtomicNumbers().data(),
+      interParams.data(),
       this->GetNatoms(),
       this->GetPromolCoefficients(),
       this->GetPromolExponents(),
@@ -96,8 +115,34 @@ Vector chemtools::ProMolecule::compute_electron_density(const Eigen::Ref<MatrixX
   return v2;
 }
 
+Vector chemtools::ProMolecule::compute_laplacian(
+  const Eigen::Ref<MatrixX3R> &points,
+  const Eigen::Ref<Vector>& interParams
+  ) {
+  // Accept in row-major order because it is numpy default
+  // Convert to column major order since it works better with the GPU code
+  MatrixX3C pts_col_order = points;
+  size_t nrows = points.rows();
+  std::vector<double> lap = chemtools::evaluate_promol_scalar_property_on_any_grid(
+      this->GetCoordAtoms().data(),
+      this->GetAtomicNumbers().data(),
+      interParams.data(),
+      this->GetNatoms(),
+      this->GetPromolCoefficients(),
+      this->GetPromolExponents(),
+      pts_col_order.data(),
+      nrows,
+      "laplacian"
+  );
+  Vector v2 = Eigen::Map<Vector>(lap.data(), nrows);
+  return v2;
+}
 
-Vector chemtools::ProMolecule::compute_electrostatic_potential(const Eigen::Ref<MatrixX3R>&  points) {
+
+Vector chemtools::ProMolecule::compute_electrostatic_potential(
+  const Eigen::Ref<MatrixX3R>&  points,
+  const Eigen::Ref<Vector>& interParams
+  ) {
   // Accept in row-major order because it is numpy default
   // Convert to column major order since it works better with the GPU code
   MatrixX3C pts_col_order = points;
@@ -105,6 +150,7 @@ Vector chemtools::ProMolecule::compute_electrostatic_potential(const Eigen::Ref<
   std::vector<double> dens = chemtools::evaluate_promol_scalar_property_on_any_grid(
       this->GetCoordAtoms().data(),
       this->GetAtomicNumbers().data(),
+      interParams.data(),
       this->GetNatoms(),
       this->GetPromolCoefficients(),
       this->GetPromolExponents(),
@@ -115,6 +161,75 @@ Vector chemtools::ProMolecule::compute_electrostatic_potential(const Eigen::Ref<
   Vector v2 = Eigen::Map<Vector>(dens.data(), nrows);
   return v2;
 }
+
+
+MatrixX3R chemtools::ProMolecule::compute_electron_density_gradient(
+  const Eigen::Ref<MatrixX3R>&  points,
+  const Eigen::Ref<Vector>& interParams
+  ) {
+  // Accept in row-major order because it is numpy default
+  // Convert to column major order since it works better with the GPU code
+  MatrixX3C pts_col_order = points;
+  size_t nrows = points.rows();
+  std::vector<double> grad = chemtools::evaluate_promol_scalar_property_on_any_grid(
+      this->GetCoordAtoms().data(),
+      this->GetAtomicNumbers().data(),
+      interParams.data(),
+      this->GetNatoms(),
+      this->GetPromolCoefficients(),
+      this->GetPromolExponents(),
+      pts_col_order.data(),
+      nrows,
+      "gradient"
+  );
+  MatrixX3R v2 = Eigen::Map<MatrixX3R>(grad.data(), nrows, 3);
+  return v2;
+}
+
+TensorXXXR chemtools::ProMolecule::compute_electron_density_hessian(
+  const Eigen::Ref<MatrixX3R>&  points, const Eigen::Ref<Vector>& interParams
+  ) {
+  MatrixX3C pts_col_order = points;
+  size_t nrows = points.rows();
+  std::vector<double> hessian_row = chemtools::evaluate_promol_scalar_property_on_any_grid(
+      this->GetCoordAtoms().data(),
+      this->GetAtomicNumbers().data(),
+      interParams.data(),
+      this->GetNatoms(),
+      this->GetPromolCoefficients(),
+      this->GetPromolExponents(),
+      pts_col_order.data(),
+      nrows,
+      "hessian"
+  );
+  /// Eigen Tensor doesn't work with pybind11, so the trick here would be to use array_t to convert them
+  TensorXXXR v2 = Eigen::TensorMap<TensorXXXR>(hessian_row.data(), nrows, 3, 3);
+  return v2;
+}
+
+MatrixXXR chemtools::ProMolecule::compute_atomic_electron_density(
+  const Eigen::Ref<MatrixX3R>&  points,
+  const Eigen::Ref<Vector>& interParams
+  ) {
+  // Accept in row-major order because it is numpy default
+  // Convert to column major order since it works better with the GPU code
+  MatrixX3C pts_col_order = points;
+  size_t nrows = points.rows();
+  std::vector<double> atomic_promol = chemtools::evaluate_promol_scalar_property_on_any_grid(
+      this->GetCoordAtoms().data(),
+      this->GetAtomicNumbers().data(),
+      interParams.data(),
+      this->GetNatoms(),
+      this->GetPromolCoefficients(),
+      this->GetPromolExponents(),
+      pts_col_order.data(),
+      nrows,
+      "atomic"
+  );
+  MatrixXXR v2 = Eigen::Map<MatrixXXR>(atomic_promol.data(), nrows, this->GetNatoms());
+  return v2;
+}
+
 
 /***
  *

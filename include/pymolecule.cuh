@@ -103,11 +103,12 @@ class ProMolecule {
     }
 
   // Functionality
-  Vector compute_electron_density(const Eigen::Ref<MatrixX3R>&  points);
-  MatrixX3R compute_electron_density_gradient(const Eigen::Ref<MatrixX3R>&  points);
-  TensorXXXR compute_electron_density_hessian(const Eigen::Ref<MatrixX3R>&  points);
-  Vector compute_laplacian(const Eigen::Ref<MatrixX3R>&  points);
-  Vector compute_electrostatic_potential(const Eigen::Ref<MatrixX3R>&  points);
+  Vector compute_electron_density(const Eigen::Ref<MatrixX3R>&  points, const Eigen::Ref<Vector>& interParams);
+  MatrixX3R compute_electron_density_gradient(const Eigen::Ref<MatrixX3R>&  points, const Eigen::Ref<Vector>& interParams);
+  MatrixXXR compute_atomic_electron_density(const Eigen::Ref<MatrixX3R>&  points, const Eigen::Ref<Vector>& interParams);
+  TensorXXXR compute_electron_density_hessian(const Eigen::Ref<MatrixX3R>&  points, const Eigen::Ref<Vector>& interParams);
+  Vector compute_laplacian(const Eigen::Ref<MatrixX3R>&  points, const Eigen::Ref<Vector>& interParams);
+  Vector compute_electrostatic_potential(const Eigen::Ref<MatrixX3R>&  points, const Eigen::Ref<Vector>& interParams);
 
   // Getters
   MatrixX3R GetCoordAtoms() const {return coord_atoms_;}

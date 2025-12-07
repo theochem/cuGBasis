@@ -45,6 +45,62 @@ __global__ void evaluate_promol_density_from_constant_memory_on_any_grid(
 __global__ void evaluate_promol_electrostatic_from_constant_memory_on_any_grid(
     double* d_density_array, const double* const d_points, const int knumb_points, const int index_atom_coords_start
 );
+
+
+/**
+ * Evaluate the Laplacian of the promolecular density on any grid
+ * Same parameters as above
+ */
+__global__ void evaluate_promol_laplacian_from_constant_memory_on_any_grid(
+    double* d_density_array, const double* const d_points, const int knumb_points, const int index_atom_coords_start
+);
+
+/**
+ * Evaluate the gradient of the promolecular density on any grid.
+ *
+ * Each thread is associated to the row/number of points in `d_density_array`.
+ * Assumes that the atomic coordinates, numbers and promolecular model is stored in constant memory with the
+ * global variable `g_constant_basis`.
+ * See the file basis_to_gpu.cu for more information.
+ *
+ * @param[in, out] d_gradient_array_row  The gradient of the promolecular gradient (N, 3), in row-order.
+ * @param d_points  The points in three-dimensions of shape (N, 3) stored in column-major order.
+ * @param knumb_points  The number of points in the grid
+ */
+__global__ void evaluate_promol_gradient_from_constant_memory_on_any_grid(
+    double* d_gradient_array_row, const double* const d_points, const int knumb_points, const int index_atom_coords_start
+);
+
+/**
+ * Evaluate the Hessian of the promolecular density on any grid.
+ *
+ * @param[in, out] d_hessian_array_row  The Hessian of the promolecular gradient (N, 3, 3), in row-order.
+ * @param d_points  The points in three-dimensions of shape (N, 3) stored in column-major order.
+ * @param knumb_points  The number of points in the grid
+ */
+__global__ void evaluate_promol_hessian_from_constant_memory_on_any_grid(
+    double* d_hessian_array_row, const double* const d_points, const int knumb_points, const int index_atom_coords_start
+);
+
+/**
+ * Evaluate each atomic promolecular of a molecule on any grid.
+ *
+ * Each thread is associated to the row/number of points in `d_atomic_promol`.
+ * Assumes that the atomic coordinates, numbers and promolecular model is stored in constant memory with the
+ * global variable `g_constant_basis`.
+ * See the file basis_to_gpu.cu for more information.
+ *
+ * @param[in, out] d_atomic_promol  The atomic promolecular (N, M), in row-order of M atoms in a molecule.
+ * @param[in] index_atoms_start The index within M of atoms that need to be computed
+ * @param d_points  The points in three-dimensions of shape (N, 3) stored in column-major order.
+ * @param knumb_points  The number of points in the grid
+ * @param knatom  Number of atoms to do that is in constant memory.
+ */
+__global__ void evaluate_atomic_promol_from_constant_memory_on_any_grid(
+    double* d_atomic_promol, const double* const d_points, const int knumb_points, const int index_atom_coords_start,
+    const int index_atoms_start, const int total_numb_atoms
+);
+
 /**
  * HOST FUNCTIONS
  * -----------------------------------------------------------------------
@@ -63,6 +119,7 @@ __host__ std::vector<double> evaluate_promol_scalar_property_on_any_grid(
     // promolecule information
     const double* const atom_coords,
     const long int *const atom_numbers,
+    const double* const atom_interpolation,
     int natoms,
     const std::unordered_map<std::string, std::vector<double>>& promol_coeffs,
     const std::unordered_map<std::string, std::vector<double>>& promol_exps,

@@ -23,10 +23,10 @@ __global__ void chemtools::evaluate_promol_density_from_constant_memory_on_any_g
     
     // Evaluate the density value and store it in constant memory
     int knatom = (int) g_constant_basis[iconst++]; // Get the number of atoms within constant mem
-
     for(int i_atom = 0; i_atom < knatom; i_atom++) {
       // Get the Type of Atom and Atomic Coordinates for this atom
       int index_of_index_of_element = (int) g_constant_basis[iconst++];   // Should point to i^E, see basis_to_gpu.cuh
+      double interpol_param =  g_constant_basis[iconst++];                // Interpolation parameter
       double r_A_x = (grid_x - g_constant_basis[iconst++]);
       double r_A_y = (grid_y - g_constant_basis[iconst++]);
       double r_A_z = (grid_z - g_constant_basis[iconst++]);
@@ -40,7 +40,7 @@ __global__ void chemtools::evaluate_promol_density_from_constant_memory_on_any_g
         double coeff = g_constant_basis[index_of_promol_coeffs++];  // Get Coefficient of Gaussian
         double exponent = g_constant_basis[index_of_promol_coeffs++];    // Get Exponent of Gaussian
         double normalization = pow(exponent / CUDART_PI_D, 1.5);
-        d_density_array[global_index] += coeff * normalization * exp(-exponent * ( r_A_x * r_A_x + r_A_y * r_A_y + r_A_z * r_A_z));
+        d_density_array[global_index] += coeff * interpol_param * normalization * exp(-exponent * ( r_A_x * r_A_x + r_A_y * r_A_y + r_A_z * r_A_z));
       }
 
       // Evaluate P-type Gaussians
@@ -50,7 +50,7 @@ __global__ void chemtools::evaluate_promol_density_from_constant_memory_on_any_g
         double exponent = g_constant_basis[index_of_promol_coeffs++];    // Get Exponent of Gaussian
         double r_sq =  ( r_A_x * r_A_x + r_A_y * r_A_y + r_A_z * r_A_z);
         double normalization = (2.0 * pow(exponent, 2.5)) / (3.0 * pow(CUDART_PI_D, 1.5));
-        d_density_array[global_index] += coeff * normalization * r_sq * exp(-exponent * r_sq);
+        d_density_array[global_index] += coeff * interpol_param * normalization * r_sq * exp(-exponent * r_sq);
       }
     }
   }
@@ -74,6 +74,7 @@ __global__ void chemtools::evaluate_promol_electrostatic_from_constant_memory_on
     for(int i_atom = 0; i_atom < knatom; i_atom++) {
       // Get the Type of Atom and Atomic Coordinates for this atom
       int index_of_index_of_element = (int) g_constant_basis[iconst++];   // Should point to i^E, see basis_to_gpu.cuh
+      double interpol_param = g_constant_basis[iconst++];                 // Interpolation parameter
       double r_A_x = (grid_x - g_constant_basis[iconst++]);
       double r_A_y = (grid_y - g_constant_basis[iconst++]);
       double r_A_z = (grid_z - g_constant_basis[iconst++]);
@@ -87,7 +88,7 @@ __global__ void chemtools::evaluate_promol_electrostatic_from_constant_memory_on
         double coeff = g_constant_basis[index_of_promol_coeffs++];  // Get Coefficient of Gaussian
         double exponent = g_constant_basis[index_of_promol_coeffs++];    // Get Exponent of Gaussian
         double r_sq =  sqrt(r_A_x * r_A_x + r_A_y * r_A_y + r_A_z * r_A_z);
-        d_density_array[global_index] += coeff * erf(sqrt(exponent) * r_sq) / r_sq;
+        d_density_array[global_index] += coeff * interpol_param * erf(sqrt(exponent) * r_sq) / r_sq;
       }
 
       // Evaluate P-type Gaussians, derived by taking the derivative of exponent and Leibniz Rule
@@ -101,10 +102,263 @@ __global__ void chemtools::evaluate_promol_electrostatic_from_constant_memory_on
 
         double exponential = exp(-exponent * r_sq);
         double normalization = (2.0 * pow(exponent, 2.5)) / (3.0 * pow(CUDART_PI_D, 1.5));
-        d_density_array[global_index] += coeff * (
+        d_density_array[global_index] += coeff * interpol_param * (
             first_term -
             normalization * CUDART_PI_D * exponential / (exponent * exponent )
             );
+      }
+
+    }
+  }
+}
+
+__global__ void chemtools::evaluate_promol_laplacian_from_constant_memory_on_any_grid(
+  double *d_density_array, const double *const d_points, const int knumb_points, const int index_atom_coords_start
+  ) {
+  unsigned int global_index = blockIdx.x * blockDim.x + threadIdx.x;
+  if (global_index < knumb_points) {
+    int iconst = index_atom_coords_start;  // Index to go over the atomic coordinates
+
+    // Get the grid points where `d_points` is in column-major order with shape (N, 3)
+    double grid_x = d_points[global_index];
+    double grid_y = d_points[global_index + knumb_points];
+    double grid_z = d_points[global_index + knumb_points * 2];
+
+    // Evaluate the laplacian value and store it in constant memory
+    int knatom = (int) g_constant_basis[iconst++]; // Get the number of atoms within constant mem
+    for(int i_atom = 0; i_atom < knatom; i_atom++) {
+      // Get the Type of Atom and Atomic Coordinates for this atom
+      int index_of_index_of_element = (int) g_constant_basis[iconst++];   // Should point to i^E, see basis_to_gpu.cuh
+      double interpol_param = g_constant_basis[iconst++];                 // Interpolation parameter
+      double r_A_x = (grid_x - g_constant_basis[iconst++]);
+      double r_A_y = (grid_y - g_constant_basis[iconst++]);
+      double r_A_z = (grid_z - g_constant_basis[iconst++]);
+
+      // Gets the index where promolecular coefficient for this atom starts
+      int index_of_promol_coeffs = (int) g_constant_basis[index_of_index_of_element];  // Should be i^E
+
+      // Evaluate-S type Gaussians
+      int number_s_type_gaussians = (int) g_constant_basis[index_of_promol_coeffs++];
+      for(int i = 0; i < number_s_type_gaussians; i++) {
+        double coeff = g_constant_basis[index_of_promol_coeffs++];  // Get Coefficient of Gaussian
+        double exponent = g_constant_basis[index_of_promol_coeffs++];    // Get Exponent of Gaussian
+        double r_sq =  sqrt(r_A_x * r_A_x + r_A_y * r_A_y + r_A_z * r_A_z);
+        double lap_gaussian = (4.0 * exponent * exponent * r_sq - 6.0 * exponent);
+        double normalization = pow(exponent / CUDART_PI_D, 1.5);
+
+        d_density_array[global_index] += coeff * interpol_param * normalization * lap_gaussian * exp(-exponent * ( r_A_x * r_A_x + r_A_y * r_A_y + r_A_z * r_A_z));
+      }
+
+      // Evaluate P-type Gaussians, derived by taking the derivative of exponent and Leibniz Rule
+      int number_p_type_gaussians = (int) g_constant_basis[index_of_promol_coeffs++];
+      for(int i = 0; i < number_p_type_gaussians; i++) {
+        double coeff = g_constant_basis[index_of_promol_coeffs++];  // Get Coefficient of Gaussian
+        double exponent = g_constant_basis[index_of_promol_coeffs++];    // Get Exponent of Gaussian
+        double r_sq =  ( r_A_x * r_A_x + r_A_y * r_A_y + r_A_z * r_A_z);
+
+        double exponential = exp(-exponent * r_sq);
+        double lap_gaussian = (4.0 * exponent * exponent * r_sq * r_sq - 14.0 * exponent * r_sq + 6.0);
+        double normalization = (2.0 * pow(exponent, 2.5)) / (3.0 * pow(CUDART_PI_D, 1.5));
+        d_density_array[global_index] += coeff * interpol_param * normalization * lap_gaussian * exponential;
+      }
+
+    }
+  }
+}
+
+__global__ void chemtools::evaluate_promol_gradient_from_constant_memory_on_any_grid(
+    double* d_gradient_array_row, const double* const d_points, const int knumb_points, const int index_atom_coords_start
+) {
+  unsigned int global_index = blockIdx.x * blockDim.x + threadIdx.x;
+  if (global_index < knumb_points) {
+    int iconst = index_atom_coords_start;  // Index to go over the atomic coordinates
+
+    // Get the grid points where `d_points` is in column-major order with shape (N, 3)
+    double grid_x = d_points[global_index];
+    double grid_y = d_points[global_index + knumb_points];
+    double grid_z = d_points[global_index + knumb_points * 2];
+
+    // Evaluate the density value and store it in constant memory
+    int knatom = (int) g_constant_basis[iconst++]; // Get the number of atoms within constant mem
+    for(int i_atom = 0; i_atom < knatom; i_atom++) {
+      // Get the Type of Atom and Atomic Coordinates for this atom
+      int index_of_index_of_element = (int) g_constant_basis[iconst++];   // Should point to i^E, see basis_to_gpu.cuh
+      double interpol_param =  g_constant_basis[iconst++];                // Interpolation parameter
+      double r_A_x = (grid_x - g_constant_basis[iconst++]);
+      double r_A_y = (grid_y - g_constant_basis[iconst++]);
+      double r_A_z = (grid_z - g_constant_basis[iconst++]);
+
+      // Gets the index where promolecular coefficient for this atom starts
+      int index_of_promol_coeffs = (int) g_constant_basis[index_of_index_of_element];  // Should be i^E
+
+      // Evaluate-S derivatives of type Gaussians
+      int number_s_type_gaussians = (int) g_constant_basis[index_of_promol_coeffs++];
+      for(int i = 0; i < number_s_type_gaussians; i++) {
+        double coeff = g_constant_basis[index_of_promol_coeffs++];  // Get Coefficient of Gaussian
+        double exponent = g_constant_basis[index_of_promol_coeffs++];    // Get Exponent of Gaussian
+        double normalization = pow(exponent / CUDART_PI_D, 1.5);
+
+        // Evaluate x-derivative
+        d_gradient_array_row[global_index * 3] += -exponent * 2.0 * r_A_x * coeff * interpol_param * normalization * exp(-exponent * ( r_A_x * r_A_x + r_A_y * r_A_y + r_A_z * r_A_z));
+        // Evaluate y-derivative
+        d_gradient_array_row[global_index * 3 + 1] += -exponent * 2.0 * r_A_y * coeff * interpol_param * normalization * exp(-exponent * ( r_A_x * r_A_x + r_A_y * r_A_y + r_A_z * r_A_z));
+        // Evaluate z-derivative
+        d_gradient_array_row[global_index * 3 + 2] += -exponent * 2.0 * r_A_z * coeff * interpol_param * normalization * exp(-exponent * ( r_A_x * r_A_x + r_A_y * r_A_y + r_A_z * r_A_z));
+
+      }
+
+      // Evaluate P-type Gaussians
+      int number_p_type_gaussians = (int) g_constant_basis[index_of_promol_coeffs++];
+      for(int i = 0; i < number_p_type_gaussians; i++) {
+        double coeff = g_constant_basis[index_of_promol_coeffs++];  // Get Coefficient of Gaussian
+        double exponent = g_constant_basis[index_of_promol_coeffs++];    // Get Exponent of Gaussian
+        double r_sq =  ( r_A_x * r_A_x + r_A_y * r_A_y + r_A_z * r_A_z);
+        double normalization = (2.0 * pow(exponent, 2.5)) / (3.0 * pow(CUDART_PI_D, 1.5));
+
+        // Evaluate x-derivative
+        d_gradient_array_row[global_index * 3] += coeff * interpol_param * normalization * (2.0 * r_A_x -exponent * 2.0 * r_A_x) * exp(-exponent * r_sq);
+        // Evaluate y-derivative
+        d_gradient_array_row[global_index * 3 + 1] += coeff * interpol_param * normalization * (2.0 * r_A_y -exponent * 2.0 * r_A_y) * exp(-exponent * r_sq);
+        // Evaluate z-derivative
+        d_gradient_array_row[global_index * 3 + 2] += coeff * interpol_param * normalization * (2.0 * r_A_z -exponent * 2.0 * r_A_z) * exp(-exponent * r_sq);
+      }
+    }
+  }
+}
+
+__global__ void chemtools::evaluate_promol_hessian_from_constant_memory_on_any_grid(
+    double* d_hessian_array_row, const double* const d_points, const int knumb_points, const int index_atom_coords_start
+) {
+  unsigned int global_index = blockIdx.x * blockDim.x + threadIdx.x;
+  if (global_index < knumb_points) {
+    int iconst = index_atom_coords_start;  // Index to go over the atomic coordinates
+
+    // Get the grid points where `d_points` is in column-major order with shape (N, 3)
+    double grid_x = d_points[global_index];
+    double grid_y = d_points[global_index + knumb_points];
+    double grid_z = d_points[global_index + knumb_points * 2];
+
+    // Evaluate the density value and store it in constant memory
+    int knatom = (int) g_constant_basis[iconst++]; // Get the number of atoms within constant mem
+    for(int i_atom = 0; i_atom < knatom; i_atom++) {
+      // Get the Type of Atom and Atomic Coordinates for this atom
+      int index_of_index_of_element = (int) g_constant_basis[iconst++];   // Should point to i^E, see basis_to_gpu.cuh
+      double interpol_param =  g_constant_basis[iconst++];                // Interpolation parameter
+      double r_A_x = (grid_x - g_constant_basis[iconst++]);
+      double r_A_y = (grid_y - g_constant_basis[iconst++]);
+      double r_A_z = (grid_z - g_constant_basis[iconst++]);
+
+      // Gets the index where promolecular coefficient for this atom starts
+      int index_of_promol_coeffs = (int) g_constant_basis[index_of_index_of_element];  // Should be i^E
+
+      // Evaluate-S derivatives of type Gaussians
+      int number_s_type_gaussians = (int) g_constant_basis[index_of_promol_coeffs++];
+      for(int i = 0; i < number_s_type_gaussians; i++) {
+        double coeff = g_constant_basis[index_of_promol_coeffs++];  // Get Coefficient of Gaussian
+        double exponent = g_constant_basis[index_of_promol_coeffs++];    // Get Exponent of Gaussian
+        double normalization = pow(exponent / CUDART_PI_D, 1.5);
+        double gaussian = normalization * exp(-exponent * ( r_A_x * r_A_x + r_A_y * r_A_y + r_A_z * r_A_z));
+        // Evaluate (x, x)-derivative
+        d_hessian_array_row[global_index * 3] += coeff * interpol_param * gaussian * (4.0 * exponent * r_A_x * r_A_x - 2.0 * exponent);
+        // Evaluate (x, y)-derivative
+        d_hessian_array_row[global_index * 3 + 1] += coeff * interpol_param * gaussian * (4.0 * exponent * r_A_x * r_A_y);
+        // Evaluate (x, z)-derivative
+        d_hessian_array_row[global_index * 3 + 2] += coeff * interpol_param * gaussian * (4.0 * exponent * r_A_x * r_A_z);
+
+        // Evaluate (y, x)-derivative
+        d_hessian_array_row[global_index * 3 + 3] += coeff * interpol_param * gaussian * (4.0 * exponent * r_A_x * r_A_y);
+        // Evaluate (y, y)-derivative
+        d_hessian_array_row[global_index * 3 + 4] += coeff * interpol_param * gaussian * (4.0 * exponent * r_A_y * r_A_y - 2.0 * exponent);
+        // Evaluate (y, z)-derivative
+        d_hessian_array_row[global_index * 3 + 5] += coeff * interpol_param * gaussian * (4.0 * exponent * r_A_y * r_A_z);
+
+        // Evaluate (z, x)-derivative
+        d_hessian_array_row[global_index * 3 + 6] += coeff * interpol_param * gaussian * (4.0 * exponent * r_A_x * r_A_z);
+        // Evaluate (z, y)-derivative
+        d_hessian_array_row[global_index * 3 + 7] += coeff * interpol_param * gaussian * (4.0 * exponent * r_A_y * r_A_z);
+        // Evaluate (z, z)-derivative
+        d_hessian_array_row[global_index * 3 + 8] += coeff * interpol_param * gaussian * (4.0 * exponent * r_A_z * r_A_z - 2.0 * exponent);
+
+      }
+
+      // Evaluate P-type Gaussians
+      int number_p_type_gaussians = (int) g_constant_basis[index_of_promol_coeffs++];
+      for(int i = 0; i < number_p_type_gaussians; i++) {
+        double coeff = g_constant_basis[index_of_promol_coeffs++];  // Get Coefficient of Gaussian
+        double exponent = g_constant_basis[index_of_promol_coeffs++];    // Get Exponent of Gaussian
+        double r_sq =  ( r_A_x * r_A_x + r_A_y * r_A_y + r_A_z * r_A_z);
+        double normalization = (2.0 * pow(exponent, 2.5)) / (3.0 * pow(CUDART_PI_D, 1.5));
+
+        double gaussian = normalization * exp(-exponent * ( r_A_x * r_A_x + r_A_y * r_A_y + r_A_z * r_A_z));
+        double pref = (4.0 * exponent * exponent * r_sq - 8.0 * exponent);
+        // Evaluate (x, x)-derivative
+        d_hessian_array_row[global_index * 3] += coeff * interpol_param * gaussian * (pref * r_A_x * r_A_x + (2.0 - 2.0 * exponent * r_sq));
+        // Evaluate (x, y)-derivative
+        d_hessian_array_row[global_index * 3 + 1] += coeff * interpol_param * gaussian * (pref * r_A_x * r_A_y);
+        // Evaluate (x, z)-derivative
+        d_hessian_array_row[global_index * 3 + 2] += coeff * interpol_param * gaussian * (pref * r_A_x * r_A_z);
+
+        // Evaluate (y, x)-derivative
+        d_hessian_array_row[global_index * 3 + 3] += coeff * interpol_param * gaussian * (pref * r_A_y * r_A_x);
+        // Evaluate (y, y)-derivative
+        d_hessian_array_row[global_index * 3 + 4] += coeff * interpol_param * gaussian * (pref * r_A_y * r_A_y + (2.0 - 2.0 * exponent * r_sq));
+        // Evaluate (y, z)-derivative
+        d_hessian_array_row[global_index * 3 + 5] += coeff * interpol_param * gaussian * (pref * r_A_y * r_A_z);
+
+        // Evaluate (z, x)-derivative
+        d_hessian_array_row[global_index * 3 + 6] += coeff * interpol_param * gaussian * (pref * r_A_z * r_A_x);
+        // Evaluate (z, y)-derivative
+        d_hessian_array_row[global_index * 3 + 7] += coeff * interpol_param * gaussian * (pref * r_A_z * r_A_y);
+        // Evaluate (z, z)-derivative
+        d_hessian_array_row[global_index * 3 + 8] += coeff * interpol_param * gaussian * (pref * r_A_z * r_A_z + (2.0 - 2.0 * exponent * r_sq));
+      }
+    }
+  }
+}
+
+__global__ void chemtools::evaluate_atomic_promol_from_constant_memory_on_any_grid(
+    double* d_atomic_promol, const double* const d_points, const int knumb_points, const int index_atom_coords_start,
+    const int index_atoms_start, const int total_numb_atoms
+) {
+  unsigned int global_index = blockIdx.x * blockDim.x + threadIdx.x;
+  if (global_index < knumb_points) {
+    int iconst = index_atom_coords_start;  // Index to go over the atomic coordinates
+
+    // Get the grid points where `d_points` is in column-major order with shape (N, 3)
+    double grid_x = d_points[global_index];
+    double grid_y = d_points[global_index + knumb_points];
+    double grid_z = d_points[global_index + knumb_points * 2];
+
+    // Evaluate the density value and store it in constant memory
+    int knatom = (int) g_constant_basis[iconst++]; // Get the number of atoms within constant mem
+    for(int i_atom = 0; i_atom < knatom; i_atom++) {
+      // Get the Type of Atom and Atomic Coordinates for this atom
+      int index_of_index_of_element = (int) g_constant_basis[iconst++];   // Should point to i^E, see basis_to_gpu.cuh
+      double interpol_param =  g_constant_basis[iconst++];                // Interpolation parameter
+      double r_A_x = (grid_x - g_constant_basis[iconst++]);
+      double r_A_y = (grid_y - g_constant_basis[iconst++]);
+      double r_A_z = (grid_z - g_constant_basis[iconst++]);
+
+      // Gets the index where promolecular coefficient for this atom starts
+      int index_of_promol_coeffs = (int) g_constant_basis[index_of_index_of_element];  // Should be i^E
+
+      // Evaluate-S type Gaussians
+      int number_s_type_gaussians = (int) g_constant_basis[index_of_promol_coeffs++];
+      for(int i = 0; i < number_s_type_gaussians; i++) {
+        double coeff = g_constant_basis[index_of_promol_coeffs++];  // Get Coefficient of Gaussian
+        double exponent = g_constant_basis[index_of_promol_coeffs++];    // Get Exponent of Gaussian
+        double normalization = pow(exponent / CUDART_PI_D, 1.5);
+        d_atomic_promol[global_index * total_numb_atoms + (index_atoms_start + i_atom)] += coeff * interpol_param * normalization * exp(-exponent * ( r_A_x * r_A_x + r_A_y * r_A_y + r_A_z * r_A_z));
+      }
+
+      // Evaluate P-type Gaussians
+      int number_p_type_gaussians = (int) g_constant_basis[index_of_promol_coeffs++];
+      for(int i = 0; i < number_p_type_gaussians; i++) {
+        double coeff = g_constant_basis[index_of_promol_coeffs++];  // Get Coefficient of Gaussian
+        double exponent = g_constant_basis[index_of_promol_coeffs++];    // Get Exponent of Gaussian
+        double r_sq =  ( r_A_x * r_A_x + r_A_y * r_A_y + r_A_z * r_A_z);
+        double normalization = (2.0 * pow(exponent, 2.5)) / (3.0 * pow(CUDART_PI_D, 1.5));
+        d_atomic_promol[global_index * total_numb_atoms + (index_atoms_start + i_atom)] += coeff * interpol_param * normalization * r_sq * exp(-exponent * r_sq);
       }
     }
   }
@@ -118,6 +372,7 @@ __global__ void chemtools::evaluate_promol_electrostatic_from_constant_memory_on
 __host__ std::vector<double> chemtools::evaluate_promol_scalar_property_on_any_grid(
     const double* const atom_coords,
     const long int *const atom_numbers,
+    const double* const atom_interpolation,
     int natoms,
     const std::unordered_map<std::string, std::vector<double>>& promol_coeffs,
     const std::unordered_map<std::string, std::vector<double>>& promol_exps,
@@ -128,7 +383,24 @@ __host__ std::vector<double> chemtools::evaluate_promol_scalar_property_on_any_g
   chemtools::cuda_check_errors(cudaFuncSetCacheConfig(evaluate_promol_density_from_constant_memory_on_any_grid, cudaFuncCachePreferL1));
 
   // Output that is returned
-  std::vector<double> hpromol_density(knumb_points);
+  size_t multiplier;
+  if (property == "gradient") {
+    // if gradient allocate 3 * N
+    multiplier = 3;
+  }
+  else if (property == "hessian") {
+    multiplier = 9;
+  }
+  else if (property == "atomic") {
+    // Calculate the atomic promolecular density of each atom in a molecule.
+    multiplier = static_cast<size_t>(natoms);
+  }
+  else {
+    // electrostatic, density, laplacian are all 1 * N
+    multiplier = 1;
+  }
+  std::vector<double> h_promol_property(knumb_points * multiplier);
+
 
   // Second step is to figure out the optimal number of points that fit in global memory.
   // For the density, the optimal number of points is solving 4N (3N for points, N for output)
@@ -137,26 +409,26 @@ __host__ std::vector<double> chemtools::evaluate_promol_scalar_property_on_any_g
   size_t free_mem = 0;   // in bytes
   size_t total_mem = 0;  // in bytes
   cudaError_t error_id = cudaMemGetInfo(&free_mem, &total_mem);
-  size_t t_numb_pts_of_each_chunk = (free_mem - 500000000) / (sizeof(double) * 4);
+  size_t t_numb_pts_of_each_chunk = (free_mem - 500000000) / (sizeof(double) * (4 + multiplier));
   //  printf(" Number of points each chunk %zu \n", t_numb_pts_of_each_chunk);
 
   // Iterate through each chunk of the points
   size_t index_to_copy = 0;  // Index on where to start copying to h_density (start of sub-grid)
   size_t i_iter = 0;
   while (index_to_copy < knumb_points) {
-//    printf("Iter %zu \n", i_iter);
+    // printf("Iter %zu \n", i_iter);
     // For each iteration, calculate number of points it should do, number of bytes it corresponds to.
     // At the last chunk,need to do the remaining number of points, hence a minimum is used here.
     size_t number_pts_iter = std::min(
         t_numb_pts - i_iter * t_numb_pts_of_each_chunk, t_numb_pts_of_each_chunk
     );
-//    printf("Number of pts iter %zu \n", number_pts_iter);
+    // printf("Number of pts iter %zu \n", number_pts_iter);
 
     // Allocate device memory for output array, and set all elements to zero via cudaMemset.
-    double *d_density;
-    chemtools::cuda_check_errors(cudaMalloc((double **) &d_density, sizeof(double) * number_pts_iter));
-    chemtools::cuda_check_errors(cudaMemset(d_density, 0, sizeof(double) * number_pts_iter));
-
+    double *d_property;
+    size_t size_property = multiplier * number_pts_iter;
+    chemtools::cuda_check_errors(cudaMalloc((double **) &d_property, sizeof(double) * size_property));
+    chemtools::cuda_check_errors(cudaMemset(d_property, 0, sizeof(double) * size_property));
 
     // Transfer optimal number of points to GPU memory, this is in column order with shape (N, 3)
     // Transfer grid points to GPU
@@ -173,6 +445,7 @@ __host__ std::vector<double> chemtools::evaluate_promol_scalar_property_on_any_g
 
     // Evaluate the promolecular density over subset of atoms that fit within constant memory
     std::array<std::size_t, 2> constant_mem_info = {0, 0};
+    size_t i_start_atom = 0;  // Used for atomic promolecular density
     // Iteration through until it is computed over all atoms
     while (constant_mem_info[1] < natoms) {
       // First step is to place the promolecular information and atomic coordinates inside constant memory.
@@ -180,45 +453,72 @@ __host__ std::vector<double> chemtools::evaluate_promol_scalar_property_on_any_g
       constant_mem_info = chemtools::add_promol_basis_to_constant_memory_array(
           atom_coords,
           atom_numbers,
+          atom_interpolation,
           natoms,
           promol_coeffs,
           promol_exps,
           constant_mem_info[0],
           constant_mem_info[1]
       );
-//      printf("Consta mem info %zu   %zu  \n", constant_mem_info[0], constant_mem_info[1]);
+      // printf("Consta mem info %zu   %zu  \n", constant_mem_info[0], constant_mem_info[1]);
 
-      dim3 threadsPerBlock(1024);
+      dim3 threadsPerBlock(512);
       dim3 grid((number_pts_iter + threadsPerBlock.x - 1) / (threadsPerBlock.x));
       if (property == "density") {
         // Evaluate Density
         chemtools::evaluate_promol_density_from_constant_memory_on_any_grid<<<grid, threadsPerBlock>>>(
-            d_density, d_points, number_pts_iter, constant_mem_info[0]
+            d_property, d_points, number_pts_iter, constant_mem_info[0]
         );
       }
       else if (property == "electrostatic") {
         // Evaluate electrostatic
         chemtools::evaluate_promol_electrostatic_from_constant_memory_on_any_grid<<<grid, threadsPerBlock>>>(
-            d_density, d_points, number_pts_iter, constant_mem_info[0]
+            d_property, d_points, number_pts_iter, constant_mem_info[0]
+        );
+      }
+      else if (property == "gradient") {
+        chemtools::evaluate_promol_gradient_from_constant_memory_on_any_grid<<<grid, threadsPerBlock>>>(
+          d_property, d_points, number_pts_iter, constant_mem_info[0]
+        );
+      }
+      else if (property == "hessian") {
+        chemtools::evaluate_promol_hessian_from_constant_memory_on_any_grid<<<grid, threadsPerBlock>>>(
+          d_property, d_points, number_pts_iter, constant_mem_info[0]
+        );
+      }
+      else if (property == "atomic") {
+        chemtools::evaluate_atomic_promol_from_constant_memory_on_any_grid<<<grid, threadsPerBlock>>>(
+          d_property, d_points, number_pts_iter, constant_mem_info[0], i_start_atom, natoms
+        );
+      }
+      else if (property == "laplacian") {
+        chemtools::evaluate_promol_laplacian_from_constant_memory_on_any_grid<<<grid, threadsPerBlock>>>(
+          d_property, d_points, number_pts_iter, constant_mem_info[0]
         );
       }
       else {
         throw std::runtime_error("Could not recognize what property it is: " + property);
       }
+      cudaError_t cuda_err = cudaGetLastError();
+      if (cuda_err != cudaSuccess) {
+        fprintf(stderr, "Related CUDA error: %s\n", cudaGetErrorString(cuda_err));
+        exit(EXIT_FAILURE);
+      }
       cudaDeviceSynchronize();
+      i_start_atom = constant_mem_info[1];  // Update the next set of atoms to do
     }
     // Free up the points
     cudaFree(d_points);
 
     // Transfer the density back to the CPU
     //    Since I'm computing a sub-grid at a time, need to update the index h_electron_density, accordingly.
-    chemtools::cuda_check_errors(cudaMemcpy(&hpromol_density[0] + index_to_copy,
-                                            d_density,
-                                            sizeof(double) * number_pts_iter,
+    chemtools::cuda_check_errors(cudaMemcpy(&h_promol_property[0] + index_to_copy * multiplier,
+                                            d_property,
+                                            sizeof(double) * size_property,  // Move it based on size of property
                                             cudaMemcpyDeviceToHost));
 
     // Free up the density values
-    cudaFree(d_density);
+    cudaFree(d_property);
 
     // Update lower-bound of the grid for the next iteration
     index_to_copy += number_pts_iter;
@@ -246,8 +546,8 @@ __host__ std::vector<double> chemtools::evaluate_promol_scalar_property_on_any_g
       }
 
       // Add to final result
-      hpromol_density[i_pt] = pt_charge - hpromol_density[i_pt];
+      h_promol_property[i_pt] = pt_charge - h_promol_property[i_pt];
     }
   }
-  return hpromol_density;
+  return h_promol_property;
 }
