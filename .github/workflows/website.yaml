@@ -34,7 +34,7 @@ jobs:
 
       - name: Install development and distributions version
         run: |
-          pip install --upgrade pip pip-compile
+          pip install --upgrade pip pip-tools
           git submodule update --init --recursive
           pip-compile pyproject.toml --extra docs -o requirements_docs.txt
           pip install -r requirements_docs.txt
