@@ -374,7 +374,7 @@ Vector chemtools::Molecule::compute_electrostatic_potential(const Eigen::Ref<Mat
   MatrixX3R pts_row_order = points;
   size_t nrows = points.rows();
   std::vector<double> esp = chemtools::compute_electrostatic_potential_over_points(
-      *iodata_, pts_row_order.data(), nrows, 1e-11, true, spin
+      *iodata_, pts_row_order.data(), nrows, 1e-11, false, spin
       );
   Vector v2 = Eigen::Map<Vector>(esp.data(), nrows);
   return v2;
