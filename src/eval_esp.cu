@@ -10262,7 +10262,9 @@ __host__ std::vector<double> chemtools::compute_electrostatic_potential_over_poi
     chemtools::cuda_check_errors(cudaMemcpy(d_grid, portion_grid_col, t_numb_pts_ith_iter_bytes,
                                          cudaMemcpyHostToDevice));
     delete[] portion_grid_col;
-    printf("Print grid \n");
+    if (disp) {
+      printf("Print grid \n");
+    }
 //    chemtools::print_first_ten_elements<<<1, 1>>>(d_grid);
     cudaDeviceSynchronize();
 
@@ -10290,7 +10292,9 @@ __host__ std::vector<double> chemtools::compute_electrostatic_potential_over_poi
         d_point_charge, d_grid, (int) t_numb_pts_ith_iter, nbasisfuncs, screen_tol
         );
     cudaDeviceSynchronize();
-    printf("Print d_point charge \n");
+    if (disp) {
+      printf("Print d_point charge \n");
+    }
 //    chemtools::print_first_ten_elements<<<1, 1>>>(d_point_charge);
 //    chemtools::print_all<<<1, 1>>>(d_point_charge, t_nbasis * (t_nbasis + 1) / 2);
     cudaDeviceSynchronize();
@@ -10300,14 +10304,18 @@ __host__ std::vector<double> chemtools::compute_electrostatic_potential_over_poi
     // Transpose point_charge from (Z, Y, X) (col-major) to (Y, X, Z), where Z=number of points, Y, X are the contractions.
     cudaDeviceSynchronize();
     chemtools::cuda_check_errors(cudaMalloc((double **)&d_point_charge_transpose, t_total_size_integrals_ith_iter_bytes));
-    printf("Dp d_point charge transpose \n");
+    if (disp) {
+      printf("Dp d_point charge transpose \n");
+    }
     cudaDeviceSynchronize();
     CUBLAS_CHECK(cublasDgeam(handle, CUBLAS_OP_T, CUBLAS_OP_T,
                                             nbasisfuncs * (nbasisfuncs + 1) / 2, (int) t_numb_pts_ith_iter,
                                             &alpha, d_point_charge, (int) t_numb_pts_ith_iter,
                                             &beta, d_point_charge, (int) t_numb_pts_ith_iter,
                                             d_point_charge_transpose, nbasisfuncs * (nbasisfuncs + 1) / 2));
-    printf("Print d point charge transpose \n");
+    if (disp) {
+      printf("Print d point charge transpose \n");
+    }
     //print_final_ten_elements<<<1, 1>>>(d_point_charge_transpose, t_total_numb_integrals_ith_iter);
 //    chemtools::print_first_ten_elements<<<1, 1>>>(d_point_charge_transpose);
     cudaDeviceSynchronize();
