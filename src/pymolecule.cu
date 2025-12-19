@@ -50,7 +50,7 @@ chemtools::ProMolecule::ProMolecule(
   for (Eigen::Index i = 0; i < atom_numbers.size(); ++i) {
     const long int atomic_number = atom_numbers(i);
     if (atomic_number <= 0 || atomic_number >= static_cast<long int>(SYM_BY_Z.size())) {
-      throw std::out_of_range("Atomic number out of range for promolecular lookup.");
+      throw std::out_of_range("Atomic number " + std::to_string(atomic_number) + " is out of range [1, " + std::to_string(SYM_BY_Z.size() - 1) + "] for promolecular lookup.");
     }
     const std::size_t idx = static_cast<std::size_t>(atomic_number);
     if (!has_element[idx]) {
