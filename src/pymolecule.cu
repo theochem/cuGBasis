@@ -44,11 +44,20 @@ chemtools::ProMolecule::ProMolecule(
     "tl","pb","bi","po","at","rn","fr","ra","ac","th","pa","u","np","pu","am","cm","bk","cf","es","fm",
     "md","no","lr","rf","db","sg","bh","hs","mt","ds","rg","cn","nh","fl","mc","lv","ts","og"
   };
-  std::unordered_set<std::string> uniqElements;
-  for(auto x: atom_numbers) {
-    uniqElements.insert(SYM_BY_Z[x]);  // Points to 8th index where hydrogen starts
+  std::array<bool, 119> has_element{};
+  std::vector<std::string> elements;
+  elements.reserve(static_cast<std::size_t>(atom_numbers.size()));
+  for (Eigen::Index i = 0; i < atom_numbers.size(); ++i) {
+    const long int atomic_number = atom_numbers(i);
+    if (atomic_number <= 0 || atomic_number >= static_cast<long int>(SYM_BY_Z.size())) {
+      throw std::out_of_range("Atomic number out of range for promolecular lookup.");
+    }
+    const std::size_t idx = static_cast<std::size_t>(atomic_number);
+    if (!has_element[idx]) {
+      has_element[idx] = true;
+      elements.push_back(SYM_BY_Z[idx]);
+    }
   }
-  std::vector<std::string> elements = std::vector<std::string>(uniqElements.begin(), uniqElements.end());
 
   locals["file_path"] = file_path_to_data;
   locals["elements"] = elements;
