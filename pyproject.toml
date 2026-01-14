@@ -44,7 +44,7 @@ Documentation = "https://cugbasis.qcdevs.org/"
 # pip install qc-cugbasis[docs]
 docs = [
     "IPython",
-    "sphinx",
+    "sphinx>=7.0,<9.0",
     "sphinx-rtd-theme",
     "numpydoc",
     "sphinx_autodoc_typehints",
