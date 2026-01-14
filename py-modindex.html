@@ -3,13 +3,11 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" data-content_root="./">
 <head>
-  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
-
+  <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Generating Cube Files &mdash; cugbasis  documentation</title>
+  <title>Python Module Index &mdash; cugbasis  documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="_static/css/override.css?v=064c4a14" />
-      <link rel="stylesheet" type="text/css" href="_static/nbsphinx-code-cells.css?v=2aa19091" />
       <link rel="stylesheet" type="text/css" href="_static/css/custom.css?v=9ba27866" />
 
   
@@ -19,12 +17,16 @@
       <script src="_static/doctools.js?v=9bcbadda"></script>
       <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
       <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
-      <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
-      <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="prev" title="Non-Covalent Interaction Index" href="reduced_density_gradient.html" /> 
+ 
+
+    <script>
+      DOCUMENTATION_OPTIONS.COLLAPSE_INDEX = true;
+    </script>
+
+
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -120,7 +122,7 @@
 </li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Example Tutorials:</span></p>
-<ul class="current">
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="quick_start.html">Quick Start</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="quick_start.html#Installation-cuGBasis-on-Colab">Installation cuGBasis on Colab</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="quick_start.html#Enable-GPU">Enable GPU</a></li>
@@ -152,10 +154,10 @@
 <li class="toctree-l2"><a class="reference internal" href="reduced_density_gradient.html#NCI-Index-Using-The-Hessian">NCI Index Using The Hessian</a></li>
 </ul>
 </li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Generating Cube Files</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#Density">Density</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#Laplacian">Laplacian</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#Reduced-Density-Gradient">Reduced Density Gradient</a></li>
+<li class="toctree-l1"><a class="reference internal" href="generating_cube_files.html">Generating Cube Files</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="generating_cube_files.html#Density">Density</a></li>
+<li class="toctree-l2"><a class="reference internal" href="generating_cube_files.html#Laplacian">Laplacian</a></li>
+<li class="toctree-l2"><a class="reference internal" href="generating_cube_files.html#Reduced-Density-Gradient">Reduced Density Gradient</a></li>
 </ul>
 </li>
 </ul>
@@ -174,9 +176,8 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
-      <li class="breadcrumb-item active">Generating Cube Files</li>
+      <li class="breadcrumb-item active">Python Module Index</li>
       <li class="wy-breadcrumbs-aside">
-            <a href="_sources/generating_cube_files.nblink.txt" rel="nofollow"> View page source</a>
       </li>
   </ul>
   <hr/>
@@ -184,127 +185,28 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="Generating-Cube-Files">
-<h1>Generating Cube Files<a class="headerlink" href="#Generating-Cube-Files" title="Link to this heading"></a></h1>
-<p>This example will illustrate how to generate .cube files using UniformGrid from Grid package for various functions that CuChemTools can compute. There are many scalar-functions that CuChemTools can compute that can be used to substitute any function (e.g. density, laplacian) below.</p>
-<div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
-</pre></div>
-</div>
-<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre><span></span>from cugbasis import Molecule
 
-file_path = r&quot;./ALA_ALA_peptide_uwb97xd_def2svpd.fchk&quot;
-mol = Molecule(file_path)
-</pre></div>
-</div>
-</div>
-<div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
-</pre></div>
-</div>
-<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre><span></span>from grid.cubic import UniformGrid
+   <h1>Python Module Index</h1>
 
-grid = UniformGrid.from_molecule(mol.atnums, mol.atcoords, spacing=0.13, extension=10.0, weight=&quot;Rectangle&quot;)
-print(f&quot;Origin of grid:   {grid.origin}&quot;)
-print(f&quot;Cubic Grid Axes:  {grid.axes}&quot;)
-print(f&quot;Cubic Grid Shape: {grid.shape}&quot;)
-print(f&quot;Number of Points: {len(grid.points)}&quot;)
-<br/></pre></div>
-</div>
-</div>
-<div class="nboutput nblast docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-Origin of grid:   [23.83113906 34.61384519  5.25461588]
-Cubic Grid Axes:  [[-0.0488626  -0.05321598  0.10807639]
- [ 0.04014544 -0.11715483 -0.03953591]
- [-0.11358164 -0.01851498 -0.06046822]]
-Cubic Grid Shape: [279 245 199]
-Number of Points: 13602645
-</pre></div></div>
-</div>
-<section id="Density">
-<h2>Density<a class="headerlink" href="#Density" title="Link to this heading"></a></h2>
-<div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
-</pre></div>
-</div>
-<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre><span></span>import numpy as np
+   <div class="modindex-jumpbox">
+   <a href="#cap-c"><strong>c</strong></a>
+   </div>
 
-dens = mol.compute_density(grid.points)
-
-print(f&quot;Total number of electrons:       {np.sum(mol.atnums)}&quot;)
-print(f&quot;Integration of electron density: {grid.integrate(dens)}&quot;)
-
-# Generate cube file for the density
-grid.generate_cube(&quot;density_ala_ala.cube&quot;, dens, mol.atcoords, mol.atnums)
-
-# Load the cube file
-grid_2, grid_data = UniformGrid.from_cube(&quot;./density_ala_ala.cube&quot;, weight=&quot;Rectangle&quot;, return_data=True)
-
-print(f&quot;Integration Using Loaded Cube:   {grid_2.integrate(grid_data[&#39;data&#39;])}&quot;)
-print(f&quot;Do both densities match:         {np.all(np.abs(dens - grid_data[&#39;data&#39;]) &lt; 1e-3)}&quot;)
-</pre></div>
-</div>
-</div>
-<div class="nboutput nblast docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-Total number of electrons:       108
-Integration of electron density: 107.9762750986812
-Integration Using Loaded Cube:   107.97634587639091
-Do both densities match:         True
-</pre></div></div>
-</div>
-</section>
-<section id="Laplacian">
-<h2>Laplacian<a class="headerlink" href="#Laplacian" title="Link to this heading"></a></h2>
-<div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
-</pre></div>
-</div>
-<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre><span></span>lap = mol.compute_laplacian(grid.points)
-
-# Generate cube file for the density
-grid.generate_cube(&quot;lap_ala_ala.cube&quot;, lap, mol.atcoords, mol.atnums)
-
-# Load the cube file
-#grid_2, grid_data = UniformGrid.from_cube(&quot;./lap_ala_ala.cube&quot;, weight=&quot;Rectangle&quot;, return_data=True)
-#lap_2 = grid_data[&quot;data&quot;]
-</pre></div>
-</div>
-</div>
-</section>
-<section id="Reduced-Density-Gradient">
-<h2>Reduced Density Gradient<a class="headerlink" href="#Reduced-Density-Gradient" title="Link to this heading"></a></h2>
-<div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
-</pre></div>
-</div>
-<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre><span></span>rdg = mol.compute_reduced_density_gradient(grid.points)
-
-# Generate cube file for the density
-grid.generate_cube(&quot;rdg_ala_ala.cube&quot;, rdg, mol.atcoords, mol.atnums)
-
-# Load the cube file
-#grid_2, grid_data = UniformGrid.from_cube(&quot;./rdg_ala_ala.cube&quot;, weight=&quot;Rectangle&quot;, return_data=True)
-#rdg_2 = grid_data[&quot;data&quot;]
-</pre></div>
-</div>
-</div>
-</section>
-</section>
+   <table class="indextable modindextable">
+     <tr class="pcap"><td></td><td>&#160;</td><td></td></tr>
+     <tr class="cap" id="cap-c"><td></td><td>
+       <strong>c</strong></td><td></td></tr>
+     <tr>
+       <td></td>
+       <td>
+       <a href="molecule.html#module-cugbasis"><code class="xref">cugbasis</code></a></td><td>
+       <em></em></td></tr>
+   </table>
 
 
            </div>
           </div>
-          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="reduced_density_gradient.html" class="btn btn-neutral float-left" title="Non-Covalent Interaction Index" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-    </div>
+          <footer>
 
   <hr/>
 
